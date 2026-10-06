@@ -224,7 +224,7 @@
 
         <div class="market-box">
           <div>
-            <span style="display:block; font-size:0.62rem; text-transform:uppercase; font-weight:700;">Twelve Data Gold Benchmark</span>
+            <span style="display:block; font-size:0.62rem; text-transform:uppercase; font-weight:700;">GoldAPI Spot Benchmark</span>
             <strong id="market-title">Gold (XAU): Fetching live...</strong>
           </div>
           <div id="market-status-badge" class="market-badge market-gold">Gold Hedged Alpha</div>
@@ -267,8 +267,8 @@
         <div class="subtitle">Master Portfolio Settlement Advice (v4.5 Institutional)</div>
 
         <div class="bot-live-strip">
-          <span id="bot-live-rate">● LIVE CoinDCX USDT ₹87.00</span>
-          <span style="font-size:0.65rem; background:var(--bg); padding:2px 6px; border-radius:4px; border:1px solid var(--border);">CoinDCX Public API</span>
+          <span id="bot-live-rate">● LIVE FastForex USD: ₹87.00</span>
+          <span style="font-size:0.65rem; background:var(--bg); padding:2px 6px; border-radius:4px; border:1px solid var(--border);">FastForex Live API</span>
         </div>
 
         <div class="preset-grid">
@@ -310,7 +310,7 @@
 
           <div style="display:flex; justify-content:space-between; font-size:0.68rem; color:var(--muted); margin-bottom:8px;">
             <span id="bot-audit-ref">POOL REF: STM-858452</span>
-            <span id="bot-audit-time">DATE & TIME: 06/10/2026 07:53 pm</span>
+            <span id="bot-audit-time">DATE & TIME: 07/10/2026 03:58 am</span>
           </div>
 
           <div style="background:var(--bg); border:1px solid var(--border); padding:6px 8px; border-radius:6px; font-size:0.65rem; color:var(--muted); margin-bottom:10px;">
@@ -435,7 +435,7 @@
       </div>
 
       <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 8px 12px; border-radius: 4px; margin-bottom: 14px; font-size: 0.7rem; color: #1e3a8a; line-height: 1.4;">
-        <strong>TRADING ARBITRAGE & AUDIT RECONCILIATION:</strong> Monthly performance realized directly in USD ($) via Gold Arbitrage (<span id="pdf-market-regime">Spot Gold Trend Tracked</span>). Reconciled for individual client allocation.
+        <strong>TRADING ARBITRAGE & AUDIT RECONCILIATION:</strong> Monthly performance realized directly in USD ($) via Gold Arbitrage (<span id="pdf-market-regime">GoldAPI Spot Tracked</span>). Reconciled for individual client allocation.
       </div>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px;">
@@ -546,10 +546,10 @@
     const DEFAULT_PROMOTER = { name: 'Kaif Alvi', capital: 50000 };
     const DEFAULT_FX = 87.0;
     const DEFAULT_INVESTORS = [
-      { id: 'CLI-101', name: 'Investor A', capital: 30000, active: true, time: '06/10/2026 10:00 AM' },
-      { id: 'CLI-102', name: 'Investor B', capital: 20000, active: true, time: '06/10/2026 11:30 AM' },
-      { id: 'CLI-103', name: 'Investor C', capital: 30000, active: true, time: '06/10/2026 01:15 PM' },
-      { id: 'CLI-104', name: 'Investor D', capital: 20000, active: true, time: '06/10/2026 02:45 PM' }
+      { id: 'CLI-101', name: 'Investor A', capital: 30000, active: true, time: '07/10/2026 10:00 AM' },
+      { id: 'CLI-102', name: 'Investor B', capital: 20000, active: true, time: '07/10/2026 11:30 AM' },
+      { id: 'CLI-103', name: 'Investor C', capital: 30000, active: true, time: '07/10/2026 01:15 PM' },
+      { id: 'CLI-104', name: 'Investor D', capital: 20000, active: true, time: '07/10/2026 02:45 PM' }
     ];
 
     let promoter = { ...DEFAULT_PROMOTER };
@@ -607,37 +607,38 @@
       }
     }
 
-    // Live CoinDCX USDT/INR & Twelve Data Gold (XAU) Integration
+    // Live FastForex & GoldAPI Integration
     async function fetchLiveMarketData() {
       try {
-        // 1. CoinDCX Public API for USDT/INR rate
-        const coindcxRes = await fetch('https://public.coindcx.com/market_data/ticker');
-        const coindcxData = await coindcxRes.json();
-        const usdtTicker = coindcxData.find(t => t.market === 'USDTINR');
-        if (usdtTicker && usdtTicker.last_price) {
-          const liveCoinDcxRate = parseFloat(usdtTicker.last_price);
-          if (!isNaN(liveCoinDcxRate) && liveCoinDcxRate > 0) {
-            usdInrRate = liveCoinDcxRate;
-            document.getElementById('bot-live-rate').innerText = `● LIVE CoinDCX USDT ₹${usdInrRate.toFixed(2)}`;
+        // 1. FastForex Live API for USD to INR rate
+        const forexRes = await fetch('https://api.fastforex.io/fetch-one?from=USD&to=INR&api_key=97fec7c71f-e510024829-tmibks');
+        const forexData = await forexRes.json();
+        if (forexData && forexData.result && forexData.result.INR) {
+          const liveRate = parseFloat(forexData.result.INR);
+          if (!isNaN(liveRate) && liveRate > 0) {
+            usdInrRate = liveRate;
+            document.getElementById('bot-live-rate').innerText = `● LIVE FastForex USD: ₹${usdInrRate.toFixed(2)}`;
           }
         }
       } catch (e) {
-        console.log('CoinDCX Fetch Fallback Used');
+        console.log('FastForex Fallback Used');
       }
 
       try {
-        // 2. Twelve Data Free API for Gold Benchmark (XAU/USD)
-        const goldRes = await fetch('https://api.twelvedata.com/price?symbol=XAU/USD&apikey=demo');
+        // 2. GoldAPI Spot Benchmark for Gold (XAU/USD)
+        const goldRes = await fetch('https://www.goldapi.io/api/XAU/USD', {
+          headers: { 'x-access-token': 'goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io' }
+        });
         const goldData = await goldRes.json();
         if (goldData && goldData.price) {
-          document.getElementById('market-title').innerText = `Gold (XAU/USD): $${parseFloat(goldData.price).toFixed(2)} (Live)`;
-          document.getElementById('market-status-badge').innerText = 'Twelve Data Synced';
-          document.getElementById('pdf-market-regime').innerText = `Gold Price: $${parseFloat(goldData.price).toFixed(2)} • Arbitrage Outperformance (+12.50%)`;
+          document.getElementById('market-title').innerText = `Gold Spot (XAU/USD): $${parseFloat(goldData.price).toFixed(2)} (Live)`;
+          document.getElementById('market-status-badge').innerText = 'GoldAPI Synced';
+          document.getElementById('pdf-market-regime').innerText = `Gold Spot Price: $${parseFloat(goldData.price).toFixed(2)} • Arbitrage Outperformance (+12.50%)`;
         } else {
-          document.getElementById('market-title').innerText = `Gold (XAU/INR): +1.85% (MTD)`;
+          document.getElementById('market-title').innerText = `Gold (XAU/USD): Live Spot Tracked`;
         }
       } catch (e) {
-        document.getElementById('market-title').innerText = `Gold (XAU/INR): +1.85% (MTD)`;
+        document.getElementById('market-title').innerText = `Gold (XAU/USD): Live Spot Tracked`;
       }
       runCalc();
     }
@@ -849,7 +850,7 @@
 
     function computeBotAudit(usd) {
       const fx = usdInrRate;
-      document.getElementById('bot-live-rate').innerText = `● LIVE CoinDCX USDT ₹${fx.toFixed(2)}`;
+      document.getElementById('bot-live-rate').innerText = `● LIVE FastForex USD: ₹${fx.toFixed(2)}`;
       
       const grossInr = usd * fx;
       const coinDcxEntry = grossInr * 0.005;

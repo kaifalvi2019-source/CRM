@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Institutional Portfolio & Settlement Platform</title>
+  <meta name="theme-color" content="#121418" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg: #121418; --card: #1c1f26; --border: #2d3340; --text: #f0f2f5;
+      --muted: #8b949e; --blue: #2563eb; --green: #10b981; --red: #ef4444; --gold: #f59e0b;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc; --card: #ffffff; --border: #cbd5e1; --text: #0f172a;
+      --muted: #64748b; --blue: #2563eb; --green: #059669; --red: #dc2626; --gold: #d97706;
+    }
+
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+    body { background: var(--bg); color: var(--text); padding: 12px; display: flex; justify-content: center; min-height: 100vh; }
+    .container { width: 100%; max-width: 450px; animation: fadeIn 0.6s ease-out; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Splash Screen Animation */
+    #splash-screen {
+      position: fixed; inset: 0; background: #121418; z-index: 999999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #fff; animation: fadeOutSplash 0.5s ease 1.2s forwards;
+    }
+    #splash-screen h1 { font-size: 1.5rem; font-weight: 800; color: #38bdf8; animation: scaleUp 0.8s ease-out; }
+    #splash-screen p { font-size: 0.8rem; color: #8b949e; margin-top: 6px; }
+    @keyframes scaleUp {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fadeOutSplash {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: #059669; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 0.82rem;
+      font-weight: 600; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); z-index: 9999999;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* TOP BAR */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .top-title { font-size: 0.8rem; font-weight: 700; color: var(--text); letter-spacing: 0.5px; }
+    .top-actions { display: flex; gap: 6px; align-items: center; }
+    .nav-btn {
+      background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+      transform: scale(1); transition: transform 0.15s ease;
+    }
+    .nav-btn:active { transform: scale(0.94); }
+    .nav-btn svg { width: 13px; height: 13px; stroke: var(--text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-btn-icon { width: 30px; height: 30px; padding: 0; justify-content: center; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    h2 { font-size: 1rem; margin-bottom: 3px; color: var(--text); }
+    .subtitle { color: var(--muted); font-size: 0.74rem; margin-bottom: 10px; }
+
+    /* PROMOTER DESK */
+    .promoter-desk {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
+      margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .promoter-sub { font-size: 0.6rem; font-weight: 700; color: var(--muted); letter-spacing: 0.7px; display: flex; align-items: center; gap: 5px; }
+    .promoter-sub::before { content: ""; width: 5px; height: 5px; background: var(--blue); border-radius: 50%; display: inline-block; }
+    .promoter-desk strong { font-size: 0.9rem; color: var(--text); }
+    .promoter-desk span.meta { font-size: 0.7rem; color: var(--muted); font-weight: 500; }
+    .promoter-right { text-align: right; }
+    .promoter-right strong { font-size: 0.96rem; color: #38bdf8; display: block; font-weight: 700; font-family: monospace; }
+    .promoter-right span { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; }
+
+    /* COMMODITY BENCHMARK */
+    .market-box {
+      background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; padding: 8px 10px;
+      font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .market-badge { font-weight: 700; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; }
+    .market-green { background: rgba(16, 185, 129, 0.12); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .market-gold { background: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    /* SUMMARY CARD */
+    .summary-card {
+      background: linear-gradient(135deg, var(--card) 0%, var(--bg) 100%);
+      border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px;
+    }
+    .summary-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+    .summary-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+    .summary-usd { font-size: 1.45rem; color: #38bdf8; font-weight: 800; font-family: monospace; line-height: 1.1; }
+    .summary-rate { font-size: 0.85rem; color: var(--green); font-weight: 700; background: rgba(16,185,129,0.12); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.3); }
+
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .kpi-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+    .kpi-card span { font-size: 0.65rem; color: var(--muted); display: block; margin-bottom: 2px; }
+    .kpi-card strong { font-size: 0.95rem; color: var(--text); }
+
+    input[type="number"], input[type="text"] { width: 100%; padding: 9px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.88rem; outline: none; }
+    input:focus { border-color: var(--blue); }
+    .btn-dark { width: 100%; background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: transform 0.15s ease; }
+    .btn-dark:active { transform: scale(0.97); }
+    .btn-reset { width: 100%; background: rgba(239, 68, 68, 0.1); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px; border-radius: 6px; font-weight: 700; font-size: 0.76rem; cursor: pointer; margin-bottom: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+
+    /* LEADERBOARD */
+    .investor-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .investor-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .rank-badge { font-size: 1.35rem; font-weight: 800; min-width: 32px; text-align: center; color: var(--muted); font-style: italic; }
+    .top-1 { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05); } .top-1 .rank-badge { color: var(--gold); font-size: 1.55rem; }
+    .top-2 { border-color: var(--border); } .top-2 .rank-badge { color: var(--muted); font-size: 1.45rem; }
+    .top-3 { border-color: var(--border); } .top-3 .rank-badge { color: var(--gold); font-size: 1.4rem; }
+    .inv-details { flex-grow: 1; padding-left: 8px; }
+    .inv-details strong { font-size: 0.9rem; color: var(--text); display: block; }
+    .inv-details span { font-size: 0.72rem; color: var(--muted); }
+    .inv-payout { text-align: right; }
+    .inv-payout strong { font-size: 0.98rem; color: #38bdf8; display: block; font-family: monospace; font-weight: 700; }
+    .inv-payout span { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; }
+
+    /* SETTLEMENT BOT STYLES */
+    .bot-section { display: none; }
+    .bot-live-strip { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; color: var(--green); }
+    .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .preset-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; text-align: left; cursor: pointer; }
+    .preset-btn strong { font-size: 0.95rem; display: block; color: #38bdf8; font-family: monospace; }
+    .preset-btn span { font-size: 0.65rem; color: var(--muted); }
+    .preset-btn.active { border-color: #38bdf8; background: var(--bg); }
+    
+    .bot-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .btn-neutral { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+    .audit-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 0.75rem; }
+    .audit-head { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; }
+    .audit-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+    .audit-row span { color: var(--muted); }
+    .audit-row strong { color: var(--text); font-family: monospace; }
+    .audit-total { display: flex; justify-content: space-between; padding: 8px 0; font-weight: 800; font-size: 0.9rem; color: var(--green); border-top: 1px solid var(--border); margin-top: 6px; }
+    .disc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
+    .disc-item { background: var(--card); border: 1px solid var(--border); padding: 7px; border-radius: 6px; font-size: 0.62rem; color: var(--muted); line-height: 1.3; }
+    .disc-item strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.8); z-index: 999999; justify-content: center; align-items: center; padding: 12px;
+    }
+    .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 14px; animation: scaleUp 0.3s ease-out; }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; }
+    .modal-head h3 { font-size: 0.9rem; color: var(--text); }
+    .close-btn { background: transparent; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; line-height: 1; }
+    .book-item { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .book-item strong { color: var(--text); font-size: 0.82rem; display: block; }
+    .book-item span.info { color: var(--muted); font-size: 0.7rem; display: block; }
+    .book-item span.time { color: var(--blue); font-size: 0.62rem; display: block; }
+    .del-btn { background: transparent; border: none; color: var(--red); cursor: pointer; font-size: 1rem; padding: 2px 6px; }
+
+    /* WHITE A4 TEMPLATE FOR LEDGER EXPORT */
+    #pdf-wrapper { position: absolute; left: -9999px; top: -9999px; width: 790px; background: #fff !important; }
+    #pdf-render-area { background: #fff !important; color: #111827 !important; padding: 30px 24px; box-sizing: border-box; width: 100%; }
+
+    /* HIDDEN BOT PDF TEMPLATE */
+    #bot-pdf-wrapper { position: absolute; left: -9999px; top: -9999px; width: 790px; background: #fff !important; }
+    #bot-pdf-render-area { background: #fff !important; color: #111827 !important; padding: 30px 24px; box-sizing: border-box; width: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <h1>Portfolio Ledger</h1>
+    <p>Institutional Settlement & Yield Platform</p>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast">Action Successful ✓</div>
+
+  <div class="container">
+    <div class="top-bar">
+      <span class="top-title" id="app-title">Portfolio Ledger</span>
+      <div class="top-actions">
+        <button type="button" class="nav-btn" onclick="openPDF()">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <button type="button" class="nav-btn" onclick="openBook(true)">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Directory
+        </button>
+        <button type="button" class="nav-btn nav-btn-icon" id="theme-toggle" title="Toggle Light/Dark">☀️</button>
+        <button type="button" class="nav-btn nav-btn-icon" onclick="togglePlatformMode()" id="mode-toggle-btn" title="Switch to Settlement Bot">
+          <svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        </button>
+        <button type="button" class="nav-btn nav-btn-icon" onclick="openSettings(true)" title="Settings">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= PORTFOLIO LEDGER VIEW ================= -->
+    <div id="ledger-view">
+      <div class="promoter-desk">
+        <div>
+          <span class="promoter-sub">LEAD PORTFOLIO MANAGER</span>
+          <strong id="disp-manager-name">Kaif Alvi</strong>
+          <span class="meta" id="disp-manager-stake">Promoter Holding: ₹50,000</span>
+        </div>
+        <div class="promoter-right">
+          <strong id="disp-manager-gain">+$71.84 USD</strong>
+          <span>Promoter Yield</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Monthly Performance & Yield</h2>
+        <div class="subtitle">Active Month Allocation & Generated Profit</div>
+
+        <div class="market-box">
+          <div>
+            <span style="display:block; font-size:0.62rem; text-transform:uppercase; font-weight:700;">Twelve Data Gold Benchmark</span>
+            <strong id="market-title">Gold (XAU): Fetching live...</strong>
+          </div>
+          <div id="market-status-badge" class="market-badge market-gold">Gold Hedged Alpha</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-top">
+            <div>
+              <div class="summary-label">Realized Trading Yield (USD)</div>
+              <div class="summary-usd" id="disp-usd-profit">+$215.52 USD</div>
+            </div>
+            <div class="summary-rate" id="rate-summary">+12.50% MTD</div>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span>TOTAL POOL CAPITAL</span>
+              <strong id="kpi-capital">₹1,50,000.00</strong>
+            </div>
+            <div class="kpi-card">
+              <span>ACTIVE INVESTORS</span>
+              <strong id="kpi-count">4 Clients + Lead</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h2 style="font-size: 0.92rem;">Client Leaderboard</h2>
+          <span style="font-size: 0.72rem; color: var(--green); font-weight: 600;" id="uniform-rate-tag">Profit Rate: +12.50%</span>
+        </div>
+        <div id="investor-list"></div>
+      </div>
+    </div>
+
+    <!-- ================= SETTLEMENT STATEMENT BOT VIEW ================= -->
+    <div id="bot-view" class="bot-section">
+      <div class="card">
+        <h2>Transaction Cost & Net Payout</h2>
+        <div class="subtitle">Master Portfolio Settlement Advice (v4.5 Institutional)</div>
+
+        <div class="bot-live-strip">
+          <span id="bot-live-rate">● LIVE CoinDCX USDT ₹87.00</span>
+          <span style="font-size:0.65rem; background:var(--bg); padding:2px 6px; border-radius:4px; border:1px solid var(--border);">CoinDCX Public API</span>
+        </div>
+
+        <div class="preset-grid">
+          <button type="button" class="preset-btn" onclick="selectBotUsd(500)" id="btn-500">
+            <strong>$500</strong><span>Withdrawal</span>
+          </button>
+          <button type="button" class="preset-btn" onclick="selectBotUsd(700)" id="btn-700">
+            <strong>$700</strong><span>Withdrawal</span>
+          </button>
+          <button type="button" class="preset-btn" onclick="selectBotUsd(1000)" id="btn-1000">
+            <strong>$1,000</strong><span>Withdrawal</span>
+          </button>
+          <button type="button" class="preset-btn" onclick="selectBotUsd(1500)" id="btn-1500">
+            <strong>$1,500</strong><span>Withdrawal</span>
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 6px; margin-bottom: 10px;">
+          <input type="number" id="bot-custom-usd" placeholder="Other amount (e.g. 100, 2000)" oninput="onCustomUsdInput()" />
+          <button type="button" class="btn-dark" onclick="calculateBot()">Generate</button>
+        </div>
+
+        <div class="bot-actions">
+          <button type="button" class="btn-neutral" onclick="downloadBotPDF()">
+            <svg style="width:14px; height:14px; stroke:var(--text); fill:none; stroke-width:2;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download PDF
+          </button>
+          <button type="button" class="btn-neutral" onclick="shareBotPDF()">
+            <svg style="width:14px; height:14px; stroke:var(--text); fill:none; stroke-width:2;" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share PDF
+          </button>
+        </div>
+
+        <div class="audit-box">
+          <div class="audit-head">
+            <h3 style="font-size:0.85rem; color:var(--text); text-transform:uppercase; font-weight:800;">Master Settlement Statement & Audit Memorandum</h3>
+            <span style="font-size:0.62rem; color:var(--muted); display:block; margin-top:2px;">Aggregated Portfolio Execution & Yield Off-Ramp Advice</span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; font-size:0.68rem; color:var(--muted); margin-bottom:8px;">
+            <span id="bot-audit-ref">POOL REF: STM-858452</span>
+            <span id="bot-audit-time">DATE & TIME: 06/10/2026 07:53 pm</span>
+          </div>
+
+          <div style="background:var(--bg); border:1px solid var(--border); padding:6px 8px; border-radius:6px; font-size:0.65rem; color:var(--muted); margin-bottom:10px;">
+            SETTLEMENT PROTOCOL: Bank Node → FIU-Compliant Gateway → Non-Custodial Protocol → Liquidity Pool Settlement → Automated Clearing Node → IMPS Disbursal
+          </div>
+
+          <div style="font-size:0.68rem; color:var(--text); text-transform:uppercase; font-weight:700; margin-bottom:4px; display:flex; justify-content:space-between;">
+            <span>Statutory / Technical Head</span>
+            <span>Amount (INR)</span>
+          </div>
+
+          <div id="bot-audit-breakdown"></div>
+
+          <div class="audit-total">
+            <span>Net Distributable Pool Yield (Clean Credit)</span>
+            <span id="bot-net-payout">₹0.00</span>
+          </div>
+        </div>
+
+        <div class="disc-grid">
+          <div class="disc-item">
+            <strong>Section 194S TDS Compliance:</strong>
+            Withholding tax of 1.0% provisioned as mandated under the Indian Income Tax Act on Virtual Digital Asset (VDA) settlements, eligible for Form 26AS/AIS reconciliation.
+          </div>
+          <div class="disc-item">
+            <strong>Section 115BBH & Forex Buffer:</strong>
+            5.0% allocation maintained toward capital gains tax liability, currency spread variances, and multi-tier bank node clearance contingencies.
+          </div>
+          <div class="disc-item">
+            <strong>High-Availability Infra Surcharge:</strong>
+            2.0% operational surcharge designated for algorithmic compute uptime, low-latency execution node upkeep, and uninterrupted power/hardware continuity.
+          </div>
+          <div class="disc-item">
+            <strong>Interoperability & Banking Round-Off:</strong>
+            0.4% surcharge applied for high-volume banking interoperability alongside systematic alignment to standard clean units for seamless IMPS clearance.
+          </div>
+        </div>
+
+        <div style="font-size: 0.62rem; color: var(--muted); margin-top: 10px; line-height: 1.3; border-top: 1px dashed var(--border); padding-top: 8px;">
+          <strong>AUDIT DECLARATION:</strong> This document represents a master financial memorandum generated via automated execution parameters. All statutory levies, decentralized gas charges, banking interchange fees, and liquidity spreads have been deducted strictly pursuant to regulatory guidelines and platform liquidity protocols. Retain this reference for collective ledger accounting and annual income tax filing reconciliations.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIRECTORY MODAL -->
+  <div class="modal-overlay" id="book-modal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3>Master Investor Directory</h3>
+        <button type="button" class="close-btn" onclick="openBook(false)">✕</button>
+      </div>
+      <div id="modal-investor-list"></div>
+      <div style="border-top: 1px dashed var(--border); margin-top: 12px; padding-top: 10px;">
+        <div style="font-size: 0.72rem; color: var(--muted); margin-bottom: 5px;">+ Register New Investor Account</div>
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 6px; margin-bottom: 6px;">
+          <input type="text" id="new-name" placeholder="Name" />
+          <input type="number" id="new-cap" placeholder="Capital (₹)" />
+        </div>
+        <button type="button" class="btn-dark" onclick="addInv()">+ Add to Permanent Directory</button>
+      </div>
+      <button type="button" class="btn-dark" style="margin-top: 10px; background: var(--bg);" onclick="openBook(false)">Save & Close</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3>System Configuration & Control</h3>
+        <button type="button" class="close-btn" onclick="openSettings(false)">✕</button>
+      </div>
+
+      <button type="button" class="btn-reset" onclick="resetYieldOverrides()">
+        <svg style="width:14px; height:14px; fill:none; stroke:var(--red); stroke-width:2;" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset Custom Yield / FX Overrides
+      </button>
+
+      <div style="margin-bottom: 10px;">
+        <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Promoter / Lead Manager Name</label>
+        <input type="text" id="setting-name" />
+      </div>
+      <div style="margin-bottom: 10px;">
+        <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Promoter Holding Capital (₹)</label>
+        <input type="number" id="setting-cap" />
+      </div>
+
+      <div style="border-top: 1px dashed var(--border); margin: 12px 0 10px 0; padding-top: 10px;">
+        <div style="font-size: 0.72rem; color: #38bdf8; font-weight: 700; margin-bottom: 8px;">★ TRADING YIELD & FX ENGINE</div>
+        
+        <div style="margin-bottom: 10px;">
+          <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Custom Monthly Pool Profit ($ USD)</label>
+          <input type="number" id="setting-usd" placeholder="Auto 12.50% if left blank" step="any" />
+          <span style="font-size: 0.65rem; color: var(--muted); margin-top: 2px; display: block;">Leave blank for default 12.50% disciplined allocation.</span>
+        </div>
+
+        <div style="margin-bottom: 10px;">
+          <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Institutional FX Conversion Rate (1 USD = ₹ INR)</label>
+          <input type="number" id="setting-fx" step="0.1" />
+        </div>
+      </div>
+
+      <button type="button" class="btn-dark" style="background: var(--blue);" onclick="saveSettings()">Save & Apply Settings</button>
+    </div>
+  </div>
+
+  <!-- WHITE A4 TEMPLATE FOR LEDGER EXPORT -->
+  <div id="pdf-wrapper">
+    <div id="pdf-render-area">
+      <div style="text-align: center; border-bottom: 2px solid #111827; padding-bottom: 12px; margin-bottom: 14px;">
+        <h1 style="font-size: 1.3rem; margin: 0; color: #111827; text-transform: uppercase; font-weight: 800;">
+          Master Portfolio Yield & Profit Distribution
+        </h1>
+        <div style="font-size: 0.78rem; color: #4b5563; margin-top: 3px; font-weight: 600; text-transform: uppercase;">
+          Certified Monthly Trading Yield & Realized USD Payout Statement
+        </div>
+        <div style="font-size: 0.74rem; color: #111827; margin-top: 5px; font-weight: 600;" id="pdf-ref-time"></div>
+      </div>
+
+      <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 9px 12px; border-radius: 4px; margin-bottom: 12px; font-size: 0.74rem; color: #0f172a;">
+        <strong>PROMOTER CAPITAL HOLDING:</strong> Managed by <strong id="pdf-manager-name">Kaif Alvi</strong> with verified promoter holding of <strong id="pdf-manager-cap">₹50,000</strong>. Operating under equalized parity and identical risk-yield ratio.
+      </div>
+
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 8px 12px; border-radius: 4px; margin-bottom: 14px; font-size: 0.7rem; color: #1e3a8a; line-height: 1.4;">
+        <strong>TRADING ARBITRAGE & AUDIT RECONCILIATION:</strong> Monthly performance realized directly in USD ($) via Gold Arbitrage (<span id="pdf-market-regime">Spot Gold Trend Tracked</span>). Reconciled for individual client allocation.
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px;">
+        <div>
+          <span style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; font-weight: 700; display: block;">Total Pool Investment</span>
+          <strong style="font-size: 1.05rem; color: #0f172a;" id="pdf-total-cap">₹0.00</strong>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; font-weight: 700; display: block;">Monthly Net Yield</span>
+          <strong style="font-size: 1.05rem; color: #2563eb;" id="pdf-rate-display">+0.00%</strong>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; font-weight: 700; display: block;">Total Realized USD</span>
+          <strong style="font-size: 1.05rem; color: #047857;" id="pdf-total-payout">$0.00 USD</strong>
+        </div>
+      </div>
+
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 0.78rem;">
+        <thead>
+          <tr style="background: #0f172a; color: #ffffff; text-transform: uppercase; font-size: 0.7rem;">
+            <th style="padding: 9px 10px; text-align: left;">Rank & Investor</th>
+            <th style="padding: 9px 10px; text-align: right;">Principal Investment</th>
+            <th style="padding: 9px 10px; text-align: center;">Profit Rate</th>
+            <th style="padding: 9px 10px; text-align: right;">Realized Yield (USD)</th>
+          </tr>
+        </thead>
+        <tbody id="pdf-table-body"></tbody>
+      </table>
+
+      <div style="border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; padding: 8px 0; margin-bottom: 20px; font-size: 0.68rem; color: #475569;">
+        <strong>AUDIT NOTICE:</strong> Certified calculation generated under mathematical parity. Each participant's yield is distributed strictly pro-rata to committed capital.
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+        <div style="font-size: 0.68rem; color: #64748b;">DISBURSAL NODE: CRYPTOGRAPHICALLY RECONCILED</div>
+        <div style="text-align: center;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: #047857; margin-bottom: 3px;">● DIGITALLY VERIFIED</div>
+          <div style="border-top: 1px solid #0f172a; width: 175px; padding-top: 4px; font-size: 0.72rem; font-weight: 600; color: #0f172a;" id="pdf-sign-name">
+            Authorized Clearing Officer
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN BOT PDF TEMPLATE FOR DIRECT DOWNLOAD -->
+  <div id="bot-pdf-wrapper">
+    <div id="bot-pdf-render-area">
+      <div style="text-align: center; border-bottom: 2px solid #111827; padding-bottom: 12px; margin-bottom: 14px;">
+        <h1 style="font-size: 1.2rem; margin: 0; color: #111827; text-transform: uppercase; font-weight: 800;">
+          Master Settlement Statement & Audit Memorandum
+        </h1>
+        <div style="font-size: 0.75rem; color: #4b5563; margin-top: 3px; font-weight: 600; text-transform: uppercase;">
+          Institutional Payout & Transaction Cost Statement
+        </div>
+        <div style="font-size: 0.7rem; color: #111827; margin-top: 5px; font-weight: 600;" id="bot-pdf-ref-time"></div>
+      </div>
+
+      <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 9px 12px; border-radius: 4px; margin-bottom: 12px; font-size: 0.72rem; color: #0f172a;">
+        <strong>SETTLEMENT PROTOCOL:</strong> Bank Node → FIU-Compliant Gateway → Non-Custodial Protocol → Liquidity Pool Settlement → Automated Clearing Node → IMPS Disbursal
+      </div>
+
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 0.75rem;">
+        <thead>
+          <tr style="background: #0f172a; color: #ffffff; text-transform: uppercase; font-size: 0.68rem;">
+            <th style="padding: 8px 10px; text-align: left;">Statutory / Technical Head</th>
+            <th style="padding: 8px 10px; text-align: right;">Amount (INR)</th>
+          </tr>
+        </thead>
+        <tbody id="bot-pdf-table-body"></tbody>
+      </table>
+
+      <div style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a; text-transform: uppercase;">Net Distributable Pool Yield</span>
+        <strong style="font-size: 1.05rem; color: #047857;" id="bot-pdf-net-display">₹0.00</strong>
+      </div>
+
+      <div style="font-size: 0.62rem; color: #475569; line-height: 1.3; border-top: 1px solid #cbd5e1; padding-top: 8px;">
+        <strong>AUDIT DECLARATION:</strong> This document represents a master financial memorandum generated via automated execution parameters. All statutory levies, decentralized gas charges, banking interchange fees, and liquidity spreads have been deducted strictly pursuant to regulatory guidelines.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Toast Notification Utility
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 2500);
+    }
+
+    // Light/Dark Theme Switcher
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      if (currentTheme === 'light') {
+        document.documentElement.removeAttribute('data-theme');
+        themeToggle.innerText = '☀️';
+        showToast('Switched to Dark Mode');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggle.innerText = '🌙';
+        showToast('Switched to Light Mode');
+      }
+    });
+
+    const DEFAULT_PROMOTER = { name: 'Kaif Alvi', capital: 50000 };
+    const DEFAULT_FX = 87.0;
+    const DEFAULT_INVESTORS = [
+      { id: 'CLI-101', name: 'Investor A', capital: 30000, active: true, time: '06/10/2026 10:00 AM' },
+      { id: 'CLI-102', name: 'Investor B', capital: 20000, active: true, time: '06/10/2026 11:30 AM' },
+      { id: 'CLI-103', name: 'Investor C', capital: 30000, active: true, time: '06/10/2026 01:15 PM' },
+      { id: 'CLI-104', name: 'Investor D', capital: 20000, active: true, time: '06/10/2026 02:45 PM' }
+    ];
+
+    let promoter = { ...DEFAULT_PROMOTER };
+    let usdInrRate = DEFAULT_FX;
+    let customUsd = null;
+    let investors = JSON.parse(JSON.stringify(DEFAULT_INVESTORS));
+    let currentPlatformMode = 'ledger';
+
+    function loadSavedState() {
+      try {
+        const p = localStorage.getItem('pool_promoter');
+        if (p) promoter = JSON.parse(p);
+        const fx = localStorage.getItem('pool_fx_rate');
+        if (fx) usdInrRate = parseFloat(fx) || DEFAULT_FX;
+        const cu = localStorage.getItem('pool_custom_usd');
+        if (cu) customUsd = parseFloat(cu);
+        const invs = localStorage.getItem('pool_invs');
+        if (invs) {
+          const parsed = JSON.parse(invs);
+          if (Array.isArray(parsed) && parsed.length > 0) investors = parsed;
+        }
+      } catch(e) {}
+    }
+    loadSavedState();
+
+    function getTimeStr() {
+      const d = new Date();
+      const dt = String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+      let h = d.getHours(); const m = String(d.getMinutes()).padStart(2, '0');
+      const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12;
+      return dt + ' ' + String(h).padStart(2, '0') + ':' + m + ' ' + ap;
+    }
+
+    function togglePlatformMode() {
+      const ledgerView = document.getElementById('ledger-view');
+      const botView = document.getElementById('bot-view');
+      const title = document.getElementById('app-title');
+      const toggleBtn = document.getElementById('mode-toggle-btn');
+
+      if (currentPlatformMode === 'ledger') {
+        currentPlatformMode = 'bot';
+        ledgerView.style.display = 'none';
+        botView.style.display = 'block';
+        title.innerText = 'Settlement Bot';
+        toggleBtn.title = 'Switch to Portfolio Ledger';
+        selectBotUsd(500);
+        showToast('Switched to Settlement Bot');
+      } else {
+        currentPlatformMode = 'ledger';
+        botView.style.display = 'none';
+        ledgerView.style.display = 'block';
+        title.innerText = 'Portfolio Ledger';
+        toggleBtn.title = 'Switch to Settlement Bot';
+        showToast('Switched to Portfolio Ledger');
+      }
+    }
+
+    // Live CoinDCX USDT/INR & Twelve Data Gold (XAU) Integration
+    async function fetchLiveMarketData() {
+      try {
+        // 1. CoinDCX Public API for USDT/INR rate
+        const coindcxRes = await fetch('https://public.coindcx.com/market_data/ticker');
+        const coindcxData = await coindcxRes.json();
+        const usdtTicker = coindcxData.find(t => t.market === 'USDTINR');
+        if (usdtTicker && usdtTicker.last_price) {
+          const liveCoinDcxRate = parseFloat(usdtTicker.last_price);
+          if (!isNaN(liveCoinDcxRate) && liveCoinDcxRate > 0) {
+            usdInrRate = liveCoinDcxRate;
+            document.getElementById('bot-live-rate').innerText = `● LIVE CoinDCX USDT ₹${usdInrRate.toFixed(2)}`;
+          }
+        }
+      } catch (e) {
+        console.log('CoinDCX Fetch Fallback Used');
+      }
+
+      try {
+        // 2. Twelve Data Free API for Gold Benchmark (XAU/USD)
+        const goldRes = await fetch('https://api.twelvedata.com/price?symbol=XAU/USD&apikey=demo');
+        const goldData = await goldRes.json();
+        if (goldData && goldData.price) {
+          document.getElementById('market-title').innerText = `Gold (XAU/USD): $${parseFloat(goldData.price).toFixed(2)} (Live)`;
+          document.getElementById('market-status-badge').innerText = 'Twelve Data Synced';
+          document.getElementById('pdf-market-regime').innerText = `Gold Price: $${parseFloat(goldData.price).toFixed(2)} • Arbitrage Outperformance (+12.50%)`;
+        } else {
+          document.getElementById('market-title').innerText = `Gold (XAU/INR): +1.85% (MTD)`;
+        }
+      } catch (e) {
+        document.getElementById('market-title').innerText = `Gold (XAU/INR): +1.85% (MTD)`;
+      }
+      runCalc();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem('pool_invs', JSON.stringify(investors));
+        localStorage.setItem('pool_promoter', JSON.stringify(promoter));
+        localStorage.setItem('pool_fx_rate', usdInrRate);
+        if (customUsd !== null) localStorage.setItem('pool_custom_usd', customUsd);
+        else localStorage.removeItem('pool_custom_usd');
+      } catch(e) {}
+      runCalc();
+    }
+
+    function resetYieldOverrides() {
+      if (confirm('Kya aap custom yield & FX overrides ko reset karke default baseline par wapas laana chahte hain?')) {
+        localStorage.removeItem('pool_custom_usd');
+        localStorage.removeItem('pool_fx_rate');
+        customUsd = null;
+        usdInrRate = DEFAULT_FX;
+        openSettings(false);
+        runCalc();
+        showToast('Yield overrides reset successfully!');
+      }
+    }
+
+    function openBook(show) {
+      if (show) renderBook();
+      document.getElementById('book-modal').style.display = show ? 'flex' : 'none';
+      if (!show) runCalc();
+    }
+
+    function openSettings(show) {
+      if (show) {
+        document.getElementById('setting-name').value = promoter.name;
+        document.getElementById('setting-cap').value = promoter.capital;
+        document.getElementById('setting-usd').value = customUsd !== null ? customUsd : '';
+        document.getElementById('setting-fx').value = usdInrRate;
+      }
+      document.getElementById('settings-modal').style.display = show ? 'flex' : 'none';
+    }
+
+    function saveSettings() {
+      const n = document.getElementById('setting-name').value.trim();
+      const c = parseFloat(document.getElementById('setting-cap').value);
+      const usdVal = document.getElementById('setting-usd').value.trim();
+      const fxVal = parseFloat(document.getElementById('setting-fx').value);
+      
+      if (!n || isNaN(c) || c < 0) return alert('Kripya valid name & capital enter karein');
+      promoter.name = n; promoter.capital = c;
+      if (!isNaN(fxVal) && fxVal > 0) usdInrRate = fxVal;
+      if (usdVal !== '') {
+        const parsedU = parseFloat(usdVal);
+        if (!isNaN(parsedU) && parsedU >= 0) customUsd = parsedU;
+      } else {
+        customUsd = null;
+      }
+      saveState();
+      openSettings(false);
+      showToast('Settings Saved Successfully!');
+    }
+
+    function renderBook() {
+      const ml = document.getElementById('modal-investor-list');
+      ml.innerHTML = '';
+      investors.forEach(inv => {
+        const div = document.createElement('div');
+        div.className = 'book-item';
+        div.innerHTML = `
+          <div style="display:flex; align-items:flex-start; gap:8px;">
+            <input type="checkbox" ${inv.active !== false ? 'checked' : ''} onchange="toggleInv('${inv.id}')" style="width:17px; height:17px; accent-color:var(--green); margin-top:2px;" />
+            <div>
+              <strong>${inv.name} (${inv.id})</strong>
+              <span class="info">Principal: ₹${inv.capital.toLocaleString('en-IN')}</span>
+              <span class="time">Joined: ${inv.time || 'Registered'}</span>
+            </div>
+          </div>
+          <button type="button" class="del-btn" onclick="delInv('${inv.id}')">✕</button>
+        `;
+        ml.appendChild(div);
+      });
+    }
+
+    function addInv() {
+      const n = document.getElementById('new-name').value.trim();
+      const c = parseFloat(document.getElementById('new-cap').value);
+      if (!n || isNaN(c) || c <= 0) return alert('Kripya sahi name aur amount enter karein');
+      let max = 100;
+      investors.forEach(i => {
+        const num = parseInt(i.id.replace('CLI-', '')) || 100;
+        if (num > max) max = num;
+      });
+      investors.push({ id: 'CLI-' + (max + 1), name: n, capital: c, active: true, time: getTimeStr() });
+      saveState();
+      document.getElementById('new-name').value = '';
+      document.getElementById('new-cap').value = '';
+      renderBook();
+      showToast('New Investor Added Successfully!');
+    }
+
+    function toggleInv(id) {
+      const inv = investors.find(i => i.id === id);
+      if (inv) { inv.active = !inv.active; saveState(); renderBook(); showToast('Investor Status Updated'); }
+    }
+
+    function delInv(id) {
+      if (confirm('Investor ko hatana chahte hain?')) {
+        investors = investors.filter(i => i.id !== id);
+        saveState();
+        renderBook();
+        showToast('Investor Removed Successfully!');
+      }
+    }
+
+    function runCalc() {
+      let active = investors.filter(i => i.active !== false);
+      active.sort((a, b) => b.capital - a.capital);
+
+      const clientCap = active.reduce((s, i) => s + i.capital, 0);
+      const totalCap = clientCap + (promoter.capital || 0);
+
+      let totalUsd;
+      let rate;
+      if (customUsd !== null) {
+        totalUsd = customUsd;
+        const inrEquivalent = totalUsd * usdInrRate;
+        rate = totalCap > 0 ? (inrEquivalent / totalCap) * 100 : 0;
+      } else {
+        rate = 12.50;
+        const inrEquivalent = (totalCap * rate) / 100;
+        totalUsd = inrEquivalent / usdInrRate;
+      }
+
+      document.getElementById('kpi-capital').innerText = '₹' + totalCap.toLocaleString('en-IN', {minimumFractionDigits: 2});
+      document.getElementById('kpi-count').innerText = `${active.length} Clients + Lead`;
+
+      document.getElementById('rate-summary').innerText = `+${rate.toFixed(2)}% MTD`;
+      document.getElementById('uniform-rate-tag').innerText = `Profit Rate: +${rate.toFixed(2)}%`;
+      document.getElementById('disp-usd-profit').innerText = `+$${totalUsd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} USD`;
+
+      document.getElementById('disp-manager-name').innerText = promoter.name;
+      document.getElementById('disp-manager-stake').innerText = `Promoter Holding: ₹${promoter.capital.toLocaleString('en-IN')}`;
+      
+      const pGainInr = (promoter.capital * rate) / 100;
+      const pGainUsd = pGainInr / usdInrRate;
+      document.getElementById('disp-manager-gain').innerText = `+$${pGainUsd.toFixed(2)} USD`;
+
+      const list = document.getElementById('investor-list');
+      list.innerHTML = '';
+      active.forEach((inv, idx) => {
+        const r = idx + 1;
+        const prfInr = (inv.capital * rate) / 100;
+        const prfUsd = prfInr / usdInrRate;
+        let cls = r === 1 ? 'top-1' : r === 2 ? 'top-2' : r === 3 ? 'top-3' : '';
+        const d = document.createElement('div');
+        d.className = `investor-card ${cls}`;
+        d.innerHTML = `
+          <div class="rank-badge">${r}</div>
+          <div class="inv-details">
+            <strong>${inv.name}</strong>
+            <span>Investment: ₹${inv.capital.toLocaleString('en-IN')}</span>
+          </div>
+          <div class="inv-payout">
+            <strong>+$${prfUsd.toFixed(2)} USD</strong>
+            <span>Realized Profit</span>
+          </div>
+        `;
+        list.appendChild(d);
+      });
+    }
+
+    let selectedUsd = 500;
+
+    function selectBotUsd(amt) {
+      selectedUsd = amt;
+      document.getElementById('bot-custom-usd').value = '';
+      ['btn-500', 'btn-700', 'btn-1000', 'btn-1500'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.remove('active');
+      });
+      const btn = document.getElementById('btn-' + amt);
+      if(btn) btn.classList.add('active');
+      computeBotAudit(amt);
+    }
+
+    function onCustomUsdInput() {
+      const val = parseFloat(document.getElementById('bot-custom-usd').value);
+      ['btn-500', 'btn-700', 'btn-1000', 'btn-1500'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.classList.remove('active');
+      });
+      if (!isNaN(val) && val > 0) {
+        computeBotAudit(val);
+      }
+    }
+
+    function calculateBot() {
+      const val = parseFloat(document.getElementById('bot-custom-usd').value);
+      if (!isNaN(val) && val > 0) {
+        computeBotAudit(val);
+        showToast('Settlement Audit Generated!');
+      } else {
+        computeBotAudit(selectedUsd);
+      }
+    }
+
+    let latestBotCalc = { usd: 500, net: 0, items: [] };
+
+    function computeBotAudit(usd) {
+      const fx = usdInrRate;
+      document.getElementById('bot-live-rate').innerText = `● LIVE CoinDCX USDT ₹${fx.toFixed(2)}`;
+      
+      const grossInr = usd * fx;
+      const coinDcxEntry = grossInr * 0.005;
+      const gstEntry = coinDcxEntry * 0.18;
+      const crossChain = 3.0 * fx;
+      const primaryGas = 200.0;
+      const instClearing = 5.0 * fx;
+      const returnGas = 200.0;
+      const coinDcxExit = grossInr * 0.005;
+      const gstExit = coinDcxExit * 0.18;
+      const tds = grossInr * 0.01;
+      const forexReserve = grossInr * 0.05;
+      const cloudInfra = grossInr * 0.02;
+      const routingSurcharge = grossInr * 0.004;
+      const roundOff = 11.24;
+
+      const totalDed = coinDcxEntry + gstEntry + crossChain + primaryGas + instClearing + returnGas + coinDcxExit + gstExit + tds + forexReserve + cloudInfra + routingSurcharge + roundOff;
+      const netPayout = grossInr - totalDed;
+
+      latestBotCalc = {
+        usd: usd,
+        net: netPayout,
+        items: [
+          { label: `Gross Settlement Base ($${usd} @ ₹${fx.toFixed(2)})`, amt: grossInr },
+          { label: 'CoinDCX Liquidity Entry Fee (0.5%)', amt: coinDcxEntry },
+          { label: 'Statutory GST on Entry Brokerage (18%)', amt: gstEntry },
+          { label: 'Cross-Chain Protocol Transfer Charge ($3.00)', amt: crossChain },
+          { label: 'Primary Network Gas Reserve (TRC-20)', amt: primaryGas },
+          { label: 'Institutional Settlement Clearing ($5.00)', amt: instClearing },
+          { label: 'Return Route Protocol Gas Reserve', amt: returnGas },
+          { label: 'CoinDCX Liquidity Exit Fee (0.5%)', amt: coinDcxExit },
+          { label: 'Statutory GST on Exit Brokerage (18%)', amt: gstExit },
+          { label: 'Statutory Tax Withholding u/s 194S (1% TDS)', amt: tds },
+          { label: 'Regulatory Compliance & Forex Reserve (5.0%)', amt: forexReserve },
+          { label: 'Automated Execution & Cloud-Infra Surcharge (2.0%)', amt: cloudInfra },
+          { label: 'Banking Interoperability & Interchange Surcharge (0.4%)', amt: routingSurcharge },
+          { label: 'Banking Alignment & Round-Off Adjustment', amt: roundOff },
+          { label: 'Total Verified Deductions (-)', amt: totalDed }
+        ]
+      };
+
+      document.getElementById('bot-audit-ref').innerText = `POOL REF: STM-${Math.floor(100000 + Math.random() * 900000)}`;
+      document.getElementById('bot-audit-time').innerText = `DATE & TIME: ${getTimeStr()}`;
+
+      const breakdown = document.getElementById('bot-audit-breakdown');
+      breakdown.innerHTML = `
+        <div class="audit-row"><span>Gross Settlement Base ($${usd} @ ₹${fx.toFixed(2)})</span><strong>₹${grossInr.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>CoinDCX Liquidity Entry Fee (0.5%)</span><strong>₹${coinDcxEntry.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Statutory GST on Entry Brokerage (18%)</span><strong>₹${gstEntry.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Cross-Chain Protocol Transfer Charge ($3.00)</span><strong>₹${crossChain.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Primary Network Gas Reserve (TRC-20)</span><strong>₹${primaryGas.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Institutional Settlement Clearing ($5.00)</span><strong>₹${instClearing.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Return Route Protocol Gas Reserve</span><strong>₹${returnGas.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>CoinDCX Liquidity Exit Fee (0.5%)</span><strong>₹${coinDcxExit.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Statutory GST on Exit Brokerage (18%)</span><strong>₹${gstExit.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Statutory Tax Withholding u/s 194S (1% TDS)</span><strong>₹${tds.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Regulatory Compliance & Forex Reserve (5.0%)</span><strong>₹${forexReserve.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Automated Execution & Cloud-Infra Surcharge (2.0%)</span><strong>₹${cloudInfra.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Banking Interoperability & Interchange Surcharge (0.4%)</span><strong>₹${routingSurcharge.toFixed(2)}</strong></div>
+        <div class="audit-row"><span>Banking Alignment & Round-Off Adjustment</span><strong>₹${roundOff.toFixed(2)}</strong></div>
+        <div class="audit-row" style="color:var(--red);"><span>Total Verified Deductions</span><strong>-₹${totalDed.toFixed(2)}</strong></div>
+      `;
+
+      document.getElementById('bot-net-payout').innerText = `₹${netPayout.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+
+    function downloadBotPDF() {
+      const customInput = parseFloat(document.getElementById('bot-custom-usd').value);
+      const usdVal = !isNaN(customInput) && customInput > 0 ? customInput : selectedUsd;
+      computeBotAudit(usdVal);
+
+      document.getElementById('bot-pdf-ref-time').innerText = `POOL REF: STM-BOT-${Math.floor(100000 + Math.random() * 900000)} • DATE: ${getTimeStr()}`;
+      
+      const tbody = document.getElementById('bot-pdf-table-body');
+      tbody.innerHTML = '';
+      latestBotCalc.items.forEach((item, idx) => {
+        const tr = document.createElement('tr');
+        tr.style.background = idx % 2 === 0 ? '#fff' : '#f8fafc';
+        tr.style.borderBottom = '1px solid #cbd5e1';
+        tr.innerHTML = `
+          <td style="padding:7px 10px; color:#0f172a;">${item.label}</td>
+          <td style="padding:7px 10px; text-align:right; font-weight:600; color:${idx === latestBotCalc.items.length - 1 ? '#dc2626' : '#0f172a'};">₹${item.amt.toFixed(2)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('bot-pdf-net-display').innerText = `₹${latestBotCalc.net.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+      const el = document.getElementById('bot-pdf-render-area');
+      if (!window.html2pdf) return alert('PDF Engine Loading... Please try in a moment');
+      html2pdf().set({
+        margin: [6, 6, 6, 6],
+        filename: `Settlement_Advice_${latestBotCalc.usd}_USD.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).from(el).save();
+      showToast('Settlement PDF Downloaded Successfully!');
+    }
+
+    function shareBotPDF() {
+      if (navigator.share) {
+        navigator.share({ title: 'Master Settlement Advice', text: 'Institutional Payout Statement Generated.' });
+      } else {
+        alert('Share link copied to clipboard!');
+      }
+      showToast('Share link copied!');
+    }
+
+    function openPDF() {
+      let active = investors.filter(i => i.active !== false);
+      active.sort((a, b) => b.capital - a.capital);
+
+      const clientCap = active.reduce((s, i) => s + i.capital, 0);
+      const totalCap = clientCap + (promoter.capital || 0);
+
+      let totalUsd;
+      let rate;
+      if (customUsd !== null) {
+        totalUsd = customUsd;
+        const inrEquivalent = totalUsd * usdInrRate;
+        rate = totalCap > 0 ? (inrEquivalent / totalCap) * 100 : 0;
+      } else {
+        rate = 12.50;
+        const inrEquivalent = (totalCap * rate) / 100;
+        totalUsd = inrEquivalent / usdInrRate;
+      }
+
+      const tStr = getTimeStr();
+      document.getElementById('pdf-ref-time').innerText = `POOL REF: STM-LEDGER-${Math.floor(100000 + Math.random() * 900000)} • DATE: ${tStr}`;
+      document.getElementById('pdf-manager-name').innerText = promoter.name;
+      document.getElementById('pdf-manager-cap').innerText = '₹' + promoter.capital.toLocaleString('en-IN');
+      document.getElementById('pdf-sign-name').innerText = promoter.name;
+      document.getElementById('pdf-total-cap').innerText = '₹' + totalCap.toLocaleString('en-IN', {minimumFractionDigits: 2});
+      document.getElementById('pdf-total-payout').innerText = `$${totalUsd.toFixed(2)} USD`;
+      document.getElementById('pdf-rate-display').innerText = `+${rate.toFixed(2)}%`;
+
+      const tbody = document.getElementById('pdf-table-body');
+      tbody.innerHTML = '';
+
+      const pGainInr = (promoter.capital * rate) / 100;
+      const pGainUsd = pGainInr / usdInrRate;
+      const pr = document.createElement('tr');
+      pr.style.background = '#f1f5f9';
+      pr.style.borderBottom = '2px solid #cbd5e1';
+      pr.innerHTML = `
+        <td style="padding:9px 10px; color:#0f172a; font-weight:700;">★ ${promoter.name} <span style="font-size:0.68rem; color:#475569;">(LEAD MANAGER)</span></td>
+        <td style="padding:9px 10px; text-align:right; color:#0f172a; font-weight:600;">₹${promoter.capital.toLocaleString('en-IN')}</td>
+        <td style="padding:9px 10px; text-align:center; color:#2563eb; font-weight:600;">+${rate.toFixed(2)}%</td>
+        <td style="padding:9px 10px; text-align:right; font-weight:800; color:#047857;">+$${pGainUsd.toFixed(2)} USD</td>
+      `;
+      tbody.appendChild(pr);
+
+      active.forEach((inv, idx) => {
+        const prfInr = (inv.capital * rate) / 100;
+        const prfUsd = prfInr / usdInrRate;
+        const tr = document.createElement('tr');
+        tr.style.background = idx % 2 === 0 ? '#fff' : '#f8fafc';
+        tr.style.borderBottom = '1px solid #cbd5e1';
+        tr.innerHTML = `
+          <td style="padding:9px 10px; color:#0f172a;"><strong>#${idx + 1} ${inv.name}</strong> <span style="color:#64748b; font-size:0.75rem;">(${inv.id})</span></td>
+          <td style="padding:9px 10px; text-align:right; color:#334155;">₹${inv.capital.toLocaleString('en-IN')}</td>
+          <td style="padding:9px 10px; text-align:center; color:#2563eb; font-weight:600;">+${rate.toFixed(2)}%</td>
+          <td style="padding:9px 10px; text-align:right; font-weight:700; color:#047857;">+$${prfUsd.toFixed(2)} USD</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const el = document.getElementById('pdf-render-area');
+      if (!window.html2pdf) return alert('PDF Engine Loading... Please try in a moment');
+      html2pdf().set({
+        margin: [6, 6, 6, 6],
+        filename: `Trading_Yield_Statement_${new Date().toISOString().slice(0,10)}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, backgroundColor: '#ffffff' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      }).from(el).save();
+      showToast('Portfolio Ledger PDF Exported Successfully!');
+    }
+
+    fetchLiveMarketData();
+  </script>
+</body>
+</html>

@@ -21,6 +21,28 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Blink / Pulse Animation for Live Elements */
+    @keyframes liveBlink {
+      0% { opacity: 0.3; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.3; transform: scale(0.95); }
+    }
+
+    @keyframes softPulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .live-dot {
+      width: 7px; height: 7px; background: var(--green); border-radius: 50%;
+      display: inline-block; animation: liveBlink 1.5s infinite ease-in-out;
+    }
+
+    .market-box, .bot-live-strip, .summary-rate {
+      animation: softPulse 3s infinite;
+    }
+
     /* Splash Screen Animation */
     #splash-screen {
       position: fixed; inset: 0; background: #121418; z-index: 999999;
@@ -188,7 +210,9 @@
           <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           Directory
         </button>
-        <button type="button" class="nav-btn" onclick="openWhatsAppModal()">Payout</button>
+        <button type="button" class="nav-btn" onclick="openWhatsAppModal()" style="border-color: var(--green);">
+          <span class="live-dot" style="width:5px; height:5px;"></span> Payout
+        </button>
         <button type="button" class="nav-btn nav-btn-icon" onclick="togglePlatformMode()" id="mode-toggle-btn" title="Switch to Settlement Bot">
           <svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
         </button>
@@ -214,11 +238,11 @@
 
       <div class="card">
         <h2>Monthly Performance & Yield</h2>
-        <div class="subtitle">Active Month 30-Day Calendar Cycle (8% - 18% Bound)</div>
+        <div class="subtitle">Active Month 30-Day Calendar Cycle (8% - 12% Bound)</div>
 
         <div class="market-box">
           <div>
-            <span style="display:block; font-size:0.62rem; text-transform:uppercase; font-weight:700;">GoldAPI Spot Benchmark</span>
+            <span style="display:block; font-size:0.62rem; text-transform:uppercase; font-weight:700;"><span class="live-dot"></span> GoldAPI Spot Benchmark</span>
             <strong id="market-title">Gold (XAU): Fetching live...</strong>
           </div>
           <div id="market-status-badge" class="market-badge market-gold">Market Synced</div>
@@ -230,7 +254,7 @@
               <div class="summary-label">Realized Trading Yield (USD)</div>
               <div class="summary-usd" id="disp-usd-profit">+$0.00 USD</div>
             </div>
-            <div class="summary-rate" id="rate-summary">+12.50% MTD</div>
+            <div class="summary-rate" id="rate-summary">+10.00% MTD</div>
           </div>
           <div class="kpi-grid">
             <div class="kpi-card">
@@ -248,7 +272,7 @@
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <h2 style="font-size: 0.92rem;">Client Leaderboard</h2>
-          <span style="font-size: 0.72rem; color: var(--green); font-weight: 600;" id="uniform-rate-tag">Profit Rate: +12.50%</span>
+          <span style="font-size: 0.72rem; color: var(--green); font-weight: 600;" id="uniform-rate-tag">Profit Rate: +10.00%</span>
         </div>
         <div id="investor-list"></div>
       </div>
@@ -261,7 +285,7 @@
         <div class="subtitle">Master Portfolio Settlement Advice (v4.5 Institutional)</div>
 
         <div class="bot-live-strip">
-          <span id="bot-live-rate">● LIVE FastForex USD: ₹87.00</span>
+          <span id="bot-live-rate"><span class="live-dot"></span> LIVE FastForex USD: ₹87.00</span>
           <span style="font-size:0.65rem; background:var(--bg); padding:2px 6px; border-radius:4px; border:1px solid var(--border);">FastForex Live API</span>
         </div>
 
@@ -355,7 +379,7 @@
         <button type="button" class="close-btn" onclick="closeWhatsAppModal()">✕</button>
       </div>
       <div style="font-size: 0.74rem; color: var(--muted); margin-bottom: 10px;">
-        Select an investor card below to generate their payout message.
+        Tap any investor card below to generate their payout confirmation message.
       </div>
       <div id="wa-investor-list" style="margin-bottom: 12px; max-height: 220px; overflow-y: auto;"></div>
       <div id="wa-preview-container" style="display: none; margin-bottom: 8px;">
@@ -415,8 +439,8 @@
         
         <div style="margin-bottom: 10px;">
           <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Custom Monthly Pool Profit ($ USD)</label>
-          <input type="number" id="setting-usd" placeholder="Auto 8% - 18% Market Engine if blank" step="any" />
-          <span style="font-size: 0.65rem; color: var(--muted); margin-top: 2px; display: block;">Leave blank for automatic calendar-based 8%-18% market rotation.</span>
+          <input type="number" id="setting-usd" placeholder="Auto 8% - 12% Market Engine if blank" step="any" />
+          <span style="font-size: 0.65rem; color: var(--muted); margin-top: 2px; display: block;">Leave blank for automatic calendar-based 8%-12% market rotation.</span>
         </div>
 
         <div style="margin-bottom: 10px;">
@@ -533,7 +557,7 @@
     let investors = [];
     let currentPlatformMode = 'ledger';
     let liveGoldPrice = 2000;
-    let currentGlobalRate = 12.50;
+    let currentGlobalRate = 10.00;
 
     function loadSavedState() {
       try {
@@ -551,7 +575,6 @@
             investors = parsed;
           }
         } else {
-          // First time opening app: Load default single user 'Zaif' and lock initialized state
           investors = JSON.parse(JSON.stringify(DEFAULT_INVESTORS));
           localStorage.setItem('pool_invs', JSON.stringify(investors));
         }
@@ -601,7 +624,7 @@
           const liveRate = parseFloat(forexData.result.INR);
           if (!isNaN(liveRate) && liveRate > 0) {
             usdInrRate = liveRate;
-            document.getElementById('bot-live-rate').innerText = `● LIVE FastForex USD: ₹${usdInrRate.toFixed(2)}`;
+            document.getElementById('bot-live-rate').innerHTML = `<span class="live-dot"></span> LIVE FastForex USD: ₹${usdInrRate.toFixed(2)}`;
           }
         }
       } catch (e) {
@@ -638,14 +661,14 @@
     }
 
     function resetYieldOverrides() {
-      if (confirm('Kya aap custom yield & FX overrides ko reset karke 8%-18% calendar engine par wapas laana chahte hain?')) {
+      if (confirm('Kya aap custom yield & FX overrides ko reset karke 8%-12% calendar engine par wapas laana chahte hain?')) {
         localStorage.removeItem('pool_custom_usd');
         localStorage.removeItem('pool_fx_rate');
         customUsd = null;
         usdInrRate = DEFAULT_FX;
         openSettings(false);
         runCalc();
-        showToast('Reset to 8%-18% Market Engine!');
+        showToast('Reset to 8%-12% Market Engine!');
       }
     }
 
@@ -688,6 +711,10 @@
     function renderBook() {
       const ml = document.getElementById('modal-investor-list');
       ml.innerHTML = '';
+      if (investors.length === 0) {
+        ml.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:8px;">No investors in directory.</div>';
+        return;
+      }
       investors.forEach(inv => {
         const div = document.createElement('div');
         div.className = 'book-item';
@@ -771,17 +798,19 @@
         investors = investors.filter(i => i.id !== id);
         saveState();
         renderBook();
+        runCalc();
         showToast('Investor Removed Successfully!');
       }
     }
 
+    // 8% - 12% Monthly Boundary Engine (Targeting 50% over 4 months cycle)
     function getAutomaticMonthlyRate() {
       const now = new Date();
       const seed = now.getFullYear() * 100 + (now.getMonth() + 1);
-      const marketFactor = (liveGoldPrice % 10) / 10;
-      let rate = 8.0 + ((seed * 9301 + 49297) % 233) / 23.3 + marketFactor;
+      const marketFactor = (liveGoldPrice % 10) / 20;
+      let rate = 8.0 + ((seed * 9301 + 49297) % 200) / 50.0 + marketFactor;
       if (rate < 8.0) rate = 8.0;
-      if (rate > 18.0) rate = 18.0;
+      if (rate > 12.0) rate = 12.0;
       return rate;
     }
 
@@ -821,6 +850,10 @@
 
       const list = document.getElementById('investor-list');
       list.innerHTML = '';
+      if (active.length === 0) {
+        list.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:12px;">No active investors in ledger. Add from Directory.</div>';
+        return;
+      }
       active.forEach((inv, idx) => {
         const r = idx + 1;
         const prfInr = (inv.capital * rate) / 100;
@@ -855,7 +888,7 @@
       document.getElementById('wa-preview-container').style.display = 'none';
       
       if (active.length === 0) {
-        listDiv.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:10px;">No active investors found in directory.</div>';
+        listDiv.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:10px;">No active investors found.</div>';
         document.getElementById('whatsapp-modal').style.display = 'flex';
         return;
       }
@@ -953,7 +986,7 @@
 
     function computeBotAudit(usd) {
       const fx = usdInrRate;
-      document.getElementById('bot-live-rate').innerText = `● LIVE FastForex USD: ₹${fx.toFixed(2)}`;
+      document.getElementById('bot-live-rate').innerHTML = `<span class="live-dot"></span> LIVE FastForex USD: ₹${fx.toFixed(2)}`;
       
       const grossInr = usd * fx;
       const coinDcxEntry = grossInr * 0.005;

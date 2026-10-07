@@ -355,15 +355,15 @@
         <button type="button" class="close-btn" onclick="closeWhatsAppModal()">✕</button>
       </div>
       <div style="font-size: 0.74rem; color: var(--muted); margin-bottom: 10px;">
-        Select an investor below to instantly copy the payout confirmation message.
+        Select an investor card below to generate their payout message.
       </div>
-      <div id="wa-investor-list" style="margin-bottom: 12px;"></div>
-      <div style="margin-bottom: 8px;">
+      <div id="wa-investor-list" style="margin-bottom: 12px; max-height: 220px; overflow-y: auto;"></div>
+      <div id="wa-preview-container" style="display: none; margin-bottom: 8px;">
         <label style="font-size: 0.7rem; color: var(--muted); display: block; margin-bottom: 3px;">Message Preview:</label>
-        <textarea id="wa-message-preview" readonly style="width: 100%; height: 150px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.76rem; padding: 8px; resize: none; font-family: monospace;"></textarea>
+        <textarea id="wa-message-preview" readonly style="width: 100%; height: 140px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.76rem; padding: 8px; resize: none; font-family: monospace;"></textarea>
+        <button type="button" class="btn-dark" style="background: var(--green); margin-top: 8px;" onclick="copyWaMessage()">📋 Copy Message</button>
       </div>
-      <button type="button" class="btn-dark" style="background: var(--green); margin-bottom: 8px;" onclick="copyWaMessage()">📋 Copy Message</button>
-      <button type="button" class="btn-dark" style="background: var(--bg);" onclick="closeWhatsAppModal()">Close</button>
+      <button type="button" class="btn-dark" style="background: var(--bg); margin-top: 8px;" onclick="closeWhatsAppModal()">Close</button>
     </div>
   </div>
 
@@ -524,10 +524,7 @@
     const DEFAULT_PROMOTER = { name: 'Kaif Alvi', capital: 50000 };
     const DEFAULT_FX = 87.0;
     const DEFAULT_INVESTORS = [
-      { id: 'CLI-101', name: 'Investor A', capital: 30000, active: true, time: '07/10/2026 10:00 AM' },
-      { id: 'CLI-102', name: 'Investor B', capital: 20000, active: true, time: '07/10/2026 11:30 AM' },
-      { id: 'CLI-103', name: 'Investor C', capital: 30000, active: true, time: '07/10/2026 01:15 PM' },
-      { id: 'CLI-104', name: 'Investor D', capital: 20000, active: true, time: '07/10/2026 02:45 PM' }
+      { id: 'CLI-101', name: 'Zaif', capital: 50000, active: true, time: '07/10/2026 04:14 pm' }
     ];
 
     let promoter = { ...DEFAULT_PROMOTER };
@@ -549,9 +546,13 @@
         const invs = localStorage.getItem('pool_invs');
         if (invs) {
           const parsed = JSON.parse(invs);
-          if (Array.isArray(parsed)) investors = parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) investors = parsed;
+        } else {
+          investors = JSON.parse(JSON.stringify(DEFAULT_INVESTORS));
         }
-      } catch(e) {}
+      } catch(e) {
+        investors = JSON.parse(JSON.stringify(DEFAULT_INVESTORS));
+      }
     }
     loadSavedState();
 
@@ -841,34 +842,42 @@
       });
     }
 
-    /* WhatsApp Payout Generator Functions */
+    /* WhatsApp Payout Generator Functions with Investor Cards & Corrected Payout Amount */
     function openWhatsAppModal() {
       const active = investors.filter(i => i.active !== false);
       const listDiv = document.getElementById('wa-investor-list');
       listDiv.innerHTML = '';
+      document.getElementById('wa-preview-container').style.display = 'none';
       
       if (active.length === 0) {
         listDiv.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:10px;">No active investors found in directory.</div>';
-        document.getElementById('wa-message-preview').value = '';
         document.getElementById('whatsapp-modal').style.display = 'flex';
         return;
       }
 
       active.forEach((inv, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'btn-dark';
-        btn.style.marginBottom = '6px';
-        btn.style.textAlign = 'left';
-        btn.style.display = 'flex';
-        btn.style.justifyContent = 'space-between';
-        btn.style.alignItems = 'center';
-        btn.innerHTML = `<span>👤 ${inv.name} (${inv.id})</span> <span style="font-family:monospace; color:#38bdf8;">₹${inv.capital.toLocaleString('en-IN')}</span>`;
-        btn.onclick = () => generateWaMessage(inv);
-        listDiv.appendChild(btn);
+        const prfInr = (inv.capital * currentGlobalRate) / 100;
+        const r = idx + 1;
+        let cls = r === 1 ? 'top-1' : r === 2 ? 'top-2' : r === 3 ? 'top-3' : '';
+        
+        const card = document.createElement('div');
+        card.className = `investor-card ${cls}`;
+        card.style.marginBottom = '6px';
+        card.innerHTML = `
+          <div class="rank-badge">${r}</div>
+          <div class="inv-details">
+            <strong>${inv.name} (${inv.id})</strong>
+            <span>Investment: ₹${inv.capital.toLocaleString('en-IN')}</span>
+          </div>
+          <div class="inv-payout">
+            <strong>₹${prfInr.toLocaleString('en-IN', {maximumFractionDigits: 0})}</strong>
+            <span>Click to Gen</span>
+          </div>
+        `;
+        card.onclick = () => generateWaMessage(inv);
+        listDiv.appendChild(card);
       });
 
-      generateWaMessage(active[0]);
       document.getElementById('whatsapp-modal').style.display = 'flex';
     }
 
@@ -879,15 +888,14 @@
     function generateWaMessage(inv) {
       const rateStr = currentGlobalRate.toFixed(1);
       const profit = (inv.capital * currentGlobalRate) / 100;
-      const totalPayout = inv.capital + profit;
 
       const capFormatted = inv.capital.toLocaleString('en-IN', {maximumFractionDigits: 0});
       const profitFormatted = profit.toLocaleString('en-IN', {maximumFractionDigits: 0});
-      const totalFormatted = totalPayout.toLocaleString('en-IN', {maximumFractionDigits: 0});
 
-      const msg = `🎉 PAYOUT CONFIRMATION 🎉\nHello ${inv.name} 👋\nYour investment payout has been successfully processed. 💸✅\n\n📊 Payout Summary:\nInvestment: ₹${capFormatted} (30 Days @ ~${rateStr}%) ➔ Profit: ₹${profitFormatted}\n━━━━━━━━━━━━━━━━━━━━\n💼 Total Investment: ₹${capFormatted}\n📈 Total Return Earned: ₹${profitFormatted}\n💰 Payout Amount: ₹${totalFormatted}\n━━━━━━━━━━━━━━━━━━━━\n🟢 Status: Completed ✅\nThank you for investing with us! 🤝✨`;
+      const msg = `🎉 PAYOUT CONFIRMATION 🎉\nHello ${inv.name} 👋\nYour investment payout has been successfully processed. 💸✅\n\n📊 Payout Summary:\nInvestment: ₹${capFormatted} (30 Days @ ~${rateStr}%) ➔ Profit: ₹${profitFormatted}\n━━━━━━━━━━━━━━━━━━━━\n💼 Total Investment: ₹${capFormatted}\n📈 Total Return Earned: ₹${profitFormatted}\n💰 Payout Amount: ₹${profitFormatted}\n━━━━━━━━━━━━━━━━━━━━\n🟢 Status: Completed ✅\nThank you for investing with us! 🤝✨`;
 
       document.getElementById('wa-message-preview').value = msg;
+      document.getElementById('wa-preview-container').style.display = 'block';
     }
 
     function copyWaMessage() {

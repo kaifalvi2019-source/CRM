@@ -1,1176 +1,4317 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Institutional Portfolio & Settlement Platform</title>
-  <meta name="theme-color" content="#121418" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <style>
-    :root {
-      --bg: #121418; --card: #1c1f26; --border: #2d3340; --text: #f0f2f5;
-      --muted: #8b949e; --blue: #2563eb; --green: #10b981; --red: #ef4444; --gold: #f59e0b;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050607">
+<meta name="description" content="AUREUS — Institutional Portfolio & Settlement">
+<title>AUREUS — Institutional Portfolio & Settlement</title>
 
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
-    body { background: var(--bg); color: var(--text); padding: 12px; display: flex; justify-content: center; min-height: 100vh; }
-    .container { width: 100%; max-width: 450px; animation: fadeIn 0.6s ease-out; }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+<style>
+:root{
+  --bg:#050607;
+  --surface:#0c0f12;
+  --surface2:#11151a;
+  --surface3:#151a20;
+  --gold:#D4AF37;
+  --gold-soft:rgba(212,175,55,.12);
+  --emerald:#10B981;
+  --emerald-soft:rgba(16,185,129,.12);
+  --cobalt:#2563EB;
+  --cobalt-soft:rgba(37,99,235,.12);
+  --red:#EF4444;
+  --red-soft:rgba(239,68,68,.12);
+  --white:#F4F6F8;
+  --text:#E7EAEE;
+  --muted:#9299A3;
+  --slate:#68717D;
+  --accent:var(--gold);
+  --accent-soft:var(--gold-soft);
+  --border:rgba(212,175,55,.18);
+  --border-soft:rgba(255,255,255,.075);
+  --shadow:0 18px 60px rgba(0,0,0,.42);
+  --radius:22px;
+  --nav:78px;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
 
-    @keyframes liveBlink {
-      0% { opacity: 0.3; transform: scale(0.95); }
-      50% { opacity: 1; transform: scale(1.05); }
-      100% { opacity: 0.3; transform: scale(0.95); }
-    }
+html[data-theme="emerald"]{
+  --accent:var(--emerald);
+  --accent-soft:var(--emerald-soft);
+}
+html[data-theme="cobalt"]{
+  --accent:var(--cobalt);
+  --accent-soft:var(--cobalt-soft);
+}
 
-    @keyframes softPulse {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+body{overflow-x:hidden}
+button,input,select{font:inherit}
+button{border:0}
+button:focus-visible,input:focus-visible,select:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
 
-    .live-dot {
-      width: 7px; height: 7px; background: var(--green); border-radius: 50%;
-      display: inline-block; animation: liveBlink 1.5s infinite ease-in-out;
-    }
+.app{
+  width:100%;
+  max-width:1120px;
+  min-height:100dvh;
+  margin:auto;
+  background:
+    radial-gradient(circle at 20% -10%,rgba(212,175,55,.065),transparent 30%),
+    radial-gradient(circle at 100% 20%,rgba(16,185,129,.035),transparent 28%),
+    var(--bg);
+}
 
-    .market-box, .bot-live-strip, .summary-rate {
-      animation: softPulse 3s infinite;
-    }
+@media(min-width:900px){
+  body{padding:20px}
+  .app{
+    min-height:calc(100dvh - 40px);
+    border:1px solid var(--border-soft);
+    border-radius:30px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+}
 
-    /* Splash Screen Animation */
-    #splash-screen {
-      position: fixed; inset: 0; background: #121418; z-index: 999999;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: #fff; animation: fadeOutSplash 0.5s ease 1.2s forwards;
-    }
-    #splash-screen h1 { font-size: 1.5rem; font-weight: 800; color: #38bdf8; animation: scaleUp 0.8s ease-out; }
-    #splash-screen p { font-size: 0.8rem; color: #8b949e; margin-top: 6px; }
-    @keyframes scaleUp {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    @keyframes fadeOutSplash {
-      to { opacity: 0; visibility: hidden; }
-    }
+.splash{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:grid;
+  place-items:center;
+  background:#030405;
+  transition:opacity .55s var(--ease),visibility .55s;
+}
+.splash.hide{opacity:0;visibility:hidden}
+.splash-inner{text-align:center;width:min(280px,80vw)}
+.logo{
+  width:72px;
+  height:72px;
+  margin:auto;
+  border:1px solid rgba(212,175,55,.55);
+  border-radius:24px;
+  display:grid;
+  place-items:center;
+  color:var(--gold);
+  box-shadow:0 0 40px rgba(212,175,55,.12);
+  animation:pulse 1.8s ease-in-out infinite;
+}
+.logo svg{width:35px;height:35px}
+.splash-name{
+  margin-top:20px;
+  font-weight:800;
+  letter-spacing:.14em;
+  font-size:15px;
+  color:var(--white);
+}
+.splash-sub{
+  margin-top:7px;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.loader{
+  height:2px;
+  background:#15181c;
+  border-radius:99px;
+  margin-top:24px;
+  overflow:hidden;
+}
+.loader i{
+  display:block;
+  width:0;
+  height:100%;
+  background:var(--gold);
+  animation:load 1.2s var(--ease) forwards;
+}
+@keyframes load{to{width:100%}}
+@keyframes pulse{
+  50%{transform:scale(1.025);box-shadow:0 0 55px rgba(212,175,55,.2)}
+}
 
-    /* Toast Notification */
-    #toast {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-      background: #059669; color: #fff; padding: 10px 18px; border-radius: 8px; font-size: 0.82rem;
-      font-weight: 600; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); z-index: 9999999;
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0;
-    }
-    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.header{
+  height:calc(68px + env(safe-area-inset-top));
+  padding:env(safe-area-inset-top) 16px 0;
+  position:sticky;
+  top:0;
+  z-index:40;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:rgba(5,6,7,.84);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.header-btn{
+  width:40px;
+  height:40px;
+  border-radius:13px;
+  background:rgba(255,255,255,.045);
+  color:var(--text);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition:.18s var(--ease);
+}
+.header-btn:active{transform:scale(.94)}
+.header-title{flex:1;min-width:0}
+.header-title strong{
+  display:block;
+  font-size:15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.header-title span{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-top:2px;
+}
+.live-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--emerald);
+  box-shadow:0 0 0 5px var(--emerald-soft);
+  animation:live 1.8s infinite;
+}
+@keyframes live{50%{opacity:.5}}
 
-    /* TOP BAR */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .top-title { font-size: 0.8rem; font-weight: 700; color: var(--text); letter-spacing: 0.5px; }
-    .top-actions { display: flex; gap: 6px; align-items: center; }
-    .nav-btn {
-      background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 6px;
-      font-size: 0.72rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
-      transform: scale(1); transition: transform 0.15s ease;
-    }
-    .nav-btn:active { transform: scale(0.94); }
-    .nav-btn svg { width: 13px; height: 13px; stroke: var(--text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .nav-btn-icon { width: 30px; height: 30px; padding: 0; justify-content: center; }
+main{
+  padding:18px 16px calc(var(--nav) + env(safe-area-inset-bottom) + 28px);
+}
+.view{display:none;animation:pageIn .3s var(--ease)}
+.view.active{display:block}
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-    h2 { font-size: 1rem; margin-bottom: 3px; color: var(--text); }
-    .subtitle { color: var(--muted); font-size: 0.74rem; margin-bottom: 10px; }
+h1,h2,h3,p{margin:0}
+.page-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:12px;
+  margin:6px 0 18px;
+}
+.page-heading h1{
+  font-size:27px;
+  line-height:1.08;
+  letter-spacing:-.035em;
+  color:var(--white);
+}
+.page-heading p{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:7px;
+}
+.eyebrow{
+  font-size:10px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:750;
+}
 
-    /* PROMOTER DESK */
-    .promoter-desk {
-      background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
-      margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-    }
-    .promoter-sub { font-size: 0.6rem; font-weight: 700; color: var(--muted); letter-spacing: 0.7px; display: flex; align-items: center; gap: 5px; }
-    .promoter-sub::before { content: ""; width: 5px; height: 5px; background: var(--blue); border-radius: 50%; display: inline-block; }
-    .promoter-desk strong { font-size: 0.9rem; color: var(--text); }
-    .promoter-desk span.meta { font-size: 0.7rem; color: var(--muted); font-weight: 500; }
-    .promoter-right { text-align: right; }
-    .promoter-right strong { font-size: 0.96rem; color: #38bdf8; display: block; font-weight: 700; font-family: monospace; }
-    .promoter-right span { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; }
+.stack{display:grid;gap:12px}
+.grid{display:grid;gap:12px}
+@media(min-width:720px){
+  .grid-2{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+}
 
-    /* COMMODITY BENCHMARK */
-    .market-box {
-      background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 8px; padding: 8px 10px;
-      font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-    }
-    .market-badge { font-weight: 700; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; }
-    .market-gold { background: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
+.card{
+  background:linear-gradient(145deg,rgba(20,24,29,.9),rgba(9,11,14,.9));
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius);
+  box-shadow:0 12px 35px rgba(0,0,0,.18);
+}
+.gold-border{border-color:var(--border)!important}
+.card-pad{padding:18px}
 
-    /* SUMMARY CARD */
-    .summary-card {
-      background: linear-gradient(135deg, var(--card) 0%, var(--bg) 100%);
-      border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px;
-    }
-    .summary-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
-    .summary-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-    .summary-usd { font-size: 1.45rem; color: #38bdf8; font-weight: 800; font-family: monospace; line-height: 1.1; }
-    .summary-rate { font-size: 0.85rem; color: var(--green); font-weight: 700; background: rgba(16,185,129,0.12); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.3); }
+.manager-card{
+  position:relative;
+  overflow:hidden;
+}
+.manager-card:after{
+  content:"";
+  position:absolute;
+  right:-35px;
+  bottom:-65px;
+  width:175px;
+  height:175px;
+  border-radius:50%;
+  background:rgba(212,175,55,.06);
+  filter:blur(35px);
+}
+.manager-top{
+  display:flex;
+  align-items:center;
+  gap:13px;
+}
+.avatar{
+  width:50px;
+  height:50px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:var(--gold-soft);
+  border:1px solid rgba(212,175,55,.32);
+  color:var(--gold);
+  font-weight:850;
+}
+.manager-name{
+  font-weight:800;
+  color:var(--white);
+  font-size:16px;
+}
+.manager-role{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:3px;
+}
+.badge{
+  margin-left:auto;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:99px;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.badge.gold{
+  color:var(--gold);
+  background:var(--gold-soft);
+  border:1px solid rgba(212,175,55,.2);
+}
+.badge.live{
+  color:var(--emerald);
+  background:var(--emerald-soft);
+  border:1px solid rgba(16,185,129,.18);
+}
+.badge.neutral{
+  color:var(--muted);
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+}
 
-    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .kpi-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
-    .kpi-card span { font-size: 0.65rem; color: var(--muted); display: block; margin-bottom: 2px; }
-    .kpi-card strong { font-size: 0.95rem; color: var(--text); }
+.manager-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:18px;
+}
+.stat-mini{
+  padding:13px;
+  border-radius:15px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.045);
+}
+.stat-label{
+  font-size:10px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.stat-value{
+  font-size:19px;
+  font-weight:780;
+  margin-top:5px;
+  letter-spacing:-.025em;
+}
 
-    input[type="number"], input[type="text"] { width: 100%; padding: 9px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.88rem; outline: none; }
-    input:focus { border-color: var(--blue); }
-    .btn-dark { width: 100%; background: var(--card); color: var(--text); border: 1px solid var(--border); padding: 10px; border-radius: 6px; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: transform 0.15s ease; }
-    .btn-dark:active { transform: scale(0.97); }
-    .btn-reset { width: 100%; background: rgba(239, 68, 68, 0.1); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px; border-radius: 6px; font-weight: 700; font-size: 0.76rem; cursor: pointer; margin-bottom: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.gold{color:var(--gold)!important}
+.positive{color:var(--emerald)!important}
+.muted{color:var(--muted)!important}
+.red{color:var(--red)!important}
 
-    /* LEADERBOARD */
-    .investor-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; }
-    .investor-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--blue); }
-    .rank-badge { font-size: 1.35rem; font-weight: 800; min-width: 32px; text-align: center; color: var(--muted); font-style: italic; }
-    .top-1 { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05); } .top-1 .rank-badge { color: var(--gold); font-size: 1.55rem; }
-    .top-2 { border-color: var(--border); } .top-2 .rank-badge { color: var(--muted); font-size: 1.45rem; }
-    .top-3 { border-color: var(--border); } .top-3 .rank-badge { color: var(--gold); font-size: 1.4rem; }
-    .inv-details { flex-grow: 1; padding-left: 8px; }
-    .inv-details strong { font-size: 0.9rem; color: var(--text); display: block; }
-    .inv-details span { font-size: 0.72rem; color: var(--muted); }
-    .inv-payout { text-align: right; }
-    .inv-payout strong { font-size: 0.98rem; color: #38bdf8; display: block; font-family: monospace; font-weight: 700; }
-    .inv-payout span { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; }
+.overview{padding:18px}
+.overview-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.overview-title{
+  font-size:13px;
+  font-weight:750;
+}
+.overview-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-top:17px;
+}
+.metric-label{
+  font-size:10px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.07em;
+}
+.metric-value{
+  font-size:21px;
+  font-weight:780;
+  margin-top:4px;
+  letter-spacing:-.03em;
+}
 
-    /* SETTLEMENT BOT STYLES */
-    .bot-section { display: none; }
-    .bot-live-strip { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.76rem; color: var(--green); }
-    .preset-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    .preset-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; text-align: left; cursor: pointer; }
-    .preset-btn strong { font-size: 0.95rem; display: block; color: #38bdf8; font-family: monospace; }
-    .preset-btn span { font-size: 0.65rem; color: var(--muted); }
-    .preset-btn.active { border-color: #38bdf8; background: var(--bg); }
-    
-    .bot-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-    .btn-neutral { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.performance{padding:18px}
+.performance-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:start;
+  gap:12px;
+}
+.rate{
+  font-size:36px;
+  font-weight:850;
+  letter-spacing:-.055em;
+  line-height:1;
+  color:var(--emerald);
+}
+.day{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:7px;
+}
+.progress{
+  height:6px;
+  background:#1b2026;
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:18px;
+}
+.progress span{
+  display:block;
+  height:100%;
+  background:var(--emerald);
+  border-radius:99px;
+  transition:width .7s var(--ease);
+}
+.performance-foot{
+  display:flex;
+  justify-content:space-between;
+  margin-top:9px;
+  font-size:10px;
+  color:var(--muted);
+}
 
-    .audit-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 0.75rem; }
-    .audit-head { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; }
-    .audit-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--border); }
-    .audit-row span { color: var(--muted); }
-    .audit-row strong { color: var(--text); font-family: monospace; }
-    .audit-total { display: flex; justify-content: space-between; padding: 8px 0; font-weight: 800; font-size: 0.9rem; color: var(--green); border-top: 1px solid var(--border); margin-top: 6px; }
-    .disc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
-    .disc-item { background: var(--card); border: 1px solid var(--border); padding: 7px; border-radius: 6px; font-size: 0.62rem; color: var(--muted); line-height: 1.3; }
-    .disc-item strong { color: var(--text); display: block; margin-bottom: 2px; }
+.market-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.market-card{padding:16px}
+.market-value{
+  font-size:20px;
+  font-weight:780;
+  margin-top:7px;
+}
+.market-status{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:10px;
+  font-size:10px;
+  color:var(--muted);
+}
 
-    /* MODAL */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.8); z-index: 999999; justify-content: center; align-items: center; padding: 12px;
-    }
-    .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; padding: 14px; animation: scaleUp 0.3s ease-out; }
-    .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 10px; }
-    .modal-head h3 { font-size: 0.9rem; color: var(--text); }
-    .close-btn { background: transparent; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; line-height: 1; }
-    .book-item { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-    .book-item strong { color: var(--text); font-size: 0.82rem; display: block; }
-    .book-item span.info { color: var(--muted); font-size: 0.7rem; display: block; }
-    .book-item span.time { color: var(--blue); font-size: 0.62rem; display: block; }
-    .del-btn { background: transparent; border: none; color: var(--red); cursor: pointer; font-size: 1rem; padding: 2px 6px; }
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.btn{
+  min-height:46px;
+  padding:0 15px;
+  border-radius:14px;
+  cursor:pointer;
+  font-weight:750;
+  font-size:12px;
+  transition:transform .18s var(--ease),opacity .18s,background .18s,border-color .18s;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{
+  background:var(--accent);
+  color:#050607;
+}
+.btn-secondary{
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  border:1px solid rgba(255,255,255,.08);
+}
+.btn-emerald{
+  background:var(--emerald);
+  color:#03120d;
+}
+.btn-danger{
+  background:var(--red-soft);
+  color:#ff8585;
+  border:1px solid rgba(239,68,68,.2);
+}
+.btn:disabled{
+  opacity:.4;
+  cursor:not-allowed;
+}
 
-    /* WHITE A4 TEMPLATE FOR LEDGER EXPORT */
-    #pdf-wrapper { position: absolute; left: -9999px; top: -9999px; width: 790px; background: #fff !important; }
-    #pdf-render-area { background: #fff !important; color: #111827 !important; padding: 30px 24px; box-sizing: border-box; width: 100%; }
+.section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:22px 0 10px;
+}
+.section-title h2{
+  font-size:13px;
+  color:var(--white);
+}
+.section-title button{
+  background:none;
+  color:var(--accent);
+  font-size:11px;
+  cursor:pointer;
+}
 
-    /* HIDDEN BOT PDF TEMPLATE */
-    #bot-pdf-wrapper { position: absolute; left: -9999px; top: -9999px; width: 790px; background: #fff !important; }
-    #bot-pdf-render-area { background: #fff !important; color: #111827 !important; padding: 30px 24px; box-sizing: border-box; width: 100%; }
-  </style>
+.search{
+  width:100%;
+  height:46px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;
+  color:var(--white);
+  padding:0 14px;
+  margin-bottom:10px;
+}
+.search::placeholder{color:#56606c}
+
+.filters{
+  display:flex;
+  gap:7px;
+  overflow:auto;
+  padding-bottom:2px;
+  margin-bottom:12px;
+}
+.filter{
+  white-space:nowrap;
+  padding:8px 11px;
+  border-radius:99px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.07);
+  color:var(--muted);
+  font-size:10px;
+  cursor:pointer;
+}
+.filter.active{
+  color:var(--accent);
+  border-color:color-mix(in srgb,var(--accent) 40%,transparent);
+  background:var(--accent-soft);
+}
+
+.investor{
+  padding:15px;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  width:100%;
+  text-align:left;
+  color:inherit;
+  cursor:pointer;
+}
+.inv-avatar{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  background:#171c21;
+  display:grid;
+  place-items:center;
+  color:var(--white);
+  font-size:12px;
+  font-weight:850;
+}
+.inv-main{flex:1;min-width:0}
+.inv-name{
+  font-size:13px;
+  font-weight:750;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.inv-meta{
+  display:flex;
+  gap:9px;
+  margin-top:4px;
+  font-size:10px;
+  color:var(--muted);
+  flex-wrap:wrap;
+}
+.inv-right{text-align:right}
+.inv-profit{
+  font-size:14px;
+  font-weight:780;
+  color:var(--emerald);
+}
+.inv-cap{
+  font-size:10px;
+  color:var(--muted);
+  margin-top:4px;
+}
+.status-dot{
+  display:inline-block;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  margin-right:5px;
+}
+.status-active{background:var(--emerald)}
+.status-pending{background:var(--gold)}
+.status-settled{background:var(--slate)}
+
+.empty{
+  padding:28px 20px;
+  text-align:center;
+  display:grid;
+  gap:7px;
+}
+.empty strong{font-size:13px}
+.empty span{font-size:11px;color:var(--muted)}
+
+.form-card{padding:18px}
+.field{
+  display:grid;
+  gap:7px;
+  margin-bottom:13px;
+}
+.field label{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--muted);
+  font-weight:750;
+}
+.field input,
+.field select{
+  width:100%;
+  height:46px;
+  background:#0b0e11;
+  color:var(--white);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:13px;
+  padding:0 13px;
+}
+.field input::placeholder{color:#56606c}
+.form-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:5px;
+}
+
+.switch-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 0;
+}
+.switch{
+  position:relative;
+  width:44px;
+  height:25px;
+}
+.switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+.slider{
+  position:absolute;
+  inset:0;
+  border-radius:99px;
+  background:#252b31;
+  cursor:pointer;
+  transition:.2s;
+}
+.slider:before{
+  content:"";
+  position:absolute;
+  width:19px;
+  height:19px;
+  left:3px;
+  top:3px;
+  border-radius:50%;
+  background:#9aa1aa;
+  transition:.2s;
+}
+.switch input:checked+.slider{
+  background:var(--emerald);
+}
+.switch input:checked+.slider:before{
+  transform:translateX(19px);
+  background:#fff;
+}
+
+.preset-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+  margin-top:12px;
+}
+.preset{
+  padding:15px;
+  border-radius:15px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.07);
+  color:var(--white);
+  cursor:pointer;
+  text-align:left;
+  transition:.2s var(--ease);
+}
+.preset:active{transform:scale(.98)}
+.preset.active{
+  border-color:color-mix(in srgb,var(--accent) 50%,transparent);
+  background:var(--accent-soft);
+}
+.preset strong{
+  display:block;
+  font-size:16px;
+}
+.preset span{
+  font-size:10px;
+  color:var(--muted);
+  display:block;
+  margin-top:4px;
+}
+
+.result{
+  padding:19px;
+  border-color:rgba(16,185,129,.22);
+  background:linear-gradient(145deg,rgba(16,185,129,.06),rgba(10,13,16,.92));
+}
+.result-main{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:10px;
+}
+.result-net{
+  font-size:32px;
+  font-weight:850;
+  color:var(--emerald);
+  letter-spacing:-.05em;
+}
+.breakdown{
+  margin-top:17px;
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.break-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.045);
+  font-size:11px;
+}
+.break-row span:first-child{color:var(--muted)}
+.break-row span:last-child{font-weight:650}
+
+.notice{
+  padding:12px 14px;
+  border-radius:14px;
+  background:rgba(212,175,55,.06);
+  border:1px solid rgba(212,175,55,.12);
+  font-size:10px;
+  line-height:1.55;
+  color:var(--muted);
+}
+.audit-box{
+  background:rgba(37,99,235,.06);
+  border-color:rgba(37,99,235,.15);
+}
+
+.more-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:15px;
+  border-radius:16px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.06);
+  cursor:pointer;
+  text-align:left;
+  color:inherit;
+  width:100%;
+}
+.more-icon{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:#161b20;
+  color:var(--accent);
+}
+.more-item strong{font-size:12px}
+.more-item span{
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+.detail{
+  padding:13px;
+  border-radius:14px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.05);
+}
+.detail span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+}
+.detail strong{
+  display:block;
+  margin-top:5px;
+  font-size:14px;
+}
+
+.small-note{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.5;
+}
+
+.nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  z-index:50;
+  width:min(100%,1120px);
+  min-height:calc(var(--nav) + env(safe-area-inset-bottom));
+  padding:8px 10px env(safe-area-inset-bottom);
+  background:rgba(7,9,11,.92);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(255,255,255,.06);
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+}
+.nav button{
+  background:none;
+  color:var(--muted);
+  display:grid;
+  justify-items:center;
+  align-content:center;
+  gap:4px;
+  min-height:58px;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:9px;
+  transition:.18s;
+}
+.nav svg{width:21px;height:21px}
+.nav button.active{
+  color:var(--accent);
+  background:var(--accent-soft);
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:rgba(0,0,0,.68);
+  display:none;
+  align-items:end;
+  justify-content:center;
+  padding:0;
+}
+.modal.open{display:flex}
+.sheet{
+  width:min(100%,620px);
+  max-height:92dvh;
+  overflow:auto;
+  background:#0a0d10;
+  border:1px solid rgba(255,255,255,.08);
+  border-bottom:0;
+  border-radius:24px 24px 0 0;
+  padding:10px 16px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -20px 70px rgba(0,0,0,.5);
+  animation:sheetIn .25s var(--ease);
+}
+@keyframes sheetIn{
+  from{transform:translateY(30px);opacity:0}
+  to{transform:none;opacity:1}
+}
+.handle{
+  width:38px;
+  height:4px;
+  background:#30363d;
+  border-radius:99px;
+  margin:2px auto 16px;
+}
+.sheet-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+.sheet-head h2{
+  font-size:18px;
+  letter-spacing:-.02em;
+}
+.close{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  font-size:21px;
+  cursor:pointer;
+}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:calc(var(--nav) + env(safe-area-inset-bottom) + 14px);
+  transform:translate(-50%,15px);
+  z-index:300;
+  opacity:0;
+  pointer-events:none;
+  padding:11px 15px;
+  border-radius:13px;
+  background:#151a1f;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:var(--shadow);
+  color:var(--text);
+  font-size:11px;
+  transition:.25s var(--ease);
+  white-space:nowrap;
+}
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+.toast.error{border-color:rgba(239,68,68,.3);color:#ff9b9b}
+.toast.success{border-color:rgba(16,185,129,.25)}
+
+.hide-mobile{display:block}
+@media(max-width:430px){
+  .overview-grid{gap:12px}
+  .metric-value{font-size:19px}
+  .hide-mobile{display:none}
+}
+
+@media(min-width:720px){
+  .nav{
+    border:1px solid var(--border-soft);
+    border-radius:20px 20px 0 0;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <!-- Splash Screen -->
-  <div id="splash-screen">
-    <h1>Portfolio Ledger</h1>
-    <p>Institutional Settlement & Yield Platform</p>
+<div class="splash" id="splash">
+  <div class="splash-inner">
+    <div class="logo">
+      <svg viewBox="0 0 40 40" fill="none">
+        <path d="M20 5 34 35h-6l-3-7H15l-3 7H6L20 5Zm0 9-3.1 9h6.2L20 14Z"
+          fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="splash-name">AUREUS</div>
+    <div class="splash-sub">Institutional Portfolio & Settlement</div>
+    <div class="loader"><i></i></div>
+  </div>
+</div>
+
+<div class="app">
+
+<header class="header">
+  <button class="header-btn" id="menuBtn" aria-label="Open menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M4 7h16M4 12h16M4 17h16"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <div class="header-title">
+    <strong id="headerTitle">AUREUS</strong>
+    <span>Institutional Portfolio & Settlement</span>
   </div>
 
-  <!-- Toast Notification Container -->
-  <div id="toast">Action Successful ✓</div>
+  <div class="live-dot" title="Application active"></div>
+</header>
 
-  <div class="container">
-    <div class="top-bar">
-      <span class="top-title" id="app-title">Portfolio Ledger</span>
-      <div class="top-actions">
-        <button type="button" class="nav-btn" onclick="openPDF()">
-          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export
-        </button>
-        <button type="button" class="nav-btn" onclick="openBook(true)">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-          Directory
-        </button>
-        <button type="button" class="nav-btn" onclick="openWhatsAppModal()">Payout</button>
-        <button type="button" class="nav-btn nav-btn-icon" onclick="togglePlatformMode()" id="mode-toggle-btn" title="Switch to Settlement Bot">
-          <svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
-        </button>
-        <button type="button" class="nav-btn nav-btn-icon" onclick="openSettings(true)" title="Settings">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        </button>
-      </div>
+<main>
+
+<!-- HOME -->
+<section class="view active" id="view-home">
+
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">Private workspace</div>
+      <h1>Dashboard</h1>
+      <p>Portfolio overview and internal performance.</p>
     </div>
+  </div>
 
-    <!-- ================= PORTFOLIO LEDGER VIEW ================= -->
-    <div id="ledger-view">
-      <div class="promoter-desk">
+  <div class="stack">
+
+    <article class="card gold-border card-pad manager-card">
+      <div class="manager-top">
+        <div class="avatar">KA</div>
+
         <div>
-          <span class="promoter-sub">LEAD PORTFOLIO MANAGER</span>
-          <strong id="disp-manager-name">Kaif Alvi</strong>
-          <span class="meta" id="disp-manager-stake">Promoter Holding: ₹50,000</span>
+          <div class="manager-name" id="managerName">Kaif Alvi</div>
+          <div class="manager-role">Lead Portfolio Manager</div>
         </div>
-        <div class="promoter-right">
-          <strong id="disp-manager-gain">+$0.00 USD</strong>
-          <span>Promoter Yield</span>
-        </div>
+
+        <div class="badge gold">Manager</div>
       </div>
 
-      <div class="card">
-        <h2>Monthly Performance & Yield</h2>
-        <div class="subtitle">Active Month 30-Day Calendar Progressive Cycle (8% - 12% Bound)</div>
+      <div class="manager-stats">
+        <div class="stat-mini">
+          <div class="stat-label">Promoter Capital</div>
+          <div class="stat-value gold" id="promoterCapital">₹50,000</div>
+        </div>
 
-        <div class="market-box">
+        <div class="stat-mini">
+          <div class="stat-label">Portfolio Status</div>
+          <div class="stat-value positive" id="portfolioStatus">Active</div>
+        </div>
+      </div>
+    </article>
+
+    <article class="card overview">
+      <div class="overview-head">
+        <div class="overview-title">Portfolio Overview</div>
+        <div class="badge neutral" id="activeCountBadge">0 active</div>
+      </div>
+
+      <div class="overview-grid">
+
+        <div>
+          <div class="metric-label">Total Portfolio Capital</div>
+          <div class="metric-value" id="totalPool">₹50,000</div>
+        </div>
+
+        <div>
+          <div class="metric-label">Investor Capital</div>
+          <div class="metric-value" id="investorCapitalTotal">₹0</div>
+        </div>
+
+        <div>
+          <div class="metric-label">Promoter Capital</div>
+          <div class="metric-value gold" id="homePromoter">₹50,000</div>
+        </div>
+
+        <div>
+          <div class="metric-label">Current Portfolio Value</div>
+          <div class="metric-value" id="currentPortfolioValue">₹50,000</div>
+        </div>
+
+        <div>
+          <div class="metric-label">Current Profit</div>
+          <div class="metric-value positive" id="homeProfit">₹0</div>
+        </div>
+
+        <div>
+          <div class="metric-label">Active Capital</div>
+          <div class="metric-value" id="activeCapital">₹0</div>
+        </div>
+
+      </div>
+    </article>
+
+    <article class="card performance">
+      <div class="performance-top">
+        <div>
+          <div class="eyebrow">MTD Performance</div>
+          <div class="rate" id="homeRate">0.00%</div>
+          <div class="day" id="cycleDay">Day 1 of 30</div>
+        </div>
+
+        <div class="badge live">Calculated</div>
+      </div>
+
+      <div class="progress">
+        <span id="cycleProgress" style="width:0%"></span>
+      </div>
+
+      <div class="performance-foot">
+        <span>Progressive Yield</span>
+        <span id="daysRemaining">30 days remaining</span>
+      </div>
+
+      <div class="notice" style="margin-top:13px">
+        Calculated / Indicative / Internal. This progressive yield display is not a guaranteed return.
+      </div>
+    </article>
+
+    <div>
+      <div class="section-title">
+        <h2>Market</h2>
+        <button id="refreshMarket">Refresh</button>
+      </div>
+
+      <div class="market-row">
+
+        <article class="card market-card">
+          <div class="eyebrow">Gold</div>
+          <div class="market-value" id="goldPrice">Unavailable</div>
+          <div class="market-status">
+            <i class="status-dot status-inactive" id="goldDot"></i>
+            <span id="goldStatus">Awaiting connection</span>
+          </div>
+        </article>
+
+        <article class="card market-card">
+          <div class="eyebrow">USD / INR</div>
+          <div class="market-value" id="fxRate">₹87.00</div>
+          <div class="market-status">
+            <i class="status-dot status-inactive" id="fxDot"></i>
+            <span id="fxStatus">Configured reference</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">
+        <h2>Investors</h2>
+        <button data-nav="investors">View all</button>
+      </div>
+
+      <div class="card card-pad">
+        <div class="overview-grid" style="margin-top:0">
           <div>
-            <span style="display:block; font-size:0.62rem; text-transform:uppercase; font-weight:700;"><span class="live-dot"></span> GoldAPI Spot Benchmark</span>
-            <strong id="market-title">Gold (XAU): Fetching live...</strong>
+            <div class="metric-label">Total Investors</div>
+            <div class="metric-value" id="homeInvestorCount">0</div>
           </div>
-          <div id="market-status-badge" class="market-badge market-gold">Market Synced</div>
-        </div>
 
-        <div class="summary-card">
-          <div class="summary-top">
-            <div>
-              <div class="summary-label">Realized Trading Yield (USD)</div>
-              <div class="summary-usd" id="disp-usd-profit">+$0.00 USD</div>
-            </div>
-            <div class="summary-rate" id="rate-summary">+10.00% MTD</div>
-          </div>
-          <div class="kpi-grid">
-            <div class="kpi-card">
-              <span>TOTAL POOL CAPITAL</span>
-              <strong id="kpi-capital">₹1,50,000.00</strong>
-            </div>
-            <div class="kpi-card">
-              <span>ACTIVE INVESTORS</span>
-              <strong id="kpi-count">4 Clients + Lead</strong>
-            </div>
+          <div>
+            <div class="metric-label">Active Investors</div>
+            <div class="metric-value positive" id="homeActiveInvestors">0</div>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-          <h2 style="font-size: 0.92rem;">Client Leaderboard</h2>
-          <span style="font-size: 0.72rem; color: var(--green); font-weight: 600;" id="uniform-rate-tag">Profit Rate: +10.00%</span>
-        </div>
-        <div id="investor-list"></div>
       </div>
     </div>
 
-    <!-- ================= SETTLEMENT STATEMENT BOT VIEW ================= -->
-    <div id="bot-view" class="bot-section">
-      <div class="card">
-        <h2>Transaction Cost & Net Payout</h2>
-        <div class="subtitle">Master Portfolio Settlement Advice (v4.5 Institutional)</div>
-
-        <div class="bot-live-strip">
-          <span id="bot-live-rate"><span class="live-dot"></span> LIVE FastForex USD: ₹87.00</span>
-          <span style="font-size:0.65rem; background:var(--bg); padding:2px 6px; border-radius:4px; border:1px solid var(--border);">FastForex Live API</span>
-        </div>
-
-        <div class="preset-grid">
-          <button type="button" class="preset-btn" onclick="selectBotUsd(500)" id="btn-500">
-            <strong>$500</strong><span>Withdrawal</span>
-          </button>
-          <button type="button" class="preset-btn" onclick="selectBotUsd(700)" id="btn-700">
-            <strong>$700</strong><span>Withdrawal</span>
-          </button>
-          <button type="button" class="preset-btn" onclick="selectBotUsd(1000)" id="btn-1000">
-            <strong>$1,000</strong><span>Withdrawal</span>
-          </button>
-          <button type="button" class="preset-btn" onclick="selectBotUsd(1500)" id="btn-1500">
-            <strong>$1,500</strong><span>Withdrawal</span>
-          </button>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 6px; margin-bottom: 10px;">
-          <input type="number" id="bot-custom-usd" placeholder="Other amount (e.g. 100, 2000)" oninput="onCustomUsdInput()" />
-          <button type="button" class="btn-dark" onclick="calculateBot()">Generate</button>
-        </div>
-
-        <div class="bot-actions">
-          <button type="button" class="btn-neutral" onclick="downloadBotPDF()">
-            <svg style="width:14px; height:14px; stroke:var(--text); fill:none; stroke-width:2;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download PDF
-          </button>
-          <button type="button" class="btn-neutral" onclick="shareBotPDF()">
-            <svg style="width:14px; height:14px; stroke:var(--text); fill:none; stroke-width:2;" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-            Share PDF
-          </button>
-        </div>
-
-        <div class="audit-box">
-          <div class="audit-head">
-            <h3 style="font-size:0.85rem; color:var(--text); text-transform:uppercase; font-weight:800;">Master Settlement Statement & Audit Memorandum</h3>
-            <span style="font-size:0.62rem; color:var(--muted); display:block; margin-top:2px;">Aggregated Portfolio Execution & Yield Off-Ramp Advice</span>
-          </div>
-
-          <div style="display:flex; justify-content:space-between; font-size:0.68rem; color:var(--muted); margin-bottom:8px;">
-            <span id="bot-audit-ref">POOL REF: STM-858452</span>
-            <span id="bot-audit-time">DATE & TIME: 07/10/2026 03:58 am</span>
-          </div>
-
-          <div style="background:var(--bg); border:1px solid var(--border); padding:6px 8px; border-radius:6px; font-size:0.65rem; color:var(--muted); margin-bottom:10px;">
-            SETTLEMENT PROTOCOL: Bank Node → FIU-Compliant Gateway → Non-Custodial Protocol → Liquidity Pool Settlement → Automated Clearing Node → IMPS Disbursal
-          </div>
-
-          <div style="font-size:0.68rem; color:var(--text); text-transform:uppercase; font-weight:700; margin-bottom:4px; display:flex; justify-content:space-between;">
-            <span>Statutory / Technical Head</span>
-            <span>Amount (INR)</span>
-          </div>
-
-          <div id="bot-audit-breakdown"></div>
-
-          <div class="audit-total">
-            <span>Net Distributable Pool Yield (Clean Credit)</span>
-            <span id="bot-net-payout">₹0.00</span>
-          </div>
-        </div>
+    <div>
+      <div class="section-title">
+        <h2>Quick Actions</h2>
       </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="generateStatement">
+          Generate Statement
+        </button>
+
+        <button class="btn btn-secondary" data-nav="settlement">
+          Settlement / Payout
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- PORTFOLIO -->
+<section class="view" id="view-portfolio">
+
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">Portfolio</div>
+      <h1>Portfolio</h1>
+      <p>Capital composition and calculated performance.</p>
     </div>
   </div>
 
-  <!-- DIRECTORY MODAL -->
-  <div class="modal-overlay" id="book-modal">
-    <div class="modal-content">
-      <div class="modal-head">
-        <h3>Master Investor Directory</h3>
-        <button type="button" class="close-btn" onclick="openBook(false)">✕</button>
+  <div class="stack">
+
+    <article class="card overview">
+      <div class="overview-head">
+        <div class="overview-title">Portfolio Summary</div>
+        <div class="badge live">Active</div>
       </div>
-      <div id="modal-investor-list"></div>
-      <div style="border-top: 1px dashed var(--border); margin-top: 12px; padding-top: 10px;">
-        <div style="font-size: 0.72rem; color: var(--muted); margin-bottom: 5px;">+ Register New Investor Account</div>
-        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 6px; margin-bottom: 6px;">
-          <input type="text" id="new-name" placeholder="Name" />
-          <input type="number" id="new-cap" placeholder="Capital (₹)" />
+
+      <div class="overview-grid">
+
+        <div>
+          <div class="metric-label">Total Capital</div>
+          <div class="metric-value" id="portPool">₹0</div>
         </div>
-        <button type="button" class="btn-dark" onclick="addInv()">+ Add to Permanent Directory</button>
+
+        <div>
+          <div class="metric-label">Current Value</div>
+          <div class="metric-value" id="portCurrentValue">₹0</div>
+        </div>
+
+        <div>
+          <div class="metric-label">Current Profit</div>
+          <div class="metric-value positive" id="portProfit">₹0</div>
+        </div>
+
+        <div>
+          <div class="metric-label">Current Yield</div>
+          <div class="metric-value positive" id="portRate">0.00%</div>
+        </div>
+
       </div>
-      <button type="button" class="btn-dark" style="margin-top: 10px; background: var(--bg);" onclick="openBook(false)">Save & Close</button>
+    </article>
+
+    <article class="card performance">
+      <div class="eyebrow">Performance</div>
+
+      <div style="margin-top:10px" class="rate" id="portRateLarge">
+        0.00%
+      </div>
+
+      <div class="day" id="portCycleDay">Day 1 of 30</div>
+
+      <div class="progress">
+        <span id="portProgress" style="width:0%"></span>
+      </div>
+
+      <div class="performance-foot">
+        <span>Progressive Yield</span>
+        <span id="portRemaining">30 days remaining</span>
+      </div>
+
+      <div class="notice" style="margin-top:13px">
+        Internal calculation based on the current progressive yield engine.
+        Indicative only; not guaranteed.
+      </div>
+    </article>
+
+    <article class="card card-pad">
+      <div class="section-title" style="margin-top:0">
+        <h2>Capital Composition</h2>
+      </div>
+
+      <div class="overview-grid" style="margin-top:0">
+
+        <div>
+          <div class="metric-label">Investor Capital</div>
+          <div class="metric-value" id="portInvestor">₹0</div>
+        </div>
+
+        <div>
+          <div class="metric-label">Promoter Capital</div>
+          <div class="metric-value gold" id="portPromoter">₹50,000</div>
+        </div>
+
+      </div>
+    </article>
+
+    <article class="card card-pad">
+      <div class="section-title" style="margin-top:0">
+        <h2>Portfolio Activity</h2>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail">
+          <span>Active Investors</span>
+          <strong id="portActiveCount">0</strong>
+        </div>
+
+        <div class="detail">
+          <span>Pending</span>
+          <strong id="portPendingCount">0</strong>
+        </div>
+
+        <div class="detail">
+          <span>Settled</span>
+          <strong id="portSettledCount">0</strong>
+        </div>
+
+        <div class="detail">
+          <span>Manager</span>
+          <strong id="portManager">Kaif Alvi</strong>
+        </div>
+      </div>
+    </article>
+
+    <button class="btn btn-primary" id="downloadPortfolioPdf">
+      Generate Portfolio A4 Statement
+    </button>
+
+  </div>
+</section>
+
+
+<!-- INVESTORS -->
+<section class="view" id="view-investors">
+
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">Directory</div>
+      <h1>Investors</h1>
+      <p>Manage internal investor records.</p>
+    </div>
+
+    <button class="btn btn-primary" id="addInvestorBtn">
+      + Add
+    </button>
+  </div>
+
+  <input
+    class="search"
+    id="investorSearch"
+    placeholder="Search investor name…"
+    autocomplete="off"
+  >
+
+  <div class="filters" id="investorFilters">
+    <button class="filter active" data-filter="all">All</button>
+    <button class="filter" data-filter="active">Active</button>
+    <button class="filter" data-filter="pending">Pending</button>
+    <button class="filter" data-filter="settled">Settled</button>
+  </div>
+
+  <div class="section-title">
+    <h2 id="investorCountLabel">0 investors</h2>
+    <button id="sortBtn">Sort: Capital</button>
+  </div>
+
+  <div class="stack" id="investorList"></div>
+
+</section>
+
+
+<!-- SETTLEMENT -->
+<section class="view" id="view-settlement">
+
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">Settlement Center</div>
+      <h1>Settlement</h1>
+      <p>Internal settlement calculation and payout breakdown.</p>
     </div>
   </div>
 
-  <!-- WHATSAPP PAYOUT GENERATOR MODAL -->
-  <div class="modal-overlay" id="whatsapp-modal">
-    <div class="modal-content">
-      <div class="modal-head">
-        <h3>WhatsApp Payout Generator</h3>
-        <button type="button" class="close-btn" onclick="closeWhatsAppModal()">✕</button>
-      </div>
-      <div style="font-size: 0.74rem; color: var(--muted); margin-bottom: 10px;">
-        Tap any investor card below to generate their payout confirmation message.
-      </div>
-      <div id="wa-investor-list" style="margin-bottom: 12px; max-height: 220px; overflow-y: auto;"></div>
-      <div id="wa-preview-container" style="display: none; margin-bottom: 8px;">
-        <label style="font-size: 0.7rem; color: var(--muted); display: block; margin-bottom: 3px;">Message Preview:</label>
-        <textarea id="wa-message-preview" readonly style="width: 100%; height: 160px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.74rem; padding: 8px; resize: none; font-family: monospace;"></textarea>
-        <button type="button" class="btn-dark" style="background: var(--green); margin-top: 8px;" onclick="copyWaMessage()">📋 Copy Message</button>
-      </div>
-      <button type="button" class="btn-dark" style="background: var(--bg); margin-top: 8px;" onclick="closeWhatsAppModal()">Close</button>
-    </div>
-  </div>
+  <div class="stack">
 
-  <!-- EDIT INVESTOR MODAL -->
-  <div class="modal-overlay" id="edit-investor-modal">
-    <div class="modal-content">
-      <div class="modal-head">
-        <h3>Edit Investor Details</h3>
-        <button type="button" class="close-btn" onclick="closeEditModal()">✕</button>
-      </div>
-      <input type="hidden" id="edit-inv-id" />
-      <div style="margin-bottom: 10px;">
-        <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Investor Name</label>
-        <input type="text" id="edit-inv-name" />
-      </div>
-      <div style="margin-bottom: 14px;">
-        <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Principal Capital (₹)</label>
-        <input type="number" id="edit-inv-cap" />
-      </div>
-      <button type="button" class="btn-dark" style="background: var(--blue); margin-bottom: 8px;" onclick="saveEditedInvestor()">Update Investor</button>
-      <button type="button" class="btn-dark" style="background: var(--bg);" onclick="closeEditModal()">Cancel</button>
-    </div>
-  </div>
+    <article class="card form-card">
 
-  <!-- SETTINGS MODAL -->
-  <div class="modal-overlay" id="settings-modal">
-    <div class="modal-content">
-      <div class="modal-head">
-        <h3>System Configuration & Control</h3>
-        <button type="button" class="close-btn" onclick="openSettings(false)">✕</button>
+      <div class="field">
+        <label for="settlementInvestor">Investor</label>
+
+        <select id="settlementInvestor">
+          <option value="">General / Portfolio Settlement</option>
+        </select>
       </div>
 
-      <button type="button" class="btn-reset" onclick="resetYieldOverrides()">
-        <svg style="width:14px; height:14px; fill:none; stroke:var(--red); stroke-width:2;" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-        Reset Custom Yield / FX Overrides
+      <div class="field">
+        <label for="settlementCurrency">Currency</label>
+
+        <select id="settlementCurrency">
+          <option value="INR">INR — Indian Rupee</option>
+          <option value="USD">USD — US Dollar</option>
+        </select>
+      </div>
+
+      <div class="section-title" style="margin-top:8px">
+        <h2>Settlement Amount</h2>
+      </div>
+
+      <div class="preset-grid" id="presets">
+        <button class="preset active" data-amount="50000">
+          <strong>₹50,000</strong>
+          <span>Preset</span>
+        </button>
+
+        <button class="preset" data-amount="100000">
+          <strong>₹1,00,000</strong>
+          <span>Preset</span>
+        </button>
+
+        <button class="preset" data-amount="500000">
+          <strong>₹5,00,000</strong>
+          <span>Preset</span>
+        </button>
+
+        <button class="preset" data-amount="1000000">
+          <strong>₹10,00,000</strong>
+          <span>Preset</span>
+        </button>
+      </div>
+
+      <div class="field" style="margin-top:14px">
+        <label for="customAmount">Custom Amount</label>
+        <input
+          id="customAmount"
+          type="number"
+          min="1"
+          step="0.01"
+          placeholder="Enter settlement amount"
+        >
+      </div>
+
+      <div class="field">
+        <label for="settlementFx">USD / INR Reference FX</label>
+        <input id="settlementFx" type="number" min=".01" step=".01">
+      </div>
+
+      <button class="btn btn-primary" id="calculateSettlement" style="width:100%">
+        Generate Settlement
       </button>
 
-      <div style="margin-bottom: 10px;">
-        <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Promoter / Lead Manager Name</label>
-        <input type="text" id="setting-name" />
-      </div>
-      <div style="margin-bottom: 10px;">
-        <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Promoter Holding Capital (₹)</label>
-        <input type="number" id="setting-cap" />
-      </div>
+    </article>
 
-      <div style="border-top: 1px dashed var(--border); margin: 12px 0 10px 0; padding-top: 10px;">
-        <div style="font-size: 0.72rem; color: #38bdf8; font-weight: 700; margin-bottom: 8px;">★ TRADING YIELD & FX ENGINE</div>
-        
-        <div style="margin-bottom: 10px;">
-          <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Custom Monthly Pool Profit ($ USD)</label>
-          <input type="number" id="setting-usd" placeholder="Auto 8% - 12% Progressive Target if blank" step="any" />
-          <span style="font-size: 0.65rem; color: var(--muted); margin-top: 2px; display: block;">Leave blank for automatic 30-day progressive return engine.</span>
-        </div>
 
-        <div style="margin-bottom: 10px;">
-          <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Institutional FX Conversion Rate (1 USD = ₹ INR)</label>
-          <input type="number" id="setting-fx" step="0.1" />
-        </div>
-      </div>
+    <article class="card result" id="settlementResult">
 
-      <button type="button" class="btn-dark" style="background: var(--blue);" onclick="saveSettings()">Save & Apply Settings</button>
-    </div>
-  </div>
-
-  <!-- WHITE A4 TEMPLATE FOR LEDGER EXPORT -->
-  <div id="pdf-wrapper">
-    <div id="pdf-render-area">
-      <div style="text-align: center; border-bottom: 2px solid #111827; padding-bottom: 12px; margin-bottom: 14px;">
-        <h1 style="font-size: 1.3rem; margin: 0; color: #111827; text-transform: uppercase; font-weight: 800;">
-          Master Portfolio Yield & Profit Distribution
-        </h1>
-        <div style="font-size: 0.78rem; color: #4b5563; margin-top: 3px; font-weight: 600; text-transform: uppercase;">
-          Certified Monthly Trading Yield & Realized USD Payout Statement
-        </div>
-        <div style="font-size: 0.74rem; color: #111827; margin-top: 5px; font-weight: 600;" id="pdf-ref-time"></div>
-      </div>
-
-      <div style="background: #f8fafc; border: 1px solid #cbd5e1; padding: 9px 12px; border-radius: 4px; margin-bottom: 12px; font-size: 0.74rem; color: #0f172a;">
-        <strong>PROMOTER CAPITAL HOLDING:</strong> Managed by <strong id="pdf-manager-name">Kaif Alvi</strong> with verified promoter holding of <strong id="pdf-manager-cap">₹50,000</strong>. Operating under equalized parity.
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px;">
+      <div class="result-main">
         <div>
-          <span style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; font-weight: 700; display: block;">Total Pool Investment</span>
-          <strong style="font-size: 1.05rem; color: #0f172a;" id="pdf-total-cap">₹0.00</strong>
+          <div class="eyebrow">Net Settlement</div>
+          <div class="result-net" id="netSettlement">₹0.00</div>
         </div>
-        <div style="text-align: center;">
-          <span style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; font-weight: 700; display: block;">Monthly Net Yield</span>
-          <strong style="font-size: 1.05rem; color: #2563eb;" id="pdf-rate-display">+0.00%</strong>
-        </div>
-        <div style="text-align: right;">
-          <span style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; font-weight: 700; display: block;">Total Realized USD</span>
-          <strong style="font-size: 1.05rem; color: #047857;" id="pdf-total-payout">$0.00 USD</strong>
-        </div>
+
+        <div class="badge live">Calculated</div>
       </div>
 
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 0.78rem;">
-        <thead>
-          <tr style="background: #0f172a; color: #ffffff; text-transform: uppercase; font-size: 0.7rem;">
-            <th style="padding: 9px 10px; text-align: left;">Rank & Investor</th>
-            <th style="padding: 9px 10px; text-align: right;">Principal Investment</th>
-            <th style="padding: 9px 10px; text-align: center;">Profit Rate</th>
-            <th style="padding: 9px 10px; text-align: right;">Realized Yield (USD)</th>
-          </tr>
-        </thead>
-        <tbody id="pdf-table-body"></tbody>
-      </table>
+      <div class="breakdown" id="settlementBreakdown"></div>
 
-      <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-        <div style="font-size: 0.68rem; color: #64748b;">DISBURSAL NODE: CRYPTOGRAPHICALLY RECONCILED</div>
-        <div style="text-align: center;">
-          <div style="font-size: 0.72rem; font-weight: 700; color: #047857; margin-bottom: 3px;">● DIGITALLY VERIFIED</div>
-          <div style="border-top: 1px solid #0f172a; width: 175px; padding-top: 4px; font-size: 0.72rem; font-weight: 600; color: #0f172a;" id="pdf-sign-name">
-            Authorized Clearing Officer
+      <div class="actions" style="margin-top:15px">
+
+        <button class="btn btn-secondary" id="downloadSettlementPdf">
+          Download A4 PDF
+        </button>
+
+        <button class="btn btn-emerald" id="shareSettlementPdf">
+          Share PDF
+        </button>
+
+      </div>
+
+      <div class="notice" style="margin-top:12px">
+        Fees, deductions and adjustments shown here are configured/internal estimates.
+        Actual provider charges and tax treatment must be verified against real transaction records.
+      </div>
+
+    </article>
+
+  </div>
+</section>
+
+
+<!-- MORE -->
+<section class="view" id="view-more">
+
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">Workspace</div>
+      <h1>More</h1>
+      <p>Configuration, market data and internal controls.</p>
+    </div>
+  </div>
+
+  <div class="stack">
+
+    <button class="more-item" data-modal="settings">
+      <div class="more-icon">⚙</div>
+      <div>
+        <strong>Settings</strong>
+        <span>Manager, theme, currency, threshold and audit mode.</span>
+      </div>
+    </button>
+
+    <button class="more-item" data-modal="market">
+      <div class="more-icon">◈</div>
+      <div>
+        <strong>Market Configuration</strong>
+        <span>Secure backend/proxy endpoints for market data.</span>
+      </div>
+    </button>
+
+    <button class="more-item" data-modal="yield">
+      <div class="more-icon">%</div>
+      <div>
+        <strong>Yield Engine</strong>
+        <span>Review the 30-day progressive calculation.</span>
+      </div>
+    </button>
+
+    <button class="more-item" id="resetApp">
+      <div class="more-icon">↺</div>
+      <div>
+        <strong>Data / Internal Controls</strong>
+        <span>Reset private application data.</span>
+      </div>
+    </button>
+
+    <article class="card card-pad">
+
+      <div class="eyebrow">Application Information</div>
+
+      <p style="margin-top:7px;font-size:13px;font-weight:750">
+        AUREUS v3.0
+      </p>
+
+      <p class="small-note" style="margin-top:5px">
+        Private internal portfolio and settlement workspace.
+        Calculated values are for internal use.
+      </p>
+
+      <div class="notice" id="auditStatus" style="margin-top:12px">
+        Audit mode: Off
+      </div>
+
+    </article>
+
+  </div>
+</section>
+
+</main>
+
+
+<nav class="nav" aria-label="Primary navigation">
+
+  <button class="active" data-nav="home">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"
+        stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+    </svg>
+    <span>Home</span>
+  </button>
+
+  <button data-nav="portfolio">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M4 19V9m5 10V5m5 14v-7m5 7V3"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <span>Portfolio</span>
+  </button>
+
+  <button data-nav="investors">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M16 20v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3A4.5 4.5 0 0 0 4 18.5V20m6-10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm6-5a3 3 0 0 1 0 6m4 9v-1.5a4 4 0 0 0-3-3.87"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <span>Investors</span>
+  </button>
+
+  <button data-nav="settlement">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M3 7h18M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm11 9h4"
+        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+    <span>Settlement</span>
+  </button>
+
+  <button data-nav="more">
+    <svg viewBox="0 0 24 24" fill="none">
+      <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+      <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
+    </svg>
+    <span>More</span>
+  </button>
+
+</nav>
+
+</div>
+
+
+<!-- INVESTOR MODAL -->
+
+<div class="modal" id="investorModal">
+  <div class="sheet">
+
+    <div class="handle"></div>
+
+    <div class="sheet-head">
+      <h2 id="investorModalTitle">Add Investor</h2>
+      <button class="close" data-close="investorModal">×</button>
+    </div>
+
+    <form id="investorForm">
+
+      <input type="hidden" id="editInvestorId">
+
+      <div class="field">
+        <label for="investorName">Investor Name</label>
+        <input id="investorName" required maxlength="80" placeholder="Enter name">
+      </div>
+
+      <div class="field">
+        <label for="investorCapital">Investment Capital</label>
+        <input
+          id="investorCapital"
+          required
+          type="number"
+          min="1"
+          step=".01"
+          placeholder="50000"
+        >
+      </div>
+
+      <div class="field">
+        <label for="investorRate">Current Rate (%)</label>
+        <input
+          id="investorRate"
+          type="number"
+          min="0"
+          step=".01"
+          placeholder="8.00"
+        >
+      </div>
+
+      <div class="field">
+        <label for="investorStatus">Investor Status</label>
+        <select id="investorStatus">
+          <option value="active">Active — included in pool</option>
+          <option value="pending">Pending — awaiting activation</option>
+          <option value="settled">Settled — closed position</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="investorDate">Relevant Date</label>
+        <input id="investorDate" type="date">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" data-close="investorModal">
+          Cancel
+        </button>
+
+        <button type="submit" class="btn btn-primary">
+          Save Investor
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+
+<!-- INVESTOR DETAIL MODAL -->
+
+<div class="modal" id="detailModal">
+  <div class="sheet">
+
+    <div class="handle"></div>
+
+    <div class="sheet-head">
+      <h2 id="detailName">Investor</h2>
+      <button class="close" data-close="detailModal">×</button>
+    </div>
+
+    <div class="detail-grid" id="detailGrid"></div>
+
+    <div class="actions" style="margin-top:14px">
+
+      <button class="btn btn-secondary" id="editDetail">
+        Edit
+      </button>
+
+      <button class="btn btn-secondary" id="payoutDetail">
+        Copy Payout
+      </button>
+
+    </div>
+
+    <button class="btn btn-danger" style="width:100%;margin-top:9px" id="deleteDetail">
+      Delete Investor
+    </button>
+
+  </div>
+</div>
+
+
+<!-- SETTINGS MODAL -->
+
+<div class="modal" id="settingsModal">
+  <div class="sheet">
+
+    <div class="handle"></div>
+
+    <div class="sheet-head">
+      <h2>Settings</h2>
+      <button class="close" data-close="settingsModal">×</button>
+    </div>
+
+    <form id="settingsForm">
+
+      <div class="field">
+        <label for="setManager">Lead Portfolio Manager</label>
+        <input id="setManager" maxlength="80">
+      </div>
+
+      <div class="field">
+        <label for="setPromoter">Promoter Capital</label>
+        <input id="setPromoter" type="number" min="0" step=".01">
+      </div>
+
+      <div class="field">
+        <label for="setFx">USD / INR Reference Rate</label>
+        <input id="setFx" type="number" min=".01" step=".01">
+      </div>
+
+      <div class="field">
+        <label for="setAccent">Theme Accent</label>
+
+        <select id="setAccent">
+          <option value="gold">Gold</option>
+          <option value="emerald">Emerald</option>
+          <option value="cobalt">Cobalt</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="setCurrency">Display Currency</label>
+
+        <select id="setCurrency">
+          <option value="INR">INR — Indian Rupee</option>
+          <option value="USD">USD — US Dollar</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="setThreshold">Auto-Settlement Threshold</label>
+        <input id="setThreshold" type="number" min="0" step=".01">
+      </div>
+
+      <div class="switch-row">
+
+        <div>
+          <div style="font-size:12px;font-weight:750">
+            Audit Mode
+          </div>
+
+          <div class="small-note">
+            Show additional internal calculation details,
+            timestamps, parameters and data-source state.
           </div>
         </div>
+
+        <label class="switch">
+          <input id="setAudit" type="checkbox">
+          <span class="slider"></span>
+        </label>
+
       </div>
-    </div>
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-close="settingsModal"
+        >
+          Cancel
+        </button>
+
+        <button class="btn btn-primary">
+          Save Changes
+        </button>
+
+      </div>
+
+    </form>
+
+    <button
+      class="btn btn-danger"
+      style="width:100%;margin-top:10px"
+      id="resetSettings"
+    >
+      Restore Defaults
+    </button>
+
   </div>
+</div>
 
-  <!-- HIDDEN BOT PDF TEMPLATE FOR DIRECT DOWNLOAD -->
-  <div id="bot-pdf-wrapper">
-    <div id="bot-pdf-render-area">
-      <div style="text-align: center; border-bottom: 2px solid #111827; padding-bottom: 12px; margin-bottom: 14px;">
-        <h1 style="font-size: 1.2rem; margin: 0; color: #111827; text-transform: uppercase; font-weight: 800;">
-          Master Settlement Statement & Audit Memorandum
-        </h1>
-        <div style="font-size: 0.75rem; color: #4b5563; margin-top: 3px; font-weight: 600; text-transform: uppercase;">
-          Institutional Payout & Transaction Cost Statement
-        </div>
-        <div style="font-size: 0.7rem; color: #111827; margin-top: 5px; font-weight: 600;" id="bot-pdf-ref-time"></div>
-      </div>
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 0.75rem;">
-        <thead>
-          <tr style="background: #0f172a; color: #ffffff; text-transform: uppercase; font-size: 0.68rem;">
-            <th style="padding: 8px 10px; text-align: left;">Statutory / Technical Head</th>
-            <th style="padding: 8px 10px; text-align: right;">Amount (INR)</th>
-          </tr>
-        </thead>
-        <tbody id="bot-pdf-table-body"></tbody>
-      </table>
-      <div style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
-        <span style="font-size: 0.8rem; font-weight: 800; color: #0f172a; text-transform: uppercase;">Net Distributable Pool Yield</span>
-        <strong style="font-size: 1.05rem; color: #047857;" id="bot-pdf-net-display">₹0.00</strong>
-      </div>
+
+<!-- MARKET MODAL -->
+
+<div class="modal" id="marketModal">
+  <div class="sheet">
+
+    <div class="handle"></div>
+
+    <div class="sheet-head">
+      <h2>Market Configuration</h2>
+      <button class="close" data-close="marketModal">×</button>
     </div>
+
+    <div class="notice">
+      Security rule: this frontend does not store GoldAPI, FastForex,
+      or any other provider secret. Use your own secure backend/proxy
+      endpoints. Leave endpoints blank to disable live market sync.
+    </div>
+
+    <div class="field" style="margin-top:15px">
+      <label for="goldEndpoint">Gold Backend Endpoint</label>
+      <input
+        id="goldEndpoint"
+        placeholder="https://your-server.example/api/gold"
+      >
+    </div>
+
+    <div class="field">
+      <label for="fxEndpoint">FX Backend Endpoint</label>
+      <input
+        id="fxEndpoint"
+        placeholder="https://your-server.example/api/usdinr"
+      >
+    </div>
+
+    <div class="form-actions">
+
+      <button
+        class="btn btn-secondary"
+        data-close="marketModal"
+        type="button"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="btn btn-primary"
+        id="saveMarket"
+        type="button"
+      >
+        Save Endpoints
+      </button>
+
+    </div>
+
+    <p class="small-note" style="margin-top:12px">
+      Expected JSON:
+      Gold → {"price":2650.25}
+      &nbsp; | &nbsp;
+      FX → {"rate":87.12}
+    </p>
+
   </div>
+</div>
 
-  <script>
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.innerText = message;
-      toast.classList.add('show');
-      setTimeout(() => { toast.classList.remove('show'); }, 2500);
+
+<!-- YIELD MODAL -->
+
+<div class="modal" id="yieldModal">
+  <div class="sheet">
+
+    <div class="handle"></div>
+
+    <div class="sheet-head">
+      <h2>Progressive Yield Engine</h2>
+      <button class="close" data-close="yieldModal">×</button>
+    </div>
+
+    <div class="detail-grid">
+
+      <div class="detail">
+        <span>Cycle</span>
+        <strong>30 Days</strong>
+      </div>
+
+      <div class="detail">
+        <span>Indicative Range</span>
+        <strong class="positive">8% – 12%</strong>
+      </div>
+
+      <div class="detail">
+        <span>Current Day</span>
+        <strong id="yieldDay">—</strong>
+      </div>
+
+      <div class="detail">
+        <span>Calculation</span>
+        <strong>Internal</strong>
+      </div>
+
+    </div>
+
+    <div class="notice" style="margin-top:14px">
+      The engine calculates a progressive MTD position through the current
+      calendar month. It is an internal/indicative calculation and does
+      not represent a guaranteed return.
+    </div>
+
+  </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+"use strict";
+
+const STORAGE = {
+  investors:"aureus_investors_v3",
+  settings:"aureus_settings_v3",
+  market:"aureus_market_v3"
+};
+
+const DEFAULTS = {
+  manager:"Kaif Alvi",
+  promoter:50000,
+  fx:87,
+  accent:"gold",
+  currency:"INR",
+  settlementThreshold:50000,
+  auditMode:false
+};
+
+const state = {
+  investors:[],
+  settings:{...DEFAULTS},
+  market:{
+    goldEndpoint:"",
+    fxEndpoint:"",
+    gold:null,
+    fx:null,
+    goldUpdated:null,
+    fxUpdated:null
+  },
+  currentView:"home",
+  investorFilter:"all",
+  investorSearch:"",
+  sort:"capital",
+  selectedInvestorId:null,
+  selectedSettlementAmount:50000,
+  latestSettlement:null
+};
+
+const $ = id => document.getElementById(id);
+
+const money = n =>
+  new Intl.NumberFormat("en-IN",{
+    style:"currency",
+    currency:"INR",
+    maximumFractionDigits:2
+  }).format(Number(n)||0);
+
+const usd = n =>
+  new Intl.NumberFormat("en-US",{
+    style:"currency",
+    currency:"USD",
+    maximumFractionDigits:2
+  }).format(Number(n)||0);
+
+const esc = s =>
+  String(s).replace(/[&<>"']/g,c=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
+
+const uid = () =>
+  crypto.randomUUID
+    ? crypto.randomUUID()
+    : "inv_"+Date.now()+"_"+Math.random().toString(36).slice(2);
+
+const clamp = (n,min,max) =>
+  Math.min(max,Math.max(min,n));
+
+const formatDate = value =>
+  value
+    ? new Date(value).toLocaleDateString("en-IN",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+      })
+    : "—";
+
+const currencySymbol = () =>
+  state.settings.currency === "USD" ? "$" : "₹";
+
+const displayMoney = n => {
+  const value = Number(n)||0;
+
+  if(state.settings.currency === "USD"){
+    return usd(value/(Number(state.settings.fx)||87));
+  }
+
+  return money(value);
+};
+
+function applyTheme(){
+  const theme =
+    ["gold","emerald","cobalt"].includes(state.settings.accent)
+      ? state.settings.accent
+      : "gold";
+
+  document.documentElement.dataset.theme = theme;
+}
+
+function save(){
+
+  localStorage.setItem(
+    STORAGE.investors,
+    JSON.stringify(state.investors)
+  );
+
+  localStorage.setItem(
+    STORAGE.settings,
+    JSON.stringify(state.settings)
+  );
+
+  localStorage.setItem(
+    STORAGE.market,
+    JSON.stringify({
+      goldEndpoint:state.market.goldEndpoint,
+      fxEndpoint:state.market.fxEndpoint,
+      gold:state.market.gold,
+      fx:state.market.fx,
+      goldUpdated:state.market.goldUpdated,
+      fxUpdated:state.market.fxUpdated
+    })
+  );
+}
+
+function load(){
+
+  try{
+
+    const inv =
+      JSON.parse(
+        localStorage.getItem(STORAGE.investors)||"[]"
+      );
+
+    const settings =
+      JSON.parse(
+        localStorage.getItem(STORAGE.settings)||"null"
+      );
+
+    const market =
+      JSON.parse(
+        localStorage.getItem(STORAGE.market)||"null"
+      );
+
+    state.investors =
+      Array.isArray(inv)
+        ? inv.map(i=>({
+            ...i,
+            status:i.status ||
+              (i.active===false ? "settled":"active")
+          }))
+        : [];
+
+    state.settings = {
+      ...DEFAULTS,
+      ...(settings||{})
+    };
+
+    state.market = {
+      ...state.market,
+      ...(market||{})
+    };
+
+  }catch(error){
+
+    state.investors=[];
+    state.settings={...DEFAULTS};
+
+  }
+}
+
+function cycleInfo(){
+
+  const now = new Date();
+
+  const day = now.getDate();
+
+  const days =
+    new Date(
+      now.getFullYear(),
+      now.getMonth()+1,
+      0
+    ).getDate();
+
+  const seed =
+    now.getFullYear()*100+
+    now.getMonth()+1;
+
+  const target =
+    clamp(
+      8+
+      (((seed*9301+49297)%200)/50),
+      8,
+      12
+    );
+
+  const progress =
+    clamp(day/days,0,1);
+
+  const rate =
+    Math.max(.5,target*progress);
+
+  return {
+    day,
+    days,
+    target,
+    progress,
+    rate,
+    remaining:Math.max(days-day,0)
+  };
+}
+
+function totals(){
+
+  const active =
+    state.investors.filter(
+      i=>i.status==="active"
+    );
+
+  const investorCapital =
+    active.reduce(
+      (sum,i)=>sum+(Number(i.capital)||0),
+      0
+    );
+
+  const promoter =
+    Number(state.settings.promoter)||0;
+
+  const pool =
+    investorCapital+promoter;
+
+  const cycle = cycleInfo();
+
+  const profit =
+    pool*cycle.rate/100;
+
+  return {
+    active,
+    investorCapital,
+    promoter,
+    pool,
+    profit,
+    rate:cycle.rate
+  };
+}
+
+function investorProfit(inv){
+
+  const rate =
+    Number(inv.rate)>0
+      ? Number(inv.rate)
+      : cycleInfo().rate;
+
+  if(inv.status!=="active") return 0;
+
+  return (Number(inv.capital)||0)*rate/100;
+}
+
+function render(){
+
+  applyTheme();
+
+  const t = totals();
+  const c = cycleInfo();
+
+  $("managerName").textContent =
+    state.settings.manager;
+
+  $("portManager").textContent =
+    state.settings.manager;
+
+  $("promoterCapital").textContent =
+    displayMoney(state.settings.promoter);
+
+  $("homePromoter").textContent =
+    displayMoney(state.settings.promoter);
+
+  $("totalPool").textContent =
+    displayMoney(t.pool);
+
+  $("investorCapitalTotal").textContent =
+    displayMoney(t.investorCapital);
+
+  $("activeCapital").textContent =
+    displayMoney(t.investorCapital);
+
+  $("currentPortfolioValue").textContent =
+    displayMoney(t.pool+t.profit);
+
+  $("homeProfit").textContent =
+    displayMoney(t.profit);
+
+  $("activeCountBadge").textContent =
+    `${t.active.length} active`;
+
+  $("homeInvestorCount").textContent =
+    state.investors.length;
+
+  $("homeActiveInvestors").textContent =
+    t.active.length;
+
+  $("homeRate").textContent =
+    c.rate.toFixed(2)+"%";
+
+  $("cycleDay").textContent =
+    `Day ${c.day} of ${c.days}`;
+
+  $("cycleProgress").style.width =
+    (c.progress*100).toFixed(1)+"%";
+
+  $("daysRemaining").textContent =
+    `${c.remaining} day${c.remaining===1?"":"s"} remaining`;
+
+  $("portPool").textContent =
+    displayMoney(t.pool);
+
+  $("portCurrentValue").textContent =
+    displayMoney(t.pool+t.profit);
+
+  $("portProfit").textContent =
+    displayMoney(t.profit);
+
+  $("portRate").textContent =
+    c.rate.toFixed(2)+"%";
+
+  $("portRateLarge").textContent =
+    c.rate.toFixed(2)+"%";
+
+  $("portCycleDay").textContent =
+    `Day ${c.day} of ${c.days}`;
+
+  $("portProgress").style.width =
+    (c.progress*100).toFixed(1)+"%";
+
+  $("portRemaining").textContent =
+    `${c.remaining} day${c.remaining===1?"":"s"} remaining`;
+
+  $("portInvestor").textContent =
+    displayMoney(t.investorCapital);
+
+  $("portPromoter").textContent =
+    displayMoney(t.promoter);
+
+  $("portActiveCount").textContent =
+    state.investors.filter(i=>i.status==="active").length;
+
+  $("portPendingCount").textContent =
+    state.investors.filter(i=>i.status==="pending").length;
+
+  $("portSettledCount").textContent =
+    state.investors.filter(i=>i.status==="settled").length;
+
+  $("yieldDay").textContent =
+    `${c.day} / ${c.days}`;
+
+  if($("auditStatus")){
+    $("auditStatus").textContent =
+      `Audit mode: ${
+        state.settings.auditMode ? "On":"Off"
+      } • Threshold: ${
+        displayMoney(state.settings.settlementThreshold)
+      }`;
+  }
+
+  renderInvestors();
+  renderSettlementInvestorList();
+  renderMarket();
+}
+
+function renderInvestors(){
+
+  const query =
+    state.investorSearch
+      .trim()
+      .toLowerCase();
+
+  let arr =
+    state.investors.filter(inv=>{
+
+      const status =
+        inv.status ||
+        (inv.active===false
+          ? "settled"
+          : "active");
+
+      const filterMatch =
+        state.investorFilter==="all" ||
+        status===state.investorFilter;
+
+      const searchMatch =
+        !query ||
+        String(inv.name||"")
+          .toLowerCase()
+          .includes(query);
+
+      return filterMatch && searchMatch;
+    });
+
+  const cycle = cycleInfo();
+
+  arr.sort((a,b)=>{
+
+    if(state.sort==="name"){
+      return String(a.name)
+        .localeCompare(String(b.name));
     }
 
-    const DEFAULT_PROMOTER = { name: 'Kaif Alvi', capital: 50000 };
-    const DEFAULT_FX = 87.0;
-
-    let promoter = { ...DEFAULT_PROMOTER };
-    let usdInrRate = DEFAULT_FX;
-    let customUsd = null;
-    let investors = [];
-    let currentPlatformMode = 'ledger';
-    let liveGoldPrice = 2000;
-    let currentGlobalRate = 10.00;
-
-    function loadSavedState() {
-      try {
-        const p = localStorage.getItem('pool_promoter');
-        if (p) promoter = JSON.parse(p);
-        const fx = localStorage.getItem('pool_fx_rate');
-        if (fx) usdInrRate = parseFloat(fx) || DEFAULT_FX;
-        const cu = localStorage.getItem('pool_custom_usd');
-        if (cu) customUsd = parseFloat(cu);
-
-        const invs = localStorage.getItem('pool_invs');
-        if (invs !== null) {
-          const parsed = JSON.parse(invs);
-          if (Array.isArray(parsed)) {
-            investors = parsed;
-          }
-        } else {
-          investors = [];
-          localStorage.setItem('pool_invs', JSON.stringify(investors));
-        }
-      } catch(e) {
-        investors = [];
-      }
-    }
-    loadSavedState();
-
-    function getTimeStr() {
-      const d = new Date();
-      const dt = String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
-      let h = d.getHours(); const m = String(d.getMinutes()).padStart(2, '0');
-      const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12;
-      return dt + ' ' + String(h).padStart(2, '0') + ':' + m + ' ' + ap;
+    if(state.sort==="profit"){
+      return investorProfit(b)-investorProfit(a);
     }
 
-    function togglePlatformMode() {
-      const ledgerView = document.getElementById('ledger-view');
-      const botView = document.getElementById('bot-view');
-      const title = document.getElementById('app-title');
-      const toggleBtn = document.getElementById('mode-toggle-btn');
+    return (
+      (Number(b.capital)||0)-
+      (Number(a.capital)||0)
+    );
+  });
 
-      if (currentPlatformMode === 'ledger') {
-        currentPlatformMode = 'bot';
-        ledgerView.style.display = 'none';
-        botView.style.display = 'block';
-        title.innerText = 'Settlement Bot';
-        toggleBtn.title = 'Switch to Portfolio Ledger';
-        selectBotUsd(500);
-        showToast('Switched to Settlement Bot');
-      } else {
-        currentPlatformMode = 'ledger';
-        botView.style.display = 'none';
-        ledgerView.style.display = 'block';
-        title.innerText = 'Portfolio Ledger';
-        toggleBtn.title = 'Switch to Settlement Bot';
-        showToast('Switched to Portfolio Ledger');
-      }
-    }
+  $("investorCountLabel").textContent =
+    `${arr.length} investor${arr.length===1?"":"s"}`;
 
-    async function fetchLiveMarketData() {
-      try {
-        const forexRes = await fetch('https://api.fastforex.io/fetch-one?from=USD&to=INR&api_key=97fec7c71f-e510024829-tmibks');
-        const forexData = await forexRes.json();
-        if (forexData && forexData.result && forexData.result.INR) {
-          const liveRate = parseFloat(forexData.result.INR);
-          if (!isNaN(liveRate) && liveRate > 0) {
-            usdInrRate = liveRate;
-            document.getElementById('bot-live-rate').innerHTML = `<span class="live-dot"></span> LIVE FastForex USD: ₹${usdInrRate.toFixed(2)}`;
-          }
-        }
-      } catch (e) {
-        console.log('FastForex Fallback Used');
-      }
+  if(!arr.length){
 
-      try {
-        const goldRes = await fetch('https://www.goldapi.io/api/XAU/USD', {
-          headers: { 'x-access-token': 'goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io' }
-        });
-        const goldData = await goldRes.json();
-        if (goldData && goldData.price) {
-          liveGoldPrice = parseFloat(goldData.price);
-          document.getElementById('market-title').innerText = `Gold Spot (XAU/USD): $${liveGoldPrice.toFixed(2)} (Live)`;
-          document.getElementById('market-status-badge').innerText = 'GoldAPI Synced';
-        } else {
-          document.getElementById('market-title').innerText = `Gold (XAU/USD): Live Spot Tracked`;
-        }
-      } catch (e) {
-        document.getElementById('market-title').innerText = `Gold (XAU/USD): Live Spot Tracked`;
-      }
-      runCalc();
-    }
+    $("investorList").innerHTML = `
+      <div class="card empty">
+        <strong>No investors found</strong>
+        <span>
+          Add an investor or adjust your search/filter.
+        </span>
+      </div>
+    `;
 
-    function saveState() {
-      try {
-        localStorage.setItem('pool_invs', JSON.stringify(investors));
-        localStorage.setItem('pool_promoter', JSON.stringify(promoter));
-        localStorage.setItem('pool_fx_rate', usdInrRate);
-        if (customUsd !== null) localStorage.setItem('pool_custom_usd', customUsd);
-        else localStorage.removeItem('pool_custom_usd');
-      } catch(e) {}
-      runCalc();
-    }
+    return;
+  }
 
-    function resetYieldOverrides() {
-      if (confirm('Kya aap custom yield & FX overrides ko reset karke 8%-12% progressive engine par wapas laana chahte hain?')) {
-        localStorage.removeItem('pool_custom_usd');
-        localStorage.removeItem('pool_fx_rate');
-        customUsd = null;
-        usdInrRate = DEFAULT_FX;
-        openSettings(false);
-        runCalc();
-        showToast('Reset to 8%-12% Progressive Engine!');
-      }
-    }
+  $("investorList").innerHTML =
+    arr.map(inv=>{
 
-    function openBook(show) {
-      if (show) renderBook();
-      document.getElementById('book-modal').style.display = show ? 'flex' : 'none';
-      if (!show) runCalc();
-    }
+      const status =
+        inv.status ||
+        (inv.active===false
+          ? "settled"
+          : "active");
 
-    function openSettings(show) {
-      if (show) {
-        document.getElementById('setting-name').value = promoter.name;
-        document.getElementById('setting-cap').value = promoter.capital;
-        document.getElementById('setting-usd').value = customUsd !== null ? customUsd : '';
-        document.getElementById('setting-fx').value = usdInrRate;
-      }
-      document.getElementById('settings-modal').style.display = show ? 'flex' : 'none';
-    }
+      const rate =
+        Number(inv.rate)>0
+          ? Number(inv.rate)
+          : cycle.rate;
 
-    function saveSettings() {
-      const n = document.getElementById('setting-name').value.trim();
-      const c = parseFloat(document.getElementById('setting-cap').value);
-      const usdVal = document.getElementById('setting-usd').value.trim();
-      const fxVal = parseFloat(document.getElementById('setting-fx').value);
-      
-      if (!n || isNaN(c) || c < 0) return alert('Kripya valid name & capital enter karein');
-      promoter.name = n; promoter.capital = c;
-      if (!isNaN(fxVal) && fxVal > 0) usdInrRate = fxVal;
-      if (usdVal !== '') {
-        const parsedU = parseFloat(usdVal);
-        if (!isNaN(parsedU) && parsedU >= 0) customUsd = parsedU;
-      } else {
-        customUsd = null;
-      }
-      saveState();
-      openSettings(false);
-      showToast('Settings Saved Successfully!');
-    }
+      const profit =
+        investorProfit(inv);
 
-    function renderBook() {
-      const ml = document.getElementById('modal-investor-list');
-      ml.innerHTML = '';
-      if (investors.length === 0) {
-        ml.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:8px;">No investors in directory.</div>';
-        return;
-      }
-      investors.forEach(inv => {
-        const div = document.createElement('div');
-        div.className = 'book-item';
-        div.innerHTML = `
-          <div style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; flex-grow:1;" onclick="openEditModalFromBook('${inv.id}')">
-            <input type="checkbox" ${inv.active !== false ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleInv('${inv.id}')" style="width:17px; height:17px; accent-color:var(--green); margin-top:2px;" />
-            <div>
-              <strong style="display:inline-flex; align-items:center; gap:6px;">
-                ${inv.name} (${inv.id}) 
-                <svg style="width:12px; height:12px; stroke:var(--muted); fill:none; stroke-width:2;" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              </strong>
-              <span class="info">Principal: ₹${inv.capital.toLocaleString('en-IN')}</span>
-              <span class="time">Joined: ${inv.time || 'Registered'}</span>
+      const initials =
+        String(inv.name||"IN")
+          .split(/\s+/)
+          .slice(0,2)
+          .map(x=>x[0])
+          .join("")
+          .toUpperCase();
+
+      const label =
+        status.charAt(0).toUpperCase()+
+        status.slice(1);
+
+      return `
+        <button
+          class="card investor"
+          data-investor="${esc(inv.id)}"
+        >
+
+          <div class="inv-avatar">
+            ${esc(initials)}
+          </div>
+
+          <div class="inv-main">
+
+            <div class="inv-name">
+              ${esc(inv.name)}
             </div>
+
+            <div class="inv-meta">
+
+              <span>
+                <i class="status-dot status-${esc(status)}"></i>
+                ${label}
+              </span>
+
+              <span>
+                ${status==="active"
+                  ? rate.toFixed(2)+"%"
+                  : "Ledger record"}
+              </span>
+
+              <span>
+                ${formatDate(inv.date||inv.createdAt)}
+              </span>
+
+            </div>
+
           </div>
-          <button type="button" class="del-btn" onclick="delInv('${inv.id}')">✕</button>
-        `;
-        ml.appendChild(div);
+
+          <div class="inv-right">
+
+            <div class="inv-profit">
+              ${displayMoney(profit)}
+            </div>
+
+            <div class="inv-cap">
+              ${displayMoney(inv.capital)}
+            </div>
+
+          </div>
+
+        </button>
+      `;
+
+    }).join("");
+
+  document
+    .querySelectorAll("[data-investor]")
+    .forEach(btn=>{
+      btn.addEventListener(
+        "click",
+        ()=>openInvestorDetail(btn.dataset.investor)
+      );
+    });
+}
+
+function renderSettlementInvestorList(){
+
+  const select =
+    $("settlementInvestor");
+
+  if(!select) return;
+
+  const current = select.value;
+
+  select.innerHTML =
+    `<option value="">General / Portfolio Settlement</option>`+
+    state.investors
+      .map(inv=>`
+        <option value="${esc(inv.id)}">
+          ${esc(inv.name)} — ${displayMoney(inv.capital)}
+        </option>
+      `)
+      .join("");
+
+  if(
+    current &&
+    state.investors.some(i=>i.id===current)
+  ){
+    select.value=current;
+  }
+}
+
+function renderMarket(){
+
+  const market=state.market;
+
+  if(Number.isFinite(Number(market.gold))){
+
+    $("goldPrice").textContent =
+      usd(market.gold);
+
+    $("goldStatus").textContent =
+      market.goldUpdated
+        ? `Updated ${new Date(
+            market.goldUpdated
+          ).toLocaleTimeString([],{
+            hour:"2-digit",
+            minute:"2-digit"
+          })}`
+        : "Updated";
+
+    $("goldDot").className =
+      "status-dot status-active";
+
+  }else{
+
+    $("goldPrice").textContent =
+      "Unavailable";
+
+    $("goldStatus").textContent =
+      "Awaiting connection";
+
+    $("goldDot").className =
+      "status-dot status-settled";
+  }
+
+  if(Number.isFinite(Number(market.fx))){
+
+    $("fxRate").textContent =
+      money(market.fx);
+
+    $("fxStatus").textContent =
+      market.fxUpdated
+        ? `Updated ${new Date(
+            market.fxUpdated
+          ).toLocaleTimeString([],{
+            hour:"2-digit",
+            minute:"2-digit"
+          })}`
+        : "Updated";
+
+    $("fxDot").className =
+      "status-dot status-active";
+
+  }else{
+
+    $("fxRate").textContent =
+      money(state.settings.fx);
+
+    $("fxStatus").textContent =
+      "Configured reference";
+
+    $("fxDot").className =
+      "status-dot status-settled";
+  }
+}
+
+async function fetchJson(url){
+
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(
+      ()=>controller.abort(),
+      8000
+    );
+
+  try{
+
+    const response =
+      await fetch(url,{
+        headers:{
+          Accept:"application/json"
+        },
+        signal:controller.signal,
+        cache:"no-store"
       });
+
+    if(!response.ok){
+      throw new Error(
+        `HTTP ${response.status}`
+      );
     }
 
-    function openEditModalFromBook(id) {
-      const inv = investors.find(i => i.id === id);
-      if (inv) {
-        document.getElementById('edit-inv-id').value = inv.id;
-        document.getElementById('edit-inv-name').value = inv.name;
-        document.getElementById('edit-inv-cap').value = inv.capital;
-        document.getElementById('edit-investor-modal').style.display = 'flex';
+    return await response.json();
+
+  }finally{
+
+    clearTimeout(timeout);
+
+  }
+}
+
+async function refreshMarket(){
+
+  let changed=false;
+
+  if(state.market.goldEndpoint){
+
+    try{
+
+      const data =
+        await fetchJson(
+          state.market.goldEndpoint
+        );
+
+      const price =
+        Number(
+          data.price ??
+          data.xauUsd ??
+          data.value
+        );
+
+      if(Number.isFinite(price)){
+
+        state.market.gold=price;
+        state.market.goldUpdated=
+          new Date().toISOString();
+
+        changed=true;
       }
-    }
 
-    function closeEditModal() {
-      document.getElementById('edit-investor-modal').style.display = 'none';
-    }
+    }catch(error){}
+  }
 
-    function saveEditedInvestor() {
-      const id = document.getElementById('edit-inv-id').value;
-      const newName = document.getElementById('edit-inv-name').value.trim();
-      const newCap = parseFloat(document.getElementById('edit-inv-cap').value);
+  if(state.market.fxEndpoint){
 
-      if (!newName || isNaN(newCap) || newCap <= 0) {
-        return alert('Kripya valid name aur capital amount enter karein');
+    try{
+
+      const data =
+        await fetchJson(
+          state.market.fxEndpoint
+        );
+
+      const rate =
+        Number(
+          data.rate ??
+          data.usdInr ??
+          data.value
+        );
+
+      if(
+        Number.isFinite(rate) &&
+        rate>0
+      ){
+
+        state.market.fx=rate;
+        state.market.fxUpdated=
+          new Date().toISOString();
+
+        state.settings.fx=rate;
+
+        changed=true;
       }
 
-      const inv = investors.find(i => i.id === id);
-      if (inv) {
-        inv.name = newName;
-        inv.capital = newCap;
-        saveState();
-        closeEditModal();
-        renderBook();
-        runCalc();
-        showToast('Investor updated successfully!');
-      }
+    }catch(error){}
+  }
+
+  save();
+  render();
+
+  toast(
+    changed
+      ? "Market data synchronized."
+      : "No live endpoint configured or data unavailable.",
+    changed
+      ? "success"
+      : "error"
+  );
+}
+
+function toast(message,type="success"){
+
+  const element=$("toast");
+
+  element.textContent=message;
+
+  element.className=
+    `toast show ${type}`;
+
+  clearTimeout(toast.timer);
+
+  toast.timer=
+    setTimeout(
+      ()=>element.className="toast",
+      2600
+    );
+}
+
+function navigate(view){
+
+  const valid=[
+    "home",
+    "portfolio",
+    "investors",
+    "settlement",
+    "more"
+  ];
+
+  if(!valid.includes(view)){
+    view="home";
+  }
+
+  state.currentView=view;
+
+  document
+    .querySelectorAll(".view")
+    .forEach(section=>{
+      section.classList.toggle(
+        "active",
+        section.id==="view-"+view
+      );
+    });
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(button=>{
+      button.classList.toggle(
+        "active",
+        button.dataset.nav===view
+      );
+    });
+
+  const titles={
+    home:"AUREUS",
+    portfolio:"Portfolio",
+    investors:"Investors",
+    settlement:"Settlement",
+    more:"More"
+  };
+
+  $("headerTitle").textContent =
+    titles[view];
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function openModal(id){
+  $(id)?.classList.add("open");
+  document.body.style.overflow="hidden";
+}
+
+function closeModal(id){
+  $(id)?.classList.remove("open");
+
+  if(
+    !document.querySelector(".modal.open")
+  ){
+    document.body.style.overflow="";
+  }
+}
+
+function openInvestorForm(id=null){
+
+  const investor =
+    id
+      ? state.investors.find(
+          x=>x.id===id
+        )
+      : null;
+
+  $("investorModalTitle").textContent =
+    investor
+      ? "Edit Investor"
+      : "Add Investor";
+
+  $("editInvestorId").value =
+    investor?.id || "";
+
+  $("investorName").value =
+    investor?.name || "";
+
+  $("investorCapital").value =
+    investor?.capital ?? "";
+
+  $("investorRate").value =
+    investor?.rate ?? "";
+
+  $("investorDate").value =
+    investor?.date
+      ? String(investor.date).slice(0,10)
+      : investor?.createdAt
+        ? String(investor.createdAt).slice(0,10)
+        : "";
+
+  $("investorStatus").value =
+    investor?.status ||
+    (investor?.active===false
+      ? "settled"
+      : "active");
+
+  openModal("investorModal");
+
+  setTimeout(
+    ()=>$("investorName").focus(),
+    120
+  );
+}
+
+function openInvestorDetail(id){
+
+  const investor =
+    state.investors.find(
+      x=>x.id===id
+    );
+
+  if(!investor) return;
+
+  state.selectedInvestorId=id;
+
+  const rate =
+    Number(investor.rate)>0
+      ? Number(investor.rate)
+      : cycleInfo().rate;
+
+  const profit =
+    investorProfit(investor);
+
+  const value =
+    (Number(investor.capital)||0)+
+    profit;
+
+  $("detailName").textContent =
+    investor.name;
+
+  $("detailGrid").innerHTML=`
+
+    <div class="detail">
+      <span>Status</span>
+      <strong class="${
+        investor.status==="active"
+          ? "positive"
+          : ""
+      }">
+        ${esc(
+          (investor.status||"active")
+            .charAt(0)
+            .toUpperCase()+
+          (investor.status||"active")
+            .slice(1)
+        )}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Invested Capital</span>
+      <strong>
+        ${displayMoney(investor.capital)}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Current Rate</span>
+      <strong class="positive">
+        ${rate.toFixed(2)}%
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Profit</span>
+      <strong class="positive">
+        ${displayMoney(profit)}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Current Value</span>
+      <strong>
+        ${displayMoney(value)}
+      </strong>
+    </div>
+
+    <div class="detail">
+      <span>Relevant Date</span>
+      <strong>
+        ${formatDate(investor.date||investor.createdAt)}
+      </strong>
+    </div>
+
+  `;
+
+  if(state.settings.auditMode){
+
+    $("detailGrid").insertAdjacentHTML(
+      "beforeend",
+      `
+      <div class="detail">
+        <span>Calculation State</span>
+        <strong>Internal</strong>
+      </div>
+
+      <div class="detail">
+        <span>Timestamp</span>
+        <strong>
+          ${formatDate(new Date())}
+        </strong>
+      </div>
+      `
+    );
+  }
+
+  openModal("detailModal");
+}
+
+function payoutMessage(investor){
+
+  const profit =
+    investorProfit(investor);
+
+  const net =
+    (Number(investor.capital)||0)+profit;
+
+  return [
+    "AUREUS — Internal Payout Summary",
+    `Investor: ${investor.name}`,
+    `Status: ${investor.status}`,
+    `Capital: ${displayMoney(investor.capital)}`,
+    `Calculated Profit: ${displayMoney(profit)}`,
+    `Net Value: ${displayMoney(net)}`,
+    `Manager: ${state.settings.manager}`,
+    "Internal calculation only."
+  ].join("\n");
+}
+
+function calculateSettlement(){
+
+  let amount =
+    Number($("customAmount").value);
+
+  if(
+    $("customAmount").value.trim()===""
+  ){
+    amount =
+      state.selectedSettlementAmount;
+  }
+
+  if(
+    !Number.isFinite(amount) ||
+    amount<=0
+  ){
+
+    toast(
+      "Enter a valid settlement amount.",
+      "error"
+    );
+
+    return;
+  }
+
+  const investorId =
+    $("settlementInvestor").value;
+
+  const investor =
+    state.investors.find(
+      x=>x.id===investorId
+    );
+
+  if(investor){
+
+    amount =
+      Number(investor.capital)||amount;
+
+    if(
+      $("customAmount").value.trim()===""
+    ){
+      $("customAmount").value =
+        amount;
+    }
+  }
+
+  const fx =
+    Number($("settlementFx").value) ||
+    Number(state.settings.fx) ||
+    87;
+
+  const gross=amount;
+
+  /*
+    Configured internal settlement engine.
+    These values are deliberately labelled as internal
+    estimates and are not presented as official provider,
+    tax, regulatory or statutory rates.
+  */
+
+  const configuredFeeRate=.50;
+  const adjustmentRate=.25;
+
+  const fee =
+    gross*configuredFeeRate/100;
+
+  const adjustment =
+    gross*adjustmentRate/100;
+
+  const deductions =
+    fee+adjustment;
+
+  const net =
+    Math.max(0,gross-deductions);
+
+  state.latestSettlement={
+    investorId,
+    investorName:
+      investor?.name ||
+      "General / Portfolio Settlement",
+    currency:
+      $("settlementCurrency").value,
+    gross,
+    fee,
+    adjustment,
+    deductions,
+    net,
+    fx,
+    timestamp:new Date().toISOString()
+  };
+
+  $("netSettlement").textContent =
+    $("settlementCurrency").value==="USD"
+      ? usd(net/fx)
+      : money(net);
+
+  $("settlementBreakdown").innerHTML=`
+
+    <div class="break-row">
+      <span>Gross Amount</span>
+      <span>
+        ${
+          $("settlementCurrency").value==="USD"
+            ? usd(gross/fx)
+            : money(gross)
+        }
+      </span>
+    </div>
+
+    <div class="break-row">
+      <span>Configured Fee</span>
+      <span class="red">
+        -${
+          $("settlementCurrency").value==="USD"
+            ? usd(fee/fx)
+            : money(fee)
+        }
+      </span>
+    </div>
+
+    <div class="break-row">
+      <span>Configured Adjustment</span>
+      <span class="red">
+        -${
+          $("settlementCurrency").value==="USD"
+            ? usd(adjustment/fx)
+            : money(adjustment)
+        }
+      </span>
+    </div>
+
+    <div class="break-row">
+      <span>Total Deductions</span>
+      <span class="red">
+        -${
+          $("settlementCurrency").value==="USD"
+            ? usd(deductions/fx)
+            : money(deductions)
+        }
+      </span>
+    </div>
+
+    <div class="break-row">
+      <span>Net Settlement</span>
+      <span class="positive">
+        ${
+          $("settlementCurrency").value==="USD"
+            ? usd(net/fx)
+            : money(net)
+        }
+      </span>
+    </div>
+
+    <div class="break-row">
+      <span>FX Reference</span>
+      <span>₹${fx.toFixed(2)}</span>
+    </div>
+
+    ${
+      state.settings.auditMode
+        ? `
+          <div class="break-row">
+            <span>Calculation State</span>
+            <span>Internal / Calculated</span>
+          </div>
+
+          <div class="break-row">
+            <span>Timestamp</span>
+            <span>${new Date().toLocaleString()}</span>
+          </div>
+        `
+        : ""
     }
 
-    function addInv() {
-      const n = document.getElementById('new-name').value.trim();
-      const c = parseFloat(document.getElementById('new-cap').value);
-      if (!n || isNaN(c) || c <= 0) return alert('Kripya sahi name aur amount enter karein');
-      let max = 100;
-      investors.forEach(i => {
-        const num = parseInt(i.id.replace('CLI-', '')) || 100;
-        if (num > max) max = num;
+  `;
+
+  $("settlementResult")
+    .classList.add("gold-border");
+
+  toast(
+    "Settlement calculated successfully.",
+    "success"
+  );
+}
+
+function buildPortfolioPdf(){
+
+  const pdfLib =
+    window.jspdf?.jsPDF;
+
+  if(!pdfLib){
+
+    toast(
+      "PDF library unavailable.",
+      "error"
+    );
+
+    return;
+  }
+
+  const doc =
+    new pdfLib({
+      unit:"mm",
+      format:"a4"
+    });
+
+  const t=totals();
+  const c=cycleInfo();
+
+  doc.setFillColor(5,6,7);
+  doc.rect(0,0,210,297,"F");
+
+  doc.setTextColor(212,175,55);
+  doc.setFontSize(22);
+  doc.text("AUREUS",18,22);
+
+  doc.setTextColor(145,153,163);
+  doc.setFontSize(8);
+  doc.text(
+    "INSTITUTIONAL PORTFOLIO & SETTLEMENT",
+    18,
+    29
+  );
+
+  doc.setDrawColor(212,175,55);
+  doc.line(18,35,192,35);
+
+  doc.setTextColor(244,246,248);
+  doc.setFontSize(11);
+  doc.text(
+    "Portfolio Statement",
+    18,
+    48
+  );
+
+  const rows=[
+    ["Manager",state.settings.manager],
+    ["Role","Lead Portfolio Manager"],
+    ["Promoter Capital",displayMoney(t.promoter)],
+    ["Investor Capital",displayMoney(t.investorCapital)],
+    ["Total Capital",displayMoney(t.pool)],
+    ["Current Portfolio Value",displayMoney(t.pool+t.profit)],
+    ["Current Profit",displayMoney(t.profit)],
+    ["MTD Yield",c.rate.toFixed(2)+"%"],
+    ["Progressive Day",`${c.day} / ${c.days}`],
+    ["Calculation Status","Calculated / Indicative / Internal"]
+  ];
+
+  let y=60;
+
+  rows.forEach(([label,value])=>{
+
+    doc.setTextColor(145,153,163);
+    doc.setFontSize(8.5);
+    doc.text(label,18,y);
+
+    doc.setTextColor(231,234,238);
+    doc.text(String(value),192,y,{
+      align:"right"
+    });
+
+    y+=9;
+  });
+
+  doc.setDrawColor(212,175,55);
+  doc.line(18,245,78,245);
+
+  doc.setTextColor(231,234,238);
+  doc.setFontSize(9);
+  doc.text(
+    state.settings.manager,
+    18,
+    253
+  );
+
+  doc.setTextColor(145,153,163);
+  doc.setFontSize(7.5);
+  doc.text(
+    "Lead Portfolio Manager",
+    18,
+    259
+  );
+
+  doc.text(
+    "____________________________",
+    18,
+    269
+  );
+
+  doc.text(
+    "Manager Signature",
+    18,
+    275
+  );
+
+  doc.setFontSize(7);
+  doc.text(
+    "Internal calculation only. Not a bank statement, broker receipt, tax certificate, legal opinion or proof of regulatory approval.",
+    18,
+    285
+  );
+
+  doc.save(
+    `AUREUS_Portfolio_${new Date().toISOString().slice(0,10)}.pdf`
+  );
+
+  toast(
+    "Portfolio A4 PDF generated.",
+    "success"
+  );
+}
+
+function buildSettlementPdf(){
+
+  if(!state.latestSettlement){
+
+    toast(
+      "Generate a settlement first.",
+      "error"
+    );
+
+    return;
+  }
+
+  const pdfLib =
+    window.jspdf?.jsPDF;
+
+  if(!pdfLib){
+
+    toast(
+      "PDF library unavailable.",
+      "error"
+    );
+
+    return;
+  }
+
+  const s =
+    state.latestSettlement;
+
+  const doc =
+    new pdfLib({
+      unit:"mm",
+      format:"a4"
+    });
+
+  doc.setFillColor(5,6,7);
+  doc.rect(0,0,210,297,"F");
+
+  doc.setTextColor(212,175,55);
+  doc.setFontSize(21);
+  doc.text(
+    "AUREUS",
+    18,
+    22
+  );
+
+  doc.setTextColor(145,153,163);
+  doc.setFontSize(8);
+  doc.text(
+    "SETTLEMENT STATEMENT • INTERNAL CALCULATION",
+    18,
+    29
+  );
+
+  doc.setDrawColor(212,175,55);
+  doc.line(18,35,192,35);
+
+  doc.setTextColor(145,153,163);
+  doc.setFontSize(8.5);
+  doc.text(
+    "Investor",
+    18,
+    48
+  );
+
+  doc.setTextColor(244,246,248);
+  doc.text(
+    s.investorName,
+    192,
+    48,
+    {align:"right"}
+  );
+
+  doc.setTextColor(145,153,163);
+  doc.text(
+    "Gross Amount",
+    18,
+    58
+  );
+
+  doc.setTextColor(231,234,238);
+  doc.text(
+    s.currency==="USD"
+      ? usd(s.gross/s.fx)
+      : money(s.gross),
+    192,
+    58,
+    {align:"right"}
+  );
+
+  doc.setTextColor(145,153,163);
+  doc.text(
+    "Total Deductions",
+    18,
+    68
+  );
+
+  doc.setTextColor(239,68,68);
+  doc.text(
+    s.currency==="USD"
+      ? usd(s.deductions/s.fx)
+      : money(s.deductions),
+    192,
+    68,
+    {align:"right"}
+  );
+
+  doc.setTextColor(16,185,129);
+  doc.setFontSize(14);
+  doc.text(
+    `Net Settlement: ${
+      s.currency==="USD"
+        ? usd(s.net/s.fx)
+        : money(s.net)
+    }`,
+    18,
+    82
+  );
+
+  doc.setTextColor(145,153,163);
+  doc.setFontSize(8);
+  doc.text(
+    `FX Reference: ₹${s.fx.toFixed(2)}`,
+    18,
+    92
+  );
+
+  doc.text(
+    `Manager: ${state.settings.manager}`,
+    18,
+    100
+  );
+
+  let y=114;
+
+  [
+    ["Configured Fee",s.fee],
+    ["Configured Adjustment",s.adjustment],
+    ["Net Settlement",s.net]
+  ].forEach(([label,value])=>{
+
+    doc.setTextColor(145,153,163);
+    doc.text(
+      label,
+      18,
+      y
+    );
+
+    doc.setTextColor(231,234,238);
+    doc.text(
+      s.currency==="USD"
+        ? usd(value/s.fx)
+        : money(value),
+      192,
+      y,
+      {align:"right"}
+    );
+
+    y+=9;
+  });
+
+  doc.setDrawColor(212,175,55);
+  doc.line(18,245,78,245);
+
+  doc.setTextColor(231,234,238);
+  doc.setFontSize(9);
+  doc.text(
+    state.settings.manager,
+    18,
+    253
+  );
+
+  doc.setTextColor(145,153,163);
+  doc.setFontSize(7.5);
+  doc.text(
+    "Lead Portfolio Manager",
+    18,
+    259
+  );
+
+  doc.text(
+    "____________________________",
+    18,
+    269
+  );
+
+  doc.text(
+    "Manager Signature",
+    18,
+    275
+  );
+
+  const note =
+    "This is an internal settlement calculation. Configured fees and estimates must be reconciled with actual transaction/provider records. It is not a bank statement, broker receipt, tax certificate, legal opinion, or proof of regulatory approval.";
+
+  doc.setFontSize(7);
+  doc.text(
+    doc.splitTextToSize(note,174),
+    18,
+    284
+  );
+
+  doc.save(
+    `AUREUS_Settlement_${new Date().toISOString().slice(0,10)}.pdf`
+  );
+
+  toast(
+    "Settlement PDF generated.",
+    "success"
+  );
+}
+
+async function shareSettlementPdf(){
+
+  if(!state.latestSettlement){
+
+    toast(
+      "Generate a settlement first.",
+      "error"
+    );
+
+    return;
+  }
+
+  const pdfLib =
+    window.jspdf?.jsPDF;
+
+  if(!pdfLib){
+
+    toast(
+      "PDF library unavailable.",
+      "error"
+    );
+
+    return;
+  }
+
+  const s =
+    state.latestSettlement;
+
+  const doc =
+    new pdfLib({
+      unit:"mm",
+      format:"a4"
+    });
+
+  doc.setFillColor(5,6,7);
+  doc.rect(0,0,210,297,"F");
+
+  doc.setTextColor(212,175,55);
+  doc.setFontSize(20);
+  doc.text("AUREUS",18,22);
+
+  doc.setTextColor(145,153,163);
+  doc.setFontSize(8);
+  doc.text(
+    "SETTLEMENT STATEMENT • INTERNAL CALCULATION",
+    18,
+    29
+  );
+
+  doc.setTextColor(244,246,248);
+  doc.setFontSize(10);
+  doc.text(
+    `Investor: ${s.investorName}`,
+    18,
+    48
+  );
+
+  doc.setTextColor(16,185,129);
+  doc.setFontSize(14);
+  doc.text(
+    `Net Settlement: ${
+      s.currency==="USD"
+        ? usd(s.net/s.fx)
+        : money(s.net)
+    }`,
+    18,
+    63
+  );
+
+  doc.setTextColor(145,153,163);
+  doc.setFontSize(8);
+  doc.text(
+    "Configured/internal deductions are detailed in the downloadable statement.",
+    18,
+    76
+  );
+
+  doc.text(
+    `Manager: ${state.settings.manager}`,
+    18,
+    88
+  );
+
+  const blob =
+    doc.output("blob");
+
+  const file =
+    new File(
+      [blob],
+      `AUREUS_Settlement.pdf`,
+      {type:"application/pdf"}
+    );
+
+  if(
+    navigator.canShare?.({files:[file]}) &&
+    navigator.share
+  ){
+
+    try{
+
+      await navigator.share({
+        title:"AUREUS Settlement Statement",
+        text:"Internal settlement statement",
+        files:[file]
       });
-      investors.push({ id: 'CLI-' + (max + 1), name: n, capital: c, active: true, time: getTimeStr() });
-      saveState();
-      document.getElementById('new-name').value = '';
-      document.getElementById('new-cap').value = '';
-      renderBook();
-      showToast('New Investor Added Successfully!');
-    }
 
-    function toggleInv(id) {
-      const inv = investors.find(i => i.id === id);
-      if (inv) { inv.active = !inv.active; saveState(); renderBook(); showToast('Investor Status Updated'); }
-    }
+      toast(
+        "PDF shared.",
+        "success"
+      );
 
-    function delInv(id) {
-      if (confirm('Investor ko hatana chahte hain?')) {
-        investors = investors.filter(i => i.id !== id);
-        saveState();
-        renderBook();
-        showToast('Investor Removed Successfully!');
+    }catch(error){
+
+      if(error.name!=="AbortError"){
+        toast(
+          "Sharing was not completed.",
+          "error"
+        );
       }
     }
 
-    // 30-Day Progressive Time-Based Engine (8% - 12% Target bound by end of month)
-    function getProgressiveMonthlyRate() {
-      const now = new Date();
-      const dayOfMonth = now.getDate(); // 1 to 31
-      const maxDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); // total days in current month
-      
-      // Target monthly final rate between 8.0% and 12.0% anchored to gold price seed
-      const seed = now.getFullYear() * 100 + (now.getMonth() + 1);
-      const targetFinalRate = 8.0 + ((seed * 9301 + 49297) % 200) / 50.0 + ((liveGoldPrice % 10) / 20);
-      const boundedTarget = Math.min(Math.max(targetFinalRate, 8.0), 12.0);
+  }else{
 
-      // Progressive growth factor based on elapsed days in the month
-      // Day 1 starts around 0.5% - 1%, gradually scaling up to the full target rate on the final day (maxDays)
-      const progressFraction = Math.min(dayOfMonth / maxDays, 1.0);
-      let currentRate = boundedTarget * progressFraction;
-      
-      // Ensure minimum baseline if day 1
-      if (currentRate < 0.5) currentRate = 0.5;
-      return currentRate;
+    toast(
+      "File sharing is not supported here. Use Download A4 PDF.",
+      "error"
+    );
+  }
+}
+
+function setupNavigation(){
+
+  document
+    .querySelectorAll("[data-nav]")
+    .forEach(button=>{
+      button.addEventListener(
+        "click",
+        ()=>navigate(button.dataset.nav)
+      );
+    });
+
+  $("menuBtn").addEventListener(
+    "click",
+    ()=>navigate("more")
+  );
+}
+
+function setupInvestorEvents(){
+
+  $("addInvestorBtn").addEventListener(
+    "click",
+    ()=>openInvestorForm()
+  );
+
+  $("investorSearch").addEventListener(
+    "input",
+    event=>{
+      state.investorSearch=
+        event.target.value;
+      renderInvestors();
     }
+  );
 
-    function runCalc() {
-      let active = investors.filter(i => i.active !== false);
-      active.sort((a, b) => b.capital - a.capital);
+  $("investorFilters").addEventListener(
+    "click",
+    event=>{
 
-      const clientCap = active.reduce((s, i) => s + i.capital, 0);
-      const totalCap = clientCap + (promoter.capital || 0);
+      const button =
+        event.target.closest("[data-filter]");
 
-      let totalUsd;
-      let rate;
-      if (customUsd !== null) {
-        totalUsd = customUsd;
-        const inrEquivalent = totalUsd * usdInrRate;
-        rate = totalCap > 0 ? (inrEquivalent / totalCap) * 100 : 0;
-      } else {
-        rate = getProgressiveMonthlyRate();
-        const inrEquivalent = (totalCap * rate) / 100;
-        totalUsd = inrEquivalent / usdInrRate;
-      }
-      currentGlobalRate = rate;
+      if(!button) return;
 
-      document.getElementById('kpi-capital').innerText = '₹' + totalCap.toLocaleString('en-IN', {minimumFractionDigits: 2});
-      document.getElementById('kpi-count').innerText = `${active.length} Clients + Lead`;
+      state.investorFilter =
+        button.dataset.filter;
 
-      document.getElementById('rate-summary').innerText = `+${rate.toFixed(2)}% MTD`;
-      document.getElementById('uniform-rate-tag').innerText = `Profit Rate: +${rate.toFixed(2)}%`;
-      document.getElementById('disp-usd-profit').innerText = `+$${totalUsd.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} USD`;
+      document
+        .querySelectorAll("#investorFilters .filter")
+        .forEach(item=>{
+          item.classList.toggle(
+            "active",
+            item===button
+          );
+        });
 
-      document.getElementById('disp-manager-name').innerText = promoter.name;
-      document.getElementById('disp-manager-stake').innerText = `Promoter Holding: ₹${promoter.capital.toLocaleString('en-IN')}`;
-      
-      const pGainInr = (promoter.capital * rate) / 100;
-      const pGainUsd = pGainInr / usdInrRate;
-      document.getElementById('disp-manager-gain').innerText = `+$${pGainUsd.toFixed(2)} USD`;
+      renderInvestors();
+    }
+  );
 
-      const list = document.getElementById('investor-list');
-      list.innerHTML = '';
-      if (active.length === 0) {
-        list.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:12px;">No active investors in ledger. Add from Directory.</div>';
+  $("sortBtn").addEventListener(
+    "click",
+    ()=>{
+
+      state.sort =
+        state.sort==="capital"
+          ? "profit"
+          : state.sort==="profit"
+            ? "name"
+            : "capital";
+
+      $("sortBtn").textContent =
+        "Sort: "+
+        (
+          state.sort==="capital"
+            ? "Capital"
+            : state.sort==="profit"
+              ? "Profit"
+              : "Name"
+        );
+
+      renderInvestors();
+    }
+  );
+
+  $("investorForm").addEventListener(
+    "submit",
+    event=>{
+
+      event.preventDefault();
+
+      const id =
+        $("editInvestorId").value;
+
+      const name =
+        $("investorName").value.trim();
+
+      const capital =
+        Number($("investorCapital").value);
+
+      const rate =
+        Number($("investorRate").value)||0;
+
+      const date =
+        $("investorDate").value;
+
+      const status =
+        $("investorStatus").value;
+
+      if(!name){
+
+        toast(
+          "Investor name is required.",
+          "error"
+        );
+
         return;
       }
-      active.forEach((inv, idx) => {
-        const r = idx + 1;
-        const prfInr = (inv.capital * rate) / 100;
-        const prfUsd = prfInr / usdInrRate;
-        let cls = r === 1 ? 'top-1' : r === 2 ? 'top-2' : r === 3 ? 'top-3' : '';
-        const d = document.createElement('div');
-        d.className = `investor-card ${cls}`;
-        d.onclick = () => {
-          openBook(true);
-          openEditModalFromBook(inv.id);
-        };
-        d.innerHTML = `
-          <div class="rank-badge">${r}</div>
-          <div class="inv-details">
-            <strong>${inv.name}</strong>
-            <span>Investment: ₹${inv.capital.toLocaleString('en-IN')}</span>
-          </div>
-          <div class="inv-payout">
-            <strong>+$${prfUsd.toFixed(2)} USD</strong>
-            <span>Realized Profit</span>
-          </div>
-        `;
-        list.appendChild(d);
-      });
-    }
 
-    /* WhatsApp Payout Generator Functions with Boxed Border Template */
-    function openWhatsAppModal() {
-      const active = investors.filter(i => i.active !== false);
-      const listDiv = document.getElementById('wa-investor-list');
-      listDiv.innerHTML = '';
-      document.getElementById('wa-preview-container').style.display = 'none';
-      
-      if (active.length === 0) {
-        listDiv.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:10px;">No active investors found.</div>';
-        document.getElementById('whatsapp-modal').style.display = 'flex';
+      if(
+        !Number.isFinite(capital) ||
+        capital<=0
+      ){
+
+        toast(
+          "Enter a valid investment amount.",
+          "error"
+        );
+
         return;
       }
 
-      active.forEach((inv, idx) => {
-        const prfInr = (inv.capital * currentGlobalRate) / 100;
-        const r = idx + 1;
-        let cls = r === 1 ? 'top-1' : r === 2 ? 'top-2' : r === 3 ? 'top-3' : '';
-        
-        const card = document.createElement('div');
-        card.className = `investor-card ${cls}`;
-        card.style.marginBottom = '6px';
-        card.innerHTML = `
-          <div class="rank-badge">${r}</div>
-          <div class="inv-details">
-            <strong>${inv.name} (${inv.id})</strong>
-            <span>Investment: ₹${inv.capital.toLocaleString('en-IN')}</span>
-          </div>
-          <div class="inv-payout">
-            <strong>₹${prfInr.toLocaleString('en-IN', {maximumFractionDigits: 0})}</strong>
-            <span>Click to Gen</span>
-          </div>
-        `;
-        card.onclick = () => generateWaMessage(inv);
-        listDiv.appendChild(card);
-      });
+      if(
+        rate<0 ||
+        !Number.isFinite(rate)
+      ){
 
-      document.getElementById('whatsapp-modal').style.display = 'flex';
+        toast(
+          "Enter a valid rate.",
+          "error"
+        );
+
+        return;
+      }
+
+      if(id){
+
+        const investor =
+          state.investors.find(
+            x=>x.id===id
+          );
+
+        if(investor){
+
+          Object.assign(
+            investor,
+            {
+              name,
+              capital,
+              rate,
+              date,
+              status
+            }
+          );
+        }
+
+        toast(
+          "Investor updated.",
+          "success"
+        );
+
+      }else{
+
+        state.investors.push({
+          id:uid(),
+          name,
+          capital,
+          rate,
+          date,
+          status,
+          createdAt:
+            new Date().toISOString()
+        });
+
+        toast(
+          "Investor added.",
+          "success"
+        );
+      }
+
+      save();
+      render();
+      closeModal("investorModal");
     }
+  );
 
-    function closeWhatsAppModal() {
-      document.getElementById('whatsapp-modal').style.display = 'none';
+  $("editDetail").addEventListener(
+    "click",
+    ()=>{
+      closeModal("detailModal");
+      openInvestorForm(
+        state.selectedInvestorId
+      );
     }
+  );
 
-    function generateWaMessage(inv) {
-      const rateStr = currentGlobalRate.toFixed(1);
-      const profit = (inv.capital * currentGlobalRate) / 100;
+  $("deleteDetail").addEventListener(
+    "click",
+    ()=>{
 
-      const capFormatted = inv.capital.toLocaleString('en-IN', {maximumFractionDigits: 0});
-      const profitFormatted = profit.toLocaleString('en-IN', {maximumFractionDigits: 0});
+      const investor =
+        state.investors.find(
+          x=>x.id===state.selectedInvestorId
+        );
 
-      const msg = `╔════════════════════════════════════╗\n✨ 🌟 PAYOUT CONFIRMATION 🌟 ✨\n╚════════════════════════════════════╝\n\nHello ${inv.name} 👋\nYour investment payout has been successfully processed. 💸✅\n\n╔════════════════════════════════════╗\n📊 Payout Summary:\nInvestment: ₹${capFormatted} (30 Days @ ~${rateStr}%) ➔ Profit: ₹${profitFormatted}\n╠════════════════════════════════════╣\n💼 Total Investment: ₹${capFormatted}\n📈 Total Return Earned: ₹${profitFormatted}\n💰 Payout Amount: ₹${profitFormatted}\n╚════════════════════════════════════╝\n\n🟢 Status: ◤ Completed ◢ ✅\n────────────────────────────────────\n🤝✨ Thank you for investing with us! ✨🤝`;
+      if(!investor) return;
 
-      document.getElementById('wa-message-preview').value = msg;
-      document.getElementById('wa-preview-container').style.display = 'block';
-    }
+      if(
+        confirm(
+          `Delete ${investor.name}? This cannot be undone.`
+        )
+      ){
 
-    function copyWaMessage() {
-      const textarea = document.getElementById('wa-message-preview');
-      textarea.select();
-      navigator.clipboard.writeText(textarea.value).then(() => {
-        showToast('WhatsApp Payout Message Copied!');
-        closeWhatsAppModal();
-      }).catch(err => {
-        alert('Failed to copy text.');
-      });
-    }
+        state.investors =
+          state.investors.filter(
+            x=>x.id!==investor.id
+          );
 
-    let selectedUsd = 500;
+        save();
+        render();
 
-    function selectBotUsd(amt) {
-      selectedUsd = amt;
-      document.getElementById('bot-custom-usd').value = '';
-      ['btn-500', 'btn-700', 'btn-1000', 'btn-1500'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.classList.remove('active');
-      });
-      const btn = document.getElementById('btn-' + amt);
-      if(btn) btn.classList.add('active');
-      computeBotAudit(amt);
-    }
+        closeModal("detailModal");
 
-    function onCustomUsdInput() {
-      const val = parseFloat(document.getElementById('bot-custom-usd').value);
-      ['btn-500', 'btn-700', 'btn-1000', 'btn-1500'].forEach(id => {
-        const el = document.getElementById(id);
-        if(el) el.classList.remove('active');
-      });
-      if (!isNaN(val) && val > 0) {
-        computeBotAudit(val);
+        toast(
+          "Investor deleted.",
+          "success"
+        );
       }
     }
+  );
 
-    function calculateBot() {
-      const val = parseFloat(document.getElementById('bot-custom-usd').value);
-      if (!isNaN(val) && val > 0) {
-        computeBotAudit(val);
-        showToast('Settlement Audit Generated!');
-      } else {
-        computeBotAudit(selectedUsd);
+  $("payoutDetail").addEventListener(
+    "click",
+    async()=>{
+
+      const investor =
+        state.investors.find(
+          x=>x.id===state.selectedInvestorId
+        );
+
+      if(!investor) return;
+
+      const message =
+        payoutMessage(investor);
+
+      try{
+
+        await navigator.clipboard.writeText(
+          message
+        );
+
+        toast(
+          "Payout summary copied.",
+          "success"
+        );
+
+      }catch(error){
+
+        prompt(
+          "Copy this payout summary:",
+          message
+        );
       }
     }
+  );
+}
 
-    let latestBotCalc = { usd: 500, net: 0, items: [] };
+function setupSettlementEvents(){
 
-    function computeBotAudit(usd) {
-      const fx = usdInrRate;
-      document.getElementById('bot-live-rate').innerHTML = `<span class="live-dot"></span> LIVE FastForex USD: ₹${fx.toFixed(2)}`;
-      
-      const grossInr = usd * fx;
-      const coinDcxEntry = grossInr * 0.005;
-      const gstEntry = coinDcxEntry * 0.18;
-      const crossChain = 3.0 * fx;
-      const primaryGas = 200.0;
-      const instClearing = 5.0 * fx;
-      const returnGas = 200.0;
-      const coinDcxExit = grossInr * 0.005;
-      const gstExit = coinDcxExit * 0.18;
-      const tds = grossInr * 0.01;
-      const forexReserve = grossInr * 0.05;
-      const cloudInfra = grossInr * 0.02;
-      const routingSurcharge = grossInr * 0.004;
-      const roundOff = 11.24;
+  document
+    .querySelectorAll("#presets .preset")
+    .forEach(button=>{
 
-      const totalDed = coinDcxEntry + gstEntry + crossChain + primaryGas + instClearing + returnGas + coinDcxExit + gstExit + tds + forexReserve + cloudInfra + routingSurcharge + roundOff;
-      const netPayout = grossInr - totalDed;
+      button.addEventListener(
+        "click",
+        ()=>{
 
-      latestBotCalc = {
-        usd: usd,
-        net: netPayout,
-        items: [
-          { label: `Gross Settlement Base ($${usd} @ ₹${fx.toFixed(2)})`, amt: grossInr },
-          { label: 'CoinDCX Liquidity Entry Fee (0.5%)', amt: coinDcxEntry },
-          { label: 'Statutory GST on Entry Brokerage (18%)', amt: gstEntry },
-          { label: 'Cross-Chain Protocol Transfer Charge ($3.00)', amt: crossChain },
-          { label: 'Primary Network Gas Reserve (TRC-20)', amt: primaryGas },
-          { label: 'Institutional Settlement Clearing ($5.00)', amt: instClearing },
-          { label: 'Return Route Protocol Gas Reserve', amt: returnGas },
-          { label: 'CoinDCX Liquidity Exit Fee (0.5%)', amt: coinDcxExit },
-          { label: 'Statutory GST on Exit Brokerage (18%)', amt: gstExit },
-          { label: 'Statutory Tax Withholding u/s 194S (1% TDS)', amt: tds },
-          { label: 'Regulatory Compliance & Forex Reserve (5.0%)', amt: forexReserve },
-          { label: 'Automated Execution & Cloud-Infra Surcharge (2.0%)', amt: cloudInfra },
-          { label: 'Banking Interoperability & Interchange Surcharge (0.4%)', amt: routingSurcharge },
-          { label: 'Banking Alignment & Round-Off Adjustment', amt: roundOff },
-          { label: 'Total Verified Deductions (-)', amt: totalDed }
-        ]
+          state.selectedSettlementAmount =
+            Number(button.dataset.amount);
+
+          $("customAmount").value="";
+
+          document
+            .querySelectorAll("#presets .preset")
+            .forEach(item=>{
+              item.classList.toggle(
+                "active",
+                item===button
+              );
+            });
+
+          calculateSettlement();
+        }
+      );
+    });
+
+  $("calculateSettlement").addEventListener(
+    "click",
+    calculateSettlement
+  );
+
+  $("settlementFx").addEventListener(
+    "change",
+    ()=>{
+      const fx =
+        Number($("settlementFx").value);
+
+      if(
+        Number.isFinite(fx) &&
+        fx>0
+      ){
+
+        state.settings.fx=fx;
+        save();
+      }
+    }
+  );
+
+  $("settlementInvestor").addEventListener(
+    "change",
+    ()=>{
+
+      const investor =
+        state.investors.find(
+          x=>x.id===
+            $("settlementInvestor").value
+        );
+
+      if(investor){
+
+        $("customAmount").value =
+          investor.capital;
+
+        calculateSettlement();
+      }
+    }
+  );
+
+  $("settlementCurrency").addEventListener(
+    "change",
+    calculateSettlement
+  );
+
+  $("downloadSettlementPdf").addEventListener(
+    "click",
+    buildSettlementPdf
+  );
+
+  $("shareSettlementPdf").addEventListener(
+    "click",
+    shareSettlementPdf
+  );
+}
+
+function setupSettings(){
+
+  document
+    .querySelectorAll("[data-modal]")
+    .forEach(button=>{
+
+      button.addEventListener(
+        "click",
+        ()=>{
+
+          const map={
+            settings:"settingsModal",
+            market:"marketModal",
+            yield:"yieldModal"
+          };
+
+          const modalId =
+            map[button.dataset.modal];
+
+          if(
+            button.dataset.modal==="settings"
+          ){
+
+            $("setManager").value =
+              state.settings.manager;
+
+            $("setPromoter").value =
+              state.settings.promoter;
+
+            $("setFx").value =
+              state.settings.fx;
+
+            $("setAccent").value =
+              state.settings.accent;
+
+            $("setCurrency").value =
+              state.settings.currency;
+
+            $("setThreshold").value =
+              state.settings.settlementThreshold;
+
+            $("setAudit").checked =
+              !!state.settings.auditMode;
+          }
+
+          if(
+            button.dataset.modal==="market"
+          ){
+
+            $("goldEndpoint").value =
+              state.market.goldEndpoint;
+
+            $("fxEndpoint").value =
+              state.market.fxEndpoint;
+          }
+
+          openModal(modalId);
+        }
+      );
+    });
+
+  document
+    .querySelectorAll("[data-close]")
+    .forEach(button=>{
+
+      button.addEventListener(
+        "click",
+        ()=>closeModal(
+          button.dataset.close
+        )
+      );
+    });
+
+  document
+    .querySelectorAll(".modal")
+    .forEach(modal=>{
+
+      modal.addEventListener(
+        "click",
+        event=>{
+          if(event.target===modal){
+            closeModal(modal.id);
+          }
+        }
+      );
+    });
+
+  $("settingsForm").addEventListener(
+    "submit",
+    event=>{
+
+      event.preventDefault();
+
+      const manager =
+        $("setManager").value.trim();
+
+      const promoter =
+        Number($("setPromoter").value);
+
+      const fx =
+        Number($("setFx").value);
+
+      const accent =
+        $("setAccent").value;
+
+      const currency =
+        $("setCurrency").value;
+
+      const threshold =
+        Number($("setThreshold").value);
+
+      const auditMode =
+        $("setAudit").checked;
+
+      if(
+        !manager ||
+        !Number.isFinite(promoter) ||
+        promoter<0 ||
+        !Number.isFinite(fx) ||
+        fx<=0 ||
+        !Number.isFinite(threshold) ||
+        threshold<0
+      ){
+
+        toast(
+          "Check your settings.",
+          "error"
+        );
+
+        return;
+      }
+
+      state.settings={
+        manager,
+        promoter,
+        fx,
+        accent,
+        currency,
+        settlementThreshold:threshold,
+        auditMode
       };
 
-      document.getElementById('bot-audit-ref').innerText = `POOL REF: STM-${Math.floor(100000 + Math.random() * 900000)}`;
-      document.getElementById('bot-audit-time').innerText = `DATE & TIME: ${getTimeStr()}`;
+      save();
+      render();
 
-      const breakdown = document.getElementById('bot-audit-breakdown');
-      breakdown.innerHTML = `
-        <div class="audit-row"><span>Gross Settlement Base ($${usd} @ ₹${fx.toFixed(2)})</span><strong>₹${grossInr.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>CoinDCX Liquidity Entry Fee (0.5%)</span><strong>₹${coinDcxEntry.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Statutory GST on Entry Brokerage (18%)</span><strong>₹${gstEntry.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Cross-Chain Protocol Transfer Charge ($3.00)</span><strong>₹${crossChain.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Primary Network Gas Reserve (TRC-20)</span><strong>₹${primaryGas.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Institutional Settlement Clearing ($5.00)</span><strong>₹${instClearing.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Return Route Protocol Gas Reserve</span><strong>₹${returnGas.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>CoinDCX Liquidity Exit Fee (0.5%)</span><strong>₹${coinDcxExit.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Statutory GST on Exit Brokerage (18%)</span><strong>₹${gstExit.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Statutory Tax Withholding u/s 194S (1% TDS)</span><strong>₹${tds.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Regulatory Compliance & Forex Reserve (5.0%)</span><strong>₹${forexReserve.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Automated Execution & Cloud-Infra Surcharge (2.0%)</span><strong>₹${cloudInfra.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Banking Interoperability & Interchange Surcharge (0.4%)</span><strong>₹${routingSurcharge.toFixed(2)}</strong></div>
-        <div class="audit-row"><span>Banking Alignment & Round-Off Adjustment</span><strong>₹${roundOff.toFixed(2)}</strong></div>
-        <div class="audit-row" style="color:var(--red);"><span>Total Verified Deductions</span><strong>-₹${totalDed.toFixed(2)}</strong></div>
-      `;
+      $("settlementFx").value =
+        state.settings.fx;
 
-      document.getElementById('bot-net-payout').innerText = `₹${netPayout.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      closeModal("settingsModal");
+
+      toast(
+        "Settings saved.",
+        "success"
+      );
     }
+  );
 
-    function downloadBotPDF() {
-      const customInput = parseFloat(document.getElementById('bot-custom-usd').value);
-      const usdVal = !isNaN(customInput) && customInput > 0 ? customInput : selectedUsd;
-      computeBotAudit(usdVal);
+  $("resetSettings").addEventListener(
+    "click",
+    ()=>{
 
-      document.getElementById('bot-pdf-ref-time').innerText = `POOL REF: STM-BOT-${Math.floor(100000 + Math.random() * 900000)} • DATE: ${getTimeStr()}`;
-      
-      const tbody = document.getElementById('bot-pdf-table-body');
-      tbody.innerHTML = '';
-      latestBotCalc.items.forEach((item, idx) => {
-        const tr = document.createElement('tr');
-        tr.style.background = idx % 2 === 0 ? '#fff' : '#f8fafc';
-        tr.style.borderBottom = '1px solid #cbd5e1';
-        tr.innerHTML = `
-          <td style="padding:7px 10px; color:#0f172a;">${item.label}</td>
-          <td style="padding:7px 10px; text-align:right; font-weight:600; color:${idx === latestBotCalc.items.length - 1 ? '#dc2626' : '#0f172a'};">₹${item.amt.toFixed(2)}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      if(
+        confirm(
+          "Restore default manager, promoter capital, theme, currency and FX reference?"
+        )
+      ){
 
-      document.getElementById('bot-pdf-net-display').innerText = `₹${latestBotCalc.net.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        state.settings={
+          ...DEFAULTS
+        };
 
-      const el = document.getElementById('bot-pdf-render-area');
-      if (!window.html2pdf) return alert('PDF Engine Loading... Please try in a moment');
-      html2pdf().set({
-        margin: [6, 6, 6, 6],
-        filename: `Settlement_Advice_${latestBotCalc.usd}_USD.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff' },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      }).from(el).save();
-      showToast('Settlement PDF Downloaded Successfully!');
-    }
+        save();
+        render();
 
-    function shareBotPDF() {
-      if (navigator.share) {
-        navigator.share({ title: 'Master Settlement Advice', text: 'Institutional Payout Statement Generated.' });
-      } else {
-        alert('Share link copied to clipboard!');
+        $("settlementFx").value =
+          state.settings.fx;
+
+        closeModal("settingsModal");
+
+        toast(
+          "Defaults restored.",
+          "success"
+        );
       }
-      showToast('Share link copied!');
     }
+  );
 
-    function openPDF() {
-      let active = investors.filter(i => i.active !== false);
-      active.sort((a, b) => b.capital - a.capital);
+  $("saveMarket").addEventListener(
+    "click",
+    ()=>{
 
-      const clientCap = active.reduce((s, i) => s + i.capital, 0);
-      const totalCap = clientCap + (promoter.capital || 0);
+      state.market.goldEndpoint =
+        $("goldEndpoint").value.trim();
 
-      let totalUsd;
-      let rate;
-      if (customUsd !== null) {
-        totalUsd = customUsd;
-        const inrEquivalent = totalUsd * usdInrRate;
-        rate = totalCap > 0 ? (inrEquivalent / totalCap) * 100 : 0;
-      } else {
-        rate = getProgressiveMonthlyRate();
-        const inrEquivalent = (totalCap * rate) / 100;
-        totalUsd = inrEquivalent / usdInrRate;
+      state.market.fxEndpoint =
+        $("fxEndpoint").value.trim();
+
+      save();
+
+      closeModal("marketModal");
+
+      refreshMarket();
+    }
+  );
+}
+
+function setupAppControls(){
+
+  $("refreshMarket").addEventListener(
+    "click",
+    refreshMarket
+  );
+
+  $("generateStatement").addEventListener(
+    "click",
+    buildPortfolioPdf
+  );
+
+  $("downloadPortfolioPdf").addEventListener(
+    "click",
+    buildPortfolioPdf
+  );
+
+  $("resetApp").addEventListener(
+    "click",
+    ()=>{
+
+      if(
+        confirm(
+          "Reset all private AUREUS application data, including investors and settings?"
+        )
+      ){
+
+        localStorage.removeItem(
+          STORAGE.investors
+        );
+
+        localStorage.removeItem(
+          STORAGE.settings
+        );
+
+        localStorage.removeItem(
+          STORAGE.market
+        );
+
+        state.investors=[];
+
+        state.settings={
+          ...DEFAULTS
+        };
+
+        state.market={
+          goldEndpoint:"",
+          fxEndpoint:"",
+          gold:null,
+          fx:null,
+          goldUpdated:null,
+          fxUpdated:null
+        };
+
+        render();
+
+        navigate("home");
+
+        toast(
+          "Application data reset.",
+          "success"
+        );
       }
+    }
+  );
+}
 
-      const tStr = getTimeStr();
-      document.getElementById('pdf-ref-time').innerText = `POOL REF: STM-LEDGER-${Math.floor(100000 + Math.random() * 900000)} • DATE: ${tStr}`;
-      document.getElementById('pdf-manager-name').innerText = promoter.name;
-      document.getElementById('pdf-manager-cap').innerText = '₹' + promoter.capital.toLocaleString('en-IN');
-      document.getElementById('pdf-sign-name').innerText = promoter.name;
-      document.getElementById('pdf-total-cap').innerText = '₹' + totalCap.toLocaleString('en-IN', {minimumFractionDigits: 2});
-      document.getElementById('pdf-total-payout').innerText = `$${totalUsd.toFixed(2)} USD`;
-      document.getElementById('pdf-rate-display').innerText = `+${rate.toFixed(2)}%`;
+function init(){
 
-      const tbody = document.getElementById('pdf-table-body');
-      tbody.innerHTML = '';
+  load();
 
-      const pGainInr = (promoter.capital * rate) / 100;
-      const pGainUsd = pGainInr / usdInrRate;
-      const pr = document.createElement('tr');
-      pr.style.background = '#f1f5f9';
-      pr.style.borderBottom = '2px solid #cbd5e1';
-      pr.innerHTML = `
-        <td style="padding:9px 10px; color:#0f172a; font-weight:700;">★ ${promoter.name} <span style="font-size:0.68rem; color:#475569;">(LEAD MANAGER)</span></td>
-        <td style="padding:9px 10px; text-align:right; color:#0f172a; font-weight:600;">₹${promoter.capital.toLocaleString('en-IN')}</td>
-        <td style="padding:9px 10px; text-align:center; color:#2563eb; font-weight:600;">+${rate.toFixed(2)}%</td>
-        <td style="padding:9px 10px; text-align:right; font-weight:800; color:#047857;">+$${pGainUsd.toFixed(2)} USD</td>
-      `;
-      tbody.appendChild(pr);
+  applyTheme();
 
-      active.forEach((inv, idx) => {
-        const prfInr = (inv.capital * rate) / 100;
-        const prfUsd = prfInr / usdInrRate;
-        const tr = document.createElement('tr');
-        tr.style.background = idx % 2 === 0 ? '#fff' : '#f8fafc';
-        tr.style.borderBottom = '1px solid #cbd5e1';
-        tr.innerHTML = `
-          <td style="padding:9px 10px; color:#0f172a;"><strong>#${idx + 1} ${inv.name}</strong> <span style="color:#64748b; font-size:0.75rem;">(${inv.id})</span></td>
-          <td style="padding:9px 10px; text-align:right; color:#334155;">₹${inv.capital.toLocaleString('en-IN')}</td>
-          <td style="padding:9px 10px; text-align:center; color:#2563eb; font-weight:600;">+${rate.toFixed(2)}%</td>
-          <td style="padding:9px 10px; text-align:right; font-weight:700; color:#047857;">+$${prfUsd.toFixed(2)} USD</td>
-        `;
-        tbody.appendChild(tr);
-      });
+  setupNavigation();
+  setupInvestorEvents();
+  setupSettlementEvents();
+  setupSettings();
+  setupAppControls();
 
-      const el = document.getElementById('pdf-render-area');
-      if (!window.html2pdf) return alert('PDF Engine Loading... Please try in a moment');
-      html2pdf().set({
-        margin: [6, 6, 6, 6],
-        filename: `Trading_Yield_Statement_${new Date().toISOString().slice(0,10)}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, backgroundColor: '#ffffff' },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      }).from(el).save();
-      showToast('Portfolio Ledger PDF Exported Successfully!');
+  $("settlementFx").value =
+    state.settings.fx;
+
+  render();
+
+  calculateSettlement();
+
+  setTimeout(
+    ()=>$("splash").classList.add("hide"),
+    1250
+  );
+
+  setInterval(
+    ()=>{
+      render();
+    },
+    60000
+  );
+}
+
+init();
+
+})();
+</script>
+</body>
+</html>
+
+
+      $("setAccent").value=state.settings.accent||"gold";
+      $("setCurrency").value=state.settings.currency||"INR";
+      $("setThreshold").value=state.settings.settlementThreshold??1000;
+      $("setAudit").checked=!!state.settings.auditMode;
+    }
+    if(b.dataset.modal==="market"){
+      $("goldEndpoint").value=state.market.goldEndpoint;
+      $("fxEndpoint").value=state.market.fxEndpoint;
+    }
+    openModal(id);
+  }));
+
+  document.querySelectorAll("[data-close]").forEach(b=>
+    b.addEventListener("click",()=>closeModal(b.dataset.close))
+  );
+
+  document.querySelectorAll(".modal").forEach(m=>
+    m.addEventListener("click",e=>{
+      if(e.target===m) closeModal(m.id);
+    })
+  );
+
+  $("settingsForm").addEventListener("submit",e=>{
+    e.preventDefault();
+
+    const manager=$("setManager").value.trim();
+    const promoter=Number($("setPromoter").value);
+    const fx=Number($("setFx").value);
+    const accent=$("setAccent").value;
+    const currency=$("setCurrency").value;
+    const settlementThreshold=Number($("setThreshold").value);
+    const auditMode=$("setAudit").checked;
+
+    if(
+      !manager ||
+      !Number.isFinite(promoter) ||
+      promoter<0 ||
+      !Number.isFinite(fx) ||
+      fx<=0 ||
+      !Number.isFinite(settlementThreshold) ||
+      settlementThreshold<0
+    ){
+      toast("Check your settings.","error");
+      return;
     }
 
-    fetchLiveMarketData();
-  </script>
+    state.settings={
+      manager,
+      promoter,
+      fx,
+      accent,
+      currency,
+      settlementThreshold,
+      auditMode
+    };
+
+    save();
+    render();
+    closeModal("settingsModal");
+    toast("Settings saved.","success");
+  });
+
+  $("resetSettings").addEventListener("click",()=>{
+    if(confirm("Restore default manager, promoter capital and FX reference?")){
+      state.settings={...DEFAULTS};
+      save();
+      render();
+      closeModal("settingsModal");
+      toast("Defaults restored.","success");
+    }
+  });
+
+  $("saveMarket").addEventListener("click",()=>{
+    state.market.goldEndpoint=$("goldEndpoint").value.trim();
+    state.market.fxEndpoint=$("fxEndpoint").value.trim();
+
+    save();
+    closeModal("marketModal");
+    toast("Market endpoints saved.","success");
+    refreshMarket();
+  });
+
+  $("resetApp").addEventListener("click",()=>{
+    if(confirm("Reset all private application data, including investors and settings?")){
+      localStorage.removeItem(STORAGE.investors);
+      localStorage.removeItem(STORAGE.settings);
+      localStorage.removeItem(STORAGE.market);
+
+      state.investors=[];
+      state.settings={...DEFAULTS};
+      state.market={
+        goldEndpoint:"",
+        fxEndpoint:"",
+        gold:null,
+        fx:null,
+        goldUpdated:null,
+        fxUpdated:null
+      };
+
+      render();
+      navigate("home");
+      toast("Application data reset.","success");
+    }
+  });
+
+  $("downloadPortfolioPdf").addEventListener(
+    "click",
+    buildPortfolioPdf
+  );
+
+  load();
+  render();
+  calculateSettlement();
+
+  setTimeout(
+    ()=>$("splash").classList.add("hide"),
+    1250
+  );
+
+  setInterval(
+    ()=>{ render(); },
+    60000
+  );
+
+})();
+</script>
 </body>
 </html>

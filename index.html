@@ -530,7 +530,7 @@
     let promoter = { ...DEFAULT_PROMOTER };
     let usdInrRate = DEFAULT_FX;
     let customUsd = null;
-    let investors = JSON.parse(JSON.stringify(DEFAULT_INVESTORS));
+    let investors = [];
     let currentPlatformMode = 'ledger';
     let liveGoldPrice = 2000;
     let currentGlobalRate = 12.50;
@@ -543,12 +543,17 @@
         if (fx) usdInrRate = parseFloat(fx) || DEFAULT_FX;
         const cu = localStorage.getItem('pool_custom_usd');
         if (cu) customUsd = parseFloat(cu);
+
         const invs = localStorage.getItem('pool_invs');
-        if (invs) {
+        if (invs !== null) {
           const parsed = JSON.parse(invs);
-          if (Array.isArray(parsed) && parsed.length > 0) investors = parsed;
+          if (Array.isArray(parsed)) {
+            investors = parsed;
+          }
         } else {
+          // First time opening app: Load default single user 'Zaif' and lock initialized state
           investors = JSON.parse(JSON.stringify(DEFAULT_INVESTORS));
+          localStorage.setItem('pool_invs', JSON.stringify(investors));
         }
       } catch(e) {
         investors = JSON.parse(JSON.stringify(DEFAULT_INVESTORS));
@@ -842,7 +847,7 @@
       });
     }
 
-    /* WhatsApp Payout Generator Functions with Investor Cards & Corrected Payout Amount */
+    /* WhatsApp Payout Generator Functions */
     function openWhatsAppModal() {
       const active = investors.filter(i => i.active !== false);
       const listDiv = document.getElementById('wa-investor-list');

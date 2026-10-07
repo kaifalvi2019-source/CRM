@@ -21,7 +21,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Blink / Pulse Animation for Live Elements */
     @keyframes liveBlink {
       0% { opacity: 0.3; transform: scale(0.95); }
       50% { opacity: 1; transform: scale(1.05); }
@@ -236,7 +235,7 @@
 
       <div class="card">
         <h2>Monthly Performance & Yield</h2>
-        <div class="subtitle">Active Month 30-Day Calendar Cycle (8% - 12% Bound)</div>
+        <div class="subtitle">Active Month 30-Day Calendar Progressive Cycle (8% - 12% Bound)</div>
 
         <div class="market-box">
           <div>
@@ -437,8 +436,8 @@
         
         <div style="margin-bottom: 10px;">
           <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Custom Monthly Pool Profit ($ USD)</label>
-          <input type="number" id="setting-usd" placeholder="Auto 8% - 12% Market Engine if blank" step="any" />
-          <span style="font-size: 0.65rem; color: var(--muted); margin-top: 2px; display: block;">Leave blank for automatic calendar-based 8%-12% market rotation.</span>
+          <input type="number" id="setting-usd" placeholder="Auto 8% - 12% Progressive Target if blank" step="any" />
+          <span style="font-size: 0.65rem; color: var(--muted); margin-top: 2px; display: block;">Leave blank for automatic 30-day progressive return engine.</span>
         </div>
 
         <div style="margin-bottom: 10px;">
@@ -570,7 +569,6 @@
             investors = parsed;
           }
         } else {
-          // Default initial empty list or specific array if needed
           investors = [];
           localStorage.setItem('pool_invs', JSON.stringify(investors));
         }
@@ -657,14 +655,14 @@
     }
 
     function resetYieldOverrides() {
-      if (confirm('Kya aap custom yield & FX overrides ko reset karke 8%-12% calendar engine par wapas laana chahte hain?')) {
+      if (confirm('Kya aap custom yield & FX overrides ko reset karke 8%-12% progressive engine par wapas laana chahte hain?')) {
         localStorage.removeItem('pool_custom_usd');
         localStorage.removeItem('pool_fx_rate');
         customUsd = null;
         usdInrRate = DEFAULT_FX;
         openSettings(false);
         runCalc();
-        showToast('Reset to 8%-12% Market Engine!');
+        showToast('Reset to 8%-12% Progressive Engine!');
       }
     }
 
@@ -798,15 +796,25 @@
       }
     }
 
-    // 8% - 12% Monthly Boundary Engine (Targeting 50% over 4 months cycle)
-    function getAutomaticMonthlyRate() {
+    // 30-Day Progressive Time-Based Engine (8% - 12% Target bound by end of month)
+    function getProgressiveMonthlyRate() {
       const now = new Date();
+      const dayOfMonth = now.getDate(); // 1 to 31
+      const maxDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); // total days in current month
+      
+      // Target monthly final rate between 8.0% and 12.0% anchored to gold price seed
       const seed = now.getFullYear() * 100 + (now.getMonth() + 1);
-      const marketFactor = (liveGoldPrice % 10) / 20;
-      let rate = 8.0 + ((seed * 9301 + 49297) % 200) / 50.0 + marketFactor;
-      if (rate < 8.0) rate = 8.0;
-      if (rate > 12.0) rate = 12.0;
-      return rate;
+      const targetFinalRate = 8.0 + ((seed * 9301 + 49297) % 200) / 50.0 + ((liveGoldPrice % 10) / 20);
+      const boundedTarget = Math.min(Math.max(targetFinalRate, 8.0), 12.0);
+
+      // Progressive growth factor based on elapsed days in the month
+      // Day 1 starts around 0.5% - 1%, gradually scaling up to the full target rate on the final day (maxDays)
+      const progressFraction = Math.min(dayOfMonth / maxDays, 1.0);
+      let currentRate = boundedTarget * progressFraction;
+      
+      // Ensure minimum baseline if day 1
+      if (currentRate < 0.5) currentRate = 0.5;
+      return currentRate;
     }
 
     function runCalc() {
@@ -823,7 +831,7 @@
         const inrEquivalent = totalUsd * usdInrRate;
         rate = totalCap > 0 ? (inrEquivalent / totalCap) * 100 : 0;
       } else {
-        rate = getAutomaticMonthlyRate();
+        rate = getProgressiveMonthlyRate();
         const inrEquivalent = (totalCap * rate) / 100;
         totalUsd = inrEquivalent / usdInrRate;
       }
@@ -1105,7 +1113,7 @@
         const inrEquivalent = totalUsd * usdInrRate;
         rate = totalCap > 0 ? (inrEquivalent / totalCap) * 100 : 0;
       } else {
-        rate = getAutomaticMonthlyRate();
+        rate = getProgressiveMonthlyRate();
         const inrEquivalent = (totalCap * rate) / 100;
         totalUsd = inrEquivalent / usdInrRate;
       }

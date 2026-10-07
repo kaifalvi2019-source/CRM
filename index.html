@@ -12,11 +12,6 @@
       --muted: #8b949e; --blue: #2563eb; --green: #10b981; --red: #ef4444; --gold: #f59e0b;
     }
 
-    [data-theme="light"] {
-      --bg: #f8fafc; --card: #ffffff; --border: #cbd5e1; --text: #0f172a;
-      --muted: #64748b; --blue: #2563eb; --green: #059669; --red: #dc2626; --gold: #d97706;
-    }
-
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
     body { background: var(--bg); color: var(--text); padding: 12px; display: flex; justify-content: center; min-height: 100vh; }
     .container { width: 100%; max-width: 450px; animation: fadeIn 0.6s ease-out; }
@@ -54,15 +49,15 @@
     /* TOP BAR */
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     .top-title { font-size: 0.8rem; font-weight: 700; color: var(--text); letter-spacing: 0.5px; }
-    .top-actions { display: flex; gap: 6px; align-items: center; }
+    .top-actions { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
     .nav-btn {
-      background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 6px;
-      font-size: 0.72rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+      background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 6px 8px; border-radius: 6px;
+      font-size: 0.68rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
       transform: scale(1); transition: transform 0.15s ease;
     }
     .nav-btn:active { transform: scale(0.94); }
-    .nav-btn svg { width: 13px; height: 13px; stroke: var(--text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .nav-btn-icon { width: 30px; height: 30px; padding: 0; justify-content: center; }
+    .nav-btn svg { width: 12px; height: 12px; stroke: var(--text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-btn-icon { width: 28px; height: 28px; padding: 0; justify-content: center; }
 
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
     h2 { font-size: 1rem; margin-bottom: 3px; color: var(--text); }
@@ -87,7 +82,6 @@
       font-size: 0.7rem; color: var(--gold); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
     }
     .market-badge { font-weight: 700; padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; }
-    .market-green { background: rgba(16, 185, 129, 0.12); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
     .market-gold { background: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid rgba(245, 158, 11, 0.3); }
 
     /* SUMMARY CARD */
@@ -158,7 +152,7 @@
     .close-btn { background: transparent; border: none; color: var(--muted); font-size: 1.3rem; cursor: pointer; line-height: 1; }
     .book-item { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
     .book-item strong { color: var(--text); font-size: 0.82rem; display: block; }
-    .book-item span.info { color: var(--muted); font-size: 0.7rem; display: block; }
+    .book-item span.info { color: var(--muted); font-size: 0.70rem; display: block; }
     .book-item span.time { color: var(--blue); font-size: 0.62rem; display: block; }
     .del-btn { background: transparent; border: none; color: var(--red); cursor: pointer; font-size: 1rem; padding: 2px 6px; }
 
@@ -186,6 +180,10 @@
     <div class="top-bar">
       <span class="top-title" id="app-title">Portfolio Ledger</span>
       <div class="top-actions">
+        <button type="button" class="nav-btn" onclick="openWhatsAppModal()" title="WhatsApp Payout Generator">
+          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          WA Payout
+        </button>
         <button type="button" class="nav-btn" onclick="openPDF()">
           <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Export
@@ -194,7 +192,6 @@
           <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           Directory
         </button>
-        <button type="button" class="nav-btn nav-btn-icon" id="theme-toggle" title="Toggle Light/Dark">☀️</button>
         <button type="button" class="nav-btn nav-btn-icon" onclick="togglePlatformMode()" id="mode-toggle-btn" title="Switch to Settlement Bot">
           <svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
         </button>
@@ -372,6 +369,26 @@
     </div>
   </div>
 
+  <!-- WHATSAPP PAYOUT GENERATOR MODAL -->
+  <div class="modal-overlay" id="whatsapp-modal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3>WhatsApp Payout Generator</h3>
+        <button type="button" class="close-btn" onclick="closeWhatsAppModal()">✕</button>
+      </div>
+      <div style="font-size: 0.74rem; color: var(--muted); margin-bottom: 10px;">
+        Select an investor below to instantly generate and copy the official WhatsApp payout confirmation message.
+      </div>
+      <div id="wa-investor-list" style="margin-bottom: 12px;"></div>
+      <div style="margin-bottom: 8px;">
+        <label style="font-size: 0.7rem; color: var(--muted); display: block; margin-bottom: 3px;">Generated Template Preview:</label>
+        <textarea id="wa-message-preview" readonly style="width: 100%; height: 160px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.76rem; padding: 8px; resize: none; font-family: monospace;"></textarea>
+      </div>
+      <button type="button" class="btn-dark" style="background: var(--green); margin-bottom: 8px;" onclick="copyWaMessage()">📋 Copy WhatsApp Message</button>
+      <button type="button" class="btn-dark" style="background: var(--bg);" onclick="closeWhatsAppModal()">Close</button>
+    </div>
+  </div>
+
   <!-- EDIT INVESTOR MODAL -->
   <div class="modal-overlay" id="edit-investor-modal">
     <div class="modal-content">
@@ -526,20 +543,6 @@
       setTimeout(() => { toast.classList.remove('show'); }, 2500);
     }
 
-    const themeToggle = document.getElementById('theme-toggle');
-    themeToggle.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      if (currentTheme === 'light') {
-        document.documentElement.removeAttribute('data-theme');
-        themeToggle.innerText = '☀️';
-        showToast('Switched to Dark Mode');
-      } else {
-        document.documentElement.setAttribute('data-theme', 'light');
-        themeToggle.innerText = '🌙';
-        showToast('Switched to Light Mode');
-      }
-    });
-
     const DEFAULT_PROMOTER = { name: 'Kaif Alvi', capital: 50000 };
     const DEFAULT_FX = 87.0;
     const DEFAULT_INVESTORS = [
@@ -555,6 +558,7 @@
     let investors = JSON.parse(JSON.stringify(DEFAULT_INVESTORS));
     let currentPlatformMode = 'ledger';
     let liveGoldPrice = 2000;
+    let currentGlobalRate = 12.50;
 
     function loadSavedState() {
       try {
@@ -605,7 +609,6 @@
       }
     }
 
-    // Live FastForex & GoldAPI Integration with 8%-18% Calendar Engine
     async function fetchLiveMarketData() {
       try {
         const forexRes = await fetch('https://api.fastforex.io/fetch-one?from=USD&to=INR&api_key=97fec7c71f-e510024829-tmibks');
@@ -788,7 +791,6 @@
       }
     }
 
-    // Automated 30-Day Calendar Engine (8% - 18% Bound)
     function getAutomaticMonthlyRate() {
       const now = new Date();
       const seed = now.getFullYear() * 100 + (now.getMonth() + 1);
@@ -817,6 +819,7 @@
         const inrEquivalent = (totalCap * rate) / 100;
         totalUsd = inrEquivalent / usdInrRate;
       }
+      currentGlobalRate = rate;
 
       document.getElementById('kpi-capital').innerText = '₹' + totalCap.toLocaleString('en-IN', {minimumFractionDigits: 2});
       document.getElementById('kpi-count').innerText = `${active.length} Clients + Lead`;
@@ -857,6 +860,67 @@
           </div>
         `;
         list.appendChild(d);
+      });
+    }
+
+    /* WhatsApp Payout Generator Functions */
+    function openWhatsAppModal() {
+      const active = investors.filter(i => i.active !== false);
+      const listDiv = document.getElementById('wa-investor-list');
+      listDiv.innerHTML = '';
+      
+      if (active.length === 0) {
+        listDiv.innerHTML = '<div style="font-size:0.75rem; color:var(--muted); text-align:center; padding:10px;">No active investors found in directory.</div>';
+        document.getElementById('wa-message-preview').value = '';
+        document.getElementById('whatsapp-modal').style.display = 'flex';
+        return;
+      }
+
+      active.forEach((inv, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-dark';
+        btn.style.marginBottom = '6px';
+        btn.style.textAlign = 'left';
+        btn.style.display = 'flex';
+        btn.style.justifyContent = 'space-between';
+        btn.style.alignItems: 'center';
+        btn.innerHTML = `<span>👤 ${inv.name} (${inv.id})</span> <span style="font-family:monospace; color:#38bdf8;">₹${inv.capital.toLocaleString('en-IN')}</span>`;
+        btn.onclick = () => generateWaMessage(inv);
+        listDiv.appendChild(btn);
+      });
+
+      // Automatically select the first investor by default
+      generateWaMessage(active[0]);
+      document.getElementById('whatsapp-modal').style.display = 'flex';
+    }
+
+    function closeWhatsAppModal() {
+      document.getElementById('whatsapp-modal').style.display = 'none';
+    }
+
+    function generateWaMessage(inv) {
+      const rateStr = currentGlobalRate.toFixed(1);
+      const profit = (inv.capital * currentGlobalRate) / 100;
+      const totalPayout = inv.capital + profit;
+
+      const capFormatted = inv.capital.toLocaleString('en-IN', {maximumFractionDigits: 0});
+      const profitFormatted = profit.toLocaleString('en-IN', {maximumFractionDigits: 0});
+      const totalFormatted = totalPayout.toLocaleString('en-IN', {maximumFractionDigits: 0});
+
+      const msg = `🎉 PAYOUT CONFIRMATION 🎉\nHello ${inv.name} 👋\nYour investment payout has been successfully processed. 💸✅\n\n📊 Payout Summary:\nInvestment: ₹${capFormatted} (30 Days @ ~${rateStr}%) ➔ Profit: ₹${profitFormatted}\n━━━━━━━━━━━━━━━━━━━━\n💼 Total Investment: ₹${capFormatted}\n📈 Total Return Earned: ₹${profitFormatted}\n💰 Payout Amount: ₹${totalFormatted}\n━━━━━━━━━━━━━━━━━━━━\n🟢 Status: Completed ✅\nThank you for investing with us! 🤝✨`;
+
+      document.getElementById('wa-message-preview').value = msg;
+    }
+
+    function copyWaMessage() {
+      const textarea = document.getElementById('wa-message-preview');
+      textarea.select();
+      navigator.clipboard.writeText(textarea.value).then(() => {
+        showToast('WhatsApp Payout Message Copied!');
+        closeWhatsAppModal();
+      }).catch(err => {
+        alert('Failed to copy text.');
       });
     }
 

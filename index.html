@@ -112,8 +112,8 @@
     .btn-reset { width: 100%; background: rgba(239, 68, 68, 0.1); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px; border-radius: 6px; font-weight: 700; font-size: 0.76rem; cursor: pointer; margin-bottom: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 
     /* LEADERBOARD */
-    .investor-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .investor-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .investor-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; }
+    .investor-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-color: var(--blue); }
     .rank-badge { font-size: 1.35rem; font-weight: 800; min-width: 32px; text-align: center; color: var(--muted); font-style: italic; }
     .top-1 { border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05); } .top-1 .rank-badge { color: var(--gold); font-size: 1.55rem; }
     .top-2 { border-color: var(--border); } .top-2 .rank-badge { color: var(--muted); font-size: 1.45rem; }
@@ -376,6 +376,27 @@
     </div>
   </div>
 
+  <!-- EDIT INVESTOR MODAL -->
+  <div class="modal-overlay" id="edit-investor-modal">
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3>Edit Investor Details</h3>
+        <button type="button" class="close-btn" onclick="closeEditModal()">✕</button>
+      </div>
+      <input type="hidden" id="edit-inv-id" />
+      <div style="margin-bottom: 10px;">
+        <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Investor Name</label>
+        <input type="text" id="edit-inv-name" />
+      </div>
+      <div style="margin-bottom: 14px;">
+        <label style="font-size: 0.72rem; color: var(--text); display: block; margin-bottom: 3px;">Principal Capital (₹)</label>
+        <input type="number" id="edit-inv-cap" />
+      </div>
+      <button type="button" class="btn-dark" style="background: var(--blue); margin-bottom: 8px;" onclick="saveEditedInvestor()">Update Investor</button>
+      <button type="button" class="btn-dark" style="background: var(--bg);" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+
   <!-- SETTINGS MODAL -->
   <div class="modal-overlay" id="settings-modal">
     <div class="modal-content">
@@ -569,7 +590,7 @@
         const invs = localStorage.getItem('pool_invs');
         if (invs) {
           const parsed = JSON.parse(invs);
-          if (Array.isArray(parsed) && parsed.length > 0) investors = parsed;
+          if (Array.isArray(parsed)) investors = parsed;
         }
       } catch(e) {}
     }
@@ -610,7 +631,6 @@
     // Live FastForex & GoldAPI Integration
     async function fetchLiveMarketData() {
       try {
-        // 1. FastForex Live API for USD to INR rate
         const forexRes = await fetch('https://api.fastforex.io/fetch-one?from=USD&to=INR&api_key=97fec7c71f-e510024829-tmibks');
         const forexData = await forexRes.json();
         if (forexData && forexData.result && forexData.result.INR) {
@@ -625,7 +645,6 @@
       }
 
       try {
-        // 2. GoldAPI Spot Benchmark for Gold (XAU/USD)
         const goldRes = await fetch('https://www.goldapi.io/api/XAU/USD', {
           headers: { 'x-access-token': 'goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io' }
         });
@@ -709,10 +728,10 @@
         const div = document.createElement('div');
         div.className = 'book-item';
         div.innerHTML = `
-          <div style="display:flex; align-items:flex-start; gap:8px;">
-            <input type="checkbox" ${inv.active !== false ? 'checked' : ''} onchange="toggleInv('${inv.id}')" style="width:17px; height:17px; accent-color:var(--green); margin-top:2px;" />
+          <div style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; flex-grow:1;" onclick="openEditModalFromBook('${inv.id}')">
+            <input type="checkbox" ${inv.active !== false ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleInv('${inv.id}')" style="width:17px; height:17px; accent-color:var(--green); margin-top:2px;" />
             <div>
-              <strong>${inv.name} (${inv.id})</strong>
+              <strong>${inv.name} (${inv.id}) ✏️</strong>
               <span class="info">Principal: ₹${inv.capital.toLocaleString('en-IN')}</span>
               <span class="time">Joined: ${inv.time || 'Registered'}</span>
             </div>
@@ -721,6 +740,41 @@
         `;
         ml.appendChild(div);
       });
+    }
+
+    function openEditModalFromBook(id) {
+      const inv = investors.find(i => i.id === id);
+      if (inv) {
+        document.getElementById('edit-inv-id').value = inv.id;
+        document.getElementById('edit-inv-name').value = inv.name;
+        document.getElementById('edit-inv-cap').value = inv.capital;
+        document.getElementById('edit-investor-modal').style.display = 'flex';
+      }
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-investor-modal').style.display = 'none';
+    }
+
+    function saveEditedInvestor() {
+      const id = document.getElementById('edit-inv-id').value;
+      const newName = document.getElementById('edit-inv-name').value.trim();
+      const newCap = parseFloat(document.getElementById('edit-inv-cap').value);
+
+      if (!newName || isNaN(newCap) || newCap <= 0) {
+        return alert('Kripya valid name aur capital amount enter karein');
+      }
+
+      const inv = investors.find(i => i.id === id);
+      if (inv) {
+        inv.name = newName;
+        inv.capital = newCap;
+        saveState();
+        closeEditModal();
+        renderBook();
+        runCalc();
+        showToast('Investor updated successfully!');
+      }
     }
 
     function addInv() {
@@ -796,6 +850,10 @@
         let cls = r === 1 ? 'top-1' : r === 2 ? 'top-2' : r === 3 ? 'top-3' : '';
         const d = document.createElement('div');
         d.className = `investor-card ${cls}`;
+        d.onclick = () => {
+          openBook(true);
+          openEditModalFromBook(inv.id);
+        };
         d.innerHTML = `
           <div class="rank-badge">${r}</div>
           <div class="inv-details">

@@ -268,7 +268,7 @@ h1,h2,h3,p{margin:0}
 
 .result{padding:20px;border-color:rgba(19,255,154,.3);background:linear-gradient(145deg,rgba(19,255,154,.08),var(--card))}
 .result-main{display:flex;justify-content:space-between;align-items:end;gap:10px}
-.result-net{font-size:34px;font-weight:900;color:var(--mint);letter-spacing:-.055em;text-shadow:0 0 16px rgba(19,255,154,.35)}
+.result-net{font-size:32px;font-weight:900;color:var(--mint);letter-spacing:-.055em;text-shadow:0 0 16px rgba(19,255,154,.35)}
 .breakdown{margin-top:18px;border-top:1px solid var(--border);max-height:240px;overflow-y:auto}
 .break-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:11px;font-weight:600}
 .break-row span:first-child{color:var(--muted)}
@@ -394,7 +394,7 @@ h1,h2,h3,p{margin:0}
       <div class="manager-stats">
         <div class="stat-mini">
           <div class="stat-label">Promoter Capital</div>
-          <div class="stat-value gold" id="promoterCapital">₹50,000</div>
+          <div class="stat-value gold" id="promoterCapital">$50,000.00</div>
         </div>
         <div class="stat-mini">
           <div class="stat-label">Portfolio Status</div>
@@ -409,12 +409,12 @@ h1,h2,h3,p{margin:0}
         <div class="badge neutral" id="activeCountBadge">0 active</div>
       </div>
       <div class="overview-grid">
-        <div><div class="metric-label">Total Portfolio Capital</div><div class="metric-value" id="totalPool">₹50,000</div></div>
-        <div><div class="metric-label">Investor Capital</div><div class="metric-value" id="investorCapitalTotal">₹0</div></div>
-        <div><div class="metric-label">Promoter Capital</div><div class="metric-value gold" id="homePromoter">₹50,000</div></div>
-        <div><div class="metric-label">Current Portfolio Value</div><div class="metric-value" id="currentPortfolioValue">₹50,000</div></div>
-        <div><div class="metric-label">Current Profit</div><div class="metric-value positive" id="homeProfit">₹0</div></div>
-        <div><div class="metric-label">Active Capital</div><div class="metric-value" id="activeCapital">₹0</div></div>
+        <div><div class="metric-label">Total Portfolio Capital</div><div class="metric-value" id="totalPool">$50,000.00</div></div>
+        <div><div class="metric-label">Investor Capital</div><div class="metric-value" id="investorCapitalTotal">$0.00</div></div>
+        <div><div class="metric-label">Promoter Capital</div><div class="metric-value gold" id="homePromoter">$50,000.00</div></div>
+        <div><div class="metric-label">Current Portfolio Value</div><div class="metric-value" id="currentPortfolioValue">$50,000.00</div></div>
+        <div><div class="metric-label">Current Profit</div><div class="metric-value positive" id="homeProfit">$0.00</div></div>
+        <div><div class="metric-label">Active Capital</div><div class="metric-value" id="activeCapital">$0.00</div></div>
       </div>
     </article>
 
@@ -504,9 +504,9 @@ h1,h2,h3,p{margin:0}
         <div class="badge live">Active</div>
       </div>
       <div class="overview-grid">
-        <div><div class="metric-label">Total Capital</div><div class="metric-value" id="portPool">₹0</div></div>
-        <div><div class="metric-label">Current Value</div><div class="metric-value" id="portCurrentValue">₹0</div></div>
-        <div><div class="metric-label">Current Profit</div><div class="metric-value positive" id="portProfit">₹0</div></div>
+        <div><div class="metric-label">Total Capital</div><div class="metric-value" id="portPool">$0.00</div></div>
+        <div><div class="metric-label">Current Value</div><div class="metric-value" id="portCurrentValue">$0.00</div></div>
+        <div><div class="metric-label">Current Profit</div><div class="metric-value positive" id="portProfit">$0.00</div></div>
         <div><div class="metric-label">Current Yield</div><div class="metric-value positive" id="portRate">0.00%</div></div>
       </div>
     </article>
@@ -528,8 +528,8 @@ h1,h2,h3,p{margin:0}
     <article class="card card-pad">
       <div class="section-title" style="margin-top:0"><h2>Capital Composition</h2></div>
       <div class="overview-grid" style="margin-top:0">
-        <div><div class="metric-label">Investor Capital</div><div class="metric-value" id="portInvestor">₹0</div></div>
-        <div><div class="metric-label">Promoter Capital</div><div class="metric-value gold" id="portPromoter">₹50,000</div></div>
+        <div><div class="metric-label">Investor Capital</div><div class="metric-value" id="portInvestor">$0.00</div></div>
+        <div><div class="metric-label">Promoter Capital</div><div class="metric-value gold" id="portPromoter">$50,000.00</div></div>
       </div>
     </article>
 
@@ -598,14 +598,14 @@ h1,h2,h3,p{margin:0}
       </div>
 
       <div class="field">
-        <label for="settlementCurrency">Currency</label>
+        <label for="settlementCurrency">Primary Display Currency</label>
         <select id="settlementCurrency">
           <option value="USD">USD — US Dollar ($)</option>
           <option value="INR">INR — Indian Rupee (₹)</option>
         </select>
       </div>
 
-      <div class="section-title" style="margin-top:8px"><h2>Settlement Amount ($)</h2></div>
+      <div class="section-title" style="margin-top:8px"><h2>Settlement Amount Presets ($)</h2></div>
 
       <div class="preset-grid" id="presets">
         <button class="preset active" data-amount="500"><strong>$500</strong><span>Preset</span></button>
@@ -631,8 +631,8 @@ h1,h2,h3,p{margin:0}
     <article class="card result" id="settlementResult">
       <div class="result-main">
         <div>
-          <div class="eyebrow">Net Settlement</div>
-          <div class="result-net" id="netSettlement">$0.00</div>
+          <div class="eyebrow">Net Settlement (USD / INR)</div>
+          <div class="result-net" id="netSettlement">$0.00 / ₹0.00</div>
         </div>
         <div class="badge live">Calculated</div>
       </div>
@@ -645,7 +645,7 @@ h1,h2,h3,p{margin:0}
       </div>
 
       <div class="notice" style="margin-top:14px">
-        All 13 verified institutional fees, taxes, gas reserves and infrastructure costs have been applied.
+        All 13 verified institutional fees, taxes, gas reserves and infrastructure costs applied in dual currency.
       </div>
     </article>
 
@@ -756,7 +756,7 @@ h1,h2,h3,p{margin:0}
         <input id="investorName" required maxlength="80" placeholder="Enter name">
       </div>
       <div class="field">
-        <label for="investorCapital">Investment Capital</label>
+        <label for="investorCapital">Investment Capital ($)</label>
         <input id="investorCapital" required type="number" min="1" step=".01" placeholder="50000">
       </div>
       <div class="field">
@@ -814,7 +814,7 @@ h1,h2,h3,p{margin:0}
         <input id="setManager" maxlength="80">
       </div>
       <div class="field">
-        <label for="setPromoter">Promoter Capital</label>
+        <label for="setPromoter">Promoter Capital ($)</label>
         <input id="setPromoter" type="number" min="0" step=".01">
       </div>
       <div class="field">
@@ -917,9 +917,9 @@ h1,h2,h3,p{margin:0}
 "use strict";
 
 const STORAGE = {
-  investors:"aureus_investors_v4",
-  settings:"aureus_settings_v4",
-  market:"aureus_market_v4"
+  investors:"aureus_investors_v5",
+  settings:"aureus_settings_v5",
+  market:"aureus_market_v5"
 };
 
 const DEFAULTS = {
@@ -950,6 +950,8 @@ const $ = id => document.getElementById(id);
 const money = n => new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(Number(n)||0);
 const usd = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(Number(n)||0);
 
+const dual = (valUSD, fx) => `${usd(valUSD)} (${money(valUSD * fx)})`;
+
 const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
 const uid = () => crypto.randomUUID ? crypto.randomUUID() : "inv_"+Date.now()+"_"+Math.random().toString(36).slice(2);
@@ -961,21 +963,19 @@ const formatDate = value => value
 
 const displayMoney = n => {
   const value = Number(n)||0;
-  if(state.settings.currency === "INR"){
-    return money(value * (Number(state.settings.fx)||87));
-  }
-  return usd(value);
+  const fx = Number(state.settings.fx)||87;
+  return `${usd(value)} (${money(value * fx)})`;
 };
 
-function animateValue(elementId, start, end, duration, formatter) {
+function animateValue(elementId, startUSD, endUSD, duration, fx) {
   const el = $(elementId);
   if(!el) return;
   let startTimestamp = null;
   const step = (timestamp) => {
     if (!startTimestamp) startTimestamp = timestamp;
     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-    const current = progress * (end - start) + start;
-    el.textContent = formatter(current);
+    const current = progress * (endUSD - startUSD) + startUSD;
+    el.textContent = dual(current, fx);
     if (progress < 1) {
       window.requestAnimationFrame(step);
     }
@@ -1304,16 +1304,17 @@ function openInvestorDetail(id){
   const rate = Number(investor.rate)>0 ? Number(investor.rate) : cycleInfo().rate;
   const profit = investorProfit(investor);
   const value = (Number(investor.capital)||0)+profit;
+  const fx = Number(state.settings.fx)||87;
   const st = investor.status||"active";
 
   $("detailName").textContent = investor.name;
 
   $("detailGrid").innerHTML = `
     <div class="detail"><span>Status</span><strong class="${st==="active"?"positive":""}">${esc(st.charAt(0).toUpperCase()+st.slice(1))}</strong></div>
-    <div class="detail"><span>Invested Capital</span><strong>${displayMoney(investor.capital)}</strong></div>
+    <div class="detail"><span>Invested Capital</span><strong>${usd(investor.capital)} (${money(investor.capital*fx)})</strong></div>
     <div class="detail"><span>Current Rate</span><strong class="positive">${rate.toFixed(2)}%</strong></div>
-    <div class="detail"><span>Profit</span><strong class="positive">${displayMoney(profit)}</strong></div>
-    <div class="detail"><span>Current Value</span><strong>${displayMoney(value)}</strong></div>
+    <div class="detail"><span>Profit</span><strong class="positive">${usd(profit)} (${money(profit*fx)})</strong></div>
+    <div class="detail"><span>Current Value</span><strong>${usd(value)} (${money(value*fx)})</strong></div>
     <div class="detail"><span>Relevant Date</span><strong>${formatDate(investor.date||investor.createdAt)}</strong></div>`;
 
   if(state.settings.auditMode){
@@ -1328,13 +1329,14 @@ function openInvestorDetail(id){
 function payoutMessage(investor){
   const profit = investorProfit(investor);
   const net = (Number(investor.capital)||0)+profit;
+  const fx = Number(state.settings.fx)||87;
   return [
     "✨ AUREUS — Internal Payout Summary ✨",
     `👤 Investor: ${investor.name}`,
     `📊 Status: ${investor.status}`,
-    `💰 Capital: ${displayMoney(investor.capital)}`,
-    `📈 Calculated Profit: ${displayMoney(profit)}`,
-    `💎 Net Value: ${displayMoney(net)}`,
+    `💰 Capital: ${usd(investor.capital)} (${money(investor.capital*fx)})`,
+    `📈 Calculated Profit: ${usd(profit)} (${money(profit*fx)})`,
+    `💎 Net Value: ${usd(net)} (${money(net*fx)})`,
     "🔒 Internal calculation only."
   ].join("\n");
 }
@@ -1363,7 +1365,6 @@ function calculateSettlement(){
   const grossUSD = amountUSD;
   const grossINR = grossUSD * fx;
 
-  // 13-stage verified tax and fee items calculated in INR, then translated back or managed directly
   const cdcEntryFeeINR = grossINR * 0.005;
   const cdcEntryGstINR = cdcEntryFeeINR * 0.18;
   const crossChainINR = 3.00 * fx;
@@ -1386,13 +1387,9 @@ function calculateSettlement(){
   const netINR = Math.max(0, grossINR - totalDeductionsINR);
   const netUSD = netINR / fx;
 
-  const cur = $("settlementCurrency").value;
-  const fmt = vInUSD => cur==="INR" ? money(vInUSD * fx) : usd(vInUSD);
-
   state.latestSettlement={
     investorId,
     investorName:investor?.name||"General / Portfolio Settlement",
-    currency:cur,
     gross: grossUSD,
     net: netUSD,
     deductions: totalDeductionsINR / fx,
@@ -1415,19 +1412,19 @@ function calculateSettlement(){
     timestamp:new Date().toISOString()
   };
 
-  animateValue("netSettlement", 0, cur==="INR"? netINR : netUSD, 600, v => cur==="INR"? money(v) : usd(v));
+  animateValue("netSettlement", 0, netUSD, 600, fx);
 
   let breakdownHTML = `
-    <div class="break-row"><span>Gross Amount</span><span>${fmt(grossUSD)}</span></div>`;
+    <div class="break-row"><span>Gross Amount</span><span>${dual(grossUSD, fx)}</span></div>`;
   
   state.latestSettlement.items.forEach(item => {
     const valUSD = item.inr / fx;
-    breakdownHTML += `<div class="break-row"><span>${esc(item.name)}</span><span class="red">-${fmt(valUSD)}</span></div>`;
+    breakdownHTML += `<div class="break-row"><span>${esc(item.name)}</span><span class="red">-${dual(valUSD, fx)}</span></div>`;
   });
 
   breakdownHTML += `
-    <div class="break-row"><span>Total Verified Deductions</span><span class="red">-${fmt(totalDeductionsINR / fx)}</span></div>
-    <div class="break-row"><span>Net Settlement</span><span class="positive">${fmt(netUSD)}</span></div>
+    <div class="break-row"><span>Total Verified Deductions</span><span class="red">-${dual(totalDeductionsINR / fx, fx)}</span></div>
+    <div class="break-row"><span>Net Settlement</span><span class="positive">${dual(netUSD, fx)}</span></div>
     <div class="break-row"><span>FX Reference</span><span>₹${fx.toFixed(2)}</span></div>
     ${state.settings.auditMode?`
       <div class="break-row"><span>Calculation State</span><span>Internal / Calculated</span></div>
@@ -1435,7 +1432,7 @@ function calculateSettlement(){
 
   $("settlementBreakdown").innerHTML = breakdownHTML;
   $("settlementResult").classList.add("gold-border");
-  toast("Settlement calculated with 13 verified items.","success");
+  toast("Settlement calculated in dual currency ($ / ₹).","success");
 }
 
 function buildPortfolioPdf(){
@@ -1451,19 +1448,19 @@ function buildPortfolioPdf(){
     const doc = new pdfLib({unit:"mm",format:"a4"});
     const t = totals();
     const c = cycleInfo();
+    const fx = Number(state.settings.fx)||87;
 
     // Clean white paper background
     doc.setFillColor(255, 255, 255);
     doc.rect(0,0,210,297,"F");
 
-    // Header styling in professional dark/gold tone for white paper with Aureus Capital heading
     doc.setTextColor(30, 41, 59);
     doc.setFontSize(22);
     doc.text("Aureus Capital",18,22);
 
     doc.setTextColor(100, 116, 139);
     doc.setFontSize(8);
-    doc.text("INSTITUTIONAL PORTFOLIO & SETTLEMENT STATEMENT",18,29);
+    doc.text("INSTITUTIONAL PORTFOLIO & SETTLEMENT STATEMENT (USD / INR)",18,29);
 
     doc.setDrawColor(196, 163, 90);
     doc.line(18,35,192,35);
@@ -1475,11 +1472,11 @@ function buildPortfolioPdf(){
     const rows = [
       ["Manager",state.settings.manager],
       ["Role","Lead Portfolio Manager"],
-      ["Promoter Capital",displayMoney(t.promoter)],
-      ["Investor Capital",displayMoney(t.investorCapital)],
-      ["Total Capital",displayMoney(t.pool)],
-      ["Current Portfolio Value",displayMoney(t.pool+t.profit)],
-      ["Current Profit",displayMoney(t.profit)],
+      ["Promoter Capital",dual(t.promoter, fx)],
+      ["Investor Capital",dual(t.investorCapital, fx)],
+      ["Total Capital",dual(t.pool, fx)],
+      ["Current Portfolio Value",dual(t.pool+t.profit, fx)],
+      ["Current Profit",dual(t.profit, fx)],
       ["MTD Yield",c.rate.toFixed(2)+"%"],
       ["Progressive Day",`${c.day} / ${c.days}`],
       ["Calculation Status","Calculated / Indicative / Internal"]
@@ -1509,7 +1506,7 @@ function buildPortfolioPdf(){
     doc.text("Manager Signature",18,275);
 
     doc.setFontSize(7);
-    doc.text("Internal calculation only. Not a bank statement, broker receipt, tax certificate, legal opinion or proof of regulatory approval.",18,285);
+    doc.text("Internal calculation only. Dual currency values shown in USD ($) and INR (₹). Not a bank statement, legal opinion or tax certificate.",18,285);
 
     doc.save(`Aureus_Capital_Portfolio_${new Date().toISOString().slice(0,10)}.pdf`);
     btn.textContent = "✓ Statement ready";
@@ -1526,7 +1523,6 @@ function buildSettlementPdf(){
 
   const s = state.latestSettlement;
   const fx = s.fx;
-  const fmt = vUSD => s.currency==="INR" ? money(vUSD * fx) : usd(vUSD);
   const doc = new pdfLib({unit:"mm",format:"a4"});
 
   // Clean white paper background
@@ -1539,7 +1535,7 @@ function buildSettlementPdf(){
 
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(8);
-  doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN",18,29);
+  doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN (USD / INR)",18,29);
 
   doc.setDrawColor(196, 163, 90);
   doc.line(18,35,192,35);
@@ -1553,7 +1549,7 @@ function buildSettlementPdf(){
   doc.setTextColor(100, 116, 139);
   doc.text("Gross Amount",18,54);
   doc.setTextColor(15, 23, 42);
-  doc.text(fmt(s.gross),192,54,{align:"right"});
+  doc.text(dual(s.gross, fx),192,54,{align:"right"});
 
   let y=64;
   s.items.forEach(item => {
@@ -1562,7 +1558,7 @@ function buildSettlementPdf(){
     doc.setFontSize(7.5);
     doc.text(item.name,18,y);
     doc.setTextColor(220, 38, 38);
-    doc.text("-" + fmt(valUSD),192,y,{align:"right"});
+    doc.text("-" + dual(valUSD, fx),192,y,{align:"right"});
     y+=6;
   });
 
@@ -1570,11 +1566,11 @@ function buildSettlementPdf(){
   doc.setFontSize(8.5);
   doc.text("Total Verified Deductions",18,y+4);
   doc.setTextColor(220, 38, 38);
-  doc.text("-" + fmt(s.deductions),192,y+4,{align:"right"});
+  doc.text("-" + dual(s.deductions, fx),192,y+4,{align:"right"});
 
   doc.setTextColor(16, 185, 129);
   doc.setFontSize(13);
-  doc.text(`Net Settlement: ${fmt(s.net)}`,18,y+16);
+  doc.text(`Net Settlement: ${dual(s.net, fx)}`,18,y+16);
 
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(8);
@@ -1594,7 +1590,7 @@ function buildSettlementPdf(){
   doc.text("____________________________",18,269);
   doc.text("Manager Signature",18,275);
 
-  const note = "This is an internal institutional settlement calculation with all verified operational costs, taxes and gas reserves. Not a bank statement, legal opinion or proof of regulatory approval.";
+  const note = "This is an internal institutional settlement calculation with all verified operational costs, taxes and gas reserves in dual currency (USD / INR). Not a bank statement, legal opinion or proof of regulatory approval.";
   doc.setFontSize(7);
   doc.text(doc.splitTextToSize(note,174),18,284);
 
@@ -1610,7 +1606,6 @@ async function shareSettlementPdf(){
 
   const s = state.latestSettlement;
   const fx = s.fx;
-  const fmt = vUSD => s.currency==="INR" ? money(vUSD * fx) : usd(vUSD);
   const doc = new pdfLib({unit:"mm",format:"a4"});
 
   doc.setFillColor(255, 255, 255);
@@ -1622,7 +1617,7 @@ async function shareSettlementPdf(){
 
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(8);
-  doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN",18,29);
+  doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN (USD / INR)",18,29);
 
   doc.setTextColor(15, 23, 42);
   doc.setFontSize(10);
@@ -1630,11 +1625,11 @@ async function shareSettlementPdf(){
 
   doc.setTextColor(16, 185, 129);
   doc.setFontSize(14);
-  doc.text(`Net Settlement: ${fmt(s.net)}`,18,63);
+  doc.text(`Net Settlement: ${dual(s.net, fx)}`,18,63);
 
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(8);
-  doc.text("All verified deductions are detailed in the downloadable Aureus Capital statement.",18,76);
+  doc.text("All verified dual currency deductions are detailed in the downloadable statement.",18,76);
   doc.text(`Manager: ${state.settings.manager}`,18,88);
 
   const blob = doc.output("blob");
@@ -1642,7 +1637,7 @@ async function shareSettlementPdf(){
 
   if(navigator.canShare?.({files:[file]})&&navigator.share){
     try{
-      await navigator.share({title:"Aureus Capital Settlement Statement",text:"Internal settlement statement",files:[file]});
+      await navigator.share({title:"Aureus Capital Settlement Statement",text:"Internal dual currency settlement statement",files:[file]});
       toast("PDF shared.","success");
     }catch(error){
       if(error.name!=="AbortError") toast("Sharing was not completed.","error");
@@ -1897,9 +1892,10 @@ function init(){
 
   const t = totals();
   const c = cycleInfo();
-  animateValue("totalPool", 0, t.pool, 700, v => displayMoney(v));
-  animateValue("currentPortfolioValue", 0, t.pool + t.profit, 700, v => displayMoney(v));
-  animateValue("homeProfit", 0, t.profit, 700, v => displayMoney(v));
+  const fx = Number(state.settings.fx)||87;
+  animateValue("totalPool", 0, t.pool, 700, fx);
+  animateValue("currentPortfolioValue", 0, t.pool + t.profit, 700, fx);
+  animateValue("homeProfit", 0, t.profit, 700, fx);
   animateValue("homeRate", 0, c.rate, 600, v => v.toFixed(2) + "%");
 
   setTimeout(()=>$("splash").classList.add("hide"),1000);

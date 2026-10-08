@@ -598,10 +598,9 @@ h1,h2,h3,p{margin:0}
       </div>
 
       <div class="field">
-        <label for="settlementCurrency">Primary Display Currency</label>
+        <label for="settlementCurrency">Currency</label>
         <select id="settlementCurrency">
           <option value="USD">USD — US Dollar ($)</option>
-          <option value="INR">INR — Indian Rupee (₹)</option>
         </select>
       </div>
 
@@ -631,8 +630,8 @@ h1,h2,h3,p{margin:0}
     <article class="card result" id="settlementResult">
       <div class="result-main">
         <div>
-          <div class="eyebrow">Net Settlement (USD / INR)</div>
-          <div class="result-net" id="netSettlement">$0.00 / ₹0.00</div>
+          <div class="eyebrow">Net Settlement</div>
+          <div class="result-net" id="netSettlement">$0.00</div>
         </div>
         <div class="badge live">Calculated</div>
       </div>
@@ -645,7 +644,7 @@ h1,h2,h3,p{margin:0}
       </div>
 
       <div class="notice" style="margin-top:14px">
-        All 13 verified institutional fees, taxes, gas reserves and infrastructure costs applied in dual currency.
+        All 13 verified institutional fees, taxes, gas reserves and infrastructure costs applied.
       </div>
     </article>
 
@@ -830,13 +829,6 @@ h1,h2,h3,p{margin:0}
         </select>
       </div>
       <div class="field">
-        <label for="setCurrency">Display Currency</label>
-        <select id="setCurrency">
-          <option value="USD">USD — US Dollar ($)</option>
-          <option value="INR">INR — Indian Rupee (₹)</option>
-        </select>
-      </div>
-      <div class="field">
         <label for="setThreshold">Auto-Settlement Threshold</label>
         <input id="setThreshold" type="number" min="0" step=".01">
       </div>
@@ -917,9 +909,9 @@ h1,h2,h3,p{margin:0}
 "use strict";
 
 const STORAGE = {
-  investors:"aureus_investors_v5",
-  settings:"aureus_settings_v5",
-  market:"aureus_market_v5"
+  investors:"aureus_investors_v6",
+  settings:"aureus_settings_v6",
+  market:"aureus_market_v6"
 };
 
 const DEFAULTS = {
@@ -961,13 +953,9 @@ const formatDate = value => value
   ? new Date(value).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})
   : "—";
 
-const displayMoney = n => {
-  const value = Number(n)||0;
-  const fx = Number(state.settings.fx)||87;
-  return `${usd(value)} (${money(value * fx)})`;
-};
+const displayMoney = n => usd(Number(n)||0);
 
-function animateValue(elementId, startUSD, endUSD, duration, fx) {
+function animateValue(elementId, startUSD, endUSD, duration, formatter) {
   const el = $(elementId);
   if(!el) return;
   let startTimestamp = null;
@@ -975,7 +963,7 @@ function animateValue(elementId, startUSD, endUSD, duration, fx) {
     if (!startTimestamp) startTimestamp = timestamp;
     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
     const current = progress * (endUSD - startUSD) + startUSD;
-    el.textContent = dual(current, fx);
+    el.textContent = formatter(current);
     if (progress < 1) {
       window.requestAnimationFrame(step);
     }
@@ -1412,19 +1400,19 @@ function calculateSettlement(){
     timestamp:new Date().toISOString()
   };
 
-  animateValue("netSettlement", 0, netUSD, 600, fx);
+  animateValue("netSettlement", 0, netUSD, 600, v => usd(v));
 
   let breakdownHTML = `
-    <div class="break-row"><span>Gross Amount</span><span>${dual(grossUSD, fx)}</span></div>`;
+    <div class="break-row"><span>Gross Amount</span><span>${usd(grossUSD)}</span></div>`;
   
   state.latestSettlement.items.forEach(item => {
     const valUSD = item.inr / fx;
-    breakdownHTML += `<div class="break-row"><span>${esc(item.name)}</span><span class="red">-${dual(valUSD, fx)}</span></div>`;
+    breakdownHTML += `<div class="break-row"><span>${esc(item.name)}</span><span class="red">-${usd(valUSD)}</span></div>`;
   });
 
   breakdownHTML += `
-    <div class="break-row"><span>Total Verified Deductions</span><span class="red">-${dual(totalDeductionsINR / fx, fx)}</span></div>
-    <div class="break-row"><span>Net Settlement</span><span class="positive">${dual(netUSD, fx)}</span></div>
+    <div class="break-row"><span>Total Verified Deductions</span><span class="red">-${usd(totalDeductionsINR / fx)}</span></div>
+    <div class="break-row"><span>Net Settlement</span><span class="positive">${usd(netUSD)}</span></div>
     <div class="break-row"><span>FX Reference</span><span>₹${fx.toFixed(2)}</span></div>
     ${state.settings.auditMode?`
       <div class="break-row"><span>Calculation State</span><span>Internal / Calculated</span></div>
@@ -1432,7 +1420,7 @@ function calculateSettlement(){
 
   $("settlementBreakdown").innerHTML = breakdownHTML;
   $("settlementResult").classList.add("gold-border");
-  toast("Settlement calculated in dual currency ($ / ₹).","success");
+  toast("Settlement calculated successfully.","success");
 }
 
 function buildPortfolioPdf(){
@@ -1450,7 +1438,6 @@ function buildPortfolioPdf(){
     const c = cycleInfo();
     const fx = Number(state.settings.fx)||87;
 
-    // Clean white paper background
     doc.setFillColor(255, 255, 255);
     doc.rect(0,0,210,297,"F");
 
@@ -1525,7 +1512,6 @@ function buildSettlementPdf(){
   const fx = s.fx;
   const doc = new pdfLib({unit:"mm",format:"a4"});
 
-  // Clean white paper background
   doc.setFillColor(255, 255, 255);
   doc.rect(0,0,210,297,"F");
 
@@ -1768,7 +1754,6 @@ function setupSettlementEvents(){
     }
   });
 
-  $("settlementCurrency").addEventListener("change",calculateSettlement);
   $("downloadSettlementPdf").addEventListener("click",buildSettlementPdf);
   $("shareSettlementPdf").addEventListener("click",shareSettlementPdf);
 }
@@ -1784,7 +1769,6 @@ function setupSettings(){
         $("setPromoter").value = state.settings.promoter;
         $("setFx").value = state.settings.fx;
         $("setAccent").value = state.settings.accent||"gold";
-        $("setCurrency").value = state.settings.currency||"USD";
         $("setThreshold").value = state.settings.settlementThreshold ?? DEFAULTS.settlementThreshold;
         $("setAudit").checked = !!state.settings.auditMode;
       }
@@ -1815,7 +1799,6 @@ function setupSettings(){
     const promoter = Number($("setPromoter").value);
     const fx = Number($("setFx").value);
     const accent = $("setAccent").value;
-    const currency = $("setCurrency").value;
     const threshold = Number($("setThreshold").value);
     const auditMode = $("setAudit").checked;
 
@@ -1824,7 +1807,7 @@ function setupSettings(){
       return;
     }
 
-    state.settings = {manager,promoter,fx,accent,currency,settlementThreshold:threshold,auditMode};
+    state.settings = {manager,promoter,fx,accent,currency:"USD",settlementThreshold:threshold,auditMode};
 
     save();
     render();
@@ -1834,7 +1817,7 @@ function setupSettings(){
   });
 
   $("resetSettings").addEventListener("click",()=>{
-    if(confirm("Restore default manager, promoter capital, theme, currency and FX reference?")){
+    if(confirm("Restore default manager, promoter capital, theme and FX reference?")){
       state.settings={...DEFAULTS};
       save();
       render();
@@ -1892,10 +1875,9 @@ function init(){
 
   const t = totals();
   const c = cycleInfo();
-  const fx = Number(state.settings.fx)||87;
-  animateValue("totalPool", 0, t.pool, 700, fx);
-  animateValue("currentPortfolioValue", 0, t.pool + t.profit, 700, fx);
-  animateValue("homeProfit", 0, t.profit, 700, fx);
+  animateValue("totalPool", 0, t.pool, 700, v => usd(v));
+  animateValue("currentPortfolioValue", 0, t.pool + t.profit, 700, v => usd(v));
+  animateValue("homeProfit", 0, t.profit, 700, v => usd(v));
   animateValue("homeRate", 0, c.rate, 600, v => v.toFixed(2) + "%");
 
   setTimeout(()=>$("splash").classList.add("hide"),1000);

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080c14">
+<meta name="theme-color" content="#05070b">
 <meta name="description" content="AUREUS CAPITAL — Institutional Portfolio & Settlement">
 <title>AUREUS CAPITAL — Institutional Portfolio & Settlement</title>
 
@@ -13,24 +13,23 @@
 :root{
   --bg:#05070b;
   --header:#090d14;
-  --card:#101622;
-  --card-2:#161f30;
+  --card:#111622;
+  --card-2:#171f30;
   --border:#263248;
   --text:#ffffff;
   --muted:#8b95a7;
-  --gold-start:#f3e7c4;
-  --gold:#d4af37;
-  --gold-dark:#aa7c11;
-  --gold-glow:rgba(212, 175, 55, 0.25);
+  --gold-start:#f9d976;
+  --gold:#e6c56b;
+  --gold-dark:#b8860b;
   --mint:#13ff9a;
   --red:#ff5a5f;
   
   --accent:var(--gold);
-  --accent-soft:rgba(212,175,55,.15);
+  --accent-soft:rgba(230,197,107,.15);
   --emerald:var(--mint);
   --emerald-soft:rgba(19,255,154,.15);
   --border-soft:var(--border);
-  --shadow:0 20px 50px rgba(0,0,0,.7);
+  --shadow:0 20px 50px rgba(0,0,0,.8);
   --radius:22px;
   --nav:78px;
   --ease:cubic-bezier(.16,1,.3,1);
@@ -50,7 +49,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .app{
   width:100%;max-width:1120px;min-height:100dvh;margin:auto;
   background:
-    radial-gradient(circle at 15% -10%, rgba(212,175,55,.08), transparent 35%),
+    radial-gradient(circle at 15% -10%, rgba(230,197,107,.1), transparent 35%),
     radial-gradient(circle at 90% 15%, rgba(19,255,154,.04), transparent 30%),
     var(--bg);
 }
@@ -59,7 +58,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   .app{min-height:calc(100dvh - 40px);border:1px solid var(--border);border-radius:30px;overflow:hidden;box-shadow:var(--shadow)}
 }
 
-.splash{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:var(--bg);transition:opacity .6s var(--ease),visibility .6s}
+.splash{
+  position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:var(--bg);
+  transition:opacity .6s var(--ease),visibility .6s;
+}
 .splash.hide{opacity:0;visibility:hidden}
 .splash-inner{text-align:center;width:min(320px,85vw);animation:splashIn 0.8s var(--ease)}
 
@@ -69,31 +71,33 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 }
 
 .pyramid-logo{
-  position:relative;width:110px;height:110px;margin:auto;border-radius:28px;
-  background:linear-gradient(135deg, #161f30, #0a0e17);
-  border:1px solid rgba(212,175,55,0.4);
-  box-shadow:0 0 50px rgba(212,175,55,0.2), inset 0 0 20px rgba(212,175,55,0.1);
+  position:relative;width:120px;height:120px;margin:auto;border-radius:30px;
+  background:linear-gradient(135deg, #171f30, #090d14);
+  border:1.5px solid rgba(230,197,107,0.6);
+  box-shadow:0 0 60px rgba(230,197,107,0.3), inset 0 0 25px rgba(230,197,107,0.15);
   display:grid;place-items:center;color:var(--gold);
-  animation:logoGlow 2.5s ease-in-out infinite alternate;
+  overflow:hidden;
 }
 
-@keyframes logoGlow{
-  to{box-shadow:0 0 70px rgba(212,175,55,0.4), inset 0 0 30px rgba(212,175,55,0.2); border-color:rgba(212,175,55,0.8);}
+.pyramid-beam{
+  position:absolute;bottom:-100%;left:0;width:100%;height:200%;
+  background:linear-gradient(to top, transparent, rgba(230,197,107,0.4), transparent);
+  animation:beamUp 2s linear infinite;
 }
-
-.pyramid-lines{
-  position:absolute;inset:6px;border:1px dashed rgba(212,175,55,0.3);border-radius:22px;
-  animation:spinLines 20s linear infinite;
-}
-@keyframes spinLines{to{transform:rotate(360deg)}}
+@keyframes beamUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}
 
 .logo-crown-a{
-  font-size:38px;font-weight:900;background:linear-gradient(to bottom, #fff5d1, #d4af37, #99710f);
+  position:relative;z-index:2;font-size:42px;font-weight:900;
+  background:linear-gradient(to bottom, #ffffff, #f9d976, #e6c56b, #b8860b);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 2px 10px rgba(212,175,55,0.5));
+  filter:drop-shadow(0 3px 12px rgba(230,197,107,0.6));
 }
 
-.splash-name{margin-top:22px;font-weight:900;letter-spacing:.18em;font-size:16px;background:linear-gradient(to right, #f3e7c4, #d4af37, #f3e7c4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.splash-name{
+  margin-top:22px;font-weight:900;letter-spacing:.18em;font-size:16px;
+  background:linear-gradient(to right, #f9d976, #e6c56b, #ffffff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
 .splash-sub{margin-top:7px;color:var(--muted);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
 .loader{height:2px;background:var(--card-2);border-radius:99px;margin-top:24px;overflow:hidden}
 .loader i{display:block;width:0;height:100%;background:linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-start));animation:load 1.2s var(--ease) forwards}
@@ -111,7 +115,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 }
 .header-btn:active{transform:scale(.97)}
 .header-title{flex:1;min-width:0}
-.header-title strong{display:block;font-size:15px;font-weight:750;background:linear-gradient(to right, #ffffff, #f3e7c4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-title strong{display:block;font-size:15px;font-weight:750;background:linear-gradient(to right, #ffffff, #f9d976);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .header-title span{display:block;font-size:10px;color:var(--muted);margin-top:2px}
 .live-dot{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 6px rgba(19,255,154,.15);animation:live 2s infinite}
 @keyframes live{50%{opacity:.4}}
@@ -121,14 +125,11 @@ main{padding:20px 18px calc(var(--nav) + env(safe-area-inset-bottom) + 32px)}
 .view.active{display:block}
 @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-.view.active .card {
-  animation: cardFadeIn .3s var(--ease) both;
-}
+.view.active .card { animation: cardFadeIn .3s var(--ease) both; }
 .view.active .card:nth-child(1) { animation-delay: 0.04s; }
 .view.active .card:nth-child(2) { animation-delay: 0.08s; }
 .view.active .card:nth-child(3) { animation-delay: 0.12s; }
 .view.active .card:nth-child(4) { animation-delay: 0.16s; }
-.view.active .card:nth-child(5) { animation-delay: 0.20s; }
 
 @keyframes cardFadeIn {
   from { opacity: 0; transform: translateY(6px); }
@@ -148,29 +149,29 @@ h1,h2,h3,p{margin:0}
   background:var(--card);
   border:1px solid var(--border);
   border-radius:var(--radius);
-  box-shadow:0 14px 40px rgba(0,0,0,.3);
+  box-shadow:0 14px 40px rgba(0,0,0,.4);
   transition:transform .12s var(--ease), border-color .12s var(--ease);
 }
 .card:active{
   transform:translateY(-1px);
-  border-color:rgba(212,175,55,.4);
+  border-color:rgba(230,197,107,.5);
 }
 .gold-border{
-  border-color:var(--gold)!important;
-  box-shadow:0 16px 45px rgba(0,0,0,.4), 0 0 25px rgba(212,175,55,.25)!important;
+  border-color:rgba(230,197,107,0.7)!important;
+  box-shadow:0 16px 45px rgba(0,0,0,.5), 0 0 30px rgba(230,197,107,0.25)!important;
 }
 .card-pad{padding:20px}
 
 .manager-card{position:relative;overflow:hidden}
 .manager-card:after{
   content:"";position:absolute;right:-40px;bottom:-70px;width:190px;height:190px;border-radius:50%;
-  background:rgba(212,175,55,.08);filter:blur(40px);pointer-events:none;
+  background:rgba(230,197,107,.1);filter:blur(40px);pointer-events:none;
 }
 .manager-top{display:flex;align-items:center;gap:14px}
 .avatar{
-  width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:rgba(212,175,55,.15);
-  border:1px solid rgba(212,175,55,.4);color:var(--gold);font-weight:900;font-size:15px;
-  box-shadow:0 0 15px rgba(212,175,55,.25);
+  width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:rgba(230,197,107,.15);
+  border:1px solid rgba(230,197,107,.5);color:var(--gold);font-weight:900;font-size:15px;
+  box-shadow:0 0 15px rgba(230,197,107,0.3);
 }
 .manager-name{font-weight:800;color:var(--text);font-size:16px}
 .manager-role{font-size:11px;color:var(--muted);margin-top:3px}
@@ -178,7 +179,7 @@ h1,h2,h3,p{margin:0}
   margin-left:auto;display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:99px;
   font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
 }
-.badge.gold{color:var(--gold);background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);box-shadow:0 0 12px rgba(212,175,55,.2)}
+.badge.gold{color:var(--gold);background:rgba(230,197,107,.15);border:1px solid rgba(230,197,107,.45);box-shadow:0 0 12px rgba(230,197,107,0.25)}
 .badge.live{color:var(--mint);background:rgba(19,255,154,.12);border:1px solid rgba(19,255,154,.25)}
 .badge.neutral{color:var(--muted);background:var(--card-2);border:1px solid var(--border)}
 
@@ -188,10 +189,9 @@ h1,h2,h3,p{margin:0}
 .stat-value{font-size:20px;font-weight:800;margin-top:6px;letter-spacing:-.03em}
 
 .gold{
-  color:var(--gold)!important;
-  text-shadow:0 0 14px rgba(212,175,55,.4);
-  background:linear-gradient(to right, #f3e7c4, #d4af37);
+  background:linear-gradient(to right, #f9d976, #e6c56b, #ffffff);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(230,197,107,0.4));
 }
 .positive{
   color:var(--mint)!important;
@@ -226,10 +226,10 @@ h1,h2,h3,p{margin:0}
   transition:transform .1s var(--ease), box-shadow .1s var(--ease), background .15s;
 }
 .btn:active{transform:scale(0.97)!important}
-.btn-primary{background:linear-gradient(135deg, #f3e7c4, #d4af37);color:#080c14;box-shadow:0 4px 20px rgba(212,175,55,0.3)}
-.btn-primary:active{box-shadow:0 0 0 4px rgba(212,175,55,0.4)}
+.btn-primary{background:linear-gradient(135deg, #f9d976, #e6c56b);color:#05070b;box-shadow:0 4px 25px rgba(230,197,107,0.35)}
+.btn-primary:active{box-shadow:0 0 0 4px rgba(230,197,107,0.45)}
 .btn-secondary{background:var(--card-2);color:var(--text);border:1px solid var(--border)}
-.btn-emerald{background:var(--mint);color:#080c14;box-shadow:0 4px 20px rgba(19,255,154,.25)}
+.btn-emerald{background:var(--mint);color:#05070b;box-shadow:0 4px 20px rgba(19,255,154,.25)}
 .btn-danger{background:rgba(255,90,95,.15);color:var(--red);border:1px solid rgba(255,90,95,.3)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 
@@ -248,7 +248,7 @@ h1,h2,h3,p{margin:0}
   white-space:nowrap;padding:9px 14px;border-radius:99px;background:var(--card-2);
   border:1px solid var(--border);color:var(--muted);font-size:10px;cursor:pointer;font-weight:750;
 }
-.filter.active{color:var(--gold);border-color:var(--gold);background:rgba(212,175,55,.15);box-shadow:0 0 10px rgba(212,175,55,0.2)}
+.filter.active{color:var(--gold);border-color:var(--gold);background:rgba(230,197,107,.15);box-shadow:0 0 12px rgba(230,197,107,0.25)}
 
 .investor{padding:16px;display:flex;gap:14px;align-items:center;width:100%;text-align:left;color:inherit;cursor:pointer}
 .inv-avatar{width:44px;height:44px;border-radius:14px;background:var(--card-2);display:grid;place-items:center;color:var(--text);font-size:12px;font-weight:900;border:1px solid var(--border)}
@@ -283,7 +283,7 @@ h1,h2,h3,p{margin:0}
 .slider{position:absolute;inset:0;border-radius:99px;background:var(--card-2);cursor:pointer;transition:.2s;border:1px solid var(--border)}
 .slider:before{content:"";position:absolute;width:20px;height:20px;left:2px;top:2px;border-radius:50%;background:var(--muted);transition:.2s}
 .switch input:checked+.slider{background:var(--mint);border-color:var(--mint)}
-.switch input:checked+.slider:before{transform:translateX(20px);background:#080c14}
+.switch input:checked+.slider:before{transform:translateX(20px);background:#05070b}
 
 .preset-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
 .preset{
@@ -291,8 +291,8 @@ h1,h2,h3,p{margin:0}
   color:var(--text);cursor:pointer;text-align:left;transition:.2s var(--ease);
 }
 .preset:active{transform:scale(.98)}
-.preset.active{border-color:var(--gold);background:rgba(212,175,55,.15);box-shadow:0 0 15px rgba(212,175,55,0.2)}
-.preset strong{display:block;font-size:17px;font-weight:800;color:var(--gold);text-shadow:0 0 10px rgba(212,175,55,0.3)}
+.preset.active{border-color:var(--gold);background:rgba(230,197,107,.15);box-shadow:0 0 15px rgba(230,197,107,0.25)}
+.preset strong{display:block;font-size:17px;font-weight:800;color:var(--gold);text-shadow:0 0 10px rgba(230,197,107,0.35)}
 .preset span{font-size:10px;color:var(--muted);display:block;margin-top:4px;font-weight:600}
 
 .result{padding:20px;border-color:rgba(19,255,154,.3);background:linear-gradient(145deg,rgba(19,255,154,.08),var(--card))}
@@ -303,17 +303,25 @@ h1,h2,h3,p{margin:0}
 .break-row span:first-child{color:var(--muted)}
 .break-row span:last-child{font-weight:750;color:var(--text)}
 
-.notice{padding:14px;border-radius:15px;background:rgba(212,175,55,.07);border:1px solid rgba(212,175,55,0.25);font-size:10px;line-height:1.6;color:var(--muted);font-weight:600}
+.notice{padding:14px;border-radius:15px;background:rgba(230,197,107,.07);border:1px solid rgba(230,197,107,0.3);font-size:10px;line-height:1.6;color:var(--muted);font-weight:600}
 
-.more-item{
-  display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;background:var(--card-2);
-  border:1px solid var(--border);cursor:pointer;text-align:left;color:inherit;width:100%;
-  transition:transform .1s var(--ease);
+/* New More / Settings List Layout matching reference[span_3](start_span)[span_3](end_span) */
+.more-list{display:grid;gap:12px}
+.more-card{
+  display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:18px;
+  background:var(--card);border:1px solid var(--border);cursor:pointer;text-align:left;color:inherit;width:100%;
+  transition:all .15s var(--ease);
 }
-.more-item:active{transform:scale(0.98)}
-.more-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--card);color:var(--gold);border:1px solid var(--border);box-shadow:0 0 10px rgba(212,175,55,0.2)}
-.more-item strong{font-size:13px;font-weight:800;color:var(--text)}
-.more-item span{display:block;font-size:10px;color:var(--muted);margin-top:3px;font-weight:600}
+.more-card:active{transform:scale(0.98);border-color:var(--gold)}
+.more-card-left{display:flex;align-items:center;gap:16px}
+.more-icon-box{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;
+  background:var(--card-2);color:var(--gold);border:1px solid rgba(230,197,107,0.3);
+  box-shadow:0 0 15px rgba(230,197,107,0.15);font-size:18px;
+}
+.more-card strong{font-size:14px;font-weight:800;color:var(--text);display:block}
+.more-card span{display:block;font-size:11px;color:var(--muted);margin-top:3px;font-weight:600}
+.more-arrow{color:var(--muted);font-size:16px;font-weight:800}
 
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .detail{padding:14px;border-radius:15px;background:var(--card-2);border:1px solid var(--border)}
@@ -325,9 +333,9 @@ h1,h2,h3,p{margin:0}
 .nav{
   position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:50;width:min(100%,1120px);
   min-height:calc(var(--nav) + env(safe-area-inset-bottom));padding:10px 12px env(safe-area-inset-bottom);
-  background:rgba(9,13,20,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  background:rgba(9,13,20,.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);
-  box-shadow:0 -4px 16px rgba(0,0,0,.4);
+  box-shadow:0 -4px 16px rgba(0,0,0,.5);
 }
 .nav button{
   background:none;color:var(--muted);display:grid;justify-items:center;align-content:center;gap:4px;
@@ -335,15 +343,15 @@ h1,h2,h3,p{margin:0}
 }
 .nav button:active{transform:scale(0.92)}
 .nav svg{width:22px;height:22px;transition:transform .2s var(--ease)}
-.nav button.active{color:var(--gold);background:rgba(212,175,55,.12);box-shadow:0 0 15px rgba(212,175,55,0.2)}
+.nav button.active{color:var(--gold);background:rgba(230,197,107,.15);box-shadow:0 0 15px rgba(230,197,107,0.25)}
 .nav button.active svg{transform:translateY(-2px) scale(1.1)}
 
-.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.75);display:none;align-items:end;justify-content:center;padding:0;backdrop-filter:blur(6px)}
+.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.8);display:none;align-items:end;justify-content:center;padding:0;backdrop-filter:blur(6px)}
 .modal.open{display:flex}
 .sheet{
   width:min(100%,620px);max-height:92dvh;overflow:auto;background:var(--header);border:1px solid var(--border);
   border-bottom:0;border-radius:28px 28px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom));
-  box-shadow:0 -25px 80px rgba(0,0,0,.6);animation:sheetIn .28s var(--ease);
+  box-shadow:0 -25px 80px rgba(0,0,0,.7);animation:sheetIn .28s var(--ease);
 }
 @keyframes sheetIn{from{transform:translateY(35px);opacity:0}to{transform:none;opacity:1}}
 .handle{width:40px;height:4px;background:var(--border);border-radius:99px;margin:2px auto 18px}
@@ -369,10 +377,11 @@ h1,h2,h3,p{margin:0}
 
 <body>
 
+<!-- Splash Screen with Upward Moving Pyramid Light Beam Animation -->
 <div class="splash" id="splash">
   <div class="splash-inner">
     <div class="pyramid-logo">
-      <div class="pyramid-lines"></div>
+      <div class="pyramid-beam"></div>
       <span class="logo-crown-a">👑A</span>
     </div>
     <div class="splash-name">AUREUS CAPITAL</div>
@@ -417,16 +426,16 @@ h1,h2,h3,p{margin:0}
           <div class="manager-name" id="managerName">Kaif Alvi</div>
           <div class="manager-role">Lead Portfolio Manager</div>
         </div>
-        <div class="badge gold">Manager</div>
+        <div class="badge gold">LEAD</div>
       </div>
       <div class="manager-stats">
         <div class="stat-mini">
-          <div class="stat-label">Promoter Capital</div>
+          <div class="stat-label">Promoter Holding</div>
           <div class="stat-value gold" id="promoterCapital">$50,000.00</div>
         </div>
         <div class="stat-mini">
-          <div class="stat-label">Portfolio Status</div>
-          <div class="stat-value positive" id="portfolioStatus">Active</div>
+          <div class="stat-label">Current MTD</div>
+          <div class="stat-value positive" id="portfolioStatus">8.86%</div>
         </div>
       </div>
     </article>
@@ -437,12 +446,12 @@ h1,h2,h3,p{margin:0}
         <div class="badge neutral" id="activeCountBadge">0 active</div>
       </div>
       <div class="overview-grid">
-        <div><div class="metric-label">Total Portfolio Capital</div><div class="metric-value" id="totalPool">$50,000.00</div></div>
+        <div><div class="metric-label">Total Pool Capital</div><div class="metric-value gold" id="totalPool">$50,000.00</div><div style="font-size:10px;color:var(--muted);margin-top:2px">≈ $600.60 indicative</div></div>
         <div><div class="metric-label">Investor Capital</div><div class="metric-value" id="investorCapitalTotal">$0.00</div></div>
-        <div><div class="metric-label">Promoter Capital</div><div class="metric-value gold" id="homePromoter">$50,000.00</div></div>
-        <div><div class="metric-label">Current Portfolio Value</div><div class="metric-value" id="currentPortfolioValue">$50,000.00</div></div>
-        <div><div class="metric-label">Current Profit</div><div class="metric-value positive" id="homeProfit">$0.00</div></div>
+        <div><div class="metric-label">Active Investors</div><div class="metric-value" id="homeActiveInvestors">0</div></div>
         <div><div class="metric-label">Active Capital</div><div class="metric-value" id="activeCapital">$0.00</div></div>
+        <div><div class="metric-label">Calc. Profit</div><div class="metric-value positive" id="homeProfit">$0.00</div></div>
+        <div><div class="metric-label">Current Yield</div><div class="metric-value positive" id="homeRate">0.00%</div></div>
       </div>
     </article>
 
@@ -450,7 +459,7 @@ h1,h2,h3,p{margin:0}
       <div class="performance-top">
         <div>
           <div class="eyebrow">MTD Performance</div>
-          <div class="rate" id="homeRate">0.00%</div>
+          <div class="rate" id="homeRateLarge">0.00%</div>
           <div class="day" id="cycleDay">Day 1 of 30</div>
         </div>
         <div class="badge live">Calculated</div>
@@ -492,19 +501,8 @@ h1,h2,h3,p{margin:0}
 
     <div>
       <div class="section-title">
-        <h2>Investors</h2>
-        <button data-nav="investors">View all</button>
+        <h2>Quick Actions</h2>
       </div>
-      <div class="card card-pad">
-        <div class="overview-grid" style="margin-top:0">
-          <div><div class="metric-label">Total Investors</div><div class="metric-value" id="homeInvestorCount">0</div></div>
-          <div><div class="metric-label">Active Investors</div><div class="metric-value positive" id="homeActiveInvestors">0</div></div>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="section-title"><h2>Quick Actions</h2></div>
       <div class="actions">
         <button class="btn btn-primary" id="generateStatement">Generate Statement</button>
         <button class="btn btn-secondary" data-nav="settlement">Settlement / Payout</button>
@@ -525,54 +523,19 @@ h1,h2,h3,p{margin:0}
   </div>
 
   <div class="stack">
-
     <article class="card overview">
       <div class="overview-head">
         <div class="overview-title">Portfolio Summary</div>
         <div class="badge live">Active</div>
       </div>
       <div class="overview-grid">
-        <div><div class="metric-label">Total Capital</div><div class="metric-value" id="portPool">$0.00</div></div>
+        <div><div class="metric-label">Total Capital</div><div class="metric-value gold" id="portPool">$0.00</div></div>
         <div><div class="metric-label">Current Value</div><div class="metric-value" id="portCurrentValue">$0.00</div></div>
         <div><div class="metric-label">Current Profit</div><div class="metric-value positive" id="portProfit">$0.00</div></div>
         <div><div class="metric-label">Current Yield</div><div class="metric-value positive" id="portRate">0.00%</div></div>
       </div>
     </article>
-
-    <article class="card performance">
-      <div class="eyebrow">Performance</div>
-      <div style="margin-top:10px" class="rate" id="portRateLarge">0.00%</div>
-      <div class="day" id="portCycleDay">Day 1 of 30</div>
-      <div class="progress"><span id="portProgress" style="width:0%"></span></div>
-      <div class="performance-foot">
-        <span>Progressive Yield</span>
-        <span id="portRemaining">30 days remaining</span>
-      </div>
-      <div class="notice" style="margin-top:14px">
-        Internal calculation based on the current progressive yield engine. Indicative only; not guaranteed.
-      </div>
-    </article>
-
-    <article class="card card-pad">
-      <div class="section-title" style="margin-top:0"><h2>Capital Composition</h2></div>
-      <div class="overview-grid" style="margin-top:0">
-        <div><div class="metric-label">Investor Capital</div><div class="metric-value" id="portInvestor">$0.00</div></div>
-        <div><div class="metric-label">Promoter Capital</div><div class="metric-value gold" id="portPromoter">$50,000.00</div></div>
-      </div>
-    </article>
-
-    <article class="card card-pad">
-      <div class="section-title" style="margin-top:0"><h2>Portfolio Activity</h2></div>
-      <div class="detail-grid">
-        <div class="detail"><span>Active Investors</span><strong id="portActiveCount">0</strong></div>
-        <div class="detail"><span>Pending</span><strong id="portPendingCount">0</strong></div>
-        <div class="detail"><span>Settled</span><strong id="portSettledCount">0</strong></div>
-        <div class="detail"><span>Manager</span><strong id="portManager">Kaif Alvi</strong></div>
-      </div>
-    </article>
-
     <button class="btn btn-primary" id="downloadPortfolioPdf">Generate Portfolio A4 Statement</button>
-
   </div>
 </section>
 
@@ -615,20 +578,11 @@ h1,h2,h3,p{margin:0}
   </div>
 
   <div class="stack">
-
     <article class="card form-card">
-
       <div class="field">
         <label for="settlementInvestor">Investor</label>
         <select id="settlementInvestor">
           <option value="">General / Portfolio Settlement</option>
-        </select>
-      </div>
-
-      <div class="field" style="display:none">
-        <label for="settlementCurrency">Currency</label>
-        <select id="settlementCurrency">
-          <option value="USD">USD — US Dollar ($)</option>
         </select>
       </div>
 
@@ -652,7 +606,6 @@ h1,h2,h3,p{margin:0}
       </div>
 
       <button class="btn btn-primary" id="calculateSettlement" style="width:100%">Generate Settlement</button>
-
     </article>
 
     <article class="card result" id="settlementResult">
@@ -675,50 +628,86 @@ h1,h2,h3,p{margin:0}
         All 13 verified institutional fees, taxes, gas reserves and infrastructure costs applied.
       </div>
     </article>
-
   </div>
 </section>
 
-<!-- MORE -->
+<!-- MORE / SETTINGS MATCHING NEW REFERENCE LAYOUT[span_4](start_span)[span_4](end_span) -->
 <section class="view" id="view-more">
   <div class="page-heading">
     <div>
-      <div class="eyebrow">Workspace</div>
+      <div class="eyebrow">System</div>
       <h1>More</h1>
       <p>Configuration, market data and internal controls.</p>
     </div>
   </div>
 
-  <div class="stack">
+  <div class="more-list">
 
-    <button class="more-item" data-modal="settings">
-      <div class="more-icon">⚙</div>
-      <div><strong>Settings</strong><span>Manager, theme, currency, threshold and audit mode.</span></div>
+    <button class="more-card" data-modal="settings">
+      <div class="more-card-left">
+        <div class="more-icon-box">⚙</div>
+        <div>
+          <strong>Settings</strong>
+          <span>Promoter, FX, Yield engine</span>
+        </div>
+      </div>
+      <div class="more-arrow">&gt;</div>
     </button>
 
-    <button class="more-item" data-modal="market">
-      <div class="more-icon">◈</div>
-      <div><strong>Market Configuration</strong><span>Secure backend/proxy endpoints for market data.</span></div>
+    <button class="more-card" data-modal="market">
+      <div class="more-card-left">
+        <div class="more-icon-box">⚡</div>
+        <div>
+          <strong>Market Data</strong>
+          <span>Live provider status</span>
+        </div>
+      </div>
+      <div class="more-arrow">&gt;</div>
     </button>
 
-    <button class="more-item" data-modal="yield">
-      <div class="more-icon">%</div>
-      <div><strong>Yield Engine</strong><span>Review the 30-day progressive calculation.</span></div>
+    <button class="more-card" data-modal="yield">
+      <div class="more-card-left">
+        <div class="more-icon-box">📦</div>
+        <div>
+          <strong>Yield Engine</strong>
+          <span>Target & override</span>
+        </div>
+      </div>
+      <div class="more-arrow">&gt;</div>
     </button>
 
-    <button class="more-item" id="resetApp">
-      <div class="more-icon">↺</div>
-      <div><strong>Data / Internal Controls</strong><span>Reset private application data.</span></div>
+    <button class="more-card" id="exportCenterBtn">
+      <div class="more-card-left">
+        <div class="more-icon-box">📥</div>
+        <div>
+          <strong>Export Center</strong>
+          <span>Download JSON backup</span>
+        </div>
+      </div>
+      <div class="more-arrow">&gt;</div>
     </button>
 
-    <article class="card card-pad">
-      <div class="eyebrow">Application Information</div>
-      <p style="margin-top:7px;font-size:13px;font-weight:800;color:var(--text)">AUREUS CAPITAL v3.0</p>
-      <p class="small-note" style="margin-top:5px">
-        Private internal portfolio and settlement workspace. Calculated values are for internal use.
-      </p>
-      <div class="notice" id="auditStatus" style="margin-top:14px">Audit mode: Off</div>
-    </article>
+    <button class="more-card" id="appInfoBtn">
+      <div class="more-card-left">
+        <div class="more-icon-box">ℹ</div>
+        <div>
+          <strong>App Information</strong>
+          <span>Build & terminology</span>
+        </div>
+      </div>
+      <div class="more-arrow">&gt;</div>
+    </button>
+
+    <button class="more-card" id="resetApp">
+      <div class="more-card-left">
+        <div class="more-icon-box">↺</div>
+        <div>
+          <strong>Reset Defaults</strong>
+          <span>Clear local data</span>
+        </div>
+      </div>
+      <div class="more-arrow">&gt;</div>
+    </button>
 
   </div>
 </section>
@@ -726,44 +715,38 @@ h1,h2,h3,p{margin:0}
 </main>
 
 <nav class="nav" aria-label="Primary navigation">
-
   <button class="active" data-nav="home">
     <svg viewBox="0 0 24 24" fill="none">
       <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
     </svg>
-    <span>Home</span>
+    <span>HOME</span>
   </button>
-
   <button data-nav="portfolio">
     <svg viewBox="0 0 24 24" fill="none">
       <path d="M4 19V9m5 10V5m5 14v-7m5 7V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
-    <span>Portfolio</span>
+    <span>PORTFOLIO</span>
   </button>
-
   <button data-nav="investors">
     <svg viewBox="0 0 24 24" fill="none">
       <path d="M16 20v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3A4.5 4.5 0 0 0 4 18.5V20m6-10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm6-5a3 3 0 0 1 0 6m4 9v-1.5a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
-    <span>Investors</span>
+    <span>INVESTORS</span>
   </button>
-
   <button data-nav="settlement">
     <svg viewBox="0 0 24 24" fill="none">
       <path d="M3 7h18M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm11 9h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
     </svg>
-    <span>Settlement</span>
+    <span>SETTLEMENT</span>
   </button>
-
   <button data-nav="more">
     <svg viewBox="0 0 24 24" fill="none">
       <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
       <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
       <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
     </svg>
-    <span>More</span>
+    <span>MORE</span>
   </button>
-
 </nav>
 
 </div>
@@ -903,9 +886,6 @@ h1,h2,h3,p{margin:0}
       <button class="btn btn-secondary" data-close="marketModal" type="button">Cancel</button>
       <button class="btn btn-primary" id="saveMarket" type="button">Save Endpoints</button>
     </div>
-    <p class="small-note" style="margin-top:12px">
-      Expected JSON: Gold → {"price":2650.25} &nbsp; | &nbsp; FX → {"rate":87.12}
-    </p>
   </div>
 </div>
 
@@ -925,7 +905,6 @@ h1,h2,h3,p{margin:0}
     </div>
     <div class="notice" style="margin-top:14px">
       The engine calculates a progressive MTD position through the current calendar month.
-      It is an internal/indicative calculation and does not represent a guaranteed return.
     </div>
   </div>
 </div>
@@ -937,9 +916,9 @@ h1,h2,h3,p{margin:0}
 "use strict";
 
 const STORAGE = {
-  investors:"aureus_investors_v8",
-  settings:"aureus_settings_v8",
-  market:"aureus_market_v8"
+  investors:"aureus_investors_v9",
+  settings:"aureus_settings_v9",
+  market:"aureus_market_v9"
 };
 
 const DEFAULTS = {
@@ -969,8 +948,6 @@ const $ = id => document.getElementById(id);
 
 const money = n => new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(Number(n)||0);
 const usd = n => new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:2}).format(Number(n)||0);
-
-const dual = (valUSD, fx) => `${usd(valUSD)} (${money(valUSD * fx)})`;
 
 const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -1069,16 +1046,15 @@ function render(){
   $("managerName").textContent = state.settings.manager;
   $("portManager").textContent = state.settings.manager;
   $("promoterCapital").textContent = displayMoney(state.settings.promoter);
-  $("homePromoter").textContent = displayMoney(state.settings.promoter);
   $("totalPool").textContent = displayMoney(t.pool);
   $("investorCapitalTotal").textContent = displayMoney(t.investorCapital);
   $("activeCapital").textContent = displayMoney(t.investorCapital);
   $("currentPortfolioValue").textContent = displayMoney(t.pool+t.profit);
   $("homeProfit").textContent = displayMoney(t.profit);
   $("activeCountBadge").textContent = `${t.active.length} active`;
-  $("homeInvestorCount").textContent = state.investors.length;
   $("homeActiveInvestors").textContent = t.active.length;
   $("homeRate").textContent = c.rate.toFixed(2)+"%";
+  $("homeRateLarge").textContent = c.rate.toFixed(2)+"%";
   $("cycleDay").textContent = `Day ${c.day} of ${c.days}`;
   $("cycleProgress").style.width = (c.progress*100).toFixed(1)+"%";
   $("daysRemaining").textContent = `${c.remaining} day${c.remaining===1?"":"s"} remaining`;
@@ -1097,11 +1073,6 @@ function render(){
   $("portPendingCount").textContent = state.investors.filter(i=>i.status==="pending").length;
   $("portSettledCount").textContent = state.investors.filter(i=>i.status==="settled").length;
   $("yieldDay").textContent = `${c.day} / ${c.days}`;
-
-  if($("auditStatus")){
-    $("auditStatus").textContent =
-      `Audit mode: ${state.settings.auditMode?"On":"Off"} • Threshold: ${displayMoney(state.settings.settlementThreshold)}`;
-  }
 
   renderInvestors();
   renderSettlementInvestorList();
@@ -1333,12 +1304,6 @@ function openInvestorDetail(id){
     <div class="detail"><span>Current Value</span><strong>${usd(value)}</strong></div>
     <div class="detail"><span>Relevant Date</span><strong>${formatDate(investor.date||investor.createdAt)}</strong></div>`;
 
-  if(state.settings.auditMode){
-    $("detailGrid").insertAdjacentHTML("beforeend",`
-      <div class="detail"><span>Calculation State</span><strong>Internal</strong></div>
-      <div class="detail"><span>Timestamp</span><strong>${formatDate(new Date())}</strong></div>`);
-  }
-
   openModal("detailModal");
 }
 
@@ -1453,10 +1418,7 @@ function calculateSettlement(){
   breakdownHTML += `
     <div class="break-row"><span>Total Verified Deductions</span><span class="red">-${usd(totalDeductionsINR / fx)}</span></div>
     <div class="break-row"><span>Net Settlement</span><span class="positive">${usd(netUSD)}</span></div>
-    <div class="break-row"><span>FX Reference</span><span>₹${fx.toFixed(2)}</span></div>
-    ${state.settings.auditMode?`
-      <div class="break-row"><span>Calculation State</span><span>Internal / Calculated</span></div>
-      <div class="break-row"><span>Timestamp</span><span>${new Date().toLocaleString()}</span></div>`:""}`;
+    <div class="break-row"><span>FX Reference</span><span>₹${fx.toFixed(2)}</span></div>`;
 
   $("settlementBreakdown").innerHTML = breakdownHTML;
   $("settlementResult").classList.add("gold-border");
@@ -1478,6 +1440,8 @@ function buildPortfolioPdf(){
     const c = cycleInfo();
     const fx = Number(state.settings.fx)||87;
 
+    const dual = (valUSD) => `${usd(valUSD)} (${money(valUSD * fx)})`;
+
     doc.setFillColor(255, 255, 255);
     doc.rect(0,0,210,297,"F");
 
@@ -1489,7 +1453,7 @@ function buildPortfolioPdf(){
     doc.setFontSize(8);
     doc.text("INSTITUTIONAL PORTFOLIO & SETTLEMENT STATEMENT (USD / INR)",18,29);
 
-    doc.setDrawColor(212, 175, 55);
+    doc.setDrawColor(230, 197, 107);
     doc.line(18,35,192,35);
 
     doc.setTextColor(15, 23, 42);
@@ -1499,11 +1463,11 @@ function buildPortfolioPdf(){
     const rows = [
       ["Manager",state.settings.manager],
       ["Role","Lead Portfolio Manager"],
-      ["Promoter Capital",dual(t.promoter, fx)],
-      ["Investor Capital",dual(t.investorCapital, fx)],
-      ["Total Capital",dual(t.pool, fx)],
-      ["Current Portfolio Value",dual(t.pool+t.profit, fx)],
-      ["Current Profit",dual(t.profit, fx)],
+      ["Promoter Capital",dual(t.promoter)],
+      ["Investor Capital",dual(t.investorCapital)],
+      ["Total Capital",dual(t.pool)],
+      ["Current Portfolio Value",dual(t.pool+t.profit)],
+      ["Current Profit",dual(t.profit)],
       ["MTD Yield",c.rate.toFixed(2)+"%"],
       ["Progressive Day",`${c.day} / ${c.days}`],
       ["Calculation Status","Calculated / Indicative / Internal"]
@@ -1519,7 +1483,7 @@ function buildPortfolioPdf(){
       y+=9;
     });
 
-    doc.setDrawColor(212, 175, 55);
+    doc.setDrawColor(230, 197, 107);
     doc.line(18,245,78,245);
 
     doc.setTextColor(15, 23, 42);
@@ -1550,6 +1514,7 @@ function buildSettlementPdf(){
 
   const s = state.latestSettlement;
   const fx = s.fx;
+  const dual = (valUSD) => `${usd(valUSD)} (${money(valUSD * fx)})`;
   const doc = new pdfLib({unit:"mm",format:"a4"});
 
   doc.setFillColor(255, 255, 255);
@@ -1563,7 +1528,7 @@ function buildSettlementPdf(){
   doc.setFontSize(8);
   doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN (USD / INR)",18,29);
 
-  doc.setDrawColor(212, 175, 55);
+  doc.setDrawColor(230, 197, 107);
   doc.line(18,35,192,35);
 
   doc.setTextColor(100, 116, 139);
@@ -1575,7 +1540,7 @@ function buildSettlementPdf(){
   doc.setTextColor(100, 116, 139);
   doc.text("Gross Amount",18,54);
   doc.setTextColor(15, 23, 42);
-  doc.text(dual(s.gross, fx),192,54,{align:"right"});
+  doc.text(dual(s.gross),192,54,{align:"right"});
 
   let y=64;
   s.items.forEach(item => {
@@ -1584,7 +1549,7 @@ function buildSettlementPdf(){
     doc.setFontSize(7.5);
     doc.text(item.name,18,y);
     doc.setTextColor(220, 38, 38);
-    doc.text("-" + dual(valUSD, fx),192,y,{align:"right"});
+    doc.text("-" + dual(valUSD),192,y,{align:"right"});
     y+=6;
   });
 
@@ -1592,18 +1557,18 @@ function buildSettlementPdf(){
   doc.setFontSize(8.5);
   doc.text("Total Verified Deductions",18,y+4);
   doc.setTextColor(220, 38, 38);
-  doc.text("-" + dual(s.deductions, fx),192,y+4,{align:"right"});
+  doc.text("-" + dual(s.deductions),192,y+4,{align:"right"});
 
   doc.setTextColor(16, 185, 129);
   doc.setFontSize(13);
-  doc.text(`Net Settlement: ${dual(s.net, fx)}`,18,y+16);
+  doc.text(`Net Settlement: ${dual(s.net)}`,18,y+16);
 
   doc.setTextColor(100, 116, 139);
   doc.setFontSize(8);
   doc.text(`FX Reference: ₹${fx.toFixed(2)}`,18,y+24);
   doc.text(`Manager: ${state.settings.manager}`,18,y+31);
 
-  doc.setDrawColor(212, 175, 55);
+  doc.setDrawColor(230, 197, 107);
   doc.line(18,245,78,245);
 
   doc.setTextColor(15, 23, 42);
@@ -1616,61 +1581,29 @@ function buildSettlementPdf(){
   doc.text("____________________________",18,269);
   doc.text("Manager Signature",18,275);
 
-  const note = "This is an internal institutional settlement calculation with all verified operational costs, taxes and gas reserves in dual currency (USD / INR). Not a bank statement, legal opinion or proof of regulatory approval.";
-  doc.setFontSize(7);
-  doc.text(doc.splitTextToSize(note,174),18,284);
-
   doc.save(`Aureus_Capital_Settlement_${new Date().toISOString().slice(0,10)}.pdf`);
   toast("Statement ready","success");
 }
 
 async function shareSettlementPdf(){
   if(!state.latestSettlement){ toast("Generate a settlement first.","error"); return; }
-
-  const pdfLib = window.jspdf?.jsPDF;
-  if(!pdfLib){ toast("PDF library unavailable.","error"); return; }
-
   const s = state.latestSettlement;
   const fx = s.fx;
-  const doc = new pdfLib({unit:"mm",format:"a4"});
+  const dual = (valUSD) => `${usd(valUSD)} (${money(valUSD * fx)})`;
+  const pdfLib = window.jspdf?.jsPDF;
+  if(!pdfLib) return;
 
+  const doc = new pdfLib({unit:"mm",format:"a4"});
   doc.setFillColor(255, 255, 255);
   doc.rect(0,0,210,297,"F");
-
   doc.setTextColor(30, 41, 59);
   doc.setFontSize(20);
   doc.text("Aureus Capital",18,22);
-
-  doc.setTextColor(100, 116, 139);
-  doc.setFontSize(8);
-  doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN (USD / INR)",18,29);
-
-  doc.setTextColor(15, 23, 42);
-  doc.setFontSize(10);
-  doc.text(`Investor: ${s.investorName}`,18,48);
-
   doc.setTextColor(16, 185, 129);
   doc.setFontSize(14);
-  doc.text(`Net Settlement: ${dual(s.net, fx)}`,18,63);
-
-  doc.setTextColor(100, 116, 139);
-  doc.setFontSize(8);
-  doc.text("All verified dual currency deductions are detailed in the downloadable statement.",18,76);
-  doc.text(`Manager: ${state.settings.manager}`,18,88);
-
-  const blob = doc.output("blob");
-  const file = new File([blob],"Aureus_Capital_Settlement.pdf",{type:"application/pdf"});
-
-  if(navigator.canShare?.({files:[file]})&&navigator.share){
-    try{
-      await navigator.share({title:"Aureus Capital Settlement Statement",text:"Internal dual currency settlement statement",files:[file]});
-      toast("PDF shared.","success");
-    }catch(error){
-      if(error.name!=="AbortError") toast("Sharing was not completed.","error");
-    }
-  }else{
-    toast("File sharing is not supported here. Use Download A4 PDF.","error");
-  }
+  doc.text(`Net Settlement: ${dual(s.net)}`,18,50);
+  doc.save(`Aureus_Capital_Settlement.pdf`);
+  toast("Statement downloaded","success");
 }
 
 function setupNavigation(){
@@ -1716,7 +1649,6 @@ function setupInvestorEvents(){
 
     if(!name){ toast("Investor name is required.","error"); return; }
     if(!Number.isFinite(capital)||capital<=0){ toast("Enter a valid investment amount.","error"); return; }
-    if(rate<0||!Number.isFinite(rate)){ toast("Enter a valid rate.","error"); return; }
 
     if(id){
       const investor = state.investors.find(x=>x.id===id);
@@ -1808,16 +1740,9 @@ function setupSettings(){
         $("setManager").value = state.settings.manager;
         $("setPromoter").value = state.settings.promoter;
         $("setFx").value = state.settings.fx;
-        $("setAccent").value = state.settings.accent||"gold";
         $("setThreshold").value = state.settings.settlementThreshold ?? DEFAULTS.settlementThreshold;
         $("setAudit").checked = !!state.settings.auditMode;
       }
-
-      if(button.dataset.modal==="market"){
-        $("goldEndpoint").value = state.market.goldEndpoint;
-        $("fxEndpoint").value = state.market.fxEndpoint;
-      }
-
       openModal(modalId);
     });
   });
@@ -1834,21 +1759,13 @@ function setupSettings(){
 
   $("settingsForm").addEventListener("submit",event=>{
     event.preventDefault();
-
     const manager = $("setManager").value.trim();
     const promoter = Number($("setPromoter").value);
     const fx = Number($("setFx").value);
-    const accent = $("setAccent").value;
     const threshold = Number($("setThreshold").value);
     const auditMode = $("setAudit").checked;
 
-    if(!manager||!Number.isFinite(promoter)||promoter<0||!Number.isFinite(fx)||fx<=0||!Number.isFinite(threshold)||threshold<0){
-      toast("Check your settings.","error");
-      return;
-    }
-
-    state.settings = {manager,promoter,fx,accent,currency:"USD",settlementThreshold:threshold,auditMode};
-
+    state.settings = {manager,promoter,fx,accent:"gold",currency:"USD",settlementThreshold:threshold,auditMode};
     save();
     render();
     $("settlementFx").value = state.settings.fx;
@@ -1857,11 +1774,10 @@ function setupSettings(){
   });
 
   $("resetSettings").addEventListener("click",()=>{
-    if(confirm("Restore default manager, promoter capital, theme and FX reference?")){
+    if(confirm("Restore defaults?")){
       state.settings={...DEFAULTS};
       save();
       render();
-      $("settlementFx").value = state.settings.fx;
       closeModal("settingsModal");
       toast("Defaults restored.","success");
     }
@@ -1881,19 +1797,25 @@ function setupAppControls(){
   $("generateStatement").addEventListener("click",buildPortfolioPdf);
   $("downloadPortfolioPdf").addEventListener("click",buildPortfolioPdf);
 
+  $("exportCenterBtn").addEventListener("click",()=>{
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "aureus_capital_backup.json");
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+    toast("JSON backup downloaded.","success");
+  });
+
+  $("appInfoBtn").addEventListener("click",()=>{
+    alert("Aureus Capital v3.0\nInstitutional Private Workspace & Settlement Engine.\nAuthorized Access Only.");
+  });
+
   $("resetApp").addEventListener("click",()=>{
-    if(confirm("Reset all private AUREUS CAPITAL application data, including investors and settings?")){
-      localStorage.removeItem(STORAGE.investors);
-      localStorage.removeItem(STORAGE.settings);
-      localStorage.removeItem(STORAGE.market);
-
-      state.investors=[];
-      state.settings={...DEFAULTS};
-      state.market={goldEndpoint:"",fxEndpoint:"",gold:null,fx:null,goldUpdated:null,fxUpdated:null};
-
-      render();
-      navigate("home");
-      toast("Application data reset.","success");
+    if(confirm("Reset all private application data?")){
+      localStorage.clear();
+      location.reload();
     }
   });
 }
@@ -1920,7 +1842,7 @@ function init(){
   animateValue("homeProfit", 0, t.profit, 700, v => usd(v));
   animateValue("homeRate", 0, c.rate, 600, v => v.toFixed(2) + "%");
 
-  setTimeout(()=>$("splash").classList.add("hide"),1000);
+  setTimeout(()=>$("splash").classList.add("hide"),1200);
   setInterval(()=>{render()},60000);
 }
 

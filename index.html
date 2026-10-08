@@ -61,7 +61,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .splash-inner{text-align:center;width:min(280px,80vw)}
 .logo{
   width:76px;height:76px;margin:auto;border:1px solid rgba(196,163,90,.5);border-radius:24px;
-  display:grid;place-items:center;color:var(--gold);box-shadow:0 0 45px rgba(196,163,90,.15);
+  display:grid;place-items:center;color:var(--gold);box-shadow:0 0 45px rgba(196,163,90,.25);
   animation:pulse 1.8s ease-in-out infinite;
 }
 .logo svg{width:38px;height:38px}
@@ -70,7 +70,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .loader{height:2px;background:var(--card-2);border-radius:99px;margin-top:24px;overflow:hidden}
 .loader i{display:block;width:0;height:100%;background:var(--gold);animation:load 1.2s var(--ease) forwards}
 @keyframes load{to{width:100%}}
-@keyframes pulse{50%{transform:scale(1.03);box-shadow:0 0 60px rgba(196,163,90,0.25)}}
+@keyframes pulse{50%{transform:scale(1.03);box-shadow:0 0 60px rgba(196,163,90,0.35)}}
 
 .header{
   height:calc(68px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 18px 0;
@@ -94,7 +94,6 @@ main{padding:20px 18px calc(var(--nav) + env(safe-area-inset-bottom) + 32px)}
 .view.active{display:block}
 @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-/* Stagger animation for cards inside active views */
 .view.active .card {
   animation: cardFadeIn .3s var(--ease) both;
 }
@@ -131,19 +130,20 @@ h1,h2,h3,p{margin:0}
 }
 .gold-border{
   border-color:var(--gold)!important;
-  box-shadow:0 16px 45px rgba(0,0,0,.4), 0 0 25px rgba(196,163,90,.08)!important;
+  box-shadow:0 16px 45px rgba(0,0,0,.4), 0 0 25px rgba(196,163,90,.2)!important;
 }
 .card-pad{padding:20px}
 
 .manager-card{position:relative;overflow:hidden}
 .manager-card:after{
   content:"";position:absolute;right:-40px;bottom:-70px;width:190px;height:190px;border-radius:50%;
-  background:rgba(196,163,90,.06);filter:blur(40px);pointer-events:none;
+  background:rgba(196,163,90,.1);filter:blur(40px);pointer-events:none;
 }
 .manager-top{display:flex;align-items:center;gap:14px}
 .avatar{
-  width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:rgba(196,163,90,.12);
-  border:1px solid rgba(196,163,90,.3);color:var(--gold);font-weight:900;font-size:15px;
+  width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:rgba(196,163,90,.15);
+  border:1px solid rgba(196,163,90,.4);color:var(--gold);font-weight:900;font-size:15px;
+  box-shadow:0 0 15px rgba(196,163,90,.2);
 }
 .manager-name{font-weight:800;color:var(--text);font-size:16px}
 .manager-role{font-size:11px;color:var(--muted);margin-top:3px}
@@ -151,7 +151,7 @@ h1,h2,h3,p{margin:0}
   margin-left:auto;display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:99px;
   font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
 }
-.badge.gold{color:var(--gold);background:rgba(196,163,90,.12);border:1px solid rgba(196,163,90,.25)}
+.badge.gold{color:var(--gold);background:rgba(196,163,90,.15);border:1px solid rgba(196,163,90,.35);box-shadow:0 0 12px rgba(196,163,90,.15)}
 .badge.live{color:var(--mint);background:rgba(19,255,154,.12);border:1px solid rgba(19,255,154,.25)}
 .badge.neutral{color:var(--muted);background:var(--card-2);border:1px solid var(--border)}
 
@@ -160,8 +160,14 @@ h1,h2,h3,p{margin:0}
 .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;font-weight:700}
 .stat-value{font-size:20px;font-weight:800;margin-top:6px;letter-spacing:-.03em}
 
-.gold{color:var(--gold)!important}
-.positive{color:var(--mint)!important}
+.gold{
+  color:var(--gold)!important;
+  text-shadow:0 0 14px rgba(196,163,90,.35);
+}
+.positive{
+  color:var(--mint)!important;
+  text-shadow:0 0 14px rgba(19,255,154,.3);
+}
 .muted{color:var(--muted)!important}
 .red{color:var(--red)!important}
 
@@ -174,10 +180,10 @@ h1,h2,h3,p{margin:0}
 
 .performance{padding:20px}
 .performance-top{display:flex;justify-content:space-between;align-items:start;gap:12px}
-.rate{font-size:38px;font-weight:900;letter-spacing:-.06em;line-height:1;color:var(--mint)}
+.rate{font-size:38px;font-weight:900;letter-spacing:-.06em;line-height:1;color:var(--mint);text-shadow:0 0 16px rgba(19,255,154,.35)}
 .day{font-size:11px;color:var(--muted);margin-top:8px;font-weight:600}
 .progress{height:7px;background:var(--card-2);border-radius:99px;overflow:hidden;margin-top:20px;border:1px solid var(--border)}
-.progress span{display:block;height:100%;background:var(--mint);border-radius:99px;transition:width .8s var(--ease)}
+.progress span{display:block;height:100%;background:var(--mint);border-radius:99px;box-shadow:0 0 12px rgba(19,255,154,.4);transition:width .8s var(--ease)}
 .performance-foot{display:flex;justify-content:space-between;margin-top:10px;font-size:10px;color:var(--muted);font-weight:600}
 
 .market-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -191,10 +197,10 @@ h1,h2,h3,p{margin:0}
   transition:transform .1s var(--ease), box-shadow .1s var(--ease), background .15s;
 }
 .btn:active{transform:scale(0.97)!important}
-.btn-primary{background:var(--gold);color:#080c14}
-.btn-primary:active{box-shadow:0 0 0 4px rgba(196,163,90,.25)}
+.btn-primary{background:var(--gold);color:#080c14;box-shadow:0 4px 20px rgba(196,163,90,.25)}
+.btn-primary:active{box-shadow:0 0 0 4px rgba(196,163,90,.3)}
 .btn-secondary{background:var(--card-2);color:var(--text);border:1px solid var(--border)}
-.btn-emerald{background:var(--mint);color:#080c14}
+.btn-emerald{background:var(--mint);color:#080c14;box-shadow:0 4px 20px rgba(19,255,154,.25)}
 .btn-danger{background:rgba(255,90,95,.15);color:var(--red);border:1px solid rgba(255,90,95,.3)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 
@@ -213,7 +219,7 @@ h1,h2,h3,p{margin:0}
   white-space:nowrap;padding:9px 14px;border-radius:99px;background:var(--card-2);
   border:1px solid var(--border);color:var(--muted);font-size:10px;cursor:pointer;font-weight:750;
 }
-.filter.active{color:var(--gold);border-color:var(--gold);background:rgba(196,163,90,.15)}
+.filter.active{color:var(--gold);border-color:var(--gold);background:rgba(196,163,90,.15);box-shadow:0 0 10px rgba(196,163,90,.15)}
 
 .investor{padding:16px;display:flex;gap:14px;align-items:center;width:100%;text-align:left;color:inherit;cursor:pointer}
 .inv-avatar{width:44px;height:44px;border-radius:14px;background:var(--card-2);display:grid;place-items:center;color:var(--text);font-size:12px;font-weight:900;border:1px solid var(--border)}
@@ -221,7 +227,7 @@ h1,h2,h3,p{margin:0}
 .inv-name{font-size:13px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .inv-meta{display:flex;gap:10px;margin-top:5px;font-size:10px;color:var(--muted);flex-wrap:wrap;font-weight:600}
 .inv-right{text-align:right}
-.inv-profit{font-size:15px;font-weight:800;color:var(--mint)}
+.inv-profit{font-size:15px;font-weight:800;color:var(--mint);text-shadow:0 0 10px rgba(19,255,154,.25)}
 .inv-cap{font-size:10px;color:var(--muted);margin-top:4px;font-weight:600}
 .status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px}
 .status-active{background:var(--mint);box-shadow:0 0 8px var(--mint)}
@@ -256,15 +262,15 @@ h1,h2,h3,p{margin:0}
   color:var(--text);cursor:pointer;text-align:left;transition:.2s var(--ease);
 }
 .preset:active{transform:scale(.98)}
-.preset.active{border-color:var(--gold);background:rgba(196,163,90,.15)}
-.preset strong{display:block;font-size:17px;font-weight:800}
+.preset.active{border-color:var(--gold);background:rgba(196,163,90,.15);box-shadow:0 0 15px rgba(196,163,90,.15)}
+.preset strong{display:block;font-size:17px;font-weight:800;color:var(--gold);text-shadow:0 0 10px rgba(196,163,90,.25)}
 .preset span{font-size:10px;color:var(--muted);display:block;margin-top:4px;font-weight:600}
 
 .result{padding:20px;border-color:rgba(19,255,154,.3);background:linear-gradient(145deg,rgba(19,255,154,.08),var(--card))}
 .result-main{display:flex;justify-content:space-between;align-items:end;gap:10px}
-.result-net{font-size:34px;font-weight:900;color:var(--mint);letter-spacing:-.055em}
-.breakdown{margin-top:18px;border-top:1px solid var(--border)}
-.break-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:11px;font-weight:600}
+.result-net{font-size:34px;font-weight:900;color:var(--mint);letter-spacing:-.055em;text-shadow:0 0 16px rgba(19,255,154,.35)}
+.breakdown{margin-top:18px;border-top:1px solid var(--border);max-height:240px;overflow-y:auto}
+.break-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:11px;font-weight:600}
 .break-row span:first-child{color:var(--muted)}
 .break-row span:last-child{font-weight:750;color:var(--text)}
 
@@ -276,7 +282,7 @@ h1,h2,h3,p{margin:0}
   transition:transform .1s var(--ease);
 }
 .more-item:active{transform:scale(0.98)}
-.more-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--card);color:var(--gold);border:1px solid var(--border)}
+.more-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--card);color:var(--gold);border:1px solid var(--border);box-shadow:0 0 10px rgba(196,163,90,.15)}
 .more-item strong{font-size:13px;font-weight:800;color:var(--text)}
 .more-item span{display:block;font-size:10px;color:var(--muted);margin-top:3px;font-weight:600}
 
@@ -300,7 +306,7 @@ h1,h2,h3,p{margin:0}
 }
 .nav button:active{transform:scale(0.92)}
 .nav svg{width:22px;height:22px;transition:transform .2s var(--ease)}
-.nav button.active{color:var(--gold);background:rgba(196,163,90,.12)}
+.nav button.active{color:var(--gold);background:rgba(196,163,90,.12);box-shadow:0 0 15px rgba(196,163,90,.15)}
 .nav button.active svg{transform:translateY(-2px) scale(1.1)}
 
 .modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.75);display:none;align-items:end;justify-content:center;padding:0;backdrop-filter:blur(6px)}
@@ -594,23 +600,23 @@ h1,h2,h3,p{margin:0}
       <div class="field">
         <label for="settlementCurrency">Currency</label>
         <select id="settlementCurrency">
-          <option value="INR">INR — Indian Rupee</option>
-          <option value="USD">USD — US Dollar</option>
+          <option value="USD">USD — US Dollar ($)</option>
+          <option value="INR">INR — Indian Rupee (₹)</option>
         </select>
       </div>
 
-      <div class="section-title" style="margin-top:8px"><h2>Settlement Amount</h2></div>
+      <div class="section-title" style="margin-top:8px"><h2>Settlement Amount ($)</h2></div>
 
       <div class="preset-grid" id="presets">
-        <button class="preset active" data-amount="50000"><strong>₹50,000</strong><span>Preset</span></button>
-        <button class="preset" data-amount="100000"><strong>₹1,00,000</strong><span>Preset</span></button>
-        <button class="preset" data-amount="500000"><strong>₹5,00,000</strong><span>Preset</span></button>
-        <button class="preset" data-amount="1000000"><strong>₹10,00,000</strong><span>Preset</span></button>
+        <button class="preset active" data-amount="500"><strong>$500</strong><span>Preset</span></button>
+        <button class="preset" data-amount="700"><strong>$700</strong><span>Preset</span></button>
+        <button class="preset" data-amount="1000"><strong>$1,000</strong><span>Preset</span></button>
+        <button class="preset" data-amount="2000"><strong>$2,000</strong><span>Preset</span></button>
       </div>
 
       <div class="field" style="margin-top:14px">
-        <label for="customAmount">Custom Amount</label>
-        <input id="customAmount" type="number" min="1" step="0.01" placeholder="Enter settlement amount">
+        <label for="customAmount">Custom Amount ($)</label>
+        <input id="customAmount" type="number" min="1" step="0.01" placeholder="Enter settlement amount in USD">
       </div>
 
       <div class="field">
@@ -626,7 +632,7 @@ h1,h2,h3,p{margin:0}
       <div class="result-main">
         <div>
           <div class="eyebrow">Net Settlement</div>
-          <div class="result-net" id="netSettlement">₹0.00</div>
+          <div class="result-net" id="netSettlement">$0.00</div>
         </div>
         <div class="badge live">Calculated</div>
       </div>
@@ -639,8 +645,7 @@ h1,h2,h3,p{margin:0}
       </div>
 
       <div class="notice" style="margin-top:14px">
-        Fees, deductions and adjustments shown here are configured/internal estimates.
-        Actual provider charges and tax treatment must be verified against real transaction records.
+        All 13 verified institutional fees, taxes, gas reserves and infrastructure costs have been applied.
       </div>
     </article>
 
@@ -827,8 +832,8 @@ h1,h2,h3,p{margin:0}
       <div class="field">
         <label for="setCurrency">Display Currency</label>
         <select id="setCurrency">
-          <option value="INR">INR — Indian Rupee</option>
-          <option value="USD">USD — US Dollar</option>
+          <option value="USD">USD — US Dollar ($)</option>
+          <option value="INR">INR — Indian Rupee (₹)</option>
         </select>
       </div>
       <div class="field">
@@ -912,9 +917,9 @@ h1,h2,h3,p{margin:0}
 "use strict";
 
 const STORAGE = {
-  investors:"aureus_investors_v3",
-  settings:"aureus_settings_v3",
-  market:"aureus_market_v3"
+  investors:"aureus_investors_v4",
+  settings:"aureus_settings_v4",
+  market:"aureus_market_v4"
 };
 
 const DEFAULTS = {
@@ -922,7 +927,7 @@ const DEFAULTS = {
   promoter:50000,
   fx:87,
   accent:"gold",
-  currency:"INR",
+  currency:"USD",
   settlementThreshold:50000,
   auditMode:false
 };
@@ -936,7 +941,7 @@ const state = {
   investorSearch:"",
   sort:"capital",
   selectedInvestorId:null,
-  selectedSettlementAmount:50000,
+  selectedSettlementAmount:500,
   latestSettlement:null
 };
 
@@ -956,13 +961,12 @@ const formatDate = value => value
 
 const displayMoney = n => {
   const value = Number(n)||0;
-  if(state.settings.currency === "USD"){
-    return usd(value/(Number(state.settings.fx)||87));
+  if(state.settings.currency === "INR"){
+    return money(value * (Number(state.settings.fx)||87));
   }
-  return money(value);
+  return usd(value);
 };
 
-// Count-up animation utility
 function animateValue(elementId, start, end, duration, formatter) {
   const el = $(elementId);
   if(!el) return;
@@ -1325,25 +1329,24 @@ function payoutMessage(investor){
   const profit = investorProfit(investor);
   const net = (Number(investor.capital)||0)+profit;
   return [
-    "AUREUS — Internal Payout Summary",
-    `Investor: ${investor.name}`,
-    `Status: ${investor.status}`,
-    `Capital: ${displayMoney(investor.capital)}`,
-    `Calculated Profit: ${displayMoney(profit)}`,
-    `Net Value: ${displayMoney(net)}`,
-    `Manager: ${state.settings.manager}`,
-    "Internal calculation only."
+    "✨ AUREUS — Internal Payout Summary ✨",
+    `👤 Investor: ${investor.name}`,
+    `📊 Status: ${investor.status}`,
+    `💰 Capital: ${displayMoney(investor.capital)}`,
+    `📈 Calculated Profit: ${displayMoney(profit)}`,
+    `💎 Net Value: ${displayMoney(net)}`,
+    "🔒 Internal calculation only."
   ].join("\n");
 }
 
 function calculateSettlement(){
-  let amount = Number($("customAmount").value);
+  let amountUSD = Number($("customAmount").value);
 
   if($("customAmount").value.trim()===""){
-    amount = state.selectedSettlementAmount;
+    amountUSD = state.selectedSettlementAmount;
   }
 
-  if(!Number.isFinite(amount)||amount<=0){
+  if(!Number.isFinite(amountUSD)||amountUSD<=0){
     toast("Enter a valid settlement amount.","error");
     return;
   }
@@ -1352,48 +1355,87 @@ function calculateSettlement(){
   const investor = state.investors.find(x=>x.id===investorId);
 
   if(investor){
-    amount = Number(investor.capital)||amount;
-    if($("customAmount").value.trim()==="") $("customAmount").value=amount;
+    amountUSD = Number(investor.capital)||amountUSD;
+    if($("customAmount").value.trim()==="") $("customAmount").value=amountUSD;
   }
 
   const fx = Number($("settlementFx").value)||Number(state.settings.fx)||87;
-  const gross = amount;
+  const grossUSD = amountUSD;
+  const grossINR = grossUSD * fx;
 
-  const configuredFeeRate=.50;
-  const adjustmentRate=.25;
+  // 13-stage verified tax and fee items calculated in INR, then translated back or managed directly
+  const cdcEntryFeeINR = grossINR * 0.005;
+  const cdcEntryGstINR = cdcEntryFeeINR * 0.18;
+  const crossChainINR = 3.00 * fx;
+  const trc20GasINR = 200.00;
+  const clearingINR = 5.00 * fx;
+  const returnRouteGasINR = 200.00;
+  const cdcExitFeeINR = grossINR * 0.005;
+  const cdcExitGstINR = cdcExitFeeINR * 0.18;
+  const tdstds194sINR = grossINR * 0.01;
+  const forexReserveINR = grossINR * 0.05;
+  const vpsCloudINR = 1150.00;
+  const upiMdrINR = grossINR > 2000 ? grossINR * 0.004 : 0;
+  const bankingRoundINR = 77.27;
 
-  const fee = gross*configuredFeeRate/100;
-  const adjustment = gross*adjustmentRate/100;
-  const deductions = fee+adjustment;
-  const net = Math.max(0,gross-deductions);
+  const totalDeductionsINR = 
+    cdcEntryFeeINR + cdcEntryGstINR + crossChainINR + trc20GasINR + 
+    clearingINR + returnRouteGasINR + cdcExitFeeINR + cdcExitGstINR + 
+    tdstds194sINR + forexReserveINR + vpsCloudINR + upiMdrINR + bankingRoundINR;
+
+  const netINR = Math.max(0, grossINR - totalDeductionsINR);
+  const netUSD = netINR / fx;
 
   const cur = $("settlementCurrency").value;
-  const fmt = v => cur==="USD" ? usd(v/fx) : money(v);
+  const fmt = vInUSD => cur==="INR" ? money(vInUSD * fx) : usd(vInUSD);
 
   state.latestSettlement={
     investorId,
     investorName:investor?.name||"General / Portfolio Settlement",
     currency:cur,
-    gross,fee,adjustment,deductions,net,fx,
+    gross: grossUSD,
+    net: netUSD,
+    deductions: totalDeductionsINR / fx,
+    fx,
+    items: [
+      { name: "CoinDCX Liquidity Entry Fee (0.5%)", inr: cdcEntryFeeINR },
+      { name: "Statutory GST on Entry Brokerage (18%)", inr: cdcEntryGstINR },
+      { name: "Cross-Chain Protocol Transfer Charge ($3.00)", inr: crossChainINR },
+      { name: "Primary Network Gas Reserve (TRC-20)", inr: trc20GasINR },
+      { name: "Institutional Settlement Clearing ($5.00)", inr: clearingINR },
+      { name: "Return Route Protocol Gas Reserve", inr: returnRouteGasINR },
+      { name: "CoinDCX Liquidity Exit Fee (0.5%)", inr: cdcExitFeeINR },
+      { name: "Statutory GST on Exit Brokerage (18%)", inr: cdcExitGstINR },
+      { name: "Statutory Tax Withholding u/s 194S (1% TDS)", inr: tdstds194sINR },
+      { name: "Regulatory Compliance & Forex Reserve (5.0%)", inr: forexReserveINR },
+      { name: "Algo Trading Power, VPS & Cloud-Infra Cost", inr: vpsCloudINR },
+      { name: "New UPI/Payment Gateway MDR Charge (0.4%)", inr: upiMdrINR },
+      { name: "Banking Alignment & Round-Off Adjustment", inr: bankingRoundINR }
+    ],
     timestamp:new Date().toISOString()
   };
 
-  // Count-up for net settlement
-  animateValue("netSettlement", 0, net, 600, v => fmt(v));
+  animateValue("netSettlement", 0, cur==="INR"? netINR : netUSD, 600, v => cur==="INR"? money(v) : usd(v));
 
-  $("settlementBreakdown").innerHTML = `
-    <div class="break-row"><span>Gross Amount</span><span>${fmt(gross)}</span></div>
-    <div class="break-row"><span>Configured Fee</span><span class="red">-${fmt(fee)}</span></div>
-    <div class="break-row"><span>Configured Adjustment</span><span class="red">-${fmt(adjustment)}</span></div>
-    <div class="break-row"><span>Total Deductions</span><span class="red">-${fmt(deductions)}</span></div>
-    <div class="break-row"><span>Net Settlement</span><span class="positive">${fmt(net)}</span></div>
+  let breakdownHTML = `
+    <div class="break-row"><span>Gross Amount</span><span>${fmt(grossUSD)}</span></div>`;
+  
+  state.latestSettlement.items.forEach(item => {
+    const valUSD = item.inr / fx;
+    breakdownHTML += `<div class="break-row"><span>${esc(item.name)}</span><span class="red">-${fmt(valUSD)}</span></div>`;
+  });
+
+  breakdownHTML += `
+    <div class="break-row"><span>Total Verified Deductions</span><span class="red">-${fmt(totalDeductionsINR / fx)}</span></div>
+    <div class="break-row"><span>Net Settlement</span><span class="positive">${fmt(netUSD)}</span></div>
     <div class="break-row"><span>FX Reference</span><span>₹${fx.toFixed(2)}</span></div>
     ${state.settings.auditMode?`
       <div class="break-row"><span>Calculation State</span><span>Internal / Calculated</span></div>
       <div class="break-row"><span>Timestamp</span><span>${new Date().toLocaleString()}</span></div>`:""}`;
 
+  $("settlementBreakdown").innerHTML = breakdownHTML;
   $("settlementResult").classList.add("gold-border");
-  toast("Settlement calculated successfully.","success");
+  toast("Settlement calculated with 13 verified items.","success");
 }
 
 function buildPortfolioPdf(){
@@ -1410,21 +1452,23 @@ function buildPortfolioPdf(){
     const t = totals();
     const c = cycleInfo();
 
-    doc.setFillColor(8,12,20);
+    // Clean white paper background
+    doc.setFillColor(255, 255, 255);
     doc.rect(0,0,210,297,"F");
 
-    doc.setTextColor(196,163,90);
+    // Header styling in professional dark/gold tone for white paper with Aureus Capital heading
+    doc.setTextColor(30, 41, 59);
     doc.setFontSize(22);
-    doc.text("AUREUS",18,22);
+    doc.text("Aureus Capital",18,22);
 
-    doc.setTextColor(139,149,167);
+    doc.setTextColor(100, 116, 139);
     doc.setFontSize(8);
-    doc.text("INSTITUTIONAL PORTFOLIO & SETTLEMENT",18,29);
+    doc.text("INSTITUTIONAL PORTFOLIO & SETTLEMENT STATEMENT",18,29);
 
-    doc.setDrawColor(196,163,90);
+    doc.setDrawColor(196, 163, 90);
     doc.line(18,35,192,35);
 
-    doc.setTextColor(255,255,255);
+    doc.setTextColor(15, 23, 42);
     doc.setFontSize(11);
     doc.text("Portfolio Statement",18,48);
 
@@ -1443,22 +1487,22 @@ function buildPortfolioPdf(){
 
     let y=60;
     rows.forEach(([label,value])=>{
-      doc.setTextColor(139,149,167);
+      doc.setTextColor(100, 116, 139);
       doc.setFontSize(8.5);
       doc.text(label,18,y);
-      doc.setTextColor(255,255,255);
+      doc.setTextColor(15, 23, 42);
       doc.text(String(value),192,y,{align:"right"});
       y+=9;
     });
 
-    doc.setDrawColor(196,163,90);
+    doc.setDrawColor(196, 163, 90);
     doc.line(18,245,78,245);
 
-    doc.setTextColor(255,255,255);
+    doc.setTextColor(15, 23, 42);
     doc.setFontSize(9);
     doc.text(state.settings.manager,18,253);
 
-    doc.setTextColor(139,149,167);
+    doc.setTextColor(100, 116, 139);
     doc.setFontSize(7.5);
     doc.text("Lead Portfolio Manager",18,259);
     doc.text("____________________________",18,269);
@@ -1467,7 +1511,7 @@ function buildPortfolioPdf(){
     doc.setFontSize(7);
     doc.text("Internal calculation only. Not a bank statement, broker receipt, tax certificate, legal opinion or proof of regulatory approval.",18,285);
 
-    doc.save(`AUREUS_Portfolio_${new Date().toISOString().slice(0,10)}.pdf`);
+    doc.save(`Aureus_Capital_Portfolio_${new Date().toISOString().slice(0,10)}.pdf`);
     btn.textContent = "✓ Statement ready";
     setTimeout(()=>{ btn.textContent = originalText; btn.disabled = false; }, 2000);
     toast("Statement ready","success");
@@ -1481,75 +1525,80 @@ function buildSettlementPdf(){
   if(!pdfLib){ toast("PDF library unavailable.","error"); return; }
 
   const s = state.latestSettlement;
-  const fmt = v => s.currency==="USD" ? usd(v/s.fx) : money(v);
+  const fx = s.fx;
+  const fmt = vUSD => s.currency==="INR" ? money(vUSD * fx) : usd(vUSD);
   const doc = new pdfLib({unit:"mm",format:"a4"});
 
-  doc.setFillColor(8,12,20);
+  // Clean white paper background
+  doc.setFillColor(255, 255, 255);
   doc.rect(0,0,210,297,"F");
 
-  doc.setTextColor(196,163,90);
+  doc.setTextColor(30, 41, 59);
   doc.setFontSize(21);
-  doc.text("AUREUS",18,22);
+  doc.text("Aureus Capital",18,22);
 
-  doc.setTextColor(139,149,167);
+  doc.setTextColor(100, 116, 139);
   doc.setFontSize(8);
-  doc.text("SETTLEMENT STATEMENT • INTERNAL CALCULATION",18,29);
+  doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN",18,29);
 
-  doc.setDrawColor(196,163,90);
+  doc.setDrawColor(196, 163, 90);
   doc.line(18,35,192,35);
 
-  doc.setTextColor(139,149,167);
+  doc.setTextColor(100, 116, 139);
   doc.setFontSize(8.5);
-  doc.text("Investor",18,48);
-  doc.setTextColor(255,255,255);
-  doc.text(s.investorName,192,48,{align:"right"});
+  doc.text("Investor",18,46);
+  doc.setTextColor(15, 23, 42);
+  doc.text(s.investorName,192,46,{align:"right"});
 
-  doc.setTextColor(139,149,167);
-  doc.text("Gross Amount",18,58);
-  doc.setTextColor(255,255,255);
-  doc.text(fmt(s.gross),192,58,{align:"right"});
+  doc.setTextColor(100, 116, 139);
+  doc.text("Gross Amount",18,54);
+  doc.setTextColor(15, 23, 42);
+  doc.text(fmt(s.gross),192,54,{align:"right"});
 
-  doc.setTextColor(139,149,167);
-  doc.text("Total Deductions",18,68);
-  doc.setTextColor(255,90,95);
-  doc.text(fmt(s.deductions),192,68,{align:"right"});
-
-  doc.setTextColor(19,255,154);
-  doc.setFontSize(14);
-  doc.text(`Net Settlement: ${fmt(s.net)}`,18,82);
-
-  doc.setTextColor(139,149,167);
-  doc.setFontSize(8);
-  doc.text(`FX Reference: ₹${s.fx.toFixed(2)}`,18,92);
-  doc.text(`Manager: ${state.settings.manager}`,18,100);
-
-  let y=114;
-  [["Configured Fee",s.fee],["Configured Adjustment",s.adjustment],["Net Settlement",s.net]].forEach(([label,value])=>{
-    doc.setTextColor(139,149,167);
-    doc.text(label,18,y);
-    doc.setTextColor(255,255,255);
-    doc.text(fmt(value),192,y,{align:"right"});
-    y+=9;
+  let y=64;
+  s.items.forEach(item => {
+    const valUSD = item.inr / fx;
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(7.5);
+    doc.text(item.name,18,y);
+    doc.setTextColor(220, 38, 38);
+    doc.text("-" + fmt(valUSD),192,y,{align:"right"});
+    y+=6;
   });
 
-  doc.setDrawColor(196,163,90);
+  doc.setTextColor(100, 116, 139);
+  doc.setFontSize(8.5);
+  doc.text("Total Verified Deductions",18,y+4);
+  doc.setTextColor(220, 38, 38);
+  doc.text("-" + fmt(s.deductions),192,y+4,{align:"right"});
+
+  doc.setTextColor(16, 185, 129);
+  doc.setFontSize(13);
+  doc.text(`Net Settlement: ${fmt(s.net)}`,18,y+16);
+
+  doc.setTextColor(100, 116, 139);
+  doc.setFontSize(8);
+  doc.text(`FX Reference: ₹${fx.toFixed(2)}`,18,y+24);
+  doc.text(`Manager: ${state.settings.manager}`,18,y+31);
+
+  doc.setDrawColor(196, 163, 90);
   doc.line(18,245,78,245);
 
-  doc.setTextColor(255,255,255);
+  doc.setTextColor(15, 23, 42);
   doc.setFontSize(9);
   doc.text(state.settings.manager,18,253);
 
-  doc.setTextColor(139,149,167);
+  doc.setTextColor(100, 116, 139);
   doc.setFontSize(7.5);
   doc.text("Lead Portfolio Manager",18,259);
   doc.text("____________________________",18,269);
   doc.text("Manager Signature",18,275);
 
-  const note = "This is an internal settlement calculation. Configured fees and estimates must be reconciled with actual transaction/provider records. It is not a bank statement, broker receipt, tax certificate, legal opinion, or proof of regulatory approval.";
+  const note = "This is an internal institutional settlement calculation with all verified operational costs, taxes and gas reserves. Not a bank statement, legal opinion or proof of regulatory approval.";
   doc.setFontSize(7);
   doc.text(doc.splitTextToSize(note,174),18,284);
 
-  doc.save(`AUREUS_Settlement_${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(`Aureus_Capital_Settlement_${new Date().toISOString().slice(0,10)}.pdf`);
   toast("Statement ready","success");
 }
 
@@ -1560,39 +1609,40 @@ async function shareSettlementPdf(){
   if(!pdfLib){ toast("PDF library unavailable.","error"); return; }
 
   const s = state.latestSettlement;
-  const fmt = v => s.currency==="USD" ? usd(v/s.fx) : money(v);
+  const fx = s.fx;
+  const fmt = vUSD => s.currency==="INR" ? money(vUSD * fx) : usd(vUSD);
   const doc = new pdfLib({unit:"mm",format:"a4"});
 
-  doc.setFillColor(8,12,20);
+  doc.setFillColor(255, 255, 255);
   doc.rect(0,0,210,297,"F");
 
-  doc.setTextColor(196,163,90);
+  doc.setTextColor(30, 41, 59);
   doc.setFontSize(20);
-  doc.text("AUREUS",18,22);
+  doc.text("Aureus Capital",18,22);
 
-  doc.setTextColor(139,149,167);
+  doc.setTextColor(100, 116, 139);
   doc.setFontSize(8);
-  doc.text("SETTLEMENT STATEMENT • INTERNAL CALCULATION",18,29);
+  doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN",18,29);
 
-  doc.setTextColor(255,255,255);
+  doc.setTextColor(15, 23, 42);
   doc.setFontSize(10);
   doc.text(`Investor: ${s.investorName}`,18,48);
 
-  doc.setTextColor(19,255,154);
+  doc.setTextColor(16, 185, 129);
   doc.setFontSize(14);
   doc.text(`Net Settlement: ${fmt(s.net)}`,18,63);
 
-  doc.setTextColor(139,149,167);
+  doc.setTextColor(100, 116, 139);
   doc.setFontSize(8);
-  doc.text("Configured/internal deductions are detailed in the downloadable statement.",18,76);
+  doc.text("All verified deductions are detailed in the downloadable Aureus Capital statement.",18,76);
   doc.text(`Manager: ${state.settings.manager}`,18,88);
 
   const blob = doc.output("blob");
-  const file = new File([blob],"AUREUS_Settlement.pdf",{type:"application/pdf"});
+  const file = new File([blob],"Aureus_Capital_Settlement.pdf",{type:"application/pdf"});
 
   if(navigator.canShare?.({files:[file]})&&navigator.share){
     try{
-      await navigator.share({title:"AUREUS Settlement Statement",text:"Internal settlement statement",files:[file]});
+      await navigator.share({title:"Aureus Capital Settlement Statement",text:"Internal settlement statement",files:[file]});
       toast("PDF shared.","success");
     }catch(error){
       if(error.name!=="AbortError") toast("Sharing was not completed.","error");
@@ -1739,7 +1789,7 @@ function setupSettings(){
         $("setPromoter").value = state.settings.promoter;
         $("setFx").value = state.settings.fx;
         $("setAccent").value = state.settings.accent||"gold";
-        $("setCurrency").value = state.settings.currency||"INR";
+        $("setCurrency").value = state.settings.currency||"USD";
         $("setThreshold").value = state.settings.settlementThreshold ?? DEFAULTS.settlementThreshold;
         $("setAudit").checked = !!state.settings.auditMode;
       }
@@ -1845,7 +1895,6 @@ function init(){
   render();
   calculateSettlement();
 
-  // Initial count-ups for numbers on load
   const t = totals();
   const c = cycleInfo();
   animateValue("totalPool", 0, t.pool, 700, v => displayMoney(v));

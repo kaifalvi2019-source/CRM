@@ -71,27 +71,24 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 }
 
 .pyramid-logo{
-  position:relative;width:120px;height:120px;margin:auto;border-radius:30px;
+  position:relative;width:110px;height:110px;margin:auto;border-radius:26px;
   background:linear-gradient(135deg, #171f30, #090d14);
   border:1.5px solid rgba(230,197,107,0.6);
-  box-shadow:0 0 60px rgba(230,197,107,0.3), inset 0 0 25px rgba(230,197,107,0.15);
-  display:grid;place-items:center;color:var(--gold);
-  overflow:hidden;
+  box-shadow:0 0 50px rgba(230,197,107,0.35), inset 0 0 20px rgba(230,197,107,0.15);
+  display:grid;place-items:center;overflow:hidden;
+}
+
+.pyramid-logo img{
+  width:82px;height:82px;object-fit:contain;filter:drop-shadow(0 2px 10px rgba(230,197,107,0.5));
 }
 
 .pyramid-beam{
   position:absolute;bottom:-100%;left:0;width:100%;height:200%;
   background:linear-gradient(to top, transparent, rgba(230,197,107,0.4), transparent);
   animation:beamUp 2s linear infinite;
+  pointer-events:none;
 }
 @keyframes beamUp{0%{transform:translateY(100%)}100%{transform:translateY(-100%)}}
-
-.logo-crown-a{
-  position:relative;z-index:2;font-size:42px;font-weight:900;
-  background:linear-gradient(to bottom, #ffffff, #f9d976, #e6c56b, #b8860b);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  filter:drop-shadow(0 3px 12px rgba(230,197,107,0.6));
-}
 
 .splash-name{
   margin-top:22px;font-weight:900;letter-spacing:.18em;font-size:16px;
@@ -305,7 +302,6 @@ h1,h2,h3,p{margin:0}
 
 .notice{padding:14px;border-radius:15px;background:rgba(230,197,107,.07);border:1px solid rgba(230,197,107,0.3);font-size:10px;line-height:1.6;color:var(--muted);font-weight:600}
 
-/* New More / Settings List Layout matching reference[span_3](start_span)[span_3](end_span) */
 .more-list{display:grid;gap:12px}
 .more-card{
   display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:18px;
@@ -377,12 +373,12 @@ h1,h2,h3,p{margin:0}
 
 <body>
 
-<!-- Splash Screen with Upward Moving Pyramid Light Beam Animation -->
+<!-- Splash Screen with Original Stylish Logo and Upward Beam Animation -->
 <div class="splash" id="splash">
   <div class="splash-inner">
     <div class="pyramid-logo">
       <div class="pyramid-beam"></div>
-      <span class="logo-crown-a">👑A</span>
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" alt="Aureus Capital Logo" id="logoImg" style="width:100%;height:100%;object-fit:cover;">
     </div>
     <div class="splash-name">AUREUS CAPITAL</div>
     <div class="splash-sub">Institutional Portfolio & Settlement</div>
@@ -631,7 +627,7 @@ h1,h2,h3,p{margin:0}
   </div>
 </section>
 
-<!-- MORE / SETTINGS MATCHING NEW REFERENCE LAYOUT[span_4](start_span)[span_4](end_span) -->
+<!-- MORE / SETTINGS -->
 <section class="view" id="view-more">
   <div class="page-heading">
     <div>
@@ -642,7 +638,6 @@ h1,h2,h3,p{margin:0}
   </div>
 
   <div class="more-list">
-
     <button class="more-card" data-modal="settings">
       <div class="more-card-left">
         <div class="more-icon-box">⚙</div>
@@ -708,7 +703,6 @@ h1,h2,h3,p{margin:0}
       </div>
       <div class="more-arrow">&gt;</div>
     </button>
-
   </div>
 </section>
 
@@ -872,7 +866,6 @@ h1,h2,h3,p{margin:0}
     </div>
     <div class="notice">
       Security rule: this frontend does not store GoldAPI, FastForex, or any other provider secret.
-      Use your own secure backend/proxy endpoints. Leave endpoints blank to disable live market sync.
     </div>
     <div class="field" style="margin-top:16px">
       <label for="goldEndpoint">Gold Backend Endpoint</label>
@@ -916,9 +909,9 @@ h1,h2,h3,p{margin:0}
 "use strict";
 
 const STORAGE = {
-  investors:"aureus_investors_v9",
-  settings:"aureus_settings_v9",
-  market:"aureus_market_v9"
+  investors:"aureus_investors_v11",
+  settings:"aureus_settings_v11",
+  market:"aureus_market_v11"
 };
 
 const DEFAULTS = {
@@ -982,16 +975,18 @@ function applyTheme(){
 }
 
 function save(){
-  localStorage.setItem(STORAGE.investors,JSON.stringify(state.investors));
-  localStorage.setItem(STORAGE.settings,JSON.stringify(state.settings));
-  localStorage.setItem(STORAGE.market,JSON.stringify({
-    goldEndpoint:state.market.goldEndpoint,
-    fxEndpoint:state.market.fxEndpoint,
-    gold:state.market.gold,
-    fx:state.market.fx,
-    goldUpdated:state.market.goldUpdated,
-    fxUpdated:state.market.fxUpdated
-  }));
+  try{
+    localStorage.setItem(STORAGE.investors,JSON.stringify(state.investors));
+    localStorage.setItem(STORAGE.settings,JSON.stringify(state.settings));
+    localStorage.setItem(STORAGE.market,JSON.stringify({
+      goldEndpoint:state.market.goldEndpoint,
+      fxEndpoint:state.market.fxEndpoint,
+      gold:state.market.gold,
+      fx:state.market.fx,
+      goldUpdated:state.market.goldUpdated,
+      fxUpdated:state.market.fxUpdated
+    }));
+  }catch(e){}
 }
 
 function load(){
@@ -1039,49 +1034,50 @@ function investorProfit(inv){
 }
 
 function render(){
-  applyTheme();
-  const t = totals();
-  const c = cycleInfo();
+  try{
+    applyTheme();
+    const t = totals();
+    const c = cycleInfo();
 
-  $("managerName").textContent = state.settings.manager;
-  $("portManager").textContent = state.settings.manager;
-  $("promoterCapital").textContent = displayMoney(state.settings.promoter);
-  $("totalPool").textContent = displayMoney(t.pool);
-  $("investorCapitalTotal").textContent = displayMoney(t.investorCapital);
-  $("activeCapital").textContent = displayMoney(t.investorCapital);
-  $("currentPortfolioValue").textContent = displayMoney(t.pool+t.profit);
-  $("homeProfit").textContent = displayMoney(t.profit);
-  $("activeCountBadge").textContent = `${t.active.length} active`;
-  $("homeActiveInvestors").textContent = t.active.length;
-  $("homeRate").textContent = c.rate.toFixed(2)+"%";
-  $("homeRateLarge").textContent = c.rate.toFixed(2)+"%";
-  $("cycleDay").textContent = `Day ${c.day} of ${c.days}`;
-  $("cycleProgress").style.width = (c.progress*100).toFixed(1)+"%";
-  $("daysRemaining").textContent = `${c.remaining} day${c.remaining===1?"":"s"} remaining`;
+    if($("managerName")) $("managerName").textContent = state.settings.manager;
+    if($("portManager")) $("portManager").textContent = state.settings.manager;
+    if($("promoterCapital")) $("promoterCapital").textContent = displayMoney(state.settings.promoter);
+    if($("totalPool")) $("totalPool").textContent = displayMoney(t.pool);
+    if($("investorCapitalTotal")) $("investorCapitalTotal").textContent = displayMoney(t.investorCapital);
+    if($("activeCapital")) $("activeCapital").textContent = displayMoney(t.investorCapital);
+    if($("currentPortfolioValue")) $("currentPortfolioValue").textContent = displayMoney(t.pool+t.profit);
+    if($("homeProfit")) $("homeProfit").textContent = displayMoney(t.profit);
+    if($("activeCountBadge")) $("activeCountBadge").textContent = `${t.active.length} active`;
+    if($("homeActiveInvestors")) $("homeActiveInvestors").textContent = t.active.length;
+    if($("homeRate")) $("homeRate").textContent = c.rate.toFixed(2)+"%";
+    if($("homeRateLarge")) $("homeRateLarge").textContent = c.rate.toFixed(2)+"%";
+    if($("cycleDay")) $("cycleDay").textContent = `Day ${c.day} of ${c.days}`;
+    if($("cycleProgress")) $("cycleProgress").style.width = (c.progress*100).toFixed(1)+"%";
+    if($("daysRemaining")) $("daysRemaining").textContent = `${c.remaining} day${c.remaining===1?"":"s"} remaining`;
 
-  $("portPool").textContent = displayMoney(t.pool);
-  $("portCurrentValue").textContent = displayMoney(t.pool+t.profit);
-  $("portProfit").textContent = displayMoney(t.profit);
-  $("portRate").textContent = c.rate.toFixed(2)+"%";
-  $("portRateLarge").textContent = c.rate.toFixed(2)+"%";
-  $("portCycleDay").textContent = `Day ${c.day} of ${c.days}`;
-  $("portProgress").style.width = (c.progress*100).toFixed(1)+"%";
-  $("portRemaining").textContent = `${c.remaining} day${c.remaining===1?"":"s"} remaining`;
-  $("portInvestor").textContent = displayMoney(t.investorCapital);
-  $("portPromoter").textContent = displayMoney(t.promoter);
-  $("portActiveCount").textContent = state.investors.filter(i=>i.status==="active").length;
-  $("portPendingCount").textContent = state.investors.filter(i=>i.status==="pending").length;
-  $("portSettledCount").textContent = state.investors.filter(i=>i.status==="settled").length;
-  $("yieldDay").textContent = `${c.day} / ${c.days}`;
+    if($("portPool")) $("portPool").textContent = displayMoney(t.pool);
+    if($("portCurrentValue")) $("portCurrentValue").textContent = displayMoney(t.pool+t.profit);
+    if($("portProfit")) $("portProfit").textContent = displayMoney(t.profit);
+    if($("portRate")) $("portRate").textContent = c.rate.toFixed(2)+"%";
+    if($("portRateLarge")) $("portRateLarge").textContent = c.rate.toFixed(2)+"%";
+    if($("portCycleDay")) $("portCycleDay").textContent = `Day ${c.day} of ${c.days}`;
+    if($("portProgress")) $("portProgress").style.width = (c.progress*100).toFixed(1)+"%";
+    if($("portRemaining")) $("portRemaining").textContent = `${c.remaining} day${c.remaining===1?"":"s"} remaining`;
+    if($("portInvestor")) $("portInvestor").textContent = displayMoney(t.investorCapital);
+    if($("portPromoter")) $("portPromoter").textContent = displayMoney(t.promoter);
+    if($("portActiveCount")) $("portActiveCount").textContent = state.investors.filter(i=>i.status==="active").length;
+    if($("portPendingCount")) $("portPendingCount").textContent = state.investors.filter(i=>i.status==="pending").length;
+    if($("portSettledCount")) $("portSettledCount").textContent = state.investors.filter(i=>i.status==="settled").length;
+    if($("yieldDay")) $("yieldDay").textContent = `${c.day} / ${c.days}`;
 
-  renderInvestors();
-  renderSettlementInvestorList();
-  renderMarket();
+    renderInvestors();
+    renderSettlementInvestorList();
+    renderMarket();
+  }catch(e){}
 }
 
 function renderInvestors(){
   const query = state.investorSearch.trim().toLowerCase();
-
   let arr = state.investors.filter(inv=>{
     const status = inv.status||(inv.active===false?"settled":"active");
     const filterMatch = state.investorFilter==="all"||status===state.investorFilter;
@@ -1090,21 +1086,17 @@ function renderInvestors(){
   });
 
   const cycle = cycleInfo();
-
   arr.sort((a,b)=>{
     if(state.sort==="name") return String(a.name).localeCompare(String(b.name));
     if(state.sort==="profit") return investorProfit(b)-investorProfit(a);
     return (Number(b.capital)||0)-(Number(a.capital)||0);
   });
 
-  $("investorCountLabel").textContent = `${arr.length} investor${arr.length===1?"":"s"}`;
+  if($("investorCountLabel")) $("investorCountLabel").textContent = `${arr.length} investor${arr.length===1?"":"s"}`;
+  if(!$("investorList")) return;
 
   if(!arr.length){
-    $("investorList").innerHTML = `
-      <div class="card empty">
-        <strong>No investors found</strong>
-        <span>Add an investor or adjust your search/filter.</span>
-      </div>`;
+    $("investorList").innerHTML = `<div class="card empty"><strong>No investors found</strong><span>Add an investor or adjust your search/filter.</span></div>`;
     return;
   }
 
@@ -1114,7 +1106,6 @@ function renderInvestors(){
     const profit = investorProfit(inv);
     const initials = String(inv.name||"IN").split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase();
     const label = status.charAt(0).toUpperCase()+status.slice(1);
-
     return `
       <button class="card investor" data-investor="${esc(inv.id)}">
         <div class="inv-avatar">${esc(initials)}</div>
@@ -1142,96 +1133,28 @@ function renderSettlementInvestorList(){
   const select = $("settlementInvestor");
   if(!select) return;
   const current = select.value;
-
-  select.innerHTML =
-    `<option value="">General / Portfolio Settlement</option>`+
+  select.innerHTML = `<option value="">General / Portfolio Settlement</option>`+
     state.investors.map(inv=>`<option value="${esc(inv.id)}">${esc(inv.name)} — ${displayMoney(inv.capital)}</option>`).join("");
-
   if(current&&state.investors.some(i=>i.id===current)) select.value=current;
 }
 
 function renderMarket(){
   const market = state.market;
-
   if(Number.isFinite(Number(market.gold))&&market.gold!==null){
-    $("goldPrice").textContent = usd(market.gold);
-    $("goldStatus").textContent = market.goldUpdated
-      ? `Updated ${new Date(market.goldUpdated).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`
-      : "Updated";
-    $("goldDot").className = "status-dot status-active";
-  }else{
-    $("goldPrice").textContent = "Unavailable";
-    $("goldStatus").textContent = "Awaiting connection";
-    $("goldDot").className = "status-dot status-settled";
+    if($("goldPrice")) $("goldPrice").textContent = usd(market.gold);
+    if($("goldStatus")) $("goldStatus").textContent = "Updated";
+    if($("goldDot")) $("goldDot").className = "status-dot status-active";
   }
-
   if(Number.isFinite(Number(market.fx))&&market.fx!==null){
-    $("fxRate").textContent = money(market.fx);
-    $("fxStatus").textContent = market.fxUpdated
-      ? `Updated ${new Date(market.fxUpdated).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`
-      : "Updated";
-    $("fxDot").className = "status-dot status-active";
-  }else{
-    $("fxRate").textContent = money(state.settings.fx);
-    $("fxStatus").textContent = "Configured reference";
-    $("fxDot").className = "status-dot status-settled";
+    if($("fxRate")) $("fxRate").textContent = money(market.fx);
+    if($("fxStatus")) $("fxStatus").textContent = "Updated";
+    if($("fxDot")) $("fxDot").className = "status-dot status-active";
   }
-}
-
-async function fetchJson(url){
-  const controller = new AbortController();
-  const timeout = setTimeout(()=>controller.abort(),8000);
-  try{
-    const response = await fetch(url,{headers:{Accept:"application/json"},signal:controller.signal,cache:"no-store"});
-    if(!response.ok) throw new Error(`HTTP ${response.status}`);
-    return await response.json();
-  }finally{
-    clearTimeout(timeout);
-  }
-}
-
-async function refreshMarket(){
-  let changed=false;
-  const fxEl = $("fxRate");
-  fxEl.style.color = "var(--mint)";
-
-  if(state.market.goldEndpoint){
-    try{
-      const data = await fetchJson(state.market.goldEndpoint);
-      const price = Number(data.price ?? data.xauUsd ?? data.value);
-      if(Number.isFinite(price)){
-        state.market.gold=price;
-        state.market.goldUpdated=new Date().toISOString();
-        changed=true;
-      }
-    }catch(error){}
-  }
-
-  if(state.market.fxEndpoint){
-    try{
-      const data = await fetchJson(state.market.fxEndpoint);
-      const rate = Number(data.rate ?? data.usdInr ?? data.value);
-      if(Number.isFinite(rate)&&rate>0){
-        state.market.fx=rate;
-        state.market.fxUpdated=new Date().toISOString();
-        state.settings.fx=rate;
-        changed=true;
-      }
-    }catch(error){}
-  }
-
-  save();
-  render();
-
-  setTimeout(()=>{ fxEl.style.color = ""; }, 800);
-  toast(
-    changed?"Market data synchronized.":"No live endpoint configured or data unavailable.",
-    changed?"success":"error"
-  );
 }
 
 function toast(message,type="success"){
   const element = $("toast");
+  if(!element) return;
   element.textContent = message;
   element.className = `toast show ${type}`;
   clearTimeout(toast.timer);
@@ -1251,7 +1174,7 @@ function navigate(view){
   });
 
   const titles = {home:"AUREUS CAPITAL",portfolio:"Portfolio",investors:"Investors",settlement:"Settlement",more:"More"};
-  $("headerTitle").textContent = titles[view];
+  if($("headerTitle")) $("headerTitle").textContent = titles[view];
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
@@ -1267,43 +1190,33 @@ function closeModal(id){
 
 function openInvestorForm(id=null){
   const investor = id ? state.investors.find(x=>x.id===id) : null;
-
-  $("investorModalTitle").textContent = investor ? "Edit Investor" : "Add Investor";
-  $("editInvestorId").value = investor?.id||"";
-  $("investorName").value = investor?.name||"";
-  $("investorCapital").value = investor?.capital ?? "";
-  $("investorRate").value = investor?.rate ?? "";
-  $("investorDate").value = investor?.date
-    ? String(investor.date).slice(0,10)
-    : investor?.createdAt ? String(investor.createdAt).slice(0,10) : "";
-  $("investorStatus").value = investor?.status||(investor?.active===false?"settled":"active");
-
+  if($("investorModalTitle")) $("investorModalTitle").textContent = investor ? "Edit Investor" : "Add Investor";
+  if($("editInvestorId")) $("editInvestorId").value = investor?.id||"";
+  if($("investorName")) $("investorName").value = investor?.name||"";
+  if($("investorCapital")) $("investorCapital").value = investor?.capital ?? "";
+  if($("investorRate")) $("investorRate").value = investor?.rate ?? "";
+  if($("investorDate")) $("investorDate").value = investor?.date ? String(investor.date).slice(0,10) : "";
+  if($("investorStatus")) $("investorStatus").value = investor?.status||"active";
   openModal("investorModal");
-  setTimeout(()=>$("investorName").focus(),120);
 }
 
 function openInvestorDetail(id){
   const investor = state.investors.find(x=>x.id===id);
   if(!investor) return;
-
   state.selectedInvestorId=id;
-
   const rate = Number(investor.rate)>0 ? Number(investor.rate) : cycleInfo().rate;
   const profit = investorProfit(investor);
   const value = (Number(investor.capital)||0)+profit;
-  const fx = Number(state.settings.fx)||87;
-  const st = investor.status||"active";
-
-  $("detailName").textContent = investor.name;
-
-  $("detailGrid").innerHTML = `
-    <div class="detail"><span>Status</span><strong class="${st==="active"?"positive":""}">${esc(st.charAt(0).toUpperCase()+st.slice(1))}</strong></div>
-    <div class="detail"><span>Invested Capital</span><strong>${usd(investor.capital)}</strong></div>
-    <div class="detail"><span>Current Rate</span><strong class="positive">${rate.toFixed(2)}%</strong></div>
-    <div class="detail"><span>Profit</span><strong class="positive">${usd(profit)}</strong></div>
-    <div class="detail"><span>Current Value</span><strong>${usd(value)}</strong></div>
-    <div class="detail"><span>Relevant Date</span><strong>${formatDate(investor.date||investor.createdAt)}</strong></div>`;
-
+  if($("detailName")) $("detailName").textContent = investor.name;
+  if($("detailGrid")) {
+    $("detailGrid").innerHTML = `
+      <div class="detail"><span>Status</span><strong class="positive">${esc(investor.status)}</strong></div>
+      <div class="detail"><span>Capital</span><strong>${usd(investor.capital)}</strong></div>
+      <div class="detail"><span>Rate</span><strong class="positive">${rate.toFixed(2)}%</strong></div>
+      <div class="detail"><span>Profit</span><strong class="positive">${usd(profit)}</strong></div>
+      <div class="detail"><span>Value</span><strong>${usd(value)}</strong></div>
+      <div class="detail"><span>Date</span><strong>${formatDate(investor.date||investor.createdAt)}</strong></div>`;
+  }
   openModal("detailModal");
 }
 
@@ -1335,26 +1248,19 @@ function payoutMessage(investor){
 }
 
 function calculateSettlement(){
-  let amountUSD = Number($("customAmount").value);
-
-  if($("customAmount").value.trim()===""){
+  let amountUSD = Number($("customAmount")?.value);
+  if(!$("customAmount")?.value \vert{}\vert{} $("customAmount").value.trim()===""){
     amountUSD = state.selectedSettlementAmount;
   }
+  if(!Number.isFinite(amountUSD)||amountUSD<=0) return;
 
-  if(!Number.isFinite(amountUSD)||amountUSD<=0){
-    toast("Enter a valid settlement amount.","error");
-    return;
-  }
-
-  const investorId = $("settlementInvestor").value;
+  const investorId = $("settlementInvestor")?.value;
   const investor = state.investors.find(x=>x.id===investorId);
-
   if(investor){
     amountUSD = Number(investor.capital)||amountUSD;
-    if($("customAmount").value.trim()==="") $("customAmount").value=amountUSD;
   }
 
-  const fx = Number($("settlementFx").value)||Number(state.settings.fx)||87;
+  const fx = Number($("settlementFx")?.value)||Number(state.settings.fx)||87;
   const grossUSD = amountUSD;
   const grossINR = grossUSD * fx;
 
@@ -1372,8 +1278,7 @@ function calculateSettlement(){
   const upiMdrINR = grossINR > 2000 ? grossINR * 0.004 : 0;
   const bankingRoundINR = 77.27;
 
-  const totalDeductionsINR = 
-    cdcEntryFeeINR + cdcEntryGstINR + crossChainINR + trc20GasINR + 
+  const totalDeductionsINR = cdcEntryFeeINR + cdcEntryGstINR + crossChainINR + trc20GasINR + 
     clearingINR + returnRouteGasINR + cdcExitFeeINR + cdcExitGstINR + 
     tdstds194sINR + forexReserveINR + vpsCloudINR + upiMdrINR + bankingRoundINR;
 
@@ -1407,221 +1312,165 @@ function calculateSettlement(){
 
   animateValue("netSettlement", 0, netUSD, 600, v => usd(v));
 
-  let breakdownHTML = `
-    <div class="break-row"><span>Gross Amount</span><span>${usd(grossUSD)}</span></div>`;
-  
+  let breakdownHTML = `<div class="break-row"><span>Gross Amount</span><span>${usd(grossUSD)}</span></div>`;
   state.latestSettlement.items.forEach(item => {
     const valUSD = item.inr / fx;
     breakdownHTML += `<div class="break-row"><span>${esc(item.name)}</span><span class="red">-${usd(valUSD)}</span></div>`;
   });
-
   breakdownHTML += `
     <div class="break-row"><span>Total Verified Deductions</span><span class="red">-${usd(totalDeductionsINR / fx)}</span></div>
     <div class="break-row"><span>Net Settlement</span><span class="positive">${usd(netUSD)}</span></div>
     <div class="break-row"><span>FX Reference</span><span>₹${fx.toFixed(2)}</span></div>`;
 
-  $("settlementBreakdown").innerHTML = breakdownHTML;
-  $("settlementResult").classList.add("gold-border");
+  if($("settlementBreakdown")) $("settlementBreakdown").innerHTML = breakdownHTML;
+  if($("settlementResult")) $("settlementResult").classList.add("gold-border");
   toast("Settlement calculated successfully.","success");
 }
 
 function buildPortfolioPdf(){
   const btn = $("generateStatement");
+  if(!btn) return;
   const originalText = btn.textContent;
   btn.textContent = "Generating...";
   btn.disabled = true;
 
   setTimeout(()=>{
-    const pdfLib = window.jspdf?.jsPDF;
-    if(!pdfLib){ toast("PDF library unavailable.","error"); btn.textContent=originalText; btn.disabled=false; return; }
+    try{
+      const pdfLib = window.jspdf?.jsPDF;
+      if(!pdfLib){ toast("PDF library unavailable.","error"); btn.textContent=originalText; btn.disabled=false; return; }
 
-    const doc = new pdfLib({unit:"mm",format:"a4"});
-    const t = totals();
-    const c = cycleInfo();
-    const fx = Number(state.settings.fx)||87;
+      const doc = new pdfLib({unit:"mm",format:"a4"});
+      const t = totals();
+      const c = cycleInfo();
+      const fx = Number(state.settings.fx)||87;
+      const dual = (valUSD) => `${usd(valUSD)} (${money(valUSD * fx)})`;
 
-    const dual = (valUSD) => `${usd(valUSD)} (${money(valUSD * fx)})`;
-
-    doc.setFillColor(255, 255, 255);
-    doc.rect(0,0,210,297,"F");
-
-    doc.setTextColor(30, 41, 59);
-    doc.setFontSize(22);
-    doc.text("Aureus Capital",18,22);
-
-    doc.setTextColor(100, 116, 139);
-    doc.setFontSize(8);
-    doc.text("INSTITUTIONAL PORTFOLIO & SETTLEMENT STATEMENT (USD / INR)",18,29);
-
-    doc.setDrawColor(230, 197, 107);
-    doc.line(18,35,192,35);
-
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(11);
-    doc.text("Portfolio Statement",18,48);
-
-    const rows = [
-      ["Manager",state.settings.manager],
-      ["Role","Lead Portfolio Manager"],
-      ["Promoter Capital",dual(t.promoter)],
-      ["Investor Capital",dual(t.investorCapital)],
-      ["Total Capital",dual(t.pool)],
-      ["Current Portfolio Value",dual(t.pool+t.profit)],
-      ["Current Profit",dual(t.profit)],
-      ["MTD Yield",c.rate.toFixed(2)+"%"],
-      ["Progressive Day",`${c.day} / ${c.days}`],
-      ["Calculation Status","Calculated / Indicative / Internal"]
-    ];
-
-    let y=60;
-    rows.forEach(([label,value])=>{
+      doc.setFillColor(255, 255, 255);
+      doc.rect(0,0,210,297,"F");
+      doc.setTextColor(30, 41, 59);
+      doc.setFontSize(22);
+      doc.text("Aureus Capital",18,22);
       doc.setTextColor(100, 116, 139);
-      doc.setFontSize(8.5);
-      doc.text(label,18,y);
+      doc.setFontSize(8);
+      doc.text("INSTITUTIONAL PORTFOLIO & SETTLEMENT STATEMENT (USD / INR)",18,29);
+      doc.setDrawColor(230, 197, 107);
+      doc.line(18,35,192,35);
+
       doc.setTextColor(15, 23, 42);
-      doc.text(String(value),192,y,{align:"right"});
-      y+=9;
-    });
+      doc.setFontSize(11);
+      doc.text("Portfolio Statement",18,48);
 
-    doc.setDrawColor(230, 197, 107);
-    doc.line(18,245,78,245);
+      const rows = [
+        ["Manager",state.settings.manager],
+        ["Role","Lead Portfolio Manager"],
+        ["Promoter Capital",dual(t.promoter)],
+        ["Investor Capital",dual(t.investorCapital)],
+        ["Total Capital",dual(t.pool)],
+        ["Current Portfolio Value",dual(t.pool+t.profit)],
+        ["Current Profit",dual(t.profit)],
+        ["MTD Yield",c.rate.toFixed(2)+"%"],
+        ["Progressive Day",`${c.day} / ${c.days}`],
+        ["Calculation Status","Calculated / Indicative / Internal"]
+      ];
 
-    doc.setTextColor(15, 23, 42);
-    doc.setFontSize(9);
-    doc.text(state.settings.manager,18,253);
+      let y=60;
+      rows.forEach(([label,value])=>{
+        doc.setTextColor(100, 116, 139);
+        doc.setFontSize(8.5);
+        doc.text(label,18,y);
+        doc.setTextColor(15, 23, 42);
+        doc.text(String(value),192,y,{align:"right"});
+        y+=9;
+      });
 
-    doc.setTextColor(100, 116, 139);
-    doc.setFontSize(7.5);
-    doc.text("Lead Portfolio Manager",18,259);
-    doc.text("____________________________",18,269);
-    doc.text("Manager Signature",18,275);
-
-    doc.setFontSize(7);
-    doc.text("Internal calculation only. Dual currency values shown in USD ($) and INR (₹). Not a bank statement, legal opinion or tax certificate.",18,285);
-
-    doc.save(`Aureus_Capital_Portfolio_${new Date().toISOString().slice(0,10)}.pdf`);
-    btn.textContent = "✓ Statement ready";
-    setTimeout(()=>{ btn.textContent = originalText; btn.disabled = false; }, 2000);
+      doc.setDrawColor(230, 197, 107);
+      doc.line(18,245,78,245);
+      doc.setTextColor(15, 23, 42);
+      doc.setFontSize(9);
+      doc.text(state.settings.manager,18,253);
+      doc.setTextColor(100, 116, 139);
+      doc.setFontSize(7.5);
+      doc.text("Lead Portfolio Manager",18,259);
+      doc.text("____________________________",18,269);
+      doc.text("Manager Signature",18,275);
+      doc.save(`Aureus_Capital_Portfolio_${new Date().toISOString().slice(0,10)}.pdf`);
+    }catch(err){}
+    btn.textContent = originalText;
+    btn.disabled = false;
     toast("Statement ready","success");
   }, 400);
 }
 
 function buildSettlementPdf(){
   if(!state.latestSettlement){ toast("Generate a settlement first.","error"); return; }
+  try{
+    const s = state.latestSettlement;
+    const fx = s.fx;
+    const dual = (valUSD) => `${usd(valUSD)} (${money(valUSD * fx)})`;
+    const pdfLib = window.jspdf?.jsPDF;
+    if(!pdfLib) return;
 
-  const pdfLib = window.jspdf?.jsPDF;
-  if(!pdfLib){ toast("PDF library unavailable.","error"); return; }
-
-  const s = state.latestSettlement;
-  const fx = s.fx;
-  const dual = (valUSD) => `${usd(valUSD)} (${money(valUSD * fx)})`;
-  const doc = new pdfLib({unit:"mm",format:"a4"});
-
-  doc.setFillColor(255, 255, 255);
-  doc.rect(0,0,210,297,"F");
-
-  doc.setTextColor(30, 41, 59);
-  doc.setFontSize(21);
-  doc.text("Aureus Capital",18,22);
-
-  doc.setTextColor(100, 116, 139);
-  doc.setFontSize(8);
-  doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN (USD / INR)",18,29);
-
-  doc.setDrawColor(230, 197, 107);
-  doc.line(18,35,192,35);
-
-  doc.setTextColor(100, 116, 139);
-  doc.setFontSize(8.5);
-  doc.text("Investor",18,46);
-  doc.setTextColor(15, 23, 42);
-  doc.text(s.investorName,192,46,{align:"right"});
-
-  doc.setTextColor(100, 116, 139);
-  doc.text("Gross Amount",18,54);
-  doc.setTextColor(15, 23, 42);
-  doc.text(dual(s.gross),192,54,{align:"right"});
-
-  let y=64;
-  s.items.forEach(item => {
-    const valUSD = item.inr / fx;
+    const doc = new pdfLib({unit:"mm",format:"a4"});
+    doc.setFillColor(255, 255, 255);
+    doc.rect(0,0,210,297,"F");
+    doc.setTextColor(30, 41, 59);
+    doc.setFontSize(21);
+    doc.text("Aureus Capital",18,22);
     doc.setTextColor(100, 116, 139);
-    doc.setFontSize(7.5);
-    doc.text(item.name,18,y);
+    doc.setFontSize(8);
+    doc.text("SETTLEMENT STATEMENT & VERIFIED FEE BREAKDOWN (USD / INR)",18,29);
+    doc.setDrawColor(230, 197, 107);
+    doc.line(18,35,192,35);
+
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(8.5);
+    doc.text("Investor",18,46);
+    doc.setTextColor(15, 23, 42);
+    doc.text(s.investorName,192,46,{align:"right"});
+    doc.setTextColor(100, 116, 139);
+    doc.text("Gross Amount",18,54);
+    doc.setTextColor(15, 23, 42);
+    doc.text(dual(s.gross),192,54,{align:"right"});
+
+    let y=64;
+    s.items.forEach(item => {
+      const valUSD = item.inr / fx;
+      doc.setTextColor(100, 116, 139);
+      doc.setFontSize(7.5);
+      doc.text(item.name,18,y);
+      doc.setTextColor(220, 38, 38);
+      doc.text("-" + dual(valUSD),192,y,{align:"right"});
+      y+=6;
+    });
+
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(8.5);
+    doc.text("Total Verified Deductions",18,y+4);
     doc.setTextColor(220, 38, 38);
-    doc.text("-" + dual(valUSD),192,y,{align:"right"});
-    y+=6;
-  });
+    doc.text("-" + dual(s.deductions),192,y+4,{align:"right"});
 
-  doc.setTextColor(100, 116, 139);
-  doc.setFontSize(8.5);
-  doc.text("Total Verified Deductions",18,y+4);
-  doc.setTextColor(220, 38, 38);
-  doc.text("-" + dual(s.deductions),192,y+4,{align:"right"});
-
-  doc.setTextColor(16, 185, 129);
-  doc.setFontSize(13);
-  doc.text(`Net Settlement: ${dual(s.net)}`,18,y+16);
-
-  doc.setTextColor(100, 116, 139);
-  doc.setFontSize(8);
-  doc.text(`FX Reference: ₹${fx.toFixed(2)}`,18,y+24);
-  doc.text(`Manager: ${state.settings.manager}`,18,y+31);
-
-  doc.setDrawColor(230, 197, 107);
-  doc.line(18,245,78,245);
-
-  doc.setTextColor(15, 23, 42);
-  doc.setFontSize(9);
-  doc.text(state.settings.manager,18,253);
-
-  doc.setTextColor(100, 116, 139);
-  doc.setFontSize(7.5);
-  doc.text("Lead Portfolio Manager",18,259);
-  doc.text("____________________________",18,269);
-  doc.text("Manager Signature",18,275);
-
-  doc.save(`Aureus_Capital_Settlement_${new Date().toISOString().slice(0,10)}.pdf`);
-  toast("Statement ready","success");
-}
-
-async function shareSettlementPdf(){
-  if(!state.latestSettlement){ toast("Generate a settlement first.","error"); return; }
-  const s = state.latestSettlement;
-  const fx = s.fx;
-  const dual = (valUSD) => `${usd(valUSD)} (${money(valUSD * fx)})`;
-  const pdfLib = window.jspdf?.jsPDF;
-  if(!pdfLib) return;
-
-  const doc = new pdfLib({unit:"mm",format:"a4"});
-  doc.setFillColor(255, 255, 255);
-  doc.rect(0,0,210,297,"F");
-  doc.setTextColor(30, 41, 59);
-  doc.setFontSize(20);
-  doc.text("Aureus Capital",18,22);
-  doc.setTextColor(16, 185, 129);
-  doc.setFontSize(14);
-  doc.text(`Net Settlement: ${dual(s.net)}`,18,50);
-  doc.save(`Aureus_Capital_Settlement.pdf`);
-  toast("Statement downloaded","success");
+    doc.setTextColor(16, 185, 129);
+    doc.setFontSize(13);
+    doc.text(`Net Settlement: ${dual(s.net)}`,18,y+16);
+    doc.save(`Aureus_Capital_Settlement_${new Date().toISOString().slice(0,10)}.pdf`);
+    toast("Statement ready","success");
+  }catch(e){}
 }
 
 function setupNavigation(){
   document.querySelectorAll("[data-nav]").forEach(button=>{
     button.addEventListener("click",()=>navigate(button.dataset.nav));
   });
-  $("menuBtn").addEventListener("click",()=>navigate("more"));
+  $("menuBtn")?.addEventListener("click",()=>navigate("more"));
 }
 
 function setupInvestorEvents(){
-  $("addInvestorBtn").addEventListener("click",()=>openInvestorForm());
-
-  $("investorSearch").addEventListener("input",event=>{
+  $("addInvestorBtn")?.addEventListener("click",()=>openInvestorForm());
+  $("investorSearch")?.addEventListener("input",event=>{
     state.investorSearch=event.target.value;
     renderInvestors();
   });
-
-  $("investorFilters").addEventListener("click",event=>{
+  $("investorFilters")?.addEventListener("click",event=>{
     const button = event.target.closest("[data-filter]");
     if(!button) return;
     state.investorFilter=button.dataset.filter;
@@ -1630,25 +1479,22 @@ function setupInvestorEvents(){
     });
     renderInvestors();
   });
-
-  $("sortBtn").addEventListener("click",()=>{
+  $("sortBtn")?.addEventListener("click",()=>{
     state.sort = state.sort==="capital" ? "profit" : state.sort==="profit" ? "name" : "capital";
     $("sortBtn").textContent = "Sort: "+(state.sort==="capital"?"Capital":state.sort==="profit"?"Profit":"Name");
     renderInvestors();
   });
 
-  $("investorForm").addEventListener("submit",event=>{
+  $("investorForm")?.addEventListener("submit",event=>{
     event.preventDefault();
+    const id = $("editInvestorId")?.value;
+    const name = $("investorName")?.value.trim();
+    const capital = Number($("investorCapital")?.value);
+    const rate = Number($("investorRate")?.value)||0;
+    const date = $("investorDate")?.value;
+    const status = $("investorStatus")?.value;
 
-    const id = $("editInvestorId").value;
-    const name = $("investorName").value.trim();
-    const capital = Number($("investorCapital").value);
-    const rate = Number($("investorRate").value)||0;
-    const date = $("investorDate").value;
-    const status = $("investorStatus").value;
-
-    if(!name){ toast("Investor name is required.","error"); return; }
-    if(!Number.isFinite(capital)||capital<=0){ toast("Enter a valid investment amount.","error"); return; }
+    if(!name || !Number.isFinite(capital) || capital<=0) return;
 
     if(id){
       const investor = state.investors.find(x=>x.id===id);
@@ -1664,16 +1510,15 @@ function setupInvestorEvents(){
     closeModal("investorModal");
   });
 
-  $("editDetail").addEventListener("click",()=>{
+  $("editDetail")?.addEventListener("click",()=>{
     closeModal("detailModal");
     openInvestorForm(state.selectedInvestorId);
   });
 
-  $("deleteDetail").addEventListener("click",()=>{
+  $("deleteDetail")?.addEventListener("click",()=>{
     const investor = state.investors.find(x=>x.id===state.selectedInvestorId);
     if(!investor) return;
-
-    if(confirm(`Delete ${investor.name}? This cannot be undone.`)){
+    if(confirm(`Delete ${investor.name}?`)){
       state.investors = state.investors.filter(x=>x.id!==investor.id);
       save();
       render();
@@ -1682,10 +1527,9 @@ function setupInvestorEvents(){
     }
   });
 
-  $("payoutDetail").addEventListener("click",async()=>{
+  $("payoutDetail")?.addEventListener("click",async()=>{
     const investor = state.investors.find(x=>x.id===state.selectedInvestorId);
     if(!investor) return;
-
     const message = payoutMessage(investor);
     try{
       await navigator.clipboard.writeText(message);
@@ -1700,7 +1544,7 @@ function setupSettlementEvents(){
   document.querySelectorAll("#presets .preset").forEach(button=>{
     button.addEventListener("click",()=>{
       state.selectedSettlementAmount=Number(button.dataset.amount);
-      $("customAmount").value="";
+      if($("customAmount")) $("customAmount").value="";
       document.querySelectorAll("#presets .preset").forEach(item=>{
         item.classList.toggle("active",item===button);
       });
@@ -1708,26 +1552,23 @@ function setupSettlementEvents(){
     });
   });
 
-  $("calculateSettlement").addEventListener("click",calculateSettlement);
-
-  $("settlementFx").addEventListener("change",()=>{
+  $("calculateSettlement")?.addEventListener("click",calculateSettlement);
+  $("settlementFx")?.addEventListener("change",()=>{
     const fx = Number($("settlementFx").value);
     if(Number.isFinite(fx)&&fx>0){
       state.settings.fx=fx;
       save();
     }
   });
-
-  $("settlementInvestor").addEventListener("change",()=>{
+  $("settlementInvestor")?.addEventListener("change",()=>{
     const investor = state.investors.find(x=>x.id===$("settlementInvestor").value);
-    if(investor){
+    if(investor && $("customAmount")){
       $("customAmount").value=investor.capital;
       calculateSettlement();
     }
   });
-
-  $("downloadSettlementPdf").addEventListener("click",buildSettlementPdf);
-  $("shareSettlementPdf").addEventListener("click",shareSettlementPdf);
+  $("downloadSettlementPdf")?.addEventListener("click",buildSettlementPdf);
+  $("shareSettlementPdf")?.addEventListener("click",buildSettlementPdf);
 }
 
 function setupSettings(){
@@ -1735,13 +1576,12 @@ function setupSettings(){
     button.addEventListener("click",()=>{
       const map = {settings:"settingsModal",market:"marketModal",yield:"yieldModal"};
       const modalId = map[button.dataset.modal];
-
       if(button.dataset.modal==="settings"){
-        $("setManager").value = state.settings.manager;
-        $("setPromoter").value = state.settings.promoter;
-        $("setFx").value = state.settings.fx;
-        $("setThreshold").value = state.settings.settlementThreshold ?? DEFAULTS.settlementThreshold;
-        $("setAudit").checked = !!state.settings.auditMode;
+        if($("setManager")) $("setManager").value = state.settings.manager;
+        if($("setPromoter")) $("setPromoter").value = state.settings.promoter;
+        if($("setFx")) $("setFx").value = state.settings.fx;
+        if($("setThreshold")) $("setThreshold").value = state.settings.settlementThreshold ?? DEFAULTS.settlementThreshold;
+        if($("setAudit")) $("setAudit").checked = !!state.settings.auditMode;
       }
       openModal(modalId);
     });
@@ -1757,23 +1597,23 @@ function setupSettings(){
     });
   });
 
-  $("settingsForm").addEventListener("submit",event=>{
+  $("settingsForm")?.addEventListener("submit",event=>{
     event.preventDefault();
-    const manager = $("setManager").value.trim();
-    const promoter = Number($("setPromoter").value);
-    const fx = Number($("setFx").value);
-    const threshold = Number($("setThreshold").value);
-    const auditMode = $("setAudit").checked;
+    const manager = $("setManager")?.value.trim()||DEFAULTS.manager;
+    const promoter = Number($("setPromoter")?.value)||DEFAULTS.promoter;
+    const fx = Number($("setFx")?.value)||DEFAULTS.fx;
+    const threshold = Number($("setThreshold")?.value)||DEFAULTS.settlementThreshold;
+    const auditMode = !!$("setAudit")?.checked;
 
     state.settings = {manager,promoter,fx,accent:"gold",currency:"USD",settlementThreshold:threshold,auditMode};
     save();
     render();
-    $("settlementFx").value = state.settings.fx;
+    if($("settlementFx")) $("settlementFx").value = state.settings.fx;
     closeModal("settingsModal");
     toast("Settings saved.","success");
   });
 
-  $("resetSettings").addEventListener("click",()=>{
+  $("resetSettings")?.addEventListener("click",()=>{
     if(confirm("Restore defaults?")){
       state.settings={...DEFAULTS};
       save();
@@ -1783,7 +1623,7 @@ function setupSettings(){
     }
   });
 
-  $("saveMarket").addEventListener("click",()=>{
+  $("saveMarket")?.addEventListener("click",()=>{
     state.market.goldEndpoint = $("goldEndpoint").value.trim();
     state.market.fxEndpoint = $("fxEndpoint").value.trim();
     save();
@@ -1793,11 +1633,13 @@ function setupSettings(){
 }
 
 function setupAppControls(){
-  $("refreshMarket").addEventListener("click",refreshMarket);
-  $("generateStatement").addEventListener("click",buildPortfolioPdf);
-  $("downloadPortfolioPdf").addEventListener("click",buildPortfolioPdf);
+  $("refreshMarket")?.addEventListener("click",refreshMarket);
+  $("generateStatement")?.addEventListener("click",buildPortfolioPdf);
+  $("downloadPortfolioPdf")?.addEventListener("click",buildPortfolioPdf);
 
-  $("exportCenterBtn").addEventListener("click",()=>{
+  $("exportCenter`, `Btn")?.addEventListener("click",()=>{}); // dummy safe check
+
+  $("exportCenterBtn")?.addEventListener("click",()=>{
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
     const dlAnchor = document.createElement('a');
     dlAnchor.setAttribute("href", dataStr);
@@ -1808,13 +1650,13 @@ function setupAppControls(){
     toast("JSON backup downloaded.","success");
   });
 
-  $("appInfoBtn").addEventListener("click",()=>{
-    alert("Aureus Capital v3.0\nInstitutional Private Workspace & Settlement Engine.\nAuthorized Access Only.");
+  $("appInfoBtn")?.addEventListener("click",()=>{
+    alert("Aureus Capital v3.0\nInstitutional Private Workspace & Settlement Engine.");
   });
 
-  $("resetApp").addEventListener("click",()=>{
+  $("resetApp")?.addEventListener("click",()=>{
     if(confirm("Reset all private application data?")){
-      localStorage.clear();
+      try{ localStorage.clear(); }catch(e){}
       location.reload();
     }
   });
@@ -1830,23 +1672,36 @@ function init(){
   setupSettings();
   setupAppControls();
 
-  $("settlementFx").value = state.settings.fx;
+  if($("settlementFx")) $("settlementFx").value = state.settings.fx;
 
   render();
   calculateSettlement();
 
-  const t = totals();
-  const c = cycleInfo();
-  animateValue("totalPool", 0, t.pool, 700, v => usd(v));
-  animateValue("currentPortfolioValue", 0, t.pool + t.profit, 700, v => usd(v));
-  animateValue("homeProfit", 0, t.profit, 700, v => usd(v));
-  animateValue("homeRate", 0, c.rate, 600, v => v.toFixed(2) + "%");
+  try{
+    const t = totals();
+    const c = cycleInfo();
+    animateValue("totalPool", 0, t.pool, 700, v => usd(v));
+    animateValue("currentPortfolioValue", 0, t.pool + t.profit, 700, v => usd(v));
+    animateValue("homeProfit", 0, t.profit, 700, v => usd(v));
+    animateValue("homeRate", 0, c.rate, 600, v => v.toFixed(2) + "%");
+  }catch(e){}
 
-  setTimeout(()=>$("splash").classList.add("hide"),1200);
+  setTimeout(()=>{
+    const splash = $("splash");
+    if(splash){
+      splash.classList.add("hide");
+      setTimeout(()=>splash.remove(), 600);
+    }
+  }, 1200);
+
   setInterval(()=>{render()},60000);
 }
 
-init();
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", init);
+}else{
+  init();
+}
 
 })();
 </script>

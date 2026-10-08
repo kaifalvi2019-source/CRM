@@ -62,7 +62,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
   position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:var(--bg);
   transition:opacity .6s var(--ease),visibility .6s;
 }
-.splash.hide{opacity:0;visibility:hidden}
+.splash.hide{opacity:0;visibility:hidden;pointer-events:none}
 .splash-inner{text-align:center;width:min(320px,85vw);animation:splashIn 0.8s var(--ease)}
 
 @keyframes splashIn{
@@ -71,20 +71,20 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 }
 
 .pyramid-logo{
-  position:relative;width:110px;height:110px;margin:auto;border-radius:26px;
+  position:relative;width:116px;height:116px;margin:auto;border-radius:28px;
   background:linear-gradient(135deg, #171f30, #090d14);
-  border:1.5px solid rgba(230,197,107,0.6);
-  box-shadow:0 0 50px rgba(230,197,107,0.35), inset 0 0 20px rgba(230,197,107,0.15);
-  display:grid;place-items:center;overflow:hidden;
+  border:1.5px solid rgba(230,197,107,0.7);
+  box-shadow:0 0 60px rgba(230,197,107,0.4), inset 0 0 25px rgba(230,197,107,0.2);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
 }
 
 .pyramid-logo svg{
-  width:84px;height:84px;filter:drop-shadow(0 2px 10px rgba(230,197,107,0.5));
+  width:88px;height:88px;filter:drop-shadow(0 2px 10px rgba(230,197,107,0.6));
 }
 
 .pyramid-beam{
   position:absolute;bottom:-100%;left:0;width:100%;height:200%;
-  background:linear-gradient(to top, transparent, rgba(230,197,107,0.4), transparent);
+  background:linear-gradient(to top, transparent, rgba(230,197,107,0.45), transparent);
   animation:beamUp 2s linear infinite;
   pointer-events:none;
 }
@@ -373,17 +373,18 @@ h1,h2,h3,p{margin:0}
 
 <body>
 
-<!-- Splash Screen with Guaranteed SVG Crown 'A' Logo -->
+<!-- Splash Screen with Guaranteed Accurate Crown 'A' SVG & Fast Removal -->
 <div class="splash" id="splash">
   <div class="splash-inner">
     <div class="pyramid-logo">
       <div class="pyramid-beam"></div>
-      <svg viewBox="0 0 100 100" width="100%" height="100%">
+      <svg viewBox="0 0 200 200" width="100%" height="100%">
         <!-- Crown Top -->
-        <path d="M50 15 L58 30 L70 20 L65 38 L85 38 L65 52 L75 70 L50 58 L25 70 L35 52 L15 38 L35 38 L30 20 L42 30 Z" fill="url(#goldGrad)" stroke="#b8860b" stroke-width="1.5"/>
-        <!-- Letter A Body / Swoosh -->
-        <path d="M32 75 Q 50 65 75 75 Q 60 40 50 25 Q 40 40 32 75 Z" fill="url(#goldGrad)" opacity="0.9"/>
-        <path d="M22 82 Q 50 60 88 78" stroke="url(#goldGrad)" stroke-width="6" stroke-linecap="round" fill="none"/>
+        <path d="M100 35 L112 55 L135 40 L125 70 L160 70 L125 95 L145 130 L100 110 L55 130 L75 95 L40 70 L75 70 L65 40 L88 55 Z" fill="url(#goldGrad)" stroke="#b8860b" stroke-width="3"/>
+        <!-- Stylish Letter A Body -->
+        <path d="M70 145 Q 100 120 130 145 Q 110 75 100 50 Q 90 75 70 145 Z" fill="url(#goldGrad)"/>
+        <!-- Swoosh/Arc across A -->
+        <path d="M50 155 Q 100 115 160 150" stroke="url(#goldGrad)" stroke-width="10" stroke-linecap="round" fill="none"/>
         <defs>
           <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#f9d976"/>
@@ -922,9 +923,9 @@ h1,h2,h3,p{margin:0}
 "use strict";
 
 const STORAGE = {
-  investors:"aureus_investors_v12",
-  settings:"aureus_settings_v12",
-  market:"aureus_market_v12"
+  investors:"aureus_investors_v14",
+  settings:"aureus_settings_v14",
+  market:"aureus_market_v14"
 };
 
 const DEFAULTS = {
@@ -1600,7 +1601,6 @@ function setupSettings(){
     });
   });
 
-  document.querySelectorAll("[data-close]").button?.addEventListener("click",()=>closeModal(button.dataset.close));
   document.querySelectorAll("[data-close]").forEach(button=>{
     button.addEventListener("click",()=>closeModal(button.dataset.close));
   });
@@ -1698,13 +1698,13 @@ function init(){
     animateValue("homeRate", 0, c.rate, 600, v => v.toFixed(2) + "%");
   }catch(e){}
 
+  // Guaranteed removal of splash screen after exactly 1.5 seconds
   setTimeout(()=>{
     const splash = $("splash");
     if(splash){
       splash.classList.add("hide");
-      setTimeout(()=>splash.remove(), 600);
     }
-  }, 1200);
+  }, 1500);
 
   setInterval(()=>{render()},60000);
 }

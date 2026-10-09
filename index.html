@@ -1,567 +1,241 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#05070b">
-<meta name="description" content="AUREUS CAPITAL — Institutional Portfolio & Settlement">
-<title>AUREUS CAPITAL — Institutional Portfolio & Settlement</title>
-
-<!-- jsPDF Library for Statements -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<!-- External Stylesheet link -->
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aureus Capital — Institutional Trading & CRM</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+<body class="bg-midnight text-white">
 
-<body>
-
-<!-- Splash Screen with Guaranteed Accurate Crown 'A' SVG & Fast Removal -->
-<div class="splash" id="splash">
-  <div class="splash-inner">
-    <div class="pyramid-logo">
-      <div class="pyramid-beam"></div>
-      <svg viewBox="0 0 200 200" width="100%" height="100%">
-        <!-- Crown Top -->
-        <path d="M100 35 L112 55 L135 40 L125 70 L160 70 L125 95 L145 130 L100 110 L55 130 L75 95 L40 70 L75 70 L65 40 L88 55 Z" fill="url(#goldGrad)" stroke="#b8860b" stroke-width="3"/>
-        <!-- Stylish Letter A Body -->
-        <path d="M70 145 Q 100 120 130 145 Q 110 75 100 50 Q 90 75 70 145 Z" fill="url(#goldGrad)"/>
-        <!-- Swoosh/Arc across A -->
-        <path d="M50 155 Q 100 115 160 150" stroke="url(#goldGrad)" stroke-width="10" stroke-linecap="round" fill="none"/>
-        <defs>
-          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#f9d976"/>
-            <stop offset="50%" stop-color="#e6c56b"/>
-            <stop offset="100%" stop-color="#b8860b"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-    <div class="splash-name">AUREUS CAPITAL</div>
-    <div class="splash-sub">Institutional Portfolio & Settlement</div>
-    <div class="loader"><i></i></div>
-  </div>
-</div>
-
-<div class="app">
-
-<header class="header">
-  <button class="header-btn" id="menuBtn" aria-label="Open menu">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-  </button>
-  <div class="header-title">
-    <strong id="headerTitle">AUREUS CAPITAL</strong>
-    <span>Institutional Portfolio & Settlement</span>
-  </div>
-  <div class="live-dot" title="Application active"></div>
-</header>
-
-<main>
-
-<!-- HOME -->
-<section class="view active" id="view-home">
-  <div class="page-heading">
-    <div>
-      <div class="eyebrow">Private workspace</div>
-      <h1>Dashboard</h1>
-      <p>Portfolio overview and internal performance.</p>
-    </div>
-  </div>
-
-  <div class="stack">
-
-    <article class="card gold-border card-pad manager-card">
-      <div class="manager-top">
-        <div class="avatar">KA</div>
-        <div>
-          <div class="manager-name" id="managerName">Kaif Alvi</div>
-          <div class="manager-role">Lead Portfolio Manager</div>
+    <!-- Top Global Header with Settings Icon -->
+    <header class="app-header">
+        <div class="brand-title">
+            <span class="text-gold">AUREUS</span> CAPITAL
         </div>
-        <div class="badge gold">LEAD</div>
-      </div>
-      <div class="manager-stats">
-        <div class="stat-mini">
-          <div class="stat-label">Promoter Holding</div>
-          <div class="stat-value gold" id="promoterCapital">$50,000.00</div>
+        <button id="settingsBtn" class="settings-icon-btn" aria-label="Settings">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-container">
+        
+        <!-- 1. HOME TAB -->
+        <section id="tab-home" class="tab-content active">
+            <div class="section-header">
+                <h2>Institutional Dashboard</h2>
+                <span class="status-badge live">Live · Primary CRM · Synchronized</span>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="label">Total AUM</span>
+                    <h3 id="homeTotalAUM">$0.00</h3>
+                </div>
+                <div class="metric-card">
+                    <span class="label">Total Investors</span>
+                    <h3 id="homeTotalInvestors">0</h3>
+                </div>
+                <div class="metric-card">
+                    <span class="label">Pending Payouts (USD)</span>
+                    <h3 id="homePendingUSD">$0.00</h3>
+                </div>
+                <div class="metric-card">
+                    <span class="label">Pending Payouts (INR)</span>
+                    <h3 id="homePendingINR">₹0.00</h3>
+                </div>
+            </div>
+
+            <div class="card-panel">
+                <h4>Cycle Progress (Current 4-Month Cycle)</h4>
+                <p id="cycleDetails">Cycle: Sep - Dec | Elapsed: -- days | Remaining: -- days</p>
+                <div class="progress-bar-bg"><div id="cycleProgressBar" class="progress-bar-fill"></div></div>
+            </div>
+
+            <div class="card-panel">
+                <h4>Market Reference Rates</h4>
+                <div class="rates-grid">
+                    <div>Gold (24K/10g): <span id="refGold">Unavailable</span></div>
+                    <div>Silver (1kg): <span id="refSilver">Unavailable</span></div>
+                    <div>USD/INR: <span id="refUsdInr">Unavailable</span></div>
+                </div>
+            </div>
+
+            <div class="card-panel">
+                <h4>Algo Desk Snapshot (Read-Only)</h4>
+                <p>Status: <span id="homeAlgoStatus">Not Connected</span></p>
+                <p>Net P&L: <span id="homeAlgoPnL">Unavailable</span></p>
+            </div>
+        </section>
+
+        <!-- 2. INVESTORS TAB -->
+        <section id="tab-investors" class="tab-content">
+            <div class="section-header">
+                <h2>Investors CRM</h2>
+                <button id="addInvestorBtn" class="btn-primary"><i class="fa-solid fa-plus"></i> Add Investor</button>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" id="investorSearch" placeholder="Search by name, contact, jurisdiction..." class="search-input">
+                <select id="investorFilterStatus" class="filter-select">
+                    <option value="ALL">All Status</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                </select>
+            </div>
+
+            <div id="investorsListContainer" class="investors-grid">
+                <!-- Investor cards injected dynamically -->
+            </div>
+        </section>
+
+        <!-- 3. STATEMENTS TAB (13-Factor Settlement Engine) -->
+        <section id="tab-statements" class="tab-content">
+            <div class="section-header">
+                <h2>13-Factor Settlement Engine</h2>
+                <span class="status-badge">Statements & Settlement</span>
+            </div>
+
+            <div class="card-panel">
+                <h4>Select Settlement Target</h4>
+                <div class="form-group">
+                    <label>Select Investor</label>
+                    <select id="settleInvestorSelect" class="form-control">
+                        <option value="">-- Choose Investor --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card-panel">
+                <h4>13 Settlement Factors</h4>
+                <div class="factors-form-grid" id="settlementFactorsForm">
+                    <!-- 13 factors inputs -->
+                    <div class="factor-item"><label>1. Principal (USD)</label><input type="number" id="f_principal" class="form-control" value="0"></div>
+                    <div class="factor-item"><label>2. Day Count (Actual/365)</label><input type="text" class="form-control" value="Actual/365" disabled></div>
+                    <div class="factor-item"><label>3. Yield Override (%)</label><input type="number" id="f_yield" class="form-control" value="5.0"></div>
+                    <div class="factor-item"><label>4. Gross Generated (USD)</label><input type="number" id="f_gross" class="form-control" value="0" readonly></div>
+                    <div class="factor-item"><label>5. Management Fee (%)</label><input type="number" id="f_mgmtFee" class="form-control" value="2.0"></div>
+                    <div class="factor-item"><label>6. Performance Fee (%)</label><input type="number" id="f_perfFee" class="form-control" value="20.0"></div>
+                    <div class="factor-item"><label>7. Custody & Admin Fee (%)</label><input type="number" id="f_custodyFee" class="form-control" value="0.5"></div>
+                    <div class="factor-item"><label>8. Brokerage / Txn Fee ($)</label><input type="number" id="f_brokerFee" class="form-control" value="50"></div>
+                    <div class="factor-item"><label>9. Regulatory Levy ($)</label><input type="number" id="f_regLevy" class="form-control" value="10"></div>
+                    <div class="factor-item"><label>10. USD/INR FX Rate</label><input type="number" id="f_fxRate" class="form-control" value="83.50"></div>
+                    <div class="factor-item"><label>11. FX Conversion Spread (%)</label><input type="number" id="f_fxSpread" class="form-control" value="0.25"></div>
+                    <div class="factor-item"><label>12. TDS / Withholding Tax (%)</label><input type="number" id="f_tds" class="form-control" value="10.0"></div>
+                    <div class="factor-item"><label>13. GST on Fees (%)</label><input type="number" id="f_gst" class="form-control" value="18.0"></div>
+                </div>
+                <button id="calculateSettlementBtn" class="btn-primary mt-3">Calculate Settlement</button>
+            </div>
+
+            <div class="card-panel" id="settlementOutputPanel" style="display:none;">
+                <h4>Settlement Output Ledger</h4>
+                <div class="output-summary">
+                    <p>Total Generated (USD): <span id="outGross">$0.00</span></p>
+                    <p>Total Deductions: <span id="outDeductions">$0.00</span></p>
+                    <p>Net Payout (USD): <span id="outNetUSD">$0.00</span></p>
+                    <p>Final Net Payout (INR): <span id="outNetINR">₹0.00</span></p>
+                </div>
+                <div class="action-row mt-3">
+                    <button id="saveRatesBtn" class="btn-secondary">Save Rates</button>
+                    <button id="issuePdfBtn" class="btn-primary">Issue Statement PDF</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ALGO DESK TAB -->
+        <section id="tab-algodesk" class="tab-content">
+            <div class="section-header">
+                <h2>Algo Desk Terminal</h2>
+                <div class="trading-mode-selector">
+                    <label><input type="radio" name="tradingMode" value="PAPER" checked> Paper Trading</label>
+                    <label><input type="radio" name="tradingMode" value="LIVE"> Live Trading</label>
+                </div>
+            </div>
+
+            <div class="card-panel">
+                <h4>Terminal Status</h4>
+                <p>Broker Connection: <span id="algoBrokerStatus" class="text-red">Not connected</span></p>
+                <p>Market Data: <span id="algoMarketStatus">Unavailable</span></p>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="label">Realized P&L</span>
+                    <h3 id="algoRealizedPnL">$0.00</h3>
+                </div>
+                <div class="metric-card">
+                    <span class="label">Unrealized P&L</span>
+                    <h3 id="algoUnrealizedPnL">$0.00</h3>
+                </div>
+                <div class="metric-card">
+                    <span class="label">Account Equity</span>
+                    <h3 id="algoEquity">Unavailable</h3>
+                </div>
+                <div class="metric-card">
+                    <span class="label">Win Rate</span>
+                    <h3 id="algoWinRate">Unavailable</h3>
+                </div>
+            </div>
+
+            <div class="card-panel">
+                <h4>Execution Controls</h4>
+                <div class="action-row">
+                    <button id="deployAlgoBtn" class="btn-primary">Deploy Algo</button>
+                    <button id="startAlgoBtn" class="btn-secondary">Start Algo</button>
+                    <button id="pauseAlgoBtn" class="btn-secondary">Pause Entries</button>
+                    <button id="stopAlgoBtn" class="btn-danger">Stop Algo</button>
+                    <button id="closeAllBtn" class="btn-danger">Close All Positions</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Settings Modal (Replaces Hamburger Sidebar) -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings & Developer Tools</h3>
+                <span id="closeSettings" class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h4>Configurations</h4>
+                <ul>
+                    <li>Market Data Providers</li>
+                    <li>Broker Connections</li>
+                    <li>API Credentials & Webhooks</li>
+                    <li>Trading Risk Controls</li>
+                    <li>Settlement Defaults</li>
+                    <li>Statement History</li>
+                    <li>Developer Tools & Diagnostics</li>
+                </ul>
+            </div>
         </div>
-        <div class="stat-mini">
-          <div class="stat-label">Current MTD</div>
-          <div class="stat-value positive" id="portfolioStatus">8.86%</div>
-        </div>
-      </div>
-    </article>
-
-    <article class="card overview">
-      <div class="overview-head">
-        <div class="overview-title">Portfolio Overview</div>
-        <div class="badge neutral" id="activeCountBadge">0 active</div>
-      </div>
-      <div class="overview-grid">
-        <div><div class="metric-label">Total Pool Capital</div><div class="metric-value gold" id="totalPool">$50,000.00</div><div style="font-size:10px;color:var(--muted);margin-top:2px">≈ $600.60 indicative</div></div>
-        <div><div class="metric-label">Investor Capital</div><div class="metric-value" id="investorCapitalTotal">$0.00</div></div>
-        <div><div class="metric-label">Active Investors</div><div class="metric-value" id="homeActiveInvestors">0</div></div>
-        <div><div class="metric-label">Active Capital</div><div class="metric-value" id="activeCapital">$0.00</div></div>
-        <div><div class="metric-label">Calc. Profit</div><div class="metric-value positive" id="homeProfit">$0.00</div></div>
-        <div><div class="metric-label">Current Yield</div><div class="metric-value positive" id="homeRate">0.00%</div></div>
-      </div>
-    </article>
-
-    <article class="card performance">
-      <div class="performance-top">
-        <div>
-          <div class="eyebrow">MTD Performance</div>
-          <div class="rate" id="homeRateLarge">0.00%</div>
-          <div class="day" id="cycleDay">Day 1 of 30</div>
-        </div>
-        <div class="badge live">Calculated</div>
-      </div>
-      <div class="progress"><span id="cycleProgress" style="width:0%"></span></div>
-      <div class="performance-foot">
-        <span>Progressive Yield</span>
-        <span id="daysRemaining">30 days remaining</span>
-      </div>
-      <div class="notice" style="margin-top:14px">
-        Calculated / Indicative / Internal. This progressive yield display is not a guaranteed return.
-      </div>
-    </article>
-
-    <div>
-      <div class="section-title">
-        <h2>Market</h2>
-        <button id="refreshMarket">Refresh</button>
-      </div>
-      <div class="market-row">
-        <article class="card market-card">
-          <div class="eyebrow">Gold</div>
-          <div class="market-value" id="goldPrice">Unavailable</div>
-          <div class="market-status">
-            <i class="status-dot status-inactive" id="goldDot"></i>
-            <span id="goldStatus">Awaiting connection</span>
-          </div>
-        </article>
-        <article class="card market-card">
-          <div class="eyebrow">USD / INR</div>
-          <div class="market-value" id="fxRate">₹87.00</div>
-          <div class="market-status">
-            <i class="status-dot status-inactive" id="fxDot"></i>
-            <span id="fxStatus">Configured reference</span>
-          </div>
-        </article>
-      </div>
     </div>
 
-    <div>
-      <div class="section-title">
-        <h2>Quick Actions</h2>
-      </div>
-      <div class="actions">
-        <button class="btn btn-primary" id="generateStatement">Generate Statement</button>
-        <button class="btn btn-secondary" data-nav="settlement">Settlement / Payout</button>
-      </div>
-    </div>
+    <!-- Fixed Bottom Navigation (Exactly 4 Tabs) -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-target="tab-home">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" data-target="tab-investors">
+            <i class="fa-solid fa-users"></i>
+            <span>Investors</span>
+        </button>
+        <button class="nav-item" data-target="tab-statements">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+            <span>Statements</span>
+        </button>
+        <button class="nav-item" data-target="tab-algodesk">
+            <i class="fa-solid fa-terminal"></i>
+            <span>Algo Desk</span>
+        </button>
+    </nav>
 
-  </div>
-</section>
-
-<!-- PORTFOLIO -->
-<section class="view" id="view-portfolio">
-  <div class="page-heading">
-    <div>
-      <div class="eyebrow">Portfolio</div>
-      <h1>Portfolio</h1>
-      <p>Capital composition and calculated performance.</p>
-    </div>
-  </div>
-
-  <div class="stack">
-    <article class="card overview">
-      <div class="overview-head">
-        <div class="overview-title">Portfolio Summary</div>
-        <div class="badge live">Active</div>
-      </div>
-      <div class="overview-grid">
-        <div><div class="metric-label">Total Capital</div><div class="metric-value gold" id="portPool">$0.00</div></div>
-        <div><div class="metric-label">Current Value</div><div class="metric-value" id="portCurrentValue">$0.00</div></div>
-        <div><div class="metric-label">Current Profit</div><div class="metric-value positive" id="portProfit">$0.00</div></div>
-        <div><div class="metric-label">Current Yield</div><div class="metric-value positive" id="portRate">0.00%</div></div>
-      </div>
-    </article>
-    <button class="btn btn-primary" id="downloadPortfolioPdf">Generate Portfolio A4 Statement</button>
-  </div>
-</section>
-
-<!-- INVESTORS -->
-<section class="view" id="view-investors">
-  <div class="page-heading">
-    <div>
-      <div class="eyebrow">Directory</div>
-      <h1>Investors</h1>
-      <p>Manage internal investor records.</p>
-    </div>
-    <button class="btn btn-primary" id="addInvestorBtn">+ Add</button>
-  </div>
-
-  <input class="search" id="investorSearch" placeholder="Search investor name…" autocomplete="off">
-
-  <div class="filters" id="investorFilters">
-    <button class="filter active" data-filter="all">All</button>
-    <button class="filter" data-filter="active">Active</button>
-    <button class="filter" data-filter="pending">Pending</button>
-    <button class="filter" data-filter="settled">Settled</button>
-  </div>
-
-  <div class="section-title">
-    <h2 id="investorCountLabel">0 investors</h2>
-    <button id="sortBtn">Sort: Capital</button>
-  </div>
-
-  <div class="stack" id="investorList"></div>
-</section>
-
-<!-- SETTLEMENT -->
-<section class="view" id="view-settlement">
-  <div class="page-heading">
-    <div>
-      <div class="eyebrow">Settlement Center</div>
-      <h1>Settlement</h1>
-      <p>Internal settlement calculation and payout breakdown.</p>
-    </div>
-  </div>
-
-  <div class="stack">
-    <article class="card form-card">
-      <div class="field">
-        <label for="settlementInvestor">Investor</label>
-        <select id="settlementInvestor">
-          <option value="">General / Portfolio Settlement</option>
-        </select>
-      </div>
-
-      <div class="section-title" style="margin-top:8px"><h2>Settlement Amount Presets ($)</h2></div>
-
-      <div class="preset-grid" id="presets">
-        <button class="preset active" data-amount="500"><strong>$500</strong><span>Preset</span></button>
-        <button class="preset" data-amount="700"><strong>$700</strong><span>Preset</span></button>
-        <button class="preset" data-amount="1000"><strong>$1,000</strong><span>Preset</span></button>
-        <button class="preset" data-amount="2000"><strong>$2,000</strong><span>Preset</span></button>
-      </div>
-
-      <div class="field" style="margin-top:14px">
-        <label for="customAmount">Custom Amount ($)</label>
-        <input id="customAmount" type="number" min="1" step="0.01" placeholder="Enter settlement amount in USD">
-      </div>
-
-      <div class="field">
-        <label for="settlementFx">USD / INR Reference FX</label>
-        <input id="settlementFx" type="number" min=".01" step=".01">
-      </div>
-
-      <button class="btn btn-primary" id="calculateSettlement" style="width:100%">Generate Settlement</button>
-    </article>
-
-    <article class="card result" id="settlementResult">
-      <div class="result-main">
-        <div>
-          <div class="eyebrow">Net Settlement</div>
-          <div class="result-net" id="netSettlement">$0.00</div>
-        </div>
-        <div class="badge live">Calculated</div>
-      </div>
-
-      <div class="breakdown" id="settlementBreakdown"></div>
-
-      <div class="actions" style="margin-top:16px">
-        <button class="btn btn-secondary" id="downloadSettlementPdf">Download A4 PDF</button>
-        <button class="btn btn-emerald" id="shareSettlementPdf">Share PDF</button>
-      </div>
-
-      <div class="notice" style="margin-top:14px">
-        All 13 verified institutional fees, taxes, gas reserves and infrastructure costs applied.
-      </div>
-    </article>
-  </div>
-</section>
-
-<!-- MORE / SETTINGS -->
-<section class="view" id="view-more">
-  <div class="page-heading">
-    <div>
-      <div class="eyebrow">System</div>
-      <h1>More</h1>
-      <p>Configuration, market data and internal controls.</p>
-    </div>
-  </div>
-
-  <div class="more-list">
-    <button class="more-card" data-modal="settings">
-      <div class="more-card-left">
-        <div class="more-icon-box">⚙</div>
-        <div>
-          <strong>Settings</strong>
-          <span>Promoter, FX, Yield engine</span>
-        </div>
-      </div>
-      <div class="more-arrow">&gt;</div>
-    </button>
-
-    <button class="more-card" data-modal="market">
-      <div class="more-card-left">
-        <div class="more-icon-box">⚡</div>
-        <div>
-          <strong>Market Data</strong>
-          <span>Live provider status</span>
-        </div>
-      </div>
-      <div class="more-arrow">&gt;</div>
-    </button>
-
-    <button class="more-card" data-modal="yield">
-      <div class="more-card-left">
-        <div class="more-icon-box">📦</div>
-        <div>
-          <strong>Yield Engine</strong>
-          <span>Target & override</span>
-        </div>
-      </div>
-      <div class="more-arrow">&gt;</div>
-    </button>
-
-    <button class="more-card" id="exportCenterBtn">
-      <div class="more-card-left">
-        <div class="more-icon-box">📥</div>
-        <div>
-          <strong>Export Center</strong>
-          <span>Download JSON backup</span>
-        </div>
-      </div>
-      <div class="more-arrow">&gt;</div>
-    </button>
-
-    <button class="more-card" id="appInfoBtn">
-      <div class="more-card-left">
-        <div class="more-icon-box">ℹ</div>
-        <div>
-          <strong>App Information</strong>
-          <span>Build & terminology</span>
-        </div>
-      </div>
-      <div class="more-arrow">&gt;</div>
-    </button>
-
-    <button class="more-card" id="resetApp">
-      <div class="more-card-left">
-        <div class="more-icon-box">↺</div>
-        <div>
-          <strong>Reset Defaults</strong>
-          <span>Clear local data</span>
-        </div>
-      </div>
-      <div class="more-arrow">&gt;</div>
-    </button>
-  </div>
-</section>
-
-</main>
-
-<nav class="nav" aria-label="Primary navigation">
-  <button class="active" data-nav="home">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-    </svg>
-    <span>HOME</span>
-  </button>
-  <button data-nav="portfolio">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M4 19V9m5 10V5m5 14v-7m5 7V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-    <span>PORTFOLIO</span>
-  </button>
-  <button data-nav="investors">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M16 20v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3A4.5 4.5 0 0 0 4 18.5V20m6-10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm6-5a3 3 0 0 1 0 6m4 9v-1.5a4 4 0 0 0-3-3.87" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-    <span>INVESTORS</span>
-  </button>
-  <button data-nav="settlement">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M3 7h18M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm11 9h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-    <span>SETTLEMENT</span>
-  </button>
-  <button data-nav="more">
-    <svg viewBox="0 0 24 24" fill="none">
-      <circle cx="5" cy="12" r="1.5" fill="currentColor"/>
-      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-      <circle cx="19" cy="12" r="1.5" fill="currentColor"/>
-    </svg>
-    <span>MORE</span>
-  </button>
-</nav>
-
-</div>
-
-<!-- INVESTOR MODAL -->
-<div class="modal" id="investorModal">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div class="sheet-head">
-      <h2 id="investorModalTitle">Add Investor</h2>
-      <button class="close" data-close="investorModal">×</button>
-    </div>
-    <form id="investorForm">
-      <input type="hidden" id="editInvestorId">
-      <div class="field">
-        <label for="investorName">Investor Name</label>
-        <input id="investorName" required maxlength="80" placeholder="Enter name">
-      </div>
-      <div class="field">
-        <label for="investorCapital">Investment Capital ($)</label>
-        <input id="investorCapital" required type="number" min="1" step=".01" placeholder="50000">
-      </div>
-      <div class="field">
-        <label for="investorRate">Current Rate (%)</label>
-        <input id="investorRate" type="number" min="0" step=".01" placeholder="8.00">
-      </div>
-      <div class="field">
-        <label for="investorStatus">Investor Status</label>
-        <select id="investorStatus">
-          <option value="active">Active — included in pool</option>
-          <option value="pending">Pending — awaiting activation</option>
-          <option value="settled">Settled — closed position</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="investorDate">Relevant Date</label>
-        <input id="investorDate" type="date">
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" data-close="investorModal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Save Investor</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- INVESTOR DETAIL MODAL -->
-<div class="modal" id="detailModal">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div class="sheet-head">
-      <h2 id="detailName">Investor</h2>
-      <button class="close" data-close="detailModal">×</button>
-    </div>
-    <div class="detail-grid" id="detailGrid"></div>
-    <div class="actions" style="margin-top:16px">
-      <button class="btn btn-secondary" id="editDetail">Edit</button>
-      <button class="btn btn-secondary" id="payoutDetail">Copy Payout</button>
-    </div>
-    <button class="btn btn-danger" style="width:100%;margin-top:10px" id="deleteDetail">Delete Investor</button>
-  </div>
-</div>
-
-<!-- SETTINGS MODAL -->
-<div class="modal" id="settingsModal">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div class="sheet-head">
-      <h2>Settings</h2>
-      <button class="close" data-close="settingsModal">×</button>
-    </div>
-    <form id="settingsForm">
-      <div class="field">
-        <label for="setManager">Lead Portfolio Manager</label>
-        <input id="setManager" maxlength="80">
-      </div>
-      <div class="field">
-        <label for="setPromoter">Promoter Capital ($)</label>
-        <input id="setPromoter" type="number" min="0" step=".01">
-      </div>
-      <div class="field">
-        <label for="setFx">USD / INR Reference Rate</label>
-        <input id="setFx" type="number" min=".01" step=".01">
-      </div>
-      <div class="field">
-        <label for="setAccent">Theme Accent</label>
-        <select id="setAccent">
-          <option value="gold">Gold</option>
-          <option value="emerald">Emerald</option>
-          <option value="cobalt">Cobalt</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="setThreshold">Auto-Settlement Threshold</label>
-        <input id="setThreshold" type="number" min="0" step=".01">
-      </div>
-      <div class="switch-row">
-        <div>
-          <div style="font-size:12px;font-weight:800;color:var(--text)">Audit Mode</div>
-          <div class="small-note">Show additional internal calculation details, timestamps, parameters and data-source state.</div>
-        </div>
-        <label class="switch">
-          <input id="setAudit" type="checkbox">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" data-close="settingsModal">Cancel</button>
-        <button class="btn btn-primary">Save Changes</button>
-      </div>
-    </form>
-    <button class="btn btn-danger" style="width:100%;margin-top:12px" id="resetSettings">Restore Defaults</button>
-  </div>
-</div>
-
-<!-- MARKET MODAL -->
-<div class="modal" id="marketModal">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div class="sheet-head">
-      <h2>Market Configuration</h2>
-      <button class="close" data-close="marketModal">×</button>
-    </div>
-    <div class="notice">
-      Security rule: this frontend does not store GoldAPI, FastForex, or any other provider secret.
-    </div>
-    <div class="field" style="margin-top:16px">
-      <label for="goldEndpoint">Gold Backend Endpoint</label>
-      <input id="goldEndpoint" placeholder="https://your-server.example/api/gold">
-    </div>
-    <div class="field">
-      <label for="fxEndpoint">FX Backend Endpoint</label>
-      <input id="fxEndpoint" placeholder="https://your-server.example/api/usdinr">
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" data-close="marketModal" type="button">Cancel</button>
-      <button class="btn btn-primary" id="saveMarket" type="button">Save Endpoints</button>
-    </div>
-  </div>
-</div>
-
-<!-- YIELD MODAL -->
-<div class="modal" id="yieldModal">
-  <div class="sheet">
-    <div class="handle"></div>
-    <div class="sheet-head">
-      <h2>Progressive Yield Engine</h2>
-      <button class="close" data-close="yieldModal">×</button>
-    </div>
-    <div class="detail-grid">
-      <div class="detail"><span>Cycle</span><strong>30 Days</strong></div>
-      <div class="detail"><span>Indicative Range</span><strong class="positive">8% – 12%</strong></div>
-      <div class="detail"><span>Current Day</span><strong id="yieldDay">—</strong></div>
-      <div class="detail"><span>Calculation</span><strong>Internal</strong></div>
-    </div>
-    <div class="notice" style="margin-top:14px">
-      The engine calculates a progressive MTD position through the current calendar month.
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<!-- External JavaScript link -->
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

@@ -29,27 +29,29 @@
             background: linear-gradient(145deg, #111816 0%, #0d1311 100%);
             border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: 1.25rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
         }
-        /* Uniform & Clean Tier Card Shading */
-        .tier-gold {
-            background: linear-gradient(145deg, #1f1911 0%, #111816 100%) !important;
-            border: 1px solid rgba(198, 165, 106, 0.4) !important;
-            box-shadow: 0 8px 32px rgba(198, 165, 106, 0.08) !important;
+        /* Top Corner Glow / Motion Shading Effects for Cards */
+        .tier-gold-card {
+            background: radial-gradient(circle at top left, rgba(198, 165, 106, 0.18), #111816 60%) !important;
+            border: 1px solid rgba(198, 165, 106, 0.45) !important;
+            box-shadow: 0 12px 35px rgba(198, 165, 106, 0.12), inset 0 1px 0 rgba(198, 165, 106, 0.3) !important;
         }
-        .tier-silver {
-            background: linear-gradient(145deg, #16191c 0%, #111816 100%) !important;
+        .tier-silver-card {
+            background: radial-gradient(circle at top left, rgba(156, 163, 175, 0.15), #111816 60%) !important;
             border: 1px solid rgba(156, 163, 175, 0.35) !important;
-            box-shadow: 0 8px 32px rgba(156, 163, 175, 0.06) !important;
+            box-shadow: 0 12px 35px rgba(156, 163, 175, 0.08), inset 0 1px 0 rgba(156, 163, 175, 0.25) !important;
         }
-        .tier-bronze {
-            background: linear-gradient(145deg, #1d1511 0%, #111816 100%) !important;
-            border: 1px solid rgba(180, 115, 75, 0.35) !important;
-            box-shadow: 0 8px 32px rgba(180, 115, 75, 0.06) !important;
+        .tier-bronze-card {
+            background: radial-gradient(circle at top left, rgba(180, 115, 75, 0.18), #111816 60%) !important;
+            border: 1px solid rgba(180, 115, 75, 0.4) !important;
+            box-shadow: 0 12px 35px rgba(180, 115, 75, 0.1), inset 0 1px 0 rgba(180, 115, 75, 0.3) !important;
         }
-        .tier-normal {
-            background: linear-gradient(145deg, #131716 0%, #0d1311 100%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        .tier-normal-card {
+            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.04), #111816 60%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.07) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
         }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
@@ -80,7 +82,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:07</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:10</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -209,7 +211,7 @@
             </div>
 
             <div class="space-y-3.5 pt-1" id="investors-list-container">
-                <!-- Dynamically populated uniform-icon tiered cards -->
+                <!-- Dynamically populated motion-shaded uniform cards -->
             </div>
         </section>
 
@@ -512,20 +514,18 @@
             } else {
                 listContainer.innerHTML = filteredInvestors.map((inv) => {
                     const rank = investors.findIndex(i => i.id === inv.id) + 1;
-                    let cardClass = "card-box tier-normal";
                     
-                    // Uniform icon box for all ranks, with subtle respective shading
-                    let rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>`;
+                    // Uniform icon box for all ranks
+                    const rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>`;
                     
+                    // Card background motion shading based on rank
+                    let cardClass = "card-box tier-normal-card";
                     if (rank === 1) {
-                        cardClass = "card-box tier-gold";
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-amber-500/50 flex items-center justify-center text-amber-400 font-extrabold text-sm shadow-inner">${rank}</div>`;
+                        cardClass = "card-box tier-gold-card";
                     } else if (rank === 2) {
-                        cardClass = "card-box tier-silver";
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-slate-400/50 flex items-center justify-center text-slate-300 font-extrabold text-sm shadow-inner">${rank}</div>`;
+                        cardClass = "card-box tier-silver-card";
                     } else if (rank === 3) {
-                        cardClass = "card-box tier-bronze";
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-amber-700/50 flex items-center justify-center text-amber-600 font-extrabold text-sm shadow-inner">${rank}</div>`;
+                        cardClass = "card-box tier-bronze-card";
                     }
 
                     return `

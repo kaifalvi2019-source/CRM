@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aureus Capital — Institutional Wealth Management & Algo Desk</title>
+    <title>Aureus Capital — Executive Summary</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -13,27 +13,10 @@
                     colors: {
                         midnight: '#080B0A',
                         graphite: '#111816',
-                        emeraldEmerald: '#00B982',
                         goldAccent: '#C6A56A',
-                        softRed: '#FF5C64',
-                        mutedSlate: '#374151',
-                        greyGreen: '#8D9A93',
+                        emeraldLive: '#00B982',
+                        softGrey: '#8D9A93',
                         softWhite: '#F3F4F6'
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'glow': 'glow 2s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        glow: {
-                            '0%': { boxShadow: '0 0 5px rgba(0, 185, 130, 0.2)' },
-                            '100%': { boxShadow: '0 0 20px rgba(0, 185, 130, 0.4)' },
-                        }
                     }
                 }
             }
@@ -42,280 +25,280 @@
     <style>
         body { background-color: #080B0A; color: #F3F4F6; font-family: ui-sans-serif, system-ui, sans-serif; }
         .tabular-nums { font-variant-numeric: tabular-nums; }
-        .glass-card {
-            background: linear-gradient(135deg, rgba(17, 24, 22, 0.8) 0%, rgba(8, 11, 10, 0.9) 100%);
-            backdrop-filter: blur(12px);
+        .card-box {
+            background-color: #111816;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-card:hover {
-            border-color: rgba(0, 185, 130, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(0, 185, 130, 0.15);
+            border-radius: 1rem;
         }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
     </style>
 </head>
-<body class="min-h-screen pb-28 selection:bg-emerald-500 selection:text-midnight">
+<body class="min-h-screen pb-28 selection:bg-amber-500 selection:text-midnight">
 
-    <!-- TOP HEADER WITH GLOW -->
-    <header class="sticky top-0 z-40 bg-midnight/80 backdrop-blur-md border-b border-graphite px-4 py-3.5 flex items-center justify-between shadow-lg">
+    <!-- TOP HEADER -->
+    <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur border-b border-gray-900 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-emerald-400 flex items-center justify-center font-extrabold text-midnight text-lg shadow-lg animate-glow">A</div>
+            <div class="w-8 h-8 rounded-lg bg-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-bold shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
             <div>
-                <h1 class="text-xs font-black tracking-wider text-softWhite uppercase">Aureus Capital</h1>
-                <p class="text-[9px] text-emerald-400 font-semibold tracking-widest uppercase">PROMOTER: KAIF ALVI</p>
+                <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Home</p>
+                <h1 class="text-sm font-bold text-softWhite tracking-wide">Executive Summary</h1>
             </div>
         </div>
-        <div class="flex items-center space-x-3">
-            <span class="hidden sm:inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>GoldAPI Live
+        <div class="flex items-center space-x-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800/50">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> INTERNAL
             </span>
-            <button onclick="openSettings()" class="p-2.5 rounded-xl glass-card text-greyGreen hover:text-softWhite transition active:scale-95" title="Settings">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <button onclick="openSettings()" class="p-2 rounded-lg card-box text-softGrey hover:text-softWhite transition" title="Settings">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
         </div>
     </header>
 
-    <!-- MAIN APP CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 py-6 animate-fade-in">
-        
+    <!-- DATE & MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-4 space-y-4">
+        <p class="text-[11px] text-softGrey font-semibold tracking-wider">SAT 10 OCT · 18:27</p>
+
         <!-- TAB 1: HOME DASHBOARD -->
-        <section id="tab-home" class="space-y-5">
+        <section id="tab-home" class="space-y-4">
             
-            <!-- Promoter Info Card with Gradient Border -->
-            <div class="glass-card p-4 rounded-2xl flex items-center justify-between relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-emerald-500 to-goldAccent"></div>
-                <div class="pl-2">
-                    <p class="text-[10px] text-greyGreen font-semibold tracking-wider uppercase">Managing Director & Lead Promoter</p>
-                    <h3 class="text-sm font-bold text-softWhite mt-0.5">Kaif Alvi</h3>
+            <!-- Lead Portfolio Manager Card -->
+            <div class="card-box p-5 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Lead Portfolio Manager</p>
+                        <h2 class="text-xl font-bold text-softWhite mt-0.5">Kaif Alvi</h2>
+                        <p class="text-xs text-softGrey mt-0.5">Private Pool · Internal Access</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-lg text-xs font-bold bg-midnight text-goldAccent border border-goldAccent/30 tracking-widest">LEAD</span>
                 </div>
-                <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Verified Desk</span>
+
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                    <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
+                        <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Promoter Holding</p>
+                        <h3 class="text-lg font-bold text-goldAccent mt-1 tabular-nums">₹50,000</h3>
+                    </div>
+                    <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
+                        <div class="flex justify-between items-center">
+                            <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Current MTD</p>
+                            <span class="flex items-center text-[10px] text-emerald-400 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span> LIVE</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-softWhite mt-1 tabular-nums">9.08%</h3>
+                    </div>
+                </div>
             </div>
 
-            <!-- Core Financial & Investment Metrics Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                
-                <!-- Total Capital / Investment -->
-                <div class="glass-card p-5 rounded-2xl relative group">
-                    <div class="flex justify-between items-start">
-                        <p class="text-xs text-greyGreen font-medium">Total Capital & Investment (AUM)</p>
-                        <span class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-xs font-bold">AUM</span>
-                    </div>
-                    <h3 class="text-3xl font-extrabold text-softWhite mt-3 tabular-nums tracking-tight">$48,500,000</h3>
-                    <p class="text-xs text-greyGreen mt-1">₹403.13 Cr equivalent</p>
+            <!-- Portfolio Overview Card -->
+            <div class="card-box p-5 space-y-3">
+                <div class="flex justify-between items-center">
+                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Portfolio Overview</p>
+                    <button onclick="switchTab('portfolio')" class="text-xs text-goldAccent font-semibold flex items-center hover:underline">Details ↗</button>
                 </div>
-
-                <!-- Total Investors -->
-                <div class="glass-card p-5 rounded-2xl relative group">
-                    <div class="flex justify-between items-start">
-                        <p class="text-xs text-greyGreen font-medium">Total Investors</p>
-                        <span class="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 text-xs font-bold">CRM</span>
-                    </div>
-                    <h3 class="text-3xl font-extrabold text-softWhite mt-3 tabular-nums tracking-tight">18 Active</h3>
-                    <p class="text-xs text-emerald-400 mt-1 font-medium">Out of 22 institutional mandates</p>
+                <div>
+                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Total Pool Capital</p>
+                    <h3 class="text-2xl font-bold text-goldAccent mt-0.5 tabular-nums">₹50,000</h3>
+                    <p class="text-[11px] text-softGrey mt-0.5">≈ $600.60 indicative</p>
                 </div>
-
-                <!-- Current Return % with Interactive Month Selector -->
-                <div class="glass-card p-5 rounded-2xl relative group sm:col-span-2 lg:col-span-1">
-                    <div class="flex justify-between items-center mb-1">
-                        <p class="text-xs text-greyGreen font-medium">Current Return Running</p>
-                        <select id="cycle-month" onchange="updateReturnAlgorithm()" class="bg-midnight/90 border border-gray-800 text-[11px] text-emerald-400 font-bold rounded-lg px-2.5 py-1 focus:outline-none focus:border-emerald-500 transition">
-                            <option value="1">Month 1 (30th)</option>
-                            <option value="2">Month 2 (30th)</option>
-                            <option value="3">Month 3 (30th)</option>
-                            <option value="4" selected>Month 4 (30th — Final)</option>
-                        </select>
+                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-900 text-xs">
+                    <div>
+                        <p class="text-[9px] text-softGrey uppercase">Active Investors</p>
+                        <p class="font-bold text-softWhite mt-0.5 tabular-nums">0</p>
                     </div>
-                    <h3 class="text-3xl font-extrabold text-emerald-400 mt-3 tabular-nums tracking-tight" id="display-return-pct">+48.50%</h3>
-                    <p class="text-xs text-greyGreen mt-1" id="display-cycle-status">Consistent Positive Alpha Strategy (Hedged)</p>
-                </div>
-
-                <!-- Total Dollars Generated -->
-                <div class="glass-card p-5 rounded-2xl relative group">
-                    <div class="flex justify-between items-start">
-                        <p class="text-xs text-greyGreen font-medium">Total Dollars Generated</p>
-                        <span class="p-1.5 rounded-lg bg-goldAccent/10 text-goldAccent text-xs font-bold">USD</span>
+                    <div>
+                        <p class="text-[9px] text-softGrey uppercase">Active Capital</p>
+                        <p class="font-bold text-softWhite mt-0.5 tabular-nums">₹0</p>
                     </div>
-                    <h3 class="text-3xl font-extrabold text-goldAccent mt-3 tabular-nums tracking-tight" id="display-dollars-gen">$23,522,500</h3>
-                    <p class="text-xs text-greyGreen mt-1">Net earnings locked as of 30th settlement</p>
-                </div>
-
-                <!-- Real Market Reference Feed (GoldAPI Integration) -->
-                <div class="glass-card p-5 rounded-2xl relative group lg:col-span-2 flex flex-col justify-between">
-                    <div class="flex justify-between items-center mb-3">
-                        <p class="text-xs text-greyGreen font-medium">Live Precious Metals Feed (GoldAPI)</p>
-                        <span id="api-status" class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full font-semibold animate-pulse">Syncing...</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-800/80 flex items-center justify-between">
-                            <div>
-                                <span class="text-greyGreen block text-[10px] uppercase font-semibold">Gold Spot (10g)</span>
-                                <span id="gold-price-display" class="font-extrabold text-goldAccent text-sm tabular-nums mt-0.5 block">Loading...</span>
-                            </div>
-                            <div class="w-8 h-8 rounded-lg bg-goldAccent/10 flex items-center justify-center text-goldAccent font-bold">Au</div>
-                        </div>
-                        <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-800/80 flex items-center justify-between">
-                            <div>
-                                <span class="text-greyGreen block text-[10px] uppercase font-semibold">Silver Spot (1kg)</span>
-                                <span id="silver-price-display" class="font-extrabold text-softWhite text-sm tabular-nums mt-0.5 block">Loading...</span>
-                            </div>
-                            <div class="w-8 h-8 rounded-lg bg-gray-700/25 flex items-center justify-center text-softWhite font-bold">Ag</div>
-                        </div>
+                    <div>
+                        <p class="text-[9px] text-softGrey uppercase">Calc. Profit</p>
+                        <p class="font-bold text-softWhite mt-0.5 tabular-nums">₹0</p>
                     </div>
                 </div>
-
             </div>
 
+            <!-- 30-Day Performance Card -->
+            <div class="card-box p-5 space-y-3">
+                <div class="flex justify-between items-center">
+                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">30-Day Performance</p>
+                    <p class="text-[11px] text-softGrey font-medium tabular-nums">DAY <span class="text-softWhite font-bold">10/30</span></p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-softWhite">Indicative Target Range 8%–12%</h4>
+                </div>
+                <div class="space-y-1.5 pt-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-xl font-bold text-softWhite tabular-nums">9.08%</span>
+                    </div>
+                    <div class="w-full bg-midnight rounded-full h-2 overflow-hidden border border-gray-900">
+                        <div class="bg-goldAccent h-2 rounded-full" style="width: 33%"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-softGrey pt-1">
+                        <span>Target this cycle · 11.24%</span>
+                        <span>20 days remaining</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Market Reference Prices -->
+            <div class="card-box p-5 space-y-3">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Live Market</p>
+                        <h3 class="text-sm font-bold text-softWhite">Reference Prices</h3>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-midnight text-softGrey border border-gray-800 flex items-center">
+                            <svg class="w-3 h-3 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1-4.5a5 5 0 017.072 0l-2.829 2.829"/></svg> OFFLINE
+                        </span>
+                        <button class="p-1.5 rounded-lg bg-midnight text-softGrey hover:text-softWhite border border-gray-800"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
+                        <p class="text-[10px] text-softGrey uppercase font-medium">XAU / USD</p>
+                        <p class="text-lg font-bold text-softWhite mt-1">—</p>
+                    </div>
+                    <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
+                        <p class="text-[10px] text-softGrey uppercase font-medium">USD / INR</p>
+                        <p class="text-lg font-bold text-softWhite mt-1">—</p>
+                    </div>
+                </div>
+                <p class="text-[10px] text-softGrey leading-relaxed pt-1">Live market data temporarily unavailable. Configure a provider in Settings to enable live reference prices.</p>
+            </div>
+
+            <!-- Investors Section -->
+            <div class="card-box p-5 space-y-3">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Investors</p>
+                        <h3 class="text-sm font-bold text-softWhite">0 total · 0 active</h3>
+                    </div>
+                    <button onclick="switchTab('investors')" class="text-xs text-goldAccent font-semibold flex items-center hover:underline">Open ↗</button>
+                </div>
+                <div class="bg-midnight/70 p-6 rounded-xl border border-gray-900 text-center space-y-3">
+                    <p class="text-xs text-softWhite font-medium">No investors yet</p>
+                    <p class="text-[11px] text-softGrey max-w-xs mx-auto">Add your first investor to begin tracking portfolio activity.</p>
+                    <button onclick="switchTab('investors')" class="px-4 py-2 rounded-xl bg-midnight text-goldAccent border border-goldAccent/40 text-xs font-bold hover:bg-goldAccent/10 transition flex items-center mx-auto">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Add Investor
+                    </button>
+                </div>
+            </div>
+
+            <!-- Action Shortcuts (Generate Statement & Settlement) -->
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-goldAccent/40 transition space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-goldAccent/10 flex items-center justify-center text-goldAccent">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-softWhite">Generate Statement</h4>
+                        <p class="text-[10px] text-softGrey mt-0.5">Portfolio PDF export</p>
+                    </div>
+                </div>
+                <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-emerald-500/40 transition space-y-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-softWhite">Settlement</h4>
+                        <p class="text-[10px] text-softGrey mt-0.5">Payout calculator</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <!-- TAB 2: INVESTORS -->
-        <section id="tab-investors" class="space-y-4 hidden animate-fade-in">
-            <h2 class="text-base font-bold text-softWhite">Investor CRM & Mandates</h2>
-            <p class="text-xs text-greyGreen">Manage capital allocations and institutional partners.</p>
+        <!-- TAB 2: PORTFOLIO -->
+        <section id="tab-portfolio" class="space-y-4 hidden">
+            <h2 class="text-base font-bold text-softWhite">Portfolio Management</h2>
+            <p class="text-xs text-softGrey">Cycle return information and asset allocation details.</p>
         </section>
 
-        <!-- TAB 3: STATEMENTS -->
-        <section id="tab-statements" class="space-y-4 hidden animate-fade-in">
-            <h2 class="text-base font-bold text-softWhite">Statements & Settlement Engine</h2>
-            <p class="text-xs text-greyGreen">13-factor settlement and payout ledgers.</p>
+        <!-- TAB 3: INVESTORS -->
+        <section id="tab-investors" class="space-y-4 hidden">
+            <h2 class="text-base font-bold text-softWhite">Investors CRM</h2>
+            <p class="text-xs text-softGrey">Manage institutional capital allocations and mandates.</p>
         </section>
 
-        <!-- TAB 4: ALGO DESK -->
-        <section id="tab-algo" class="space-y-4 hidden animate-fade-in">
-            <h2 class="text-base font-bold text-softWhite">Algo Desk Trading Terminal</h2>
-            <p class="text-xs text-greyGreen">Independent algorithmic execution domain.</p>
+        <!-- TAB 4: SETTLEMENT -->
+        <section id="tab-settlement" class="space-y-4 hidden">
+            <h2 class="text-base font-bold text-softWhite">Settlement & Statements</h2>
+            <p class="text-xs text-softGrey">Compute 13-factor settlement ledgers and exports.</p>
+        </section>
+
+        <!-- TAB 5: MORE / SETTINGS -->
+        <section id="tab-more" class="space-y-4 hidden">
+            <h2 class="text-base font-bold text-softWhite">More & Settings</h2>
+            <p class="text-xs text-softGrey">API configurations, developer tools, and risk controls.</p>
         </section>
 
     </main>
 
-    <!-- FIXED 4-TAB BOTTOM NAVIGATION WITH GLASSMORPHISM -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-midnight/90 backdrop-blur-xl border-t border-gray-800/80 py-2.5 px-4 z-40 shadow-2xl">
-        <div class="max-w-md mx-auto grid grid-cols-4 gap-1">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-emerald-400 bg-emerald-500/10 transition-all duration-300">
+    <!-- FIXED 5-TAB BOTTOM NAVIGATION -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur-xl border-t border-gray-900 py-2.5 px-3 z-40">
+        <div class="max-w-md mx-auto grid grid-cols-5 gap-1 text-center">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center justify-center py-1 rounded-xl text-goldAccent transition">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                <span class="text-[10px] font-bold">Home</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider">HOME</span>
             </button>
-            <button onclick="switchTab('investors')" id="nav-investors" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-greyGreen hover:text-softWhite transition-all duration-300">
+            <button onclick="switchTab('portfolio')" id="nav-portfolio" class="flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">PORTFOLIO</span>
+            </button>
+            <button onclick="switchTab('investors')" id="nav-investors" class="flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span class="text-[10px] font-semibold">Investors</span>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">INVESTORS</span>
             </button>
-            <button onclick="switchTab('statements')" id="nav-statements" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-greyGreen hover:text-softWhite transition-all duration-300">
-                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                <span class="text-[10px] font-semibold">Statements</span>
+            <button onclick="switchTab('settlement')" id="nav-settlement" class="flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">SETTLEMENT</span>
             </button>
-            <button onclick="switchTab('algo')" id="nav-algo" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-greyGreen hover:text-softWhite transition-all duration-300">
-                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                <span class="text-[10px] font-semibold">Algo Desk</span>
+            <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">MORE</span>
             </button>
         </div>
     </nav>
 
-    <!-- SETTINGS MODAL -->
+    <!-- SETTINGS / MORE MODAL -->
     <div id="settings-modal" class="fixed inset-0 bg-midnight/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-card rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl animate-fade-in border border-gray-800">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-                <h3 class="text-sm font-bold text-softWhite">Settings & API Credentials</h3>
-                <button onclick="closeSettings()" class="text-greyGreen hover:text-softWhite text-sm font-bold p-1">✕</button>
+        <div class="card-box rounded-2xl max-w-md w-full p-6 space-y-4 border border-gray-800 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-gray-900 pb-3">
+                <h3 class="text-sm font-bold text-softWhite">Settings & Developer Tools</h3>
+                <button onclick="closeSettings()" class="text-softGrey hover:text-softWhite text-sm font-bold">✕</button>
             </div>
             <div class="space-y-3 text-xs">
-                <div class="p-3.5 bg-midnight/80 rounded-xl border border-gray-800">
-                    <p class="font-semibold text-softWhite mb-1">Promoter Account</p>
-                    <p class="text-greyGreen text-[11px]">Kaif Alvi (Master Administrator)</p>
-                </div>
-                <div class="p-3.5 bg-midnight/80 rounded-xl border border-gray-800">
-                    <p class="font-semibold text-softWhite mb-1">GoldAPI Integration</p>
-                    <p class="text-emerald-400 text-[11px]">Key: goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io (Active)</p>
+                <div class="p-3 bg-midnight rounded-xl border border-gray-900">
+                    <p class="font-semibold text-softWhite mb-1">Lead Portfolio Manager</p>
+                    <p class="text-softGrey">Kaif Alvi (Internal Access)</p>
                 </div>
             </div>
             <div class="flex justify-end pt-2">
-                <button onclick="closeSettings()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-midnight text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-500/20">Close Settings</button>
+                <button onclick="closeSettings()" class="px-4 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl transition">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT & LIVE GOLDAPI INTEGRATION -->
+    <!-- SCRIPT -->
     <script>
-        const totalCapital = 48500000; // $48.5M Total Capital
-
-        // 4-Month Progressive Return Algorithm
-        const monthlyReturns = {
-            1: { pct: 10.5, label: "Month 1 (Settled 30th) — Bullish Momentum Capture" },
-            2: { pct: 23.0, label: "Month 2 (Settled 30th) — Market-Neutral Arbitrage Alpha" },
-            3: { pct: 35.5, label: "Month 3 (Settled 30th) — Macro Trend Hedging Growth" },
-            4: { pct: 48.5, label: "Month 4 (Settled 30th) — Final 4-Month Cycle Target Achieved" }
-        };
-
         function switchTab(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
-            ['home', 'investors', 'statements', 'algo'].forEach(t => {
+            ['home', 'portfolio', 'investors', 'settlement', 'more'].forEach(t => {
                 const btn = document.getElementById(`nav-${t}`);
                 if(t === tabId) {
-                    btn.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-emerald-400 bg-emerald-500/10 transition-all duration-300";
+                    btn.className = "flex flex-col items-center justify-center py-1 rounded-xl text-goldAccent transition";
                 } else {
-                    btn.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-greyGreen hover:text-softWhite transition-all duration-300";
+                    btn.className = "flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition";
                 }
             });
             window.scrollTo(0,0);
         }
 
-        function updateReturnAlgorithm() {
-            const month = document.getElementById('cycle-month').value;
-            const data = monthlyReturns[month];
-            const generatedDollars = totalCapital * (data.pct / 100);
-
-            document.getElementById('display-return-pct').innerText = `+${data.pct.toFixed(2)}%`;
-            document.getElementById('display-cycle-status').innerText = data.label;
-            document.getElementById('display-dollars-gen').innerText = `$${generatedDollars.toLocaleString('en-US', {maximumFractionDigits:0})}`;
-        }
-
-        // Fetch Live Gold & Silver Prices via GoldAPI
-        async function fetchLivePreciousMetals() {
-            const apiKey = "goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io";
-            
-            try {
-                const goldRes = await fetch("https://www.goldapi.io/api/XAU/USD", {
-                    headers: { "x-access-token": apiKey, "Content-Type": "application/json" }
-                });
-                const goldData = await goldRes.json();
-
-                const silverRes = await fetch("https://www.goldapi.io/api/XAG/USD", {
-                    headers: { "x-access-token": apiKey, "Content-Type": "application/json" }
-                });
-                const silverData = await silverRes.json();
-
-                if(goldData && goldData.price && silverData && silverData.price) {
-                    const gold10gUSD = (goldData.price / 31.1035) * 10;
-                    const silver1kgUSD = (silverData.price / 31.1035) * 1000;
-                    
-                    const usdInr = 83.12;
-                    const gold10gINR = gold10gUSD * usdInr;
-                    const silver1kgINR = silver1kgUSD * usdInr;
-
-                    document.getElementById('gold-price-display').innerText = `₹${gold10gINR.toLocaleString('en-IN', {maximumFractionDigits:0})} ($${gold10gUSD.toFixed(1)})`;
-                    document.getElementById('silver-price-display').innerText = `₹${silver1kgINR.toLocaleString('en-IN', {maximumFractionDigits:0})} ($${silver1kgUSD.toFixed(1)})`;
-                    document.getElementById('api-status').innerText = "Live Synced";
-                } else {
-                    throw new Error("Invalid response");
-                }
-            } catch (err) {
-                document.getElementById('gold-price-display').innerText = `₹78,450 ($943.8)`;
-                document.getElementById('silver-price-display').innerText = `₹92,100 ($1,108)`;
-                document.getElementById('api-status').innerText = "Market Feed Active";
-            }
-        }
-
         function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
         function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
-
-        window.onload = function() {
-            updateReturnAlgorithm();
-            fetchLivePreciousMetals();
-        };
     </script>
 </body>
 </html>

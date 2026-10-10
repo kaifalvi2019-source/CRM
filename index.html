@@ -31,6 +31,19 @@
             border-radius: 1.25rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
+        .tier-gold {
+            background: linear-gradient(145deg, #1a1610 0%, #111816 100%) !important;
+            border: 1px solid rgba(198, 165, 106, 0.35) !important;
+            box-shadow: 0 8px 32px rgba(198, 165, 106, 0.08) !important;
+        }
+        .tier-silver {
+            background: linear-gradient(145deg, #16181a 0%, #111816 100%) !important;
+            border: 1px solid rgba(156, 163, 175, 0.3) !important;
+        }
+        .tier-bronze {
+            background: linear-gradient(145deg, #1c1410 0%, #111816 100%) !important;
+            border: 1px solid rgba(180, 115, 75, 0.3) !important;
+        }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
@@ -60,7 +73,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 20:50</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 20:53</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -169,28 +182,26 @@
 
         <!-- TAB 2: INVESTOR PORTFOLIO -->
         <section id="tab-investors" class="space-y-4 hidden">
-            <!-- Top Directory Header with Search & Add Button -->
-            <div class="card-box p-4 space-y-3 bg-gradient-to-r from-graphite to-midnight">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">DIRECTORY</p>
-                        <h2 class="text-base font-bold text-softWhite tracking-tight">Investors</h2>
-                    </div>
-                    <button onclick="openAddInvestorModal()" class="px-4 py-2 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/20 flex items-center">
-                        + Add
-                    </button>
+            <!-- Header with Title & Add Button -->
+            <div class="flex justify-between items-center px-1">
+                <div>
+                    <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">DIRECTORY</p>
+                    <h2 class="text-base font-bold text-softWhite tracking-tight">Investors</h2>
                 </div>
-                
-                <!-- Search Bar -->
-                <div class="relative pt-1">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pt-1 pointer-events-none text-softGrey">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </span>
-                    <input type="text" id="investor-search" oninput="updateDashboard()" placeholder="Search investor..." class="w-full bg-midnight border border-gray-800 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
-                </div>
+                <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/20 flex items-center">
+                    + Add
+                </button>
             </div>
 
-            <div class="space-y-3.5" id="investors-list-container">
+            <!-- Search Bar (Search by Name or Number/Rank e.g. "Zaif" or "1") -->
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </span>
+                <input type="text" id="investor-search" oninput="updateDashboard()" placeholder="Search by name or number (e.g. Zaif, 1)..." class="w-full card-box border border-gray-800 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
+            </div>
+
+            <div class="space-y-3.5 pt-1" id="investors-list-container">
                 <!-- Dynamically populated tiered cards -->
             </div>
         </section>
@@ -292,7 +303,10 @@
     <!-- APPLICATION LOGIC -->
     <script>
         let investors = [
-            { id: 101, name: "zaif alvi", capital: 50000, active: true }
+            { id: 101, name: "Zaif", capital: 50000, active: true },
+            { id: 102, name: "Rohan", capital: 30000, active: true },
+            { id: 103, name: "Raj", capital: 25000, active: true },
+            { id: 104, name: "Dapak", capital: 5000, active: true }
         ];
         const promoterHolding = 50000;
 
@@ -454,10 +468,17 @@
         }
 
         function updateDashboard() {
-            const searchQuery = document.getElementById('investor-search').value.toLowerCase();
+            const searchQuery = document.getElementById('investor-search').value.toLowerCase().trim();
             investors.sort((a, b) => b.capital - a.capital);
 
-            let filteredInvestors = investors.filter(inv => inv.name.toLowerCase().includes(searchQuery));
+            // Search by Name or Rank Number (e.g. "1", "2")
+            let filteredInvestors = investors.filter((inv, index) => {
+                const rank = index + 1;
+                const nameMatch = inv.name.toLowerCase().includes(searchQuery);
+                const rankMatch = rank.toString() === searchQuery;
+                const capitalMatch = inv.capital.toString().includes(searchQuery);
+                return nameMatch || rankMatch || capitalMatch;
+            });
 
             const totalCount = investors.length;
             const activeCount = investors.filter(i => i.active).length;
@@ -480,22 +501,26 @@
             const listContainer = document.getElementById('investors-list-container');
 
             if(filteredInvestors.length === 0) {
-                listContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No investors found</p><p class="text-[11px] text-softGrey">Try adjusting your search or add a new investor mandate.</p></div>`;
+                listContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No investors found</p><p class="text-[11px] text-softGrey">Try searching by name or rank number.</p></div>`;
             } else {
-                listContainer.innerHTML = filteredInvestors.map((inv, index) => {
+                listContainer.innerHTML = filteredInvestors.map((inv) => {
                     const rank = investors.findIndex(i => i.id === inv.id) + 1;
-                    let rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">#${rank}</div>`;
+                    let cardClass = "card-box";
+                    let rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>`;
                     
                     if (rank === 1) {
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-extrabold text-sm shadow-inner">🥇 1</div>`;
+                        cardClass = "card-box tier-gold";
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-700 border border-yellow-300 flex items-center justify-center text-midnight font-black text-sm shadow-lg" title="Gold Tier #1">🥇 1</div>`;
                     } else if (rank === 2) {
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-600 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">🥈 2</div>`;
+                        cardClass = "card-box tier-silver";
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-300 to-slate-500 border border-slate-200 flex items-center justify-center text-midnight font-black text-sm shadow-lg" title="Silver Tier #2">🥈 2</div>`;
                     } else if (rank === 3) {
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-amber-800 flex items-center justify-center text-amber-500 font-bold text-sm shadow-inner">🥉 3</div>`;
+                        cardClass = "card-box tier-bronze";
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-700 to-yellow-950 border border-amber-600 flex items-center justify-center text-softWhite font-black text-sm shadow-lg" title="Bronze Tier #3">🥉 3</div>`;
                     }
 
                     return `
-                        <div onclick="toggleCardActions(${inv.id})" class="card-box p-4 space-y-3 cursor-pointer transition hover:border-goldAccent/40">
+                        <div onclick="toggleCardActions(${inv.id})" class="${cardClass} p-4 space-y-3 cursor-pointer transition hover:border-goldAccent/40">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center space-x-3">
                                     ${rankBadge}

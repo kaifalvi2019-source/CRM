@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:49</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:56</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -106,30 +106,19 @@
                     </div>
                     <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
                         <div class="flex justify-between items-center">
-                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Active Strategy</p>
-                            <span class="flex items-center text-[9px] text-emeraldLive font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> SECURE</span>
+                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Live Market</p>
+                            <span class="flex items-center text-[9px] text-emeraldLive font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> <span id="market-status-text">ONLINE</span></span>
                         </div>
-                        <h3 class="text-xs font-bold text-emeraldLive mt-1.5 tracking-wide">Alpha-X Hedged</h3>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Live Market Reference Prices (Placed at Top) -->
-            <div class="card-box p-4 space-y-3">
-                <div class="flex justify-between items-center">
-                    <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">Live Market Reference</p>
-                    <span class="text-[10px] text-emeraldLive font-semibold flex items-center">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> <span id="market-status-text">ONLINE</span>
-                    </span>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-midnight/60 p-3 rounded-xl border border-gray-900/60">
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider">XAU / USD (Gold)</p>
-                        <p class="text-sm font-bold text-goldAccent mt-0.5 tabular-nums" id="live-gold-price">$4,194.50</p>
-                    </div>
-                    <div class="bg-midnight/60 p-3 rounded-xl border border-gray-900/60">
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider">USD / INR</p>
-                        <p class="text-sm font-bold text-softWhite mt-0.5 tabular-nums" id="live-usdinr-price">₹96.77</p>
+                        <div class="flex justify-between items-center mt-1">
+                            <div>
+                                <p class="text-[8px] text-softGrey">GOLD (XAU)</p>
+                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-gold-price">$4,194.50</h3>
+                            </div>
+                            <div>
+                                <p class="text-[8px] text-softGrey">USD / INR</p>
+                                <h3 class="text-xs font-bold text-softWhite tabular-nums" id="live-usdinr-price">₹96.77</h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -542,7 +531,6 @@
             const activeCount = investors.filter(i => i.active).length;
             const investorsCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
             
-            // Total Pool Capital now includes Promoter Holding + Investors Capital
             const totalPoolCap = promoterHolding + investorsCap;
             
             const now = new Date();
@@ -558,7 +546,6 @@
             document.getElementById('home-active-count').innerText = activeCount;
             document.getElementById('home-active-capital').innerText = `₹${investorsCap.toLocaleString('en-IN')}`;
             
-            // Professional Profit Display: USD in green on top, INR in grey below
             document.getElementById('home-calc-profit-usd').innerText = `$${usdProfit.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
             document.getElementById('home-calc-profit-inr').innerText = `₹${calcProfit.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
 

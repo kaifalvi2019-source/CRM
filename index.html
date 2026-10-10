@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:30</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:40</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -183,7 +183,7 @@
                     </div>
                     <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
                         <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">USD / INR</p>
-                        <p class="text-base font-bold text-softWhite mt-1 tabular-nums" id="live-usdinr-price">₹83.12</p>
+                        <p class="text-base font-bold text-softWhite mt-1 tabular-nums" id="live-usdinr-price">₹96.77</p>
                     </div>
                 </div>
             </div>
@@ -261,7 +261,7 @@
         </div>
     </nav>
 
-    <!-- SETTINGS MODAL (GEMINI API KEY INTEGRATION) -->
+    <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="fixed inset-0 bg-midnight/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="card-box rounded-2xl max-w-md w-full p-6 space-y-4 border border-gray-800 shadow-2xl">
             <div class="flex items-center justify-between border-b border-gray-900 pb-3">
@@ -327,6 +327,7 @@
         let promoterHolding = 50000;
         let leadManagerName = "Kaif Alvi";
         let activeGeminiApiKey = "";
+        let currentUsdInrRate = 96.77; // Updated accurate exchange rate
 
         function switchTab(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
@@ -408,7 +409,7 @@
             const returnPct = 8.0 + (currentDay * 0.1027);
             const profit = inv.capital * (returnPct / 100);
             const totalPayout = inv.capital + profit;
-            const usdVal = (totalPayout / 83.12).toFixed(2);
+            const usdVal = (totalPayout / currentUsdInrRate).toFixed(2);
 
             const msg = `╔══════════════════════╗\n✨ 𝐏𝐀𝐘𝐎𝐔𝐓 𝐂𝐎𝐍𝐅𝐈𝐑𝐌𝐀𝐓𝐈𝐎𝐍 ✨\n╚══════════════════════╝\n\n👤 Investor\n　　└─ ${inv.name.toUpperCase()}\n\n🔥 Status\n　　└─ 🟢 Active (Hedged)\n\n💵 Payout (USD)\n　　└─ 💰 $${usdVal}\n\n🇮🇳 Return (INR)\n　　└─ 💎 ₹${totalPayout.toLocaleString('en-IN', {maximumFractionDigits:0})}\n\n━━━━━━━━━━━━━━━━━━━━\n🏆 AUREUS CAPITAL 🏆\n━━━━━━━━━━━━━━━━━━━━`;
 
@@ -491,8 +492,9 @@
         async function fetchLiveMarketPrices() {
             if (!activeGeminiApiKey) {
                 document.getElementById('live-gold-price').innerText = "$4,194.50";
-                document.getElementById('live-usdinr-price').innerText = "₹83.12";
+                document.getElementById('live-usdinr-price').innerText = `₹${currentUsdInrRate}`;
                 document.getElementById('market-status-text').innerText = "ONLINE (DEFAULT)";
+                updateDashboard();
                 return;
             }
 
@@ -502,7 +504,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         contents: [{
-                            parts: [{ text: "Provide the current live spot price of Gold per troy ounce in USD (XAU/USD) and the USD to INR exchange rate right now. Reply ONLY with a valid JSON object in this exact format: {\"gold\": 4194.50, \"inr\": 83.12}" }]
+                            parts: [{ text: "Provide the current live spot price of Gold per troy ounce in USD (XAU/USD) and the exact live USD to INR exchange rate right now. Reply ONLY with a valid JSON object in this exact format: {\"gold\": 4194.50, \"inr\": 96.77}" }]
                         }]
                     })
                 });
@@ -514,12 +516,18 @@
 
                 if (marketValues && marketValues.gold) {
                     document.getElementById('live-gold-price').innerText = `$${marketValues.gold.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-                    document.getElementById('live-usdinr-price').innerText = `₹${marketValues.inr.toFixed(2)}`;
+                    if(marketValues.inr) {
+                        currentUsdInrRate = marketValues.inr;
+                    }
+                    document.getElementById('live-usdinr-price').innerText = `₹${currentUsdInrRate.toFixed(2)}`;
                     document.getElementById('market-status-text').innerText = "ONLINE (GEMINI)";
+                    updateDashboard();
                 }
             } catch (e) {
                 console.warn("Gemini Live Fetch Error:", e);
+                document.getElementById('live-usdinr-price').innerText = `₹${currentUsdInrRate}`;
                 document.getElementById('market-status-text').innerText = "ONLINE (FALLBACK)";
+                updateDashboard();
             }
         }
 
@@ -545,8 +553,8 @@
             const currentRateFactor = (8.0 + (currentDay * 0.1027)) / 100;
             
             const calcProfit = totalPoolCap * currentRateFactor; 
-            const usdProfit = calcProfit / 83.12;
-            const usdIndicative = totalPoolCap / 83.12;
+            const usdProfit = calcProfit / currentUsdInrRate;
+            const usdIndicative = totalPoolCap / currentUsdInrRate;
 
             document.getElementById('home-total-capital').innerText = `₹${totalPoolCap.toLocaleString('en-IN')}`;
             document.getElementById('home-usd-indicative').innerText = `≈ $${usdIndicative.toFixed(2)} indicative`;

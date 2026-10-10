@@ -58,7 +58,7 @@
 
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-4 space-y-4">
-        <p class="text-[11px] text-softGrey font-semibold tracking-wider">SAT 10 OCT · 19:00</p>
+        <p class="text-[11px] text-softGrey font-semibold tracking-wider">SAT 10 OCT · 19:10</p>
 
         <!-- TAB 1: HOME DASHBOARD -->
         <section id="tab-home" class="space-y-4">
@@ -159,36 +159,6 @@
                         <p class="text-[10px] text-softGrey uppercase font-medium">USD / INR</p>
                         <p class="text-lg font-bold text-softWhite mt-1 tabular-nums">₹83.12</p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Investors Section Summary -->
-            <div class="card-box p-5 space-y-3">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Investors</p>
-                        <h3 class="text-sm font-bold text-softWhite" id="summary-inv-count">0 total · 0 active</h3>
-                    </div>
-                    <button onclick="switchTab('investors')" class="text-xs text-goldAccent font-semibold flex items-center hover:underline">Open ↗</button>
-                </div>
-                <div id="home-investor-preview" class="bg-midnight/70 p-6 rounded-xl border border-gray-900 text-center space-y-3">
-                    <p class="text-xs text-softWhite font-medium">No investors yet</p>
-                    <p class="text-[11px] text-softGrey max-w-xs mx-auto">Add your first investor in the Investors tab to begin tracking portfolio activity.</p>
-                    <button onclick="switchTab('investors')" class="px-4 py-2 rounded-xl bg-midnight text-goldAccent border border-goldAccent/40 text-xs font-bold hover:bg-goldAccent/10 transition flex items-center mx-auto">
-                        + Add Investor
-                    </button>
-                </div>
-            </div>
-
-            <!-- Action Shortcuts -->
-            <div class="grid grid-cols-2 gap-3">
-                <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-goldAccent/40 transition space-y-1">
-                    <h4 class="text-xs font-bold text-softWhite">Generate Statement</h4>
-                    <p class="text-[10px] text-softGrey">Portfolio PDF export</p>
-                </div>
-                <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-emeraldLive/40 transition space-y-1">
-                    <h4 class="text-xs font-bold text-softWhite">Settlement</h4>
-                    <p class="text-[10px] text-softGrey">Payout calculator</p>
                 </div>
             </div>
         </section>
@@ -343,29 +313,12 @@
             document.getElementById('home-active-count').innerText = totalCount;
             document.getElementById('home-active-capital').innerText = `₹${totalCap.toLocaleString('en-IN')}`;
             document.getElementById('home-calc-profit').innerText = `₹${calcProfit.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
-            
-            document.getElementById('summary-inv-count').innerText = `${totalCount} total · ${totalCount} active`;
 
-            const previewContainer = document.getElementById('home-investor-preview');
             const listContainer = document.getElementById('investors-list-container');
 
             if(totalCount === 0) {
-                previewContainer.innerHTML = `
-                    <p class="text-xs text-softWhite font-medium">No investors yet</p>
-                    <p class="text-[11px] text-softGrey max-w-xs mx-auto">Add your first investor in the Investors tab to begin tracking portfolio activity.</p>
-                    <button onclick="switchTab('investors')" class="px-4 py-2 rounded-xl bg-midnight text-goldAccent border border-goldAccent/40 text-xs font-bold hover:bg-goldAccent/10 transition flex items-center mx-auto">
-                        + Add Investor
-                    </button>
-                `;
                 listContainer.innerHTML = `<p class="text-xs text-softGrey text-center py-6">No investor records found. Click 'Add Investor' above.</p>`;
             } else {
-                previewContainer.innerHTML = investors.map(inv => `
-                    <div class="flex justify-between items-center py-1.5 border-b border-gray-900 text-xs">
-                        <span class="font-bold text-softWhite">${inv.name}</span>
-                        <span class="text-goldAccent tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span>
-                    </div>
-                `).join('');
-
                 listContainer.innerHTML = investors.map(inv => `
                     <div class="card-box p-4 flex justify-between items-center text-xs">
                         <div>

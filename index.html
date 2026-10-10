@@ -60,7 +60,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 20:13</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 20:20</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -179,7 +179,7 @@
                 </button>
             </div>
             <div class="space-y-3.5" id="investors-list-container">
-                <!-- Dynamically populated ranked investor cards -->
+                <!-- Dynamically populated tiered medal cards -->
             </div>
         </section>
 
@@ -442,7 +442,6 @@
         }
 
         function updateDashboard() {
-            // Sort investors by highest capital first for Tier Ranking (1, 2, 3...)
             investors.sort((a, b) => b.capital - a.capital);
 
             const totalCount = investors.length;
@@ -469,14 +468,14 @@
             } else {
                 listContainer.innerHTML = investors.map((inv, index) => {
                     const rank = index + 1;
-                    let tierBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-extrabold text-sm shadow-inner">${rank}</div>`;
+                    let tierBadge = `<div class="px-3 py-1.5 rounded-xl bg-midnight border border-gray-800 text-softWhite font-extrabold text-xs shadow-inner flex items-center space-x-1"><span>🏅</span><span>#${rank}</span></div>`;
                     
                     if (rank === 1) {
-                        tierBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 border border-yellow-300 flex items-center justify-center text-midnight font-black text-sm shadow-lg" title="Gold Tier #1">🥇 1</div>`;
+                        tierBadge = `<div class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 text-midnight font-extrabold text-xs shadow-lg flex items-center space-x-1 border border-yellow-300"><span>🥇</span><span>1</span></div>`;
                     } else if (rank === 2) {
-                        tierBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-300 to-slate-400 border border-slate-200 flex items-center justify-center text-midnight font-black text-sm shadow-lg" title="Silver Tier #2">🥈 2</div>`;
+                        tierBadge = `<div class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-gray-300 to-slate-400 text-midnight font-extrabold text-xs shadow-lg flex items-center space-x-1 border border-slate-200"><span>🥈</span><span>2</span></div>`;
                     } else if (rank === 3) {
-                        tierBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-700 to-yellow-900 border border-amber-600 flex items-center justify-center text-softWhite font-black text-sm shadow-lg" title="Bronze Tier #3">🥉 3</div>`;
+                        tierBadge = `<div class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-700 to-yellow-900 text-softWhite font-extrabold text-xs shadow-lg flex items-center space-x-1 border border-amber-600"><span>🥉</span><span>3</span></div>`;
                     }
 
                     return `
@@ -489,7 +488,7 @@
                                         <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>
                                     </div>
                                 </div>
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emeraldLive border border-emerald-800/40">
+                                <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold flex items-center">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> Active
                                 </span>
                             </div>

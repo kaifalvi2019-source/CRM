@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aureus Capital — Executive Summary</title>
+    <title>Aureus — Executive Summary</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -35,22 +35,20 @@
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
     </style>
 </head>
-<body class="min-h-screen pb-28 selection:bg-amber-500 selection:text-midnight">
+<body class="min-h-screen pb-28 selection:bg-emerald-500 selection:text-midnight">
 
     <!-- TOP HEADER -->
     <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur border-b border-gray-900 px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-bold shadow-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            </div>
+            <div class="w-8 h-8 rounded-lg bg-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-bold shadow-sm">A</div>
             <div>
-                <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Home</p>
+                <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Aureus</p>
                 <h1 class="text-sm font-bold text-softWhite tracking-wide">Executive Summary</h1>
             </div>
         </div>
         <div class="flex items-center space-x-2">
-            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800/50">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> INTERNAL
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-950 text-emeraldLive border border-emerald-800/50">
+                <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> LIVE
             </span>
             <button onclick="openSettings()" class="p-2 rounded-lg card-box text-softGrey hover:text-softWhite transition" title="Settings">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -58,9 +56,9 @@
         </div>
     </header>
 
-    <!-- DATE & MAIN CONTAINER -->
+    <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-4 space-y-4">
-        <p class="text-[11px] text-softGrey font-semibold tracking-wider">SAT 10 OCT · 18:27</p>
+        <p class="text-[11px] text-softGrey font-semibold tracking-wider">SAT 10 OCT · 18:55</p>
 
         <!-- TAB 1: HOME DASHBOARD -->
         <section id="tab-home" class="space-y-4">
@@ -84,9 +82,9 @@
                     <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
                         <div class="flex justify-between items-center">
                             <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Current MTD</p>
-                            <span class="flex items-center text-[10px] text-emerald-400 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span> LIVE</span>
+                            <span class="flex items-center text-[10px] text-emeraldLive font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> HEDGED</span>
                         </div>
-                        <h3 class="text-lg font-bold text-softWhite mt-1 tabular-nums">9.08%</h3>
+                        <h3 class="text-lg font-bold text-emeraldLive mt-1 tabular-nums" id="home-mtd">9.08%</h3>
                     </div>
                 </div>
             </div>
@@ -99,21 +97,21 @@
                 </div>
                 <div>
                     <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Total Pool Capital</p>
-                    <h3 class="text-2xl font-bold text-goldAccent mt-0.5 tabular-nums">₹50,000</h3>
-                    <p class="text-[11px] text-softGrey mt-0.5">≈ $600.60 indicative</p>
+                    <h3 class="text-2xl font-bold text-goldAccent mt-0.5 tabular-nums" id="home-total-capital">₹0</h3>
+                    <p class="text-[11px] text-softGrey mt-0.5" id="home-usd-indicative">≈ $0.00 indicative</p>
                 </div>
                 <div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-900 text-xs">
                     <div>
                         <p class="text-[9px] text-softGrey uppercase">Active Investors</p>
-                        <p class="font-bold text-softWhite mt-0.5 tabular-nums">0</p>
+                        <p class="font-bold text-softWhite mt-0.5 tabular-nums" id="home-active-count">0</p>
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase">Active Capital</p>
-                        <p class="font-bold text-softWhite mt-0.5 tabular-nums">₹0</p>
+                        <p class="font-bold text-softWhite mt-0.5 tabular-nums" id="home-active-capital">₹0</p>
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase">Calc. Profit</p>
-                        <p class="font-bold text-softWhite mt-0.5 tabular-nums">₹0</p>
+                        <p class="font-bold text-emeraldLive mt-0.5 tabular-nums" id="home-calc-profit">₹0</p>
                     </div>
                 </div>
             </div>
@@ -121,7 +119,7 @@
             <!-- 30-Day Performance Card -->
             <div class="card-box p-5 space-y-3">
                 <div class="flex justify-between items-center">
-                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">30-Day Performance</p>
+                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">30-Day Market Performance</p>
                     <p class="text-[11px] text-softGrey font-medium tabular-nums">DAY <span class="text-softWhite font-bold">10/30</span></p>
                 </div>
                 <div>
@@ -129,13 +127,13 @@
                 </div>
                 <div class="space-y-1.5 pt-1">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-xl font-bold text-softWhite tabular-nums">9.08%</span>
+                        <span class="text-xl font-bold text-emeraldLive tabular-nums">9.08%</span>
                     </div>
                     <div class="w-full bg-midnight rounded-full h-2 overflow-hidden border border-gray-900">
-                        <div class="bg-goldAccent h-2 rounded-full" style="width: 33%"></div>
+                        <div class="bg-emeraldLive h-2 rounded-full" style="width: 33%"></div>
                     </div>
                     <div class="flex justify-between text-[10px] text-softGrey pt-1">
-                        <span>Target this cycle · 11.24%</span>
+                        <span>Strategy Alpha · Active</span>
                         <span>20 days remaining</span>
                     </div>
                 </div>
@@ -148,63 +146,49 @@
                         <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Live Market</p>
                         <h3 class="text-sm font-bold text-softWhite">Reference Prices</h3>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-midnight text-softGrey border border-gray-800 flex items-center">
-                            <svg class="w-3 h-3 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1-4.5a5 5 0 017.072 0l-2.829 2.829"/></svg> OFFLINE
-                        </span>
-                        <button class="p-1.5 rounded-lg bg-midnight text-softGrey hover:text-softWhite border border-gray-800"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
-                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-950 text-emeraldLive border border-emerald-800/50 flex items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> ONLINE
+                    </span>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
                         <p class="text-[10px] text-softGrey uppercase font-medium">XAU / USD</p>
-                        <p class="text-lg font-bold text-softWhite mt-1">—</p>
+                        <p class="text-lg font-bold text-goldAccent mt-1 tabular-nums">$2,684.50</p>
                     </div>
                     <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
                         <p class="text-[10px] text-softGrey uppercase font-medium">USD / INR</p>
-                        <p class="text-lg font-bold text-softWhite mt-1">—</p>
+                        <p class="text-lg font-bold text-softWhite mt-1 tabular-nums">₹83.12</p>
                     </div>
                 </div>
-                <p class="text-[10px] text-softGrey leading-relaxed pt-1">Live market data temporarily unavailable. Configure a provider in Settings to enable live reference prices.</p>
             </div>
 
-            <!-- Investors Section -->
+            <!-- Investors Section Summary -->
             <div class="card-box p-5 space-y-3">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Investors</p>
-                        <h3 class="text-sm font-bold text-softWhite">0 total · 0 active</h3>
+                        <h3 class="text-sm font-bold text-softWhite" id="summary-inv-count">0 total · 0 active</h3>
                     </div>
                     <button onclick="switchTab('investors')" class="text-xs text-goldAccent font-semibold flex items-center hover:underline">Open ↗</button>
                 </div>
-                <div class="bg-midnight/70 p-6 rounded-xl border border-gray-900 text-center space-y-3">
+                <div id="home-investor-preview" class="bg-midnight/70 p-6 rounded-xl border border-gray-900 text-center space-y-3">
                     <p class="text-xs text-softWhite font-medium">No investors yet</p>
-                    <p class="text-[11px] text-softGrey max-w-xs mx-auto">Add your first investor to begin tracking portfolio activity.</p>
+                    <p class="text-[11px] text-softGrey max-w-xs mx-auto">Add your first investor in the Investors tab to begin tracking portfolio activity.</p>
                     <button onclick="switchTab('investors')" class="px-4 py-2 rounded-xl bg-midnight text-goldAccent border border-goldAccent/40 text-xs font-bold hover:bg-goldAccent/10 transition flex items-center mx-auto">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Add Investor
+                        + Add Investor
                     </button>
                 </div>
             </div>
 
-            <!-- Action Shortcuts (Generate Statement & Settlement) -->
+            <!-- Action Shortcuts (Clean without clutter icons) -->
             <div class="grid grid-cols-2 gap-3">
-                <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-goldAccent/40 transition space-y-2">
-                    <div class="w-8 h-8 rounded-lg bg-goldAccent/10 flex items-center justify-center text-goldAccent">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-bold text-softWhite">Generate Statement</h4>
-                        <p class="text-[10px] text-softGrey mt-0.5">Portfolio PDF export</p>
-                    </div>
+                <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-goldAccent/40 transition space-y-1">
+                    <h4 class="text-xs font-bold text-softWhite">Generate Statement</h4>
+                    <p class="text-[10px] text-softGrey">Portfolio PDF export</p>
                 </div>
-                <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-emerald-500/40 transition space-y-2">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-bold text-softWhite">Settlement</h4>
-                        <p class="text-[10px] text-softGrey mt-0.5">Payout calculator</p>
-                    </div>
+                <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-emeraldLive/40 transition space-y-1">
+                    <h4 class="text-xs font-bold text-softWhite">Settlement</h4>
+                    <p class="text-[10px] text-softGrey">Payout calculator</p>
                 </div>
             </div>
         </section>
@@ -213,12 +197,24 @@
         <section id="tab-portfolio" class="space-y-4 hidden">
             <h2 class="text-base font-bold text-softWhite">Portfolio Management</h2>
             <p class="text-xs text-softGrey">Cycle return information and asset allocation details.</p>
+            <div class="card-box p-5 space-y-3">
+                <p class="text-xs text-softGrey">Total Pooled Capital across active portfolios:</p>
+                <h3 class="text-2xl font-bold text-goldAccent tabular-nums" id="port-total-cap">₹0</h3>
+            </div>
         </section>
 
         <!-- TAB 3: INVESTORS -->
         <section id="tab-investors" class="space-y-4 hidden">
-            <h2 class="text-base font-bold text-softWhite">Investors CRM</h2>
-            <p class="text-xs text-softGrey">Manage institutional capital allocations and mandates.</p>
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-base font-bold text-softWhite">Investors CRM</h2>
+                    <p class="text-xs text-softGrey">Add and manage institutional capital allocations.</p>
+                </div>
+                <button onclick="openAddInvestorModal()" class="px-3 py-1.5 bg-goldAccent text-midnight text-xs font-bold rounded-xl">Add Investor</button>
+            </div>
+            <div class="space-y-3" id="investors-list-container">
+                <!-- Dynamically populated investor cards -->
+            </div>
         </section>
 
         <!-- TAB 4: SETTLEMENT -->
@@ -261,27 +257,53 @@
         </div>
     </nav>
 
-    <!-- SETTINGS / MORE MODAL -->
+    <!-- ADD INVESTOR MODAL -->
+    <div id="investor-modal" class="fixed inset-0 bg-midnight/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="card-box rounded-2xl max-w-md w-full p-6 space-y-4 border border-gray-800 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-gray-900 pb-3">
+                <h3 class="text-sm font-bold text-softWhite">Add New Investor Mandate</h3>
+                <button onclick="closeAddInvestorModal()" class="text-softGrey hover:text-softWhite text-sm font-bold">✕</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-softGrey mb-1">Investor / Entity Name</label>
+                    <input type="text" id="inv-name" placeholder="e.g. Apex Global Fund" class="w-full bg-midnight border border-gray-800 rounded-xl px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
+                </div>
+                <div>
+                    <label class="block text-softGrey mb-1">Capital Investment (INR ₹)</label>
+                    <input type="number" id="inv-capital" placeholder="500000" class="w-full bg-midnight border border-gray-800 rounded-xl px-3 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeAddInvestorModal()" class="px-4 py-2 bg-midnight text-softGrey rounded-xl border border-gray-800">Cancel</button>
+                <button onclick="saveInvestor()" class="px-4 py-2 bg-goldAccent text-midnight font-bold rounded-xl">Save Mandate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="fixed inset-0 bg-midnight/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="card-box rounded-2xl max-w-md w-full p-6 space-y-4 border border-gray-800 shadow-2xl">
             <div class="flex items-center justify-between border-b border-gray-900 pb-3">
-                <h3 class="text-sm font-bold text-softWhite">Settings & Developer Tools</h3>
+                <h3 class="text-sm font-bold text-softWhite">Aureus Settings</h3>
                 <button onclick="closeSettings()" class="text-softGrey hover:text-softWhite text-sm font-bold">✕</button>
             </div>
             <div class="space-y-3 text-xs">
                 <div class="p-3 bg-midnight rounded-xl border border-gray-900">
                     <p class="font-semibold text-softWhite mb-1">Lead Portfolio Manager</p>
-                    <p class="text-softGrey">Kaif Alvi (Internal Access)</p>
+                    <p class="text-softGrey">Kaif Alvi (Master Administrator)</p>
                 </div>
             </div>
             <div class="flex justify-end pt-2">
-                <button onclick="closeSettings()" class="px-4 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl transition">Close</button>
+                <button onclick="closeSettings()" class="px-4 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT -->
+    <!-- APPLICATION DYNAMIC LOGIC -->
     <script>
+        let investors = []; // Zero state initially
+
         function switchTab(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
@@ -299,6 +321,83 @@
 
         function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
         function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+
+        function openAddInvestorModal() { document.getElementById('investor-modal').classList.remove('hidden'); }
+        function closeAddInvestorModal() { document.getElementById('investor-modal').classList.add('hidden'); }
+
+        function saveInvestor() {
+            const name = document.getElementById('inv-name').value.trim();
+            const capital = parseFloat(document.getElementById('inv-capital').value);
+
+            if(!name || isNaN(capital) || capital <= 0) {
+                alert('Please enter a valid investor name and capital amount.');
+                return;
+            }
+
+            investors.push({ id: Date.now(), name, capital });
+            document.getElementById('inv-name').value = '';
+            document.getElementById('inv-capital').value = '';
+            closeAddInvestorModal();
+            updateDashboard();
+        }
+
+        function deleteInvestor(id) {
+            investors = investors.filter(inv => inv.id !== id);
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            const totalCount = investors.length;
+            const totalCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
+            const calcProfit = totalCap * 0.0908; // 9.08% MTD return calculation
+            const usdIndicative = totalCap / 83.12;
+
+            // Update Home metrics
+            document.getElementById('home-total-capital').innerText = `₹${totalCap.toLocaleString('en-IN')}`;
+            document.getElementById('home-usd-indicative').innerText = `≈ $${usdIndicative.toFixed(2)} indicative`;
+            document.getElementById('home-active-count').innerText = totalCount;
+            document.getElementById('home-active-capital').innerText = `₹${totalCap.toLocaleString('en-IN')}`;
+            document.getElementById('home-calc-profit').innerText = `₹${calcProfit.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
+            
+            document.getElementById('summary-inv-count').innerText = `${totalCount} total · ${totalCount} active`;
+            document.getElementById('port-total-cap').innerText = `₹${totalCap.toLocaleString('en-IN')}`;
+
+            // Update Investor Preview / List
+            const previewContainer = document.getElementById('home-investor-preview');
+            const listContainer = document.getElementById('investors-list-container');
+
+            if(totalCount === 0) {
+                previewContainer.innerHTML = `
+                    <p class="text-xs text-softWhite font-medium">No investors yet</p>
+                    <p class="text-[11px] text-softGrey max-w-xs mx-auto">Add your first investor in the Investors tab to begin tracking portfolio activity.</p>
+                    <button onclick="switchTab('investors')" class="px-4 py-2 rounded-xl bg-midnight text-goldAccent border border-goldAccent/40 text-xs font-bold hover:bg-goldAccent/10 transition flex items-center mx-auto">
+                        + Add Investor
+                    </button>
+                `;
+                listContainer.innerHTML = `<p class="text-xs text-softGrey text-center py-6">No investor records found. Click 'Add Investor' above.</p>`;
+            } else {
+                previewContainer.innerHTML = investors.map(inv => `
+                    <div class="flex justify-between items-center py-1.5 border-b border-gray-900 text-xs">
+                        <span class="font-bold text-softWhite">${inv.name}</span>
+                        <span class="text-goldAccent tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span>
+                    </div>
+                `).join('');
+
+                listContainer.innerHTML = investors.map(inv => `
+                    <div class="card-box p-4 flex justify-between items-center text-xs">
+                        <div>
+                            <h4 class="font-bold text-softWhite text-sm">${inv.name}</h4>
+                            <p class="text-softGrey mt-0.5">Capital: ₹${inv.capital.toLocaleString('en-IN')}</p>
+                        </div>
+                        <button onclick="deleteInvestor(${inv.id})" class="px-3 py-1 bg-red-950 text-red-400 border border-red-900/50 rounded-lg">Delete</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        window.onload = function() {
+            updateDashboard();
+        };
     </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aureus — Investor Directory</title>
+    <title>Aureus — Executive Summary</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -41,28 +41,26 @@
     <!-- TOP HEADER -->
     <header class="sticky top-0 z-40 bg-midnight/95 backdrop-blur-md border-b border-gray-900/80 px-4 py-3.5 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-800 to-midnight border border-goldAccent/30 flex items-center justify-center text-goldAccent font-extrabold text-sm shadow-md">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            </div>
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-800 to-midnight border border-goldAccent/30 flex items-center justify-center text-goldAccent font-extrabold text-sm shadow-md">A</div>
             <div>
-                <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">DIRECTORY[span_3](start_span)[span_3](end_span)</p>
-                <h1 class="text-sm font-bold text-softWhite tracking-tight">Investors[span_4](start_span)[span_4](end_span)</h1>
+                <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">AUREUS CAPITAL</p>
+                <h1 class="text-sm font-bold text-softWhite tracking-tight">Executive Summary</h1>
             </div>
         </div>
         <div class="flex items-center space-x-2.5">
-            <button onclick="openAddInvestorModal()" class="px-3 py-1.5 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition shadow-md flex items-center">
-                + Add[span_5](start_span)[span_5](end_span)
-            </button>
             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emeraldLive border border-emerald-800/40">
-                <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> INTERNAL[span_6](start_span)[span_6](end_span)
+                <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> LIVE
             </span>
+            <button onclick="openSettings()" class="p-2.5 rounded-xl card-box text-softGrey hover:text-softWhite transition active:scale-95" title="Settings">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
         </div>
     </header>
 
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT 10 OCT · 20:40[span_7](start_span)[span_7](end_span)</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 20:50</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -169,32 +167,30 @@
             </div>
         </section>
 
-        <!-- TAB 2: INVESTOR PORTFOLIO DIRECTORY -->
+        <!-- TAB 2: INVESTOR PORTFOLIO -->
         <section id="tab-investors" class="space-y-4 hidden">
-            <!-- Search & Filter Header -->
-            <div class="space-y-3">
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">
+            <!-- Top Directory Header with Search & Add Button -->
+            <div class="card-box p-4 space-y-3 bg-gradient-to-r from-graphite to-midnight">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">DIRECTORY</p>
+                        <h2 class="text-base font-bold text-softWhite tracking-tight">Investors</h2>
+                    </div>
+                    <button onclick="openAddInvestorModal()" class="px-4 py-2 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/20 flex items-center">
+                        + Add
+                    </button>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="relative pt-1">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pt-1 pointer-events-none text-softGrey">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </span>
-                    <input type="text" id="investor-search" oninput="updateDashboard()" placeholder="Search investor..." class="w-full bg-graphite border border-gray-800 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
-                </div>
-
-                <div class="flex items-center justify-between gap-2 overflow-x-auto pb-1 text-xs">
-                    <div class="flex items-center space-x-1.5">
-                        <button onclick="setFilter('all')" id="filter-all" class="px-3.5 py-1.5 rounded-xl bg-goldAccent text-midnight font-bold transition">All[span_8](start_span)[span_8](end_span)</button>
-                        <button onclick="setFilter('active')" id="filter-active" class="px-3.5 py-1.5 rounded-xl bg-graphite text-softGrey border border-gray-800 hover:text-softWhite transition">Active[span_9](start_span)[span_9](end_span)</button>
-                        <button onclick="setFilter('inactive')" id="filter-inactive" class="px-3.5 py-1.5 rounded-xl bg-graphite text-softGrey border border-gray-800 hover:text-softWhite transition">Inactive[span_10](start_span)[span_10](end_span)</button>
-                    </div>
-                    <select id="sort-order" onchange="updateDashboard()" class="bg-graphite border border-gray-800 text-softGrey rounded-xl px-3 py-1.5 text-[11px] focus:outline-none focus:border-goldAccent">
-                        <option value="highest">Highest Capital[span_11](start_span)[span_11](end_span)</option>
-                        <option value="lowest">Lowest Capital</option>
-                        <option value="name">Alphabetical</option>
-                    </select>
+                    <input type="text" id="investor-search" oninput="updateDashboard()" placeholder="Search investor..." class="w-full bg-midnight border border-gray-800 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
                 </div>
             </div>
 
-            <div class="space-y-3.5 pt-1" id="investors-list-container">
+            <div class="space-y-3.5" id="investors-list-container">
                 <!-- Dynamically populated tiered cards -->
             </div>
         </section>
@@ -298,7 +294,6 @@
         let investors = [
             { id: 101, name: "zaif alvi", capital: 50000, active: true }
         ];
-        let currentFilter = 'all';
         const promoterHolding = 50000;
 
         function switchTab(tabId) {
@@ -314,19 +309,6 @@
                 }
             });
             window.scrollTo(0,0);
-        }
-
-        function setFilter(filter) {
-            currentFilter = filter;
-            ['all', 'active', 'inactive'].forEach(f => {
-                const btn = document.getElementById(`filter-${f}`);
-                if(f === filter) {
-                    btn.className = "px-3.5 py-1.5 rounded-xl bg-goldAccent text-midnight font-bold transition";
-                } else {
-                    btn.className = "px-3.5 py-1.5 rounded-xl bg-graphite text-softGrey border border-gray-800 hover:text-softWhite transition";
-                }
-            });
-            updateDashboard();
         }
 
         function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
@@ -473,24 +455,9 @@
 
         function updateDashboard() {
             const searchQuery = document.getElementById('investor-search').value.toLowerCase();
-            const sortOrder = document.getElementById('sort-order').value;
+            investors.sort((a, b) => b.capital - a.capital);
 
-            // Sorting logic
-            if (sortOrder === 'highest') {
-                investors.sort((a, b) => b.capital - a.capital);
-            } else if (sortOrder === 'lowest') {
-                investors.sort((a, b) => a.capital - b.capital);
-            } else if (sortOrder === 'name') {
-                investors.sort((a, b) => a.name.localeCompare(b.name));
-            }
-
-            // Filtering logic
-            let filteredInvestors = investors.filter(inv => {
-                const matchesSearch = inv.name.toLowerCase().includes(searchQuery);
-                if (currentFilter === 'active') return matchesSearch && inv.active;
-                if (currentFilter === 'inactive') return matchesSearch && !inv.active;
-                return matchesSearch;
-            });
+            let filteredInvestors = investors.filter(inv => inv.name.toLowerCase().includes(searchQuery));
 
             const totalCount = investors.length;
             const activeCount = investors.filter(i => i.active).length;
@@ -517,21 +484,21 @@
             } else {
                 listContainer.innerHTML = filteredInvestors.map((inv, index) => {
                     const rank = investors.findIndex(i => i.id === inv.id) + 1;
-                    let tierBadge = `<div class="w-12 h-12 rounded-2xl bg-midnight border border-gray-800 flex flex-col items-center justify-center text-softWhite font-black text-sm shadow-inner"><span>#${rank}</span></div>`;
+                    let rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">#${rank}</div>`;
                     
                     if (rank === 1) {
-                        tierBadge = `<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-yellow-700 border border-yellow-300 flex flex-col items-center justify-center text-midnight font-black text-sm shadow-lg" title="Gold Tier #1"><span class="text-[10px] leading-none mb-0.5">🏆</span><span>1</span></div>`;
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-extrabold text-sm shadow-inner">🥇 1</div>`;
                     } else if (rank === 2) {
-                        tierBadge = `<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-300 via-slate-400 to-slate-600 border border-slate-200 flex flex-col items-center justify-center text-midnight font-black text-sm shadow-lg" title="Silver Tier #2"><span class="text-[10px] leading-none mb-0.5">🥈</span><span>2</span></div>`;
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-600 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">🥈 2</div>`;
                     } else if (rank === 3) {
-                        tierBadge = `<div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-700 via-amber-900 to-yellow-950 border border-amber-600 flex flex-col items-center justify-center text-softWhite font-black text-sm shadow-lg" title="Bronze Tier #3"><span class="text-[10px] leading-none mb-0.5">🥉</span><span>3</span></div>`;
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-amber-800 flex items-center justify-center text-amber-500 font-bold text-sm shadow-inner">🥉 3</div>`;
                     }
 
                     return `
                         <div onclick="toggleCardActions(${inv.id})" class="card-box p-4 space-y-3 cursor-pointer transition hover:border-goldAccent/40">
                             <div class="flex justify-between items-center">
-                                <div class="flex items-center space-x-3.5">
-                                    ${tierBadge}
+                                <div class="flex items-center space-x-3">
+                                    ${rankBadge}
                                     <div onclick="openAddInvestorModal(${inv.id}, event)" title="Click to Edit">
                                         <h4 class="font-bold text-softWhite text-sm capitalize hover:text-goldAccent transition">${inv.name}</h4>
                                         <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>

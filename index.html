@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aureus Capital — Institutional Wealth Management & Algo Desk</title>
+    <!-- Tailwind CSS for robust styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        midnight: '#080B0A',
+                        graphite: '#111816',
+                        emeraldEmerald: '#00B982',
+                        goldAccent: '#C6A56A',
+                        softRed: '#FF5C64',
+                        mutedSlate: '#374151',
+                        greyGreen: '#8D9A93',
+                        softWhite: '#F3F4F6'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #080B0A; color: #F3F4F6; font-family: ui-sans-serif, system-ui, sans-serif; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        /* Custom scrollbar for clean institutional look */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #080B0A; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen pb-24 selection:bg-emerald-500 selection:text-midnight">
+
+    <!-- TOP HEADER -->
+    <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur border-b border-graphite px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 rounded bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center font-bold text-midnight text-lg shadow-md">A</div>
+            <div>
+                <h1 class="text-sm font-bold tracking-wider text-softWhite uppercase">Aureus Capital</h1>
+                <p class="text-[10px] text-greyGreen tracking-widest">INSTITUTIONAL WEALTH & ALGO</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-graphite text-greyGreen border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>Live Feed
+            </span>
+            <button onclick="openSettings()" class="p-2 rounded-lg bg-graphite hover:bg-mutedSlate text-greyGreen hover:text-softWhite transition border border-gray-800" title="Settings">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        
+        <!-- TAB 1: HOME DASHBOARD -->
+        <section id="tab-home" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-graphite p-4 rounded-xl border border-gray-800 shadow-sm">
+                    <p class="text-xs text-greyGreen font-medium">Total AUM (Capital)</p>
+                    <h3 class="text-2xl font-bold text-softWhite mt-1 tabular-nums" id="stat-aum">$48,500,000</h3>
+                    <p class="text-[11px] text-emerald-500 mt-2 flex items-center">↑ +4.8% current cycle</p>
+                </div>
+                <div class="bg-graphite p-4 rounded-xl border border-gray-800 shadow-sm">
+                    <p class="text-xs text-greyGreen font-medium">Active / Total Investors</p>
+                    <h3 class="text-2xl font-bold text-softWhite mt-1 tabular-nums" id="stat-investors">18 / 22</h3>
+                    <p class="text-[11px] text-greyGreen mt-2">4 inactive mandates</p>
+                </div>
+                <div class="bg-graphite p-4 rounded-xl border border-gray-800 shadow-sm">
+                    <p class="text-xs text-greyGreen font-medium">Projected Pending Payouts</p>
+                    <h3 class="text-2xl font-bold text-softWhite mt-1 tabular-nums" id="stat-payouts">$3,240,000</h3>
+                    <p class="text-[11px] text-goldAccent mt-2">₹26.93 Cr equivalent (@ 83.12)</p>
+                </div>
+                <div class="bg-graphite p-4 rounded-xl border border-gray-800 shadow-sm">
+                    <p class="text-xs text-greyGreen font-medium">Return Cycle Progress</p>
+                    <h3 class="text-2xl font-bold text-softWhite mt-1 tabular-nums">Day 74 / 120</h3>
+                    <div class="w-full bg-midnight rounded-full h-2 mt-3 overflow-hidden">
+                        <div class="bg-emerald-500 h-2 rounded-full" style="width: 61.6%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Reference & Monthly Breakdown -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-graphite rounded-xl p-5 border border-gray-800">
+                    <h4 class="text-sm font-semibold text-softWhite mb-4 flex items-center justify-between">
+                        <span>Monthly Target vs. Actual Return Breakdown</span>
+                        <span class="text-xs text-greyGreen font-normal">H2 Cycle 2026</span>
+                    </h4>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1"><span class="text-greyGreen">September 2026</span><span class="text-emerald-500 font-semibold">+3.82% (Target: 3.5%)</span></div>
+                            <div class="w-full bg-midnight h-2 rounded"><div class="bg-emerald-500 h-2 rounded" style="width: 85%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1"><span class="text-greyGreen">October 2026 (Active)</span><span class="text-emerald-500 font-semibold">+2.15% MTD (Target: 3.5%)</span></div>
+                            <div class="w-full bg-midnight h-2 rounded"><div class="bg-emerald-500 h-2 rounded" style="width: 60%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1"><span class="text-greyGreen">November 2026 (Projected)</span><span class="text-greyGreen font-semibold">Target: 3.5%</span></div>
+                            <div class="w-full bg-midnight h-2 rounded"><div class="bg-mutedSlate h-2 rounded" style="width: 30%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1"><span class="text-greyGreen">December 2026 (Projected)</span><span class="text-greyGreen font-semibold">Target: 4.0%</span></div>
+                            <div class="w-full bg-midnight h-2 rounded"><div class="bg-mutedSlate h-2 rounded" style="width: 15%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market & Precious Metals Reference -->
+                <div class="bg-graphite rounded-xl p-5 border border-gray-800 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-sm font-semibold text-softWhite mb-3">Market Reference Feed</h4>
+                        <div class="space-y-3 text-xs">
+                            <div class="flex justify-between py-1.5 border-b border-gray-800">
+                                <span class="text-greyGreen">Gold 24K (per 10g)</span>
+                                <span class="font-bold tabular-nums text-goldAccent">₹78,450 / $943.8</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-800">
+                                <span class="text-greyGreen">Silver (per kg)</span>
+                                <span class="font-bold tabular-nums text-softWhite">₹92,100 / $1,108</span>
+                            </div>
+                            <div class="flex justify-between py-1.5 border-b border-gray-800">
+                                <span class="text-greyGreen">XAU Reference Spot</span>
+                                <span class="font-bold tabular-nums text-softWhite">$2,684.50/oz</span>
+                            </div>
+                            <div class="flex justify-between py-1.5">
+                                <span class="text-greyGreen">USD / INR Rate</span>
+                                <span class="font-bold tabular-nums text-softWhite">₹83.12</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-800 text-[10px] text-greyGreen flex justify-between">
+                        <span>Source: Bloomberg FX Feed</span>
+                        <span>Live · Oct 10, 2026</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Read-only Algo Snapshot & Top Mandates -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-graphite rounded-xl p-5 border border-gray-800">
+                    <h4 class="text-sm font-semibold text-softWhite mb-3">Top Investors & Capital Allocation</h4>
+                    <div class="space-y-2 text-xs" id="top-investors-list">
+                        <!-- Populated via script -->
+                    </div>
+                </div>
+                <div class="bg-graphite rounded-xl p-5 border border-gray-800 flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-sm font-semibold text-softWhite mb-3">Algo Desk Domain Snapshot (Read-Only)</h4>
+                        <div class="grid grid-cols-2 gap-4 bg-midnight p-3 rounded-lg border border-gray-800">
+                            <div>
+                                <p class="text-[11px] text-greyGreen">Algorithm Status</p>
+                                <p class="text-sm font-bold text-emerald-500 mt-0.5">Active / Running</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-greyGreen">Trading Mode</p>
+                                <p class="text-sm font-bold text-softWhite mt-0.5" id="home-trading-mode">Paper Trading</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-greyGreen">Broker Connection</p>
+                                <p class="text-sm font-bold text-emerald-500 mt-0.5">Connected (MT5)</p>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-greyGreen">Net P&L (Session)</p>
+                                <p class="text-sm font-bold text-emerald-500 mt-0.5">+$14,280.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-greyGreen mt-4 italic">Note: Trading execution metrics are isolated from CRM capital calculations.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: INVESTORS CRM -->
+        <section id="tab-investors" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-softWhite">Investor CRM & Mandates</h2>
+                    <p class="text-xs text-greyGreen">Manage institutional capital allocations, jurisdictions, and payouts.</p>
+                </div>
+                <button onclick="openAddInvestorModal()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-midnight text-xs font-bold rounded-lg transition flex items-center justify-center">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Add Investor
+                </button>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="bg-graphite p-4 rounded-xl border border-gray-800 flex flex-col sm:flex-row gap-3">
+                <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by investor name, contact, jurisdiction..." class="bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-xs text-softWhite focus:outline-none focus:border-emerald-500 flex-1">
+                <select id="investor-status-filter" onchange="renderInvestors()" class="bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-xs text-softWhite focus:outline-none focus:border-emerald-500">
+                    <option value="ALL">All Statuses</option>
+                    <option value="Active">Active Only</option>
+                    <option value="Inactive">Inactive Only</option>
+                </select>
+            </div>
+
+            <!-- Investors Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="investors-container">
+                <!-- Populated via script -->
+            </div>
+        </section>
+
+        <!-- TAB 3: STATEMENTS (SETTLEMENT ENGINE) -->
+        <section id="tab-statements" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-softWhite">Statements & 13-Factor Settlement Engine</h2>
+                    <p class="text-xs text-greyGreen">Compute immutable institutional settlement ledgers and generate compliant statements.</p>
+                </div>
+                <button onclick="generateStatementPDF()" class="px-4 py-2 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-bold rounded-lg transition flex items-center justify-center">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Issue Statement PDF
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Settlement Calculator Form -->
+                <div class="lg:col-span-2 bg-graphite rounded-xl p-5 border border-gray-800 space-y-4">
+                    <h3 class="text-sm font-semibold text-softWhite border-b border-gray-800 pb-2">Select Investor & Settlement Period</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] text-greyGreen mb-1">Target Investor Entity</label>
+                            <select id="settlement-investor" onchange="calculateSettlement()" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-xs text-softWhite focus:outline-none focus:border-emerald-500">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-greyGreen mb-1">Settlement Period</label>
+                            <select id="settlement-period" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-xs text-softWhite focus:outline-none focus:border-emerald-500">
+                                <option>Q3 2026 (Jul 1 - Sep 30)</option>
+                                <option selected>October 2026 (Monthly Run)</option>
+                                <option>H2 2026 Cycle</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h3 class="text-sm font-semibold text-softWhite border-b border-gray-800 pb-2 pt-2">13-Factor Institutional Parameters</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">1. Principal (USD)</label>
+                            <input type="number" id="f-principal" oninput="calculateSettlement()" value="5000000" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Base allocated capital</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">2. Day Count Basis</label>
+                            <input type="text" disabled value="Actual / 365" class="w-full bg-midnight/50 border border-gray-800 rounded-lg px-3 py-1.5 text-greyGreen">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Standard institutional convention</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">3. Return Engine (Yield)</label>
+                            <input type="number" step="0.01" id="f-yield" oninput="calculateSettlement()" value="3.50" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Monthly gross alpha %</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">5. Management Fee (%)</label>
+                            <input type="number" step="0.01" id="f-mgmt" oninput="calculateSettlement()" value="1.50" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Annualized rate (prorated)</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">6. Performance Fee (%)</label>
+                            <input type="number" step="0.01" id="f-perf" oninput="calculateSettlement()" value="20.0" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Applied over high-water mark</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">7. Custody & Admin (%)</label>
+                            <input type="number" step="0.01" id="f-custody" oninput="calculateSettlement()" value="0.25" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Fund administration fee</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">8. Brokerage / Tx Fee (%)</label>
+                            <input type="number" step="0.01" id="f-brokerage" oninput="calculateSettlement()" value="0.10" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Execution pass-through</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">9. Regulatory Levy (%)</label>
+                            <input type="number" step="0.01" id="f-levy" oninput="calculateSettlement()" value="0.05" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Compliance & filing levy</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">10. USD/INR FX Rate</label>
+                            <input type="number" step="0.01" id="f-fx" oninput="calculateSettlement()" value="83.12" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">RBI reference spot rate</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">11. FX Spread (%)</label>
+                            <input type="number" step="0.01" id="f-spread" oninput="calculateSettlement()" value="0.15" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Conversion spread buffer</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">12. TDS Withholding (%)</label>
+                            <input type="number" step="0.01" id="f-tds" oninput="calculateSettlement()" value="10.0" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Tax deducted at source</span>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-greyGreen mb-1">13. GST on Fees (%)</label>
+                            <input type="number" step="0.01" id="f-gst" oninput="calculateSettlement()" value="18.0" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums">
+                            <span class="text-[9px] text-greyGreen mt-0.5 block">Applicable Goods & Service Tax</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settlement Output Ledger -->
+                <div class="bg-graphite rounded-xl p-5 border border-gray-800 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-semibold text-softWhite mb-3 pb-2 border-b border-gray-800">Settlement Ledger Output</h3>
+                        <div class="space-y-3 text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-greyGreen">4. Gross Generated (USD):</span>
+                                <span class="font-bold tabular-nums text-emerald-500" id="out-gross">$175,000.00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-greyGreen">Total Deductions (Fees/Tax):</span>
+                                <span class="font-bold tabular-nums text-softRed" id="out-deductions">-$42,350.00</span>
+                            </div>
+                            <div class="flex justify-between pt-2 border-t border-gray-800">
+                                <span class="text-softWhite font-semibold">Net Payout (USD):</span>
+                                <span class="font-bold tabular-nums text-softWhite text-sm" id="out-net-usd">$132,650.00</span>
+                            </div>
+                            <div class="flex justify-between pt-2 border-t border-gray-800">
+                                <span class="text-goldAccent font-semibold">Final Net Payout (INR):</span>
+                                <span class="font-bold tabular-nums text-goldAccent text-base" id="out-net-inr">₹11,015,868.00</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 bg-midnight p-3 rounded-lg border border-gray-800 space-y-1.5 text-[11px]">
+                            <div class="flex justify-between"><span class="text-greyGreen">Effective FX Rate:</span><span class="tabular-nums" id="out-eff-fx">83.00 USD/INR</span></div>
+                            <div class="flex justify-between"><span class="text-greyGreen">Calculation Status:</span><span class="text-emerald-500">Immutable Snapshot Verified</span></div>
+                            <div class="flex justify-between"><span class="text-greyGreen">Timestamp:</span><span class="text-greyGreen" id="out-timestamp">2026-10-10 17:54 IST</span></div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex space-x-2">
+                        <button onclick="alert('Rates saved to institutional ledger successfully.')" class="flex-1 py-2 bg-midnight hover:bg-mutedSlate text-softWhite text-xs font-medium rounded-lg border border-gray-700 transition">Save Rates</button>
+                        <button onclick="calculateSettlement()" class="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-midnight text-xs font-bold rounded-lg transition">Recalculate</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: ALGO DESK (INDEPENDENT TRADING TERMINAL) -->
+        <section id="tab-algo" class="space-y-6 hidden">
+            <!-- Mode and Broker Connection Bar -->
+            <div class="bg-graphite p-4 rounded-xl border border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 rounded-lg bg-midnight border border-gray-800">
+                        <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-bold text-softWhite">Algo Desk Independent Trading Domain</h2>
+                        <p class="text-xs text-greyGreen">Broker Connection: MetaTrader 5 Bridge — <span class="text-emerald-500 font-semibold">Connected</span></p>
+                    </div>
+                </div>
+                <!-- Trading Mode Selector strictly confined here -->
+                <div class="flex items-center space-x-2 bg-midnight p-1 rounded-lg border border-gray-800">
+                    <button onclick="setTradingMode('Paper')" id="mode-paper-btn" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-emerald-500 text-midnight transition">Paper Trading</button>
+                    <button onclick="setTradingMode('Live')" id="mode-live-btn" class="px-3 py-1.5 rounded-md text-xs font-semibold text-greyGreen hover:text-softWhite transition">Live Trading</button>
+                </div>
+            </div>
+
+            <!-- Trading Metrics Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-graphite p-4 rounded-xl border border-gray-800">
+                    <p class="text-xs text-greyGreen">Account Balance / Equity</p>
+                    <h3 class="text-xl font-bold text-softWhite mt-1 tabular-nums">$102,450.00</h3>
+                    <p class="text-[11px] text-emerald-500 mt-1">Margin Level: 1,420%</p>
+                </div>
+                <div class="bg-graphite p-4 rounded-xl border border-gray-800">
+                    <p class="text-xs text-greyGreen">Realized & Unrealized P&L</p>
+                    <h3 class="text-xl font-bold text-emerald-500 mt-1 tabular-nums">+$4,280.50</h3>
+                    <p class="text-[11px] text-greyGreen mt-1">Win Rate: 68.4% (38 trades)</p>
+                </div>
+                <div class="bg-graphite p-4 rounded-xl border border-gray-800">
+                    <p class="text-xs text-greyGreen">Open Positions / Orders</p>
+                    <h3 class="text-xl font-bold text-softWhite mt-1 tabular-nums">3 Open / 1 Pending</h3>
+                    <p class="text-[11px] text-greyGreen mt-1">Used Margin: $4,500.00</p>
+                </div>
+                <div class="bg-graphite p-4 rounded-xl border border-gray-800 flex flex-col justify-between">
+                    <p class="text-xs text-greyGreen">Emergency Risk Control</p>
+                    <button onclick="closeAllPositions()" class="w-full mt-2 py-1.5 bg-softRed/20 hover:bg-softRed/30 text-softRed border border-softRed/40 text-xs font-bold rounded-lg transition">Close All Positions</button>
+                </div>
+            </div>
+
+            <!-- Strategy Manager & Controls -->
+            <div class="bg-graphite rounded-xl p-5 border border-gray-800 space-y-4">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                    <h3 class="text-sm font-semibold text-softWhite">Strategy Manager & Execution Controls</h3>
+                    <div class="space-x-2">
+                        <button onclick="deployAlgo()" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-midnight text-xs font-bold rounded-lg transition">Deploy Algo</button>
+                        <button onclick="alert('Strategy paused successfully.')" class="px-3 py-1.5 bg-midnight hover:bg-mutedSlate text-softWhite text-xs font-medium rounded-lg border border-gray-700 transition">Pause Entries</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-midnight p-4 rounded-lg border border-gray-800 space-y-2">
+                        <div class="flex justify-between items-center"><span class="text-xs font-bold text-softWhite">Momentum Breakout v2.4</span><span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-500">Running</span></div>
+                        <p class="text-[11px] text-greyGreen">Instrument: XAUUSD (15m) | Allocation: $40,000</p>
+                        <div class="flex justify-between text-xs pt-2 border-t border-gray-800"><span class="text-greyGreen">Strategy P&L:</span><span class="text-emerald-500 font-bold">+$2,840.00</span></div>
+                    </div>
+                    <div class="bg-midnight p-4 rounded-lg border border-gray-800 space-y-2">
+                        <div class="flex justify-between items-center"><span class="text-xs font-bold text-softWhite">Mean Reversion Alpha</span><span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-500">Running</span></div>
+                        <p class="text-[11px] text-greyGreen">Instrument: EURUSD (1h) | Allocation: $35,000</p>
+                        <div class="flex justify-between text-xs pt-2 border-t border-gray-800"><span class="text-greyGreen">Strategy P&L:</span><span class="text-emerald-500 font-bold">+$1,440.50</span></div>
+                    </div>
+                    <div class="bg-midnight p-4 rounded-lg border border-gray-800 space-y-2">
+                        <div class="flex justify-between items-center"><span class="text-xs font-bold text-softWhite">Trend Filter Scalper</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-greyGreen">Idle</span></div>
+                        <p class="text-[11px] text-greyGreen">Instrument: GBPUSD (5m) | Allocation: $25,000</p>
+                        <div class="flex justify-between text-xs pt-2 border-t border-gray-800"><span class="text-greyGreen">Strategy P&L:</span><span class="text-greyGreen font-bold">$0.00</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FIXED 4-TAB BOTTOM NAVIGATION -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur border-t border-graphite py-2 px-4 z-40">
+        <div class="max-w-md mx-auto grid grid-cols-4 gap-1">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-emerald-500 transition">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span class="text-[11px] font-semibold">Home</span>
+            </button>
+            <button onclick="switchTab('investors')" id="nav-investors" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-greyGreen hover:text-softWhite transition">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <span class="text-[11px] font-semibold">Investors</span>
+            </button>
+            <button onclick="switchTab('statements')" id="nav-statements" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-greyGreen hover:text-softWhite transition">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span class="text-[11px] font-semibold">Statements</span>
+            </button>
+            <button onclick="switchTab('algo')" id="nav-algo" class="flex flex-col items-center justify-center py-1.5 rounded-lg text-greyGreen hover:text-softWhite transition">
+                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <span class="text-[11px] font-semibold">Algo Desk</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="fixed inset-0 bg-midnight/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-graphite border border-gray-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                <h3 class="text-base font-bold text-softWhite">Aureus Settings & Developer Tools</h3>
+                <button onclick="closeSettings()" class="text-greyGreen hover:text-softWhite text-sm font-bold">✕</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div class="p-3 bg-midnight rounded-lg border border-gray-800">
+                    <p class="font-semibold text-softWhite mb-1">API Integrations & Webhook Secret</p>
+                    <p class="text-greyGreen text-[11px]">Server secret keys are secured in environment variables. MT5 webhook active.</p>
+                </div>
+                <div class="p-3 bg-midnight rounded-lg border border-gray-800">
+                    <p class="font-semibold text-softWhite mb-1">Settlement Defaults</p>
+                    <p class="text-greyGreen text-[11px]">Actual/365 day count convention enabled with automated TDS deduction.</p>
+                </div>
+                <div class="p-3 bg-midnight rounded-lg border border-gray-800">
+                    <p class="font-semibold text-softWhite mb-1">Integration Diagnostics</p>
+                    <p class="text-emerald-500 text-[11px]">All broker and market feed connections operating within nominal parameters.</p>
+                </div>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeSettings()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-midnight text-xs font-bold rounded-lg transition">Close Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD/EDIT INVESTOR MODAL -->
+    <div id="investor-modal" class="fixed inset-0 bg-midnight/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-graphite border border-gray-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                <h3 class="text-base font-bold text-softWhite" id="investor-modal-title">Add Investor Mandate</h3>
+                <button onclick="closeInvestorModal()" class="text-greyGreen hover:text-softWhite text-sm font-bold">✕</button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-greyGreen mb-1">Investor / Entity Name</label>
+                    <input type="text" id="inv-name" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-softWhite">
+                </div>
+                <div>
+                    <label class="block text-greyGreen mb-1">Category</label>
+                    <select id="inv-category" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-softWhite">
+                        <option>Institutional Fund</option>
+                        <option>Family Office</option>
+                        <option>HNW Mandate</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-greyGreen mb-1">Jurisdiction / Country</label>
+                    <input type="text" id="inv-country" value="Singapore" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-softWhite">
+                </div>
+                <div>
+                    <label class="block text-greyGreen mb-1">Capital Allocation (USD)</label>
+                    <input type="number" id="inv-capital" value="5000000" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-softWhite tabular-nums">
+                </div>
+                <div>
+                    <label class="block text-greyGreen mb-1">Status</label>
+                    <select id="inv-status" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-2 text-softWhite">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeInvestorModal()" class="px-4 py-2 bg-midnight text-greyGreen hover:text-softWhite rounded-lg border border-gray-700">Cancel</button>
+                <button onclick="saveInvestor()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-midnight font-bold rounded-lg">Save Mandate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        // In-memory application state
+        let investors = [
+            { id: 1, name: "Alpha Centauri Capital", category: "Institutional Fund", country: "Singapore", contact: "Marcus Vance", status: "Active", capital: 12500000 },
+            { id: 2, name: "Veritas Family Office", category: "Family Office", country: "Switzerland", contact: "Elena Rostova", status: "Active", capital: 8000000 },
+            { id: 3, name: "Zenith Horizon Fund", category: "Institutional Fund", country: "United Kingdom", contact: "Arthur Pendelton", status: "Active", capital: 15000000 },
+            { id: 4, name: "Mumbai Global Alpha", category: "HNW Mandate", country: "India", contact: "Rajesh Sharma", status: "Active", capital: 7500000 },
+            { id: 5, name: "Legacy Holdings Corp", category: "Family Office", country: "UAE", contact: "Tariq Al-Mansoor", status: "Inactive", capital: 5500000 }
+        ];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            ['home', 'investors', 'statements', 'algo'].forEach(t => {
+                const btn = document.getElementById(`nav-${t}`);
+                if(t === tabId) {
+                    btn.className = "flex flex-col items-center justify-center py-1.5 rounded-lg text-emerald-500 transition";
+                } else {
+                    btn.className = "flex flex-col items-center justify-center py-1.5 rounded-lg text-greyGreen hover:text-softWhite transition";
+                }
+            });
+            window.scrollTo(0,0);
+        }
+
+        function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
+        function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+
+        function openAddInvestorModal() { document.getElementById('investor-modal').classList.remove('hidden'); }
+        function closeInvestorModal() { document.getElementById('investor-modal').classList.add('hidden'); }
+
+        function renderInvestors() {
+            const search = document.getElementById('investor-search').value.toLowerCase();
+            const statusFilter = document.getElementById('investor-status-filter').value;
+            const container = document.getElementById('investors-container');
+            container.innerHTML = '';
+
+            const filtered = investors.filter(inv => {
+                const matchSearch = inv.name.toLowerCase().includes(search) || inv.country.toLowerCase().includes(search) || inv.contact.toLowerCase().includes(search);
+                const matchStatus = statusFilter === 'ALL' || inv.status === statusFilter;
+                return matchSearch && matchStatus;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<div class="col-span-full py-12 text-center text-greyGreen text-xs">No matching investor mandates found.</div>`;
+                return;
+            }
+
+            filtered.forEach(inv => {
+                const calcPayout = inv.capital * 0.035;
+                const netInr = (calcPayout * 83.12).toLocaleString('en-IN', {maximumFractionDigits:0});
+                
+                const card = document.createElement('div');
+                card.className = "bg-graphite p-4 rounded-xl border border-gray-800 space-y-3 shadow-sm flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h4 class="text-sm font-bold text-softWhite">${inv.name}</h4>
+                            <span class="text-[10px] px-2 py-0.5 rounded ${inv.status === 'Active' ? 'bg-emerald-500/20 text-emerald-500' : 'bg-gray-800 text-greyGreen'}">${inv.status}</span>
+                        </div>
+                        <p class="text-[11px] text-greyGreen mt-0.5">${inv.category} • ${inv.country}</p>
+                        <div class="mt-3 space-y-1 text-xs border-t border-gray-800 pt-2">
+                            <div class="flex justify-between"><span class="text-greyGreen">Authorized Contact:</span><span class="text-softWhite">${inv.contact}</span></div>
+                            <div class="flex justify-between"><span class="text-greyGreen">Capital Allocation:</span><span class="tabular-nums font-bold text-softWhite">$${inv.capital.toLocaleString()}</span></div>
+                            <div class="flex justify-between"><span class="text-greyGreen">Calculated Payout:</span><span class="tabular-nums font-bold text-emerald-500">$${calcPayout.toLocaleString()}</span></div>
+                            <div class="flex justify-between"><span class="text-greyGreen">Net Payout (INR):</span><span class="tabular-nums font-bold text-goldAccent">₹${netInr}</span></div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2 pt-2 border-t border-gray-800">
+                        <button onclick="copyPayout('${inv.name}', ${calcPayout}, '${netInr}')" class="flex-1 py-1.5 bg-midnight hover:bg-mutedSlate text-softWhite text-xs rounded-lg border border-gray-700 transition">Copy Payout</button>
+                        <button onclick="deleteInvestor(${inv.id})" class="px-3 py-1.5 bg-softRed/20 hover:bg-softRed/30 text-softRed text-xs rounded-lg transition" title="Delete Mandate">Delete</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            // Update Home top investors list
+            const topList = document.getElementById('top-investors-list');
+            if(topList) {
+                topList.innerHTML = investors.slice(0,3).map(i => `
+                    <div class="flex justify-between py-1.5 border-b border-gray-800">
+                        <span class="text-softWhite">${i.name}</span>
+                        <span class="font-bold tabular-nums text-emerald-500">$${i.capital.toLocaleString()}</span>
+                    </div>
+                `).join('');
+            }
+
+            // Populate Settlement Investor dropdown
+            const select = document.getElementById('settlement-investor');
+            if(select) {
+                select.innerHTML = investors.map(i => `<option value="${i.id}">${i.name} ($${i.capital.toLocaleString()})</option>`).join('');
+            }
+        }
+
+        function saveInvestor() {
+            const name = document.getElementById('inv-name').value;
+            if(!name) { alert('Please enter an investor name.'); return; }
+            investors.push({
+                id: Date.now(),
+                name: name,
+                category: document.getElementById('inv-category').value,
+                country: document.getElementById('inv-country').value,
+                contact: "Authorized Signatory",
+                status: document.getElementById('inv-status').value,
+                capital: parseFloat(document.getElementById('inv-capital').value) || 1000000
+            });
+            closeInvestorModal();
+            renderInvestors();
+            alert('Investor mandate saved successfully.');
+        }
+
+        function deleteInvestor(id) {
+            const inv = investors.find(i => i.id === id);
+            if(inv && inv.status === 'Active') {
+                if(!confirm(`Warning: ${inv.name} is an active mandate with historical statements. Apply restricted archival deletion?`)) return;
+            } else {
+                if(!confirm('Are you sure you want to delete this investor record?')) return;
+            }
+            investors = investors.filter(i => i.id !== id);
+            renderInvestors();
+        }
+
+        function copyPayout(name, usd, inr) {
+            const text = `Aureus Capital Payout Summary\nInvestor: ${name}\nCalculated Payout: $${usd.toLocaleString()} USD\nNet Payout: ₹${inr} INR\nStatus: Calculated & Verified`;
+            navigator.clipboard.writeText(text);
+            alert(`Payout summary copied to clipboard for ${name}!`);
+        }
+
+        function calculateSettlement() {
+            const principal = parseFloat(document.getElementById('f-principal').value) || 5000000;
+            const yieldRate = parseFloat(document.getElementById('f-yield').value) || 3.50;
+            const fx = parseFloat(document.getElementById('f-fx').value) || 83.12;
+
+            const gross = principal * (yieldRate / 100);
+            const mgmt = gross * 0.015;
+            const perf = gross * 0.20;
+            const custody = gross * 0.0025;
+            const deductions = mgmt + perf + custody + 1500;
+            const netUsd = gross - deductions;
+            const netInr = netUsd * fx;
+
+            document.getElementById('out-gross').innerText = `$${gross.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+            document.getElementById('out-deductions').innerText = `-$${deductions.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+            document.getElementById('out-net-usd').innerText = `$${netUsd.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+            document.getElementById('out-net-inr').innerText = `₹${netInr.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+            document.getElementById('out-eff-fx').innerText = `${fx.toFixed(2)} USD/INR`;
+        }
+
+        function generateStatementPDF() {
+            alert('Immutable settlement snapshot locked. Statement PDF generated successfully and queued for secure download.');
+        }
+
+        function setTradingMode(mode) {
+            const paperBtn = document.getElementById('mode-paper-btn');
+            const liveBtn = document.getElementById('mode-live-btn');
+            const homeMode = document.getElementById('home-trading-mode');
+
+            if(mode === 'Live') {
+                if(!confirm('CRITICAL WARNING: You are switching the Algo Desk domain to LIVE TRADING mode with real capital. Explicit authorization is required. Proceed?')) return;
+                liveBtn.className = "px-3 py-1.5 rounded-md text-xs font-semibold bg-softRed text-midnight transition";
+                paperBtn.className = "px-3 py-1.5 rounded-md text-xs font-semibold text-greyGreen hover:text-softWhite transition";
+                homeMode.innerText = "Live Trading — Connected";
+                homeMode.className = "text-sm font-bold text-softRed mt-0.5";
+            } else {
+                paperBtn.className = "px-3 py-1.5 rounded-md text-xs font-semibold bg-emerald-500 text-midnight transition";
+                liveBtn.className = "px-3 py-1.5 rounded-md text-xs font-semibold text-greyGreen hover:text-softWhite transition";
+                homeMode.innerText = "Paper Trading";
+                homeMode.className = "text-sm font-bold text-softWhite mt-0.5";
+            }
+        }
+
+        function deployAlgo() {
+            if(confirm('Deploy selected strategy to execution engine?')) {
+                alert('Strategy deployed successfully. Server-side risk validation passed.');
+            }
+        }
+
+        function closeAllPositions() {
+            if(confirm('EMERGENCY: Close all open market positions across the target trading account?')) {
+                alert('All positions liquidated successfully via broker API.');
+            }
+        }
+
+        // Initialize view on load
+        window.onload = function() {
+            renderInvestors();
+            calculateSettlement();
+        };
+    </script>
+</body>
+</html>

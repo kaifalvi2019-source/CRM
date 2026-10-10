@@ -60,7 +60,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 19:36</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 19:44</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -172,14 +172,14 @@
             <div class="flex justify-between items-center card-box p-4 bg-gradient-to-r from-graphite to-midnight">
                 <div>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Investor Portfolio</h2>
-                    <p class="text-xs text-softGrey">Manage allocations, edit mandates, and copy payout templates.</p>
+                    <p class="text-xs text-softGrey">Tap investor name/details to edit mandates instantly.</p>
                 </div>
                 <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/20 flex items-center">
                     + Add Investor
                 </button>
             </div>
             <div class="space-y-3.5" id="investors-list-container">
-                <!-- Dynamically populated designer investor cards with bottom action buttons -->
+                <!-- Dynamically populated designer investor cards -->
             </div>
         </section>
 
@@ -268,7 +268,7 @@
                 </div>
                 <div class="p-3.5 bg-midnight rounded-xl border border-gray-900">
                     <p class="font-bold text-softWhite mb-0.5">GoldAPI Integration</p>
-                    <p class="text-emeraldLive text-[11px]">goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io (Active)</p>
+                    <p class="text-emeraldLive text-[11px]">Key Active: goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io (Active)</p>
                 </div>
             </div>
             <div class="flex justify-end pt-2">
@@ -335,7 +335,6 @@
 
             const msg = `╔══════════════════════╗\n✨ 𝐏𝐀𝐘𝐎𝐔𝐓 𝐂𝐎𝐍𝐅𝐈𝐑𝐌𝐀𝐓𝐈𝐎𝐍 ✨\n╚══════════════════════╝\n\n👤 Investor\n　　└─ ${inv.name.toUpperCase()}\n\n🔥 Status\n　　└─ 🟢 Active (Hedged)\n\n💵 Payout (USD)\n　　└─ 💰 $${usdVal}\n\n🇮🇳 Return (INR)\n　　└─ 💎 ₹${totalPayout.toLocaleString('en-IN', {maximumFractionDigits:0})}\n\n━━━━━━━━━━━━━━━━━━━━\n🏆 AUREUS CAPITAL 🏆\n━━━━━━━━━━━━━━━━━━━━`;
 
-            // Robust Clipboard Fallback
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(msg).then(() => {
                     alert(`✅ Professional Payout confirmation copied for ${inv.name}!`);
@@ -350,7 +349,7 @@
         function fallbackCopyText(text, name) {
             const textarea = document.createElement("textarea");
             textarea.value = text;
-            textarea.style.position = "fixed";  // Avoid scrolling to bottom
+            textarea.style.position = "fixed";
             document.body.appendChild(textarea);
             textarea.focus();
             textarea.select();
@@ -358,7 +357,7 @@
                 document.execCommand('copy');
                 alert(`✅ Professional Payout confirmation copied for ${name}!`);
             } catch (err) {
-                alert(`❌ Failed to copy automatically. Please select text manually.`);
+                alert(`❌ Failed to copy automatically.`);
             }
             document.body.removeChild(textarea);
         }
@@ -456,23 +455,26 @@
                 listContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No Investor Mandates Found</p><p class="text-[11px] text-softGrey">Click 'Add Investor' above to register capital.</p></div>`;
             } else {
                 listContainer.innerHTML = investors.map(inv => `
-                    <div class="card-box p-4 space-y-3">
-                        <div class="flex justify-between items-center">
+                    <div class="card-box p-4 space-y-3.5">
+                        <div onclick="openAddInvestorModal(${inv.id})" class="flex justify-between items-center cursor-pointer group">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 rounded-xl bg-midnight border border-goldAccent/30 flex items-center justify-center text-goldAccent font-bold text-sm">
+                                <div class="w-10 h-10 rounded-xl bg-midnight border border-goldAccent/30 flex items-center justify-center text-goldAccent font-bold text-sm shadow-inner">
                                     ${inv.name.charAt(0).toUpperCase()}
                                 </div>
                                 <div>
-                                    <h4 class="font-bold text-softWhite text-sm capitalize">${inv.name}</h4>
-                                    <p class="text-[11px] text-softGrey mt-0.5">Capital: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>
+                                    <h4 class="font-bold text-softWhite text-sm capitalize group-hover:text-goldAccent transition">${inv.name} ✏️</h4>
+                                    <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>
                                 </div>
                             </div>
-                            <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold">Active</span>
+                            <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold">🟢 Active</span>
                         </div>
-                        <div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-900 text-xs">
-                            <button onclick="openAddInvestorModal(${inv.id})" class="py-1.5 bg-midnight text-softWhite border border-gray-800 rounded-lg font-semibold hover:border-goldAccent/50 transition">✏️ Edit</button>
-                            <button onclick="copyPayoutMessage(${inv.id})" class="py-1.5 bg-emerald-950 text-emeraldLive border border-emerald-800/50 rounded-lg font-semibold hover:bg-emerald-900 transition">📋 Payout</button>
-                            <button onclick="deleteInvestor(${inv.id})" class="py-1.5 bg-red-950/80 text-red-400 border border-red-900/50 rounded-lg font-semibold hover:bg-red-900 transition">🗑️ Delete</button>
+                        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-900/80 text-xs">
+                            <button onclick="copyPayoutMessage(${inv.id})" class="py-2 bg-emerald-950/80 text-emeraldLive border border-emerald-800/50 rounded-xl font-semibold hover:bg-emerald-900 transition flex items-center justify-center space-x-1.5">
+                                <span>📋 Copy Payout</span>
+                            </button>
+                            <button onclick="deleteInvestor(${inv.id})" class="py-2 bg-red-950/80 text-red-400 border border-red-900/50 rounded-xl font-semibold hover:bg-red-900 transition flex items-center justify-center space-x-1.5">
+                                <span>🗑️ Delete</span>
+                            </button>
                         </div>
                     </div>
                 `).join('');

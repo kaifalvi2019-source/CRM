@@ -31,18 +31,25 @@
             border-radius: 1.25rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
+        /* Unified & Smooth Tier Card Shading */
         .tier-gold {
-            background: linear-gradient(145deg, #1a1610 0%, #111816 100%) !important;
-            border: 1px solid rgba(198, 165, 106, 0.35) !important;
-            box-shadow: 0 8px 32px rgba(198, 165, 106, 0.08) !important;
+            background: linear-gradient(145deg, #1f1911 0%, #111816 100%) !important;
+            border: 1px solid rgba(198, 165, 106, 0.4) !important;
+            box-shadow: 0 8px 32px rgba(198, 165, 106, 0.1) !important;
         }
         .tier-silver {
-            background: linear-gradient(145deg, #16181a 0%, #111816 100%) !important;
-            border: 1px solid rgba(156, 163, 175, 0.3) !important;
+            background: linear-gradient(145deg, #16191c 0%, #111816 100%) !important;
+            border: 1px solid rgba(156, 163, 175, 0.35) !important;
+            box-shadow: 0 8px 32px rgba(156, 163, 175, 0.07) !important;
         }
         .tier-bronze {
-            background: linear-gradient(145deg, #1c1410 0%, #111816 100%) !important;
-            border: 1px solid rgba(180, 115, 75, 0.3) !important;
+            background: linear-gradient(145deg, #1d1511 0%, #111816 100%) !important;
+            border: 1px solid rgba(180, 115, 75, 0.35) !important;
+            box-shadow: 0 8px 32px rgba(180, 115, 75, 0.07) !important;
+        }
+        .tier-normal {
+            background: linear-gradient(145deg, #121615 0%, #0d1311 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
         }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
@@ -73,7 +80,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 20:53</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:05</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -303,10 +310,11 @@
     <!-- APPLICATION LOGIC -->
     <script>
         let investors = [
-            { id: 101, name: "Zaif", capital: 50000, active: true },
-            { id: 102, name: "Rohan", capital: 30000, active: true },
-            { id: 103, name: "Raj", capital: 25000, active: true },
-            { id: 104, name: "Dapak", capital: 5000, active: true }
+            { id: 101, name: "Huzayf Khan", capital: 75000, active: true },
+            { id: 102, name: "Priya Verma", capital: 60000, active: true },
+            { id: 103, name: "Amit Sharma", capital: 50000, active: true },
+            { id: 104, name: "Harsh Gupta", capital: 50000, active: true },
+            { id: 105, name: "Rohan F", capital: 40000, active: true }
         ];
         const promoterHolding = 50000;
 
@@ -471,7 +479,6 @@
             const searchQuery = document.getElementById('investor-search').value.toLowerCase().trim();
             investors.sort((a, b) => b.capital - a.capital);
 
-            // Search by Name or Rank Number (e.g. "1", "2")
             let filteredInvestors = investors.filter((inv, index) => {
                 const rank = index + 1;
                 const nameMatch = inv.name.toLowerCase().includes(searchQuery);
@@ -505,7 +512,7 @@
             } else {
                 listContainer.innerHTML = filteredInvestors.map((inv) => {
                     const rank = investors.findIndex(i => i.id === inv.id) + 1;
-                    let cardClass = "card-box";
+                    let cardClass = "card-box tier-normal";
                     let rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>`;
                     
                     if (rank === 1) {

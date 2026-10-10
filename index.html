@@ -32,25 +32,26 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
         }
+        /* Prominent & Deep Tier Card Gradients */
         .tier-gold-card {
-            background: radial-gradient(circle at top left, rgba(198, 165, 106, 0.18), #111816 60%) !important;
-            border: 1px solid rgba(198, 165, 106, 0.45) !important;
-            box-shadow: 0 12px 35px rgba(198, 165, 106, 0.12), inset 0 1px 0 rgba(198, 165, 106, 0.3) !important;
+            background: linear-gradient(135deg, rgba(198, 165, 106, 0.28) 0%, #111816 70%) !important;
+            border: 1px solid rgba(198, 165, 106, 0.6) !important;
+            box-shadow: 0 12px 35px rgba(198, 165, 106, 0.2), inset 0 1px 0 rgba(198, 165, 106, 0.4) !important;
         }
         .tier-silver-card {
-            background: radial-gradient(circle at top left, rgba(156, 163, 175, 0.15), #111816 60%) !important;
-            border: 1px solid rgba(156, 163, 175, 0.35) !important;
-            box-shadow: 0 12px 35px rgba(156, 163, 175, 0.08), inset 0 1px 0 rgba(156, 163, 175, 0.25) !important;
+            background: linear-gradient(135deg, rgba(156, 163, 175, 0.25) 0%, #111816 70%) !important;
+            border: 1px solid rgba(156, 163, 175, 0.5) !important;
+            box-shadow: 0 12px 35px rgba(156, 163, 175, 0.15), inset 0 1px 0 rgba(156, 163, 175, 0.35) !important;
         }
         .tier-bronze-card {
-            background: radial-gradient(circle at top left, rgba(180, 115, 75, 0.18), #111816 60%) !important;
-            border: 1px solid rgba(180, 115, 75, 0.4) !important;
-            box-shadow: 0 12px 35px rgba(180, 115, 75, 0.1), inset 0 1px 0 rgba(180, 115, 75, 0.3) !important;
+            background: linear-gradient(135deg, rgba(180, 115, 75, 0.28) 0%, #111816 70%) !important;
+            border: 1px solid rgba(180, 115, 75, 0.6) !important;
+            box-shadow: 0 12px 35px rgba(180, 115, 75, 0.2), inset 0 1px 0 rgba(180, 115, 75, 0.4) !important;
         }
         .tier-normal-card {
-            background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.04), #111816 60%) !important;
+            background: linear-gradient(145deg, #111816 0%, #0d1311 100%) !important;
             border: 1px solid rgba(255, 255, 255, 0.07) !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
         }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
@@ -81,7 +82,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:56</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 22:00</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -112,11 +113,11 @@
                         <div class="flex justify-between items-center mt-1">
                             <div>
                                 <p class="text-[8px] text-softGrey">GOLD (XAU)</p>
-                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-gold-price">$4,194.50</h3>
+                                <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-gold-price">$4,194.50</h3>
                             </div>
                             <div>
                                 <p class="text-[8px] text-softGrey">USD / INR</p>
-                                <h3 class="text-xs font-bold text-softWhite tabular-nums" id="live-usdinr-price">₹96.77</h3>
+                                <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-usdinr-price">₹96.77</h3>
                             </div>
                         </div>
                     </div>
@@ -132,7 +133,7 @@
                 <div>
                     <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
                     <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">₹3,25,000</h3>
-                    <p class="text-xs text-softGrey mt-0.5 font-medium" id="home-usd-indicative">≈ $3,358.48 indicative</p>
+                    <p class="text-xs text-emeraldLive mt-0.5 font-medium tabular-nums" id="home-usd-indicative">≈ $3,358.48 indicative</p>
                 </div>
                 <div class="grid grid-cols-3 gap-2 pt-3 border-t border-gray-900 text-xs">
                     <div>
@@ -146,7 +147,7 @@
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
                         <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$303.17</p>
-                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">₹29,338</p>
+                        <p class="text-[11px] text-emeraldLive tabular-nums font-semibold" id="home-calc-profit-inr">₹29,338</p>
                     </div>
                 </div>
             </div>

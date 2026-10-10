@@ -60,7 +60,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 19:56</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 20:13</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -172,14 +172,14 @@
             <div class="flex justify-between items-center card-box p-4 bg-gradient-to-r from-graphite to-midnight">
                 <div>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Investor Portfolio</h2>
-                    <p class="text-xs text-softGrey">Tap any card to toggle options or edit details.</p>
+                    <p class="text-xs text-softGrey">Ranked by allocation tiers. Tap any card for options.</p>
                 </div>
                 <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/20 flex items-center">
                     + Add Investor
                 </button>
             </div>
             <div class="space-y-3.5" id="investors-list-container">
-                <!-- Dynamically populated investor cards with hidden toggle actions -->
+                <!-- Dynamically populated ranked investor cards -->
             </div>
         </section>
 
@@ -442,6 +442,9 @@
         }
 
         function updateDashboard() {
+            // Sort investors by highest capital first for Tier Ranking (1, 2, 3...)
+            investors.sort((a, b) => b.capital - a.capital);
+
             const totalCount = investors.length;
             const investorsCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
             const totalPoolCap = promoterHolding + investorsCap;
@@ -464,31 +467,44 @@
             if(totalCount === 0) {
                 listContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No Investor Mandates Found</p><p class="text-[11px] text-softGrey">Click 'Add Investor' above to register capital.</p></div>`;
             } else {
-                listContainer.innerHTML = investors.map(inv => `
-                    <div onclick="toggleCardActions(${inv.id})" class="card-box p-4 space-y-3 cursor-pointer transition hover:border-goldAccent/40">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 rounded-xl bg-midnight border border-goldAccent/30 flex items-center justify-center text-goldAccent font-bold text-sm shadow-inner">
-                                    ${inv.name.charAt(0).toUpperCase()}
+                listContainer.innerHTML = investors.map((inv, index) => {
+                    const rank = index + 1;
+                    let tierBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-extrabold text-sm shadow-inner">${rank}</div>`;
+                    
+                    if (rank === 1) {
+                        tierBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 border border-yellow-300 flex items-center justify-center text-midnight font-black text-sm shadow-lg" title="Gold Tier #1">🥇 1</div>`;
+                    } else if (rank === 2) {
+                        tierBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-300 to-slate-400 border border-slate-200 flex items-center justify-center text-midnight font-black text-sm shadow-lg" title="Silver Tier #2">🥈 2</div>`;
+                    } else if (rank === 3) {
+                        tierBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-700 to-yellow-900 border border-amber-600 flex items-center justify-center text-softWhite font-black text-sm shadow-lg" title="Bronze Tier #3">🥉 3</div>`;
+                    }
+
+                    return `
+                        <div onclick="toggleCardActions(${inv.id})" class="card-box p-4 space-y-3 cursor-pointer transition hover:border-goldAccent/40">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center space-x-3">
+                                    ${tierBadge}
+                                    <div onclick="openAddInvestorModal(${inv.id}, event)" title="Click to Edit">
+                                        <h4 class="font-bold text-softWhite text-sm capitalize hover:text-goldAccent transition">${inv.name}</h4>
+                                        <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>
+                                    </div>
                                 </div>
-                                <div onclick="openAddInvestorModal(${inv.id}, event)" title="Click to Edit">
-                                    <h4 class="font-bold text-softWhite text-sm capitalize hover:text-goldAccent transition">${inv.name}</h4>
-                                    <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>
-                                </div>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emeraldLive border border-emerald-800/40">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> Active
+                                </span>
                             </div>
-                            <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold">🟢 Active</span>
+                            <!-- Hidden by default, toggled on card click -->
+                            <div id="actions-${inv.id}" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-gray-900/80 text-xs">
+                                <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-emerald-950/80 text-emeraldLive border border-emerald-800/50 rounded-xl font-semibold hover:bg-emerald-900 transition flex items-center justify-center space-x-1.5">
+                                    <span>📋 Copy Payout</span>
+                                </button>
+                                <button onclick="deleteInvestor(${inv.id}, event)" class="py-2 bg-red-950/80 text-red-400 border border-red-900/50 rounded-xl font-semibold hover:bg-red-900 transition flex items-center justify-center space-x-1.5">
+                                    <span>🗑️ Delete</span>
+                                </button>
+                            </div>
                         </div>
-                        <!-- Hidden by default, toggled on card click -->
-                        <div id="actions-${inv.id}" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-gray-900/80 text-xs">
-                            <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-emerald-950/80 text-emeraldLive border border-emerald-800/50 rounded-xl font-semibold hover:bg-emerald-900 transition flex items-center justify-center space-x-1.5">
-                                <span>📋 Copy Payout</span>
-                            </button>
-                            <button onclick="deleteInvestor(${inv.id}, event)" class="py-2 bg-red-950/80 text-red-400 border border-red-900/50 rounded-xl font-semibold hover:bg-red-900 transition flex items-center justify-center space-x-1.5">
-                                <span>🗑️ Delete</span>
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             }
         }
 

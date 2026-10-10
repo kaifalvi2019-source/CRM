@@ -58,7 +58,7 @@
 
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-4 space-y-4">
-        <p class="text-[11px] text-softGrey font-semibold tracking-wider">SAT 10 OCT · 18:55</p>
+        <p class="text-[11px] text-softGrey font-semibold tracking-wider">SAT 10 OCT · 19:00</p>
 
         <!-- TAB 1: HOME DASHBOARD -->
         <section id="tab-home" class="space-y-4">
@@ -93,7 +93,7 @@
             <div class="card-box p-5 space-y-3">
                 <div class="flex justify-between items-center">
                     <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Portfolio Overview</p>
-                    <button onclick="switchTab('portfolio')" class="text-xs text-goldAccent font-semibold flex items-center hover:underline">Details ↗</button>
+                    <span class="text-xs text-goldAccent font-semibold">Active</span>
                 </div>
                 <div>
                     <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Total Pool Capital</p>
@@ -180,7 +180,7 @@
                 </div>
             </div>
 
-            <!-- Action Shortcuts (Clean without clutter icons) -->
+            <!-- Action Shortcuts -->
             <div class="grid grid-cols-2 gap-3">
                 <div onclick="switchTab('settlement')" class="card-box p-4 cursor-pointer hover:border-goldAccent/40 transition space-y-1">
                     <h4 class="text-xs font-bold text-softWhite">Generate Statement</h4>
@@ -193,17 +193,7 @@
             </div>
         </section>
 
-        <!-- TAB 2: PORTFOLIO -->
-        <section id="tab-portfolio" class="space-y-4 hidden">
-            <h2 class="text-base font-bold text-softWhite">Portfolio Management</h2>
-            <p class="text-xs text-softGrey">Cycle return information and asset allocation details.</p>
-            <div class="card-box p-5 space-y-3">
-                <p class="text-xs text-softGrey">Total Pooled Capital across active portfolios:</p>
-                <h3 class="text-2xl font-bold text-goldAccent tabular-nums" id="port-total-cap">₹0</h3>
-            </div>
-        </section>
-
-        <!-- TAB 3: INVESTORS -->
+        <!-- TAB 2: INVESTORS -->
         <section id="tab-investors" class="space-y-4 hidden">
             <div class="flex justify-between items-center">
                 <div>
@@ -217,13 +207,13 @@
             </div>
         </section>
 
-        <!-- TAB 4: SETTLEMENT -->
+        <!-- TAB 3: SETTLEMENT -->
         <section id="tab-settlement" class="space-y-4 hidden">
             <h2 class="text-base font-bold text-softWhite">Settlement & Statements</h2>
             <p class="text-xs text-softGrey">Compute 13-factor settlement ledgers and exports.</p>
         </section>
 
-        <!-- TAB 5: MORE / SETTINGS -->
+        <!-- TAB 4: MORE / SETTINGS -->
         <section id="tab-more" class="space-y-4 hidden">
             <h2 class="text-base font-bold text-softWhite">More & Settings</h2>
             <p class="text-xs text-softGrey">API configurations, developer tools, and risk controls.</p>
@@ -231,28 +221,24 @@
 
     </main>
 
-    <!-- FIXED 5-TAB BOTTOM NAVIGATION -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur-xl border-t border-gray-900 py-2.5 px-3 z-40">
-        <div class="max-w-md mx-auto grid grid-cols-5 gap-1 text-center">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center justify-center py-1 rounded-xl text-goldAccent transition">
+    <!-- FIXED 4-TAB BOTTOM NAVIGATION -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur-xl border-t border-gray-900 py-2.5 px-4 z-40">
+        <div class="max-w-md mx-auto grid grid-cols-4 gap-2 text-center">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-goldAccent transition">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                <span class="text-[9px] font-bold uppercase tracking-wider">HOME</span>
+                <span class="text-[10px] font-bold uppercase tracking-wider">HOME</span>
             </button>
-            <button onclick="switchTab('portfolio')" id="nav-portfolio" class="flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition">
-                <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <span class="text-[9px] font-semibold uppercase tracking-wider">PORTFOLIO</span>
-            </button>
-            <button onclick="switchTab('investors')" id="nav-investors" class="flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition">
+            <button onclick="switchTab('investors')" id="nav-investors" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-softGrey hover:text-softWhite transition">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span class="text-[9px] font-semibold uppercase tracking-wider">INVESTORS</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider">INVESTORS</span>
             </button>
-            <button onclick="switchTab('settlement')" id="nav-settlement" class="flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition">
+            <button onclick="switchTab('settlement')" id="nav-settlement" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-softGrey hover:text-softWhite transition">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                <span class="text-[9px] font-semibold uppercase tracking-wider">SETTLEMENT</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider">SETTLEMENT</span>
             </button>
-            <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition">
+            <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-softGrey hover:text-softWhite transition">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
-                <span class="text-[9px] font-semibold uppercase tracking-wider">MORE</span>
+                <span class="text-[10px] font-semibold uppercase tracking-wider">MORE</span>
             </button>
         </div>
     </nav>
@@ -300,20 +286,20 @@
         </div>
     </div>
 
-    <!-- APPLICATION DYNAMIC LOGIC -->
+    <!-- APPLICATION LOGIC -->
     <script>
-        let investors = []; // Zero state initially
+        let investors = [];
 
         function switchTab(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
-            ['home', 'portfolio', 'investors', 'settlement', 'more'].forEach(t => {
+            ['home', 'investors', 'settlement', 'more'].forEach(t => {
                 const btn = document.getElementById(`nav-${t}`);
                 if(t === tabId) {
-                    btn.className = "flex flex-col items-center justify-center py-1 rounded-xl text-goldAccent transition";
+                    btn.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-goldAccent transition";
                 } else {
-                    btn.className = "flex flex-col items-center justify-center py-1 rounded-xl text-softGrey hover:text-softWhite transition";
+                    btn.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-softGrey hover:text-softWhite transition";
                 }
             });
             window.scrollTo(0,0);
@@ -349,10 +335,9 @@
         function updateDashboard() {
             const totalCount = investors.length;
             const totalCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
-            const calcProfit = totalCap * 0.0908; // 9.08% MTD return calculation
+            const calcProfit = totalCap * 0.0908; 
             const usdIndicative = totalCap / 83.12;
 
-            // Update Home metrics
             document.getElementById('home-total-capital').innerText = `₹${totalCap.toLocaleString('en-IN')}`;
             document.getElementById('home-usd-indicative').innerText = `≈ $${usdIndicative.toFixed(2)} indicative`;
             document.getElementById('home-active-count').innerText = totalCount;
@@ -360,9 +345,7 @@
             document.getElementById('home-calc-profit').innerText = `₹${calcProfit.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
             
             document.getElementById('summary-inv-count').innerText = `${totalCount} total · ${totalCount} active`;
-            document.getElementById('port-total-cap').innerText = `₹${totalCap.toLocaleString('en-IN')}`;
 
-            // Update Investor Preview / List
             const previewContainer = document.getElementById('home-investor-preview');
             const listContainer = document.getElementById('investors-list-container');
 

@@ -31,24 +31,24 @@
             border-radius: 1.25rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
-        /* Unified & Smooth Tier Card Shading */
+        /* Uniform & Clean Tier Card Shading */
         .tier-gold {
             background: linear-gradient(145deg, #1f1911 0%, #111816 100%) !important;
             border: 1px solid rgba(198, 165, 106, 0.4) !important;
-            box-shadow: 0 8px 32px rgba(198, 165, 106, 0.1) !important;
+            box-shadow: 0 8px 32px rgba(198, 165, 106, 0.08) !important;
         }
         .tier-silver {
             background: linear-gradient(145deg, #16191c 0%, #111816 100%) !important;
             border: 1px solid rgba(156, 163, 175, 0.35) !important;
-            box-shadow: 0 8px 32px rgba(156, 163, 175, 0.07) !important;
+            box-shadow: 0 8px 32px rgba(156, 163, 175, 0.06) !important;
         }
         .tier-bronze {
             background: linear-gradient(145deg, #1d1511 0%, #111816 100%) !important;
             border: 1px solid rgba(180, 115, 75, 0.35) !important;
-            box-shadow: 0 8px 32px rgba(180, 115, 75, 0.07) !important;
+            box-shadow: 0 8px 32px rgba(180, 115, 75, 0.06) !important;
         }
         .tier-normal {
-            background: linear-gradient(145deg, #121615 0%, #0d1311 100%) !important;
+            background: linear-gradient(145deg, #131716 0%, #0d1311 100%) !important;
             border: 1px solid rgba(255, 255, 255, 0.05) !important;
         }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -80,7 +80,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:05</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 21:07</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -200,7 +200,7 @@
                 </button>
             </div>
 
-            <!-- Search Bar (Search by Name or Number/Rank e.g. "Zaif" or "1") -->
+            <!-- Search Bar -->
             <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -209,7 +209,7 @@
             </div>
 
             <div class="space-y-3.5 pt-1" id="investors-list-container">
-                <!-- Dynamically populated tiered cards -->
+                <!-- Dynamically populated uniform-icon tiered cards -->
             </div>
         </section>
 
@@ -229,8 +229,8 @@
             <p class="text-xs text-softGrey">API configurations, developer tools, and risk controls.</p>
             <div class="card-box p-5 space-y-3 text-xs">
                 <div class="p-3.5 bg-midnight rounded-xl border border-gray-900">
-                    <p class="font-bold text-softWhite mb-0.5">GoldAPI Integration</p>
-                    <p class="text-emeraldLive text-[11px]">Key Active: goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io</p>
+                    <p class="font-bold text-softWhite mb-0.5">Lead Portfolio Manager</p>
+                    <p class="text-softGrey">Kaif Alvi (Master Administrator)</p>
                 </div>
             </div>
         </section>
@@ -513,17 +513,19 @@
                 listContainer.innerHTML = filteredInvestors.map((inv) => {
                     const rank = investors.findIndex(i => i.id === inv.id) + 1;
                     let cardClass = "card-box tier-normal";
+                    
+                    // Uniform icon box for all ranks, with subtle respective shading
                     let rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>`;
                     
                     if (rank === 1) {
                         cardClass = "card-box tier-gold";
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-yellow-700 border border-yellow-300 flex items-center justify-center text-midnight font-black text-sm shadow-lg" title="Gold Tier #1">🥇 1</div>`;
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-amber-500/50 flex items-center justify-center text-amber-400 font-extrabold text-sm shadow-inner">${rank}</div>`;
                     } else if (rank === 2) {
                         cardClass = "card-box tier-silver";
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-300 to-slate-500 border border-slate-200 flex items-center justify-center text-midnight font-black text-sm shadow-lg" title="Silver Tier #2">🥈 2</div>`;
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-slate-400/50 flex items-center justify-center text-slate-300 font-extrabold text-sm shadow-inner">${rank}</div>`;
                     } else if (rank === 3) {
                         cardClass = "card-box tier-bronze";
-                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-700 to-yellow-950 border border-amber-600 flex items-center justify-center text-softWhite font-black text-sm shadow-lg" title="Bronze Tier #3">🥉 3</div>`;
+                        rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-amber-700/50 flex items-center justify-center text-amber-600 font-extrabold text-sm shadow-inner">${rank}</div>`;
                     }
 
                     return `

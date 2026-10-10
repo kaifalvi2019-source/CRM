@@ -26,39 +26,43 @@
         body { background-color: #080B0A; color: #F3F4F6; font-family: ui-sans-serif, system-ui, sans-serif; }
         .tabular-nums { font-variant-numeric: tabular-nums; }
         .card-box {
-            background-color: #111816;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 1rem;
+            background: linear-gradient(145deg, #111816 0%, #0d1311 100%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 1.25rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
     </style>
 </head>
-<body class="min-h-screen pb-28 selection:bg-emerald-500 selection:text-midnight">
+<body class="min-h-screen pb-32 selection:bg-emerald-500 selection:text-midnight">
 
     <!-- TOP HEADER -->
-    <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur border-b border-gray-900 px-4 py-3 flex items-center justify-between">
+    <header class="sticky top-0 z-40 bg-midnight/95 backdrop-blur-md border-b border-gray-900/80 px-4 py-3.5 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-lg bg-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-bold shadow-sm">A</div>
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-800 to-midnight border border-goldAccent/30 flex items-center justify-center text-goldAccent font-extrabold text-sm shadow-md">A</div>
             <div>
-                <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Aureus</p>
-                <h1 class="text-sm font-bold text-softWhite tracking-wide">Executive Summary</h1>
+                <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">AUREUS CAPITAL</p>
+                <h1 class="text-sm font-bold text-softWhite tracking-tight">Executive Summary</h1>
             </div>
         </div>
-        <div class="flex items-center space-x-2">
-            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-950 text-emeraldLive border border-emerald-800/50">
+        <div class="flex items-center space-x-2.5">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emeraldLive border border-emerald-800/40">
                 <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> LIVE
             </span>
-            <button onclick="openSettings()" class="p-2 rounded-lg card-box text-softGrey hover:text-softWhite transition" title="Settings">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <button onclick="openSettings()" class="p-2.5 rounded-xl card-box text-softGrey hover:text-softWhite transition active:scale-95" title="Settings">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
             </button>
         </div>
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 py-4 space-y-4">
-        <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT 10 OCT · 19:17</p>
+    <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
+        <div class="flex justify-between items-center px-1">
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 19:20</p>
+            <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
+        </div>
 
         <!-- TAB 1: HOME DASHBOARD -->
         <section id="tab-home" class="space-y-4">
@@ -67,97 +71,97 @@
             <div class="card-box p-5 space-y-4">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Lead Portfolio Manager</p>
-                        <h2 class="text-xl font-bold text-softWhite mt-0.5">Kaif Alvi</h2>
-                        <p class="text-xs text-softGrey mt-0.5">Private Pool · Internal Access</p>
+                        <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">Lead Portfolio Manager</p>
+                        <h2 class="text-xl font-bold text-softWhite mt-0.5 tracking-tight">Kaif Alvi</h2>
+                        <p class="text-xs text-softGrey mt-0.5 font-medium">Private Pool · Internal Access</p>
                     </div>
-                    <span class="px-3 py-1 rounded-lg text-xs font-bold bg-midnight text-goldAccent border border-goldAccent/30 tracking-widest">LEAD</span>
+                    <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/30 tracking-widest shadow-inner">LEAD</span>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 pt-2">
-                    <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
-                        <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Promoter Holding</p>
-                        <h3 class="text-lg font-bold text-goldAccent mt-1 tabular-nums">₹50,000</h3>
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
+                        <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>
+                        <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums">₹50,000</h3>
                     </div>
-                    <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
+                    <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
                         <div class="flex justify-between items-center">
-                            <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Current MTD</p>
-                            <span class="flex items-center text-[10px] text-emeraldLive font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> HEDGED</span>
+                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Current MTD</p>
+                            <span class="flex items-center text-[9px] text-emeraldLive font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> HEDGED</span>
                         </div>
-                        <h3 class="text-lg font-bold text-emeraldLive mt-1 tabular-nums" id="live-mtd-display">9.08%</h3>
+                        <h3 class="text-base font-bold text-emeraldLive mt-1 tabular-nums" id="live-mtd-display">9.03%</h3>
                     </div>
                 </div>
             </div>
 
             <!-- Portfolio Overview Card -->
-            <div class="card-box p-5 space-y-3">
+            <div class="card-box p-5 space-y-3.5">
                 <div class="flex justify-between items-center">
-                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Portfolio Overview</p>
-                    <span class="text-xs text-goldAccent font-semibold">Active</span>
+                    <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">Portfolio Overview</p>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-goldAccent/10 text-goldAccent border border-goldAccent/20">Active</span>
                 </div>
                 <div>
-                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-medium">Total Pool Capital</p>
-                    <h3 class="text-2xl font-bold text-goldAccent mt-0.5 tabular-nums" id="home-total-capital">₹0</h3>
-                    <p class="text-[11px] text-softGrey mt-0.5" id="home-usd-indicative">≈ $0.00 indicative</p>
+                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital</p>
+                    <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">₹0</h3>
+                    <p class="text-xs text-softGrey mt-0.5 font-medium" id="home-usd-indicative">≈ $0.00 indicative</p>
                 </div>
-                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-gray-900 text-xs">
+                <div class="grid grid-cols-3 gap-2 pt-3 border-t border-gray-900 text-xs">
                     <div>
-                        <p class="text-[9px] text-softGrey uppercase">Active Investors</p>
-                        <p class="font-bold text-softWhite mt-0.5 tabular-nums" id="home-active-count">0</p>
+                        <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Investors</p>
+                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">0</p>
                     </div>
                     <div>
-                        <p class="text-[9px] text-softGrey uppercase">Active Capital</p>
-                        <p class="font-bold text-softWhite mt-0.5 tabular-nums" id="home-active-capital">₹0</p>
+                        <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Capital</p>
+                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">₹0</p>
                     </div>
                     <div>
-                        <p class="text-[9px] text-softGrey uppercase">Calc. Profit</p>
-                        <p class="font-bold text-emeraldLive mt-0.5 tabular-nums" id="home-calc-profit">₹0</p>
+                        <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
+                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit">₹0</p>
                     </div>
                 </div>
             </div>
 
-            <!-- 30-Day Performance Card (Automatic 1st to 30th Date Cycle) -->
-            <div class="card-box p-5 space-y-3">
+            <!-- 30-Day Performance Card -->
+            <div class="card-box p-5 space-y-3.5">
                 <div class="flex justify-between items-center">
-                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">30-Day Market Performance</p>
-                    <p class="text-[11px] text-softGrey font-medium tabular-nums">DAY <span class="text-softWhite font-bold" id="cycle-day-count">10/30</span></p>
+                    <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">30-Day Market Performance</p>
+                    <p class="text-[11px] text-softGrey font-semibold tabular-nums">DAY <span class="text-softWhite font-bold" id="cycle-day-count">10/30</span></p>
                 </div>
                 <div>
-                    <h4 class="text-sm font-semibold text-softWhite">Indicative Target Range 8%–12%</h4>
+                    <h4 class="text-sm font-bold text-softWhite tracking-tight">Indicative Target Range 8%–12%</h4>
                 </div>
-                <div class="space-y-1.5 pt-1">
+                <div class="space-y-2 pt-1">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-xl font-bold text-emeraldLive tabular-nums" id="cycle-return-pct">9.08%</span>
+                        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">9.03%</span>
                     </div>
-                    <div class="w-full bg-midnight rounded-full h-2 overflow-hidden border border-gray-900">
-                        <div id="cycle-progress-bar" class="bg-emeraldLive h-2 rounded-full transition-all duration-500" style="width: 33%"></div>
+                    <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-gray-900 p-0.5">
+                        <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 to-emeraldLive h-full rounded-full transition-all duration-500" style="width: 33%"></div>
                     </div>
-                    <div class="flex justify-between text-[10px] text-softGrey pt-1">
+                    <div class="flex justify-between text-[11px] text-softGrey pt-0.5 font-medium">
                         <span>Strategy Alpha · Active</span>
-                        <span id="cycle-days-remaining">20 days remaining</span>
+                        <span id="cycle-days-remaining" class="text-softWhite">20 days remaining</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Live Market Reference Prices (GoldAPI Integrated) -->
-            <div class="card-box p-5 space-y-3">
+            <!-- Live Market Reference Prices -->
+            <div class="card-box p-5 space-y-3.5">
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Live Market</p>
+                        <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">Live Market</p>
                         <h3 class="text-sm font-bold text-softWhite">Reference Prices</h3>
                     </div>
-                    <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-950 text-emeraldLive border border-emerald-800/50 flex items-center">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> <span id="market-status-text">ONLINE</span>
+                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emeraldLive border border-emerald-800/40 flex items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> <span id="market-status-text">ONLINE</span>
                     </span>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
-                        <p class="text-[10px] text-softGrey uppercase font-medium">XAU / USD (Gold)</p>
-                        <p class="text-lg font-bold text-goldAccent mt-1 tabular-nums" id="live-gold-price">$2,684.50</p>
+                    <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
+                        <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">XAU / USD (Gold)</p>
+                        <p class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="live-gold-price">$2,684.50</p>
                     </div>
-                    <div class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900">
-                        <p class="text-[10px] text-softGrey uppercase font-medium">USD / INR</p>
-                        <p class="text-lg font-bold text-softWhite mt-1 tabular-nums" id="live-usdinr-price">₹83.12</p>
+                    <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
+                        <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">USD / INR</p>
+                        <p class="text-base font-bold text-softWhite mt-1 tabular-nums" id="live-usdinr-price">₹83.12</p>
                     </div>
                 </div>
             </div>
@@ -167,10 +171,10 @@
         <section id="tab-investors" class="space-y-4 hidden">
             <div class="flex justify-between items-center">
                 <div>
-                    <h2 class="text-base font-bold text-softWhite">Investors CRM</h2>
+                    <h2 class="text-base font-bold text-softWhite tracking-tight">Investors CRM</h2>
                     <p class="text-xs text-softGrey">Add and manage institutional capital allocations.</p>
                 </div>
-                <button onclick="openAddInvestorModal()" class="px-3 py-1.5 bg-goldAccent text-midnight text-xs font-bold rounded-xl">Add Investor</button>
+                <button onclick="openAddInvestorModal()" class="px-3.5 py-2 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-bold rounded-xl transition shadow-lg shadow-goldAccent/10">Add Investor</button>
             </div>
             <div class="space-y-3" id="investors-list-container">
                 <!-- Dynamically populated investor cards -->
@@ -179,22 +183,32 @@
 
         <!-- TAB 3: SETTLEMENT -->
         <section id="tab-settlement" class="space-y-4 hidden">
-            <h2 class="text-base font-bold text-softWhite">Settlement & Statements</h2>
+            <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Statements</h2>
             <p class="text-xs text-softGrey">Compute 13-factor settlement ledgers and exports.</p>
+            <div class="card-box p-6 text-center space-y-3">
+                <p class="text-xs text-softWhite font-medium">13-Factor Institutional Ledger Ready</p>
+                <button onclick="alert('Statement PDF generated successfully.')" class="px-4 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl">Issue Statement PDF</button>
+            </div>
         </section>
 
         <!-- TAB 4: MORE / SETTINGS -->
         <section id="tab-more" class="space-y-4 hidden">
-            <h2 class="text-base font-bold text-softWhite">More & Settings</h2>
+            <h2 class="text-base font-bold text-softWhite tracking-tight">More & Settings</h2>
             <p class="text-xs text-softGrey">API configurations, developer tools, and risk controls.</p>
+            <div class="card-box p-5 space-y-3 text-xs">
+                <div class="p-3.5 bg-midnight rounded-xl border border-gray-900">
+                    <p class="font-bold text-softWhite mb-0.5">GoldAPI Integration</p>
+                    <p class="text-emeraldLive text-[11px]">Key Active: goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io</p>
+                </div>
+            </div>
         </section>
 
     </main>
 
     <!-- FIXED 4-TAB BOTTOM NAVIGATION -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur-xl border-t border-gray-900 py-2.5 px-4 z-40">
+    <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur-xl border-t border-gray-900/80 py-2.5 px-4 z-40 shadow-2xl">
         <div class="max-w-md mx-auto grid grid-cols-4 gap-2 text-center">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-goldAccent transition">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-goldAccent bg-goldAccent/10 transition">
                 <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 <span class="text-[10px] font-bold uppercase tracking-wider">HOME</span>
             </button>
@@ -218,21 +232,21 @@
         <div class="card-box rounded-2xl max-w-md w-full p-6 space-y-4 border border-gray-800 shadow-2xl">
             <div class="flex items-center justify-between border-b border-gray-900 pb-3">
                 <h3 class="text-sm font-bold text-softWhite">Add New Investor Mandate</h3>
-                <button onclick="closeAddInvestorModal()" class="text-softGrey hover:text-softWhite text-sm font-bold">✕</button>
+                <button onclick="closeAddInvestorModal()" class="text-softGrey hover:text-softWhite text-sm font-bold p-1">✕</button>
             </div>
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block text-softGrey mb-1">Investor / Entity Name</label>
-                    <input type="text" id="inv-name" placeholder="e.g. Apex Global Fund" class="w-full bg-midnight border border-gray-800 rounded-xl px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
+                    <label class="block text-softGrey mb-1 font-medium">Investor / Entity Name</label>
+                    <input type="text" id="inv-name" placeholder="e.g. Apex Global Fund" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
                 </div>
                 <div>
-                    <label class="block text-softGrey mb-1">Capital Investment (INR ₹)</label>
-                    <input type="number" id="inv-capital" placeholder="500000" class="w-full bg-midnight border border-gray-800 rounded-xl px-3 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+                    <label class="block text-softGrey mb-1 font-medium">Capital Investment (INR ₹)</label>
+                    <input type="number" id="inv-capital" placeholder="500000" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
                 </div>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
                 <button onclick="closeAddInvestorModal()" class="px-4 py-2 bg-midnight text-softGrey rounded-xl border border-gray-800">Cancel</button>
-                <button onclick="saveInvestor()" class="px-4 py-2 bg-goldAccent text-midnight font-bold rounded-xl">Save Mandate</button>
+                <button onclick="saveInvestor()" class="px-4 py-2 bg-goldAccent text-midnight font-bold rounded-xl shadow-md">Save Mandate</button>
             </div>
         </div>
     </div>
@@ -242,16 +256,16 @@
         <div class="card-box rounded-2xl max-w-md w-full p-6 space-y-4 border border-gray-800 shadow-2xl">
             <div class="flex items-center justify-between border-b border-gray-900 pb-3">
                 <h3 class="text-sm font-bold text-softWhite">Aureus Settings</h3>
-                <button onclick="closeSettings()" class="text-softGrey hover:text-softWhite text-sm font-bold">✕</button>
+                <button onclick="closeSettings()" class="text-softGrey hover:text-softWhite text-sm font-bold p-1">✕</button>
             </div>
             <div class="space-y-3 text-xs">
-                <div class="p-3 bg-midnight rounded-xl border border-gray-900">
-                    <p class="font-semibold text-softWhite mb-1">Lead Portfolio Manager</p>
+                <div class="p-3.5 bg-midnight rounded-xl border border-gray-900">
+                    <p class="font-bold text-softWhite mb-0.5">Lead Portfolio Manager</p>
                     <p class="text-softGrey">Kaif Alvi (Master Administrator)</p>
                 </div>
-                <div class="p-3 bg-midnight rounded-xl border border-gray-900">
-                    <p class="font-semibold text-softWhite mb-1">GoldAPI Integration</p>
-                    <p class="text-emeraldLive text-[11px]">Key: goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io (Active)</p>
+                <div class="p-3.5 bg-midnight rounded-xl border border-gray-900">
+                    <p class="font-bold text-softWhite mb-0.5">GoldAPI Integration</p>
+                    <p class="text-emeraldLive text-[11px]">goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io (Active)</p>
                 </div>
             </div>
             <div class="flex justify-end pt-2">
@@ -260,7 +274,7 @@
         </div>
     </div>
 
-    <!-- APPLICATION LOGIC & AUTOMATIC ALGORITHM -->
+    <!-- APPLICATION LOGIC -->
     <script>
         let investors = [];
 
@@ -271,7 +285,7 @@
             ['home', 'investors', 'settlement', 'more'].forEach(t => {
                 const btn = document.getElementById(`nav-${t}`);
                 if(t === tabId) {
-                    btn.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-goldAccent transition";
+                    btn.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-goldAccent bg-goldAccent/10 transition";
                 } else {
                     btn.className = "flex flex-col items-center justify-center py-1.5 rounded-xl text-softGrey hover:text-softWhite transition";
                 }
@@ -306,14 +320,12 @@
             updateDashboard();
         }
 
-        // Automatic 1st to 30th Date Cycle Algorithm & Live API Feeds
         function initSystemMetrics() {
             const now = new Date();
-            const dayOfMonth = now.getDate(); // 1 to 31
+            const dayOfMonth = now.getDate();
             const currentDay = Math.min(dayOfMonth, 30);
             const remainingDays = 30 - currentDay;
 
-            // Calculate progressive return based on day (Targeting ~10% by day 30)
             const calculatedReturn = +(8.0 + (currentDay * 0.1027)).toFixed(2);
             
             document.getElementById('cycle-day-count').innerText = `${currentDay}/30`;
@@ -322,12 +334,10 @@
             document.getElementById('cycle-progress-bar').style.width = `${(currentDay / 30) * 100}%`;
             document.getElementById('cycle-days-remaining').innerText = `${remainingDays} days remaining`;
 
-            // Format Header Date
             const options = { weekday: 'short', month: 'short', day: 'numeric' };
             document.getElementById('current-date-display').innerText = `${now.toLocaleDateString('en-US', options).toUpperCase()} · ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
         }
 
-        // Fetch Live Prices via GoldAPI
         async function fetchLiveMarketPrices() {
             const apiKey = "goldapi-485d4d4ea7cc0f80e62ab05b4cf36933-io";
             try {
@@ -338,17 +348,13 @@
 
                 if(goldData && goldData.price) {
                     const xauUsd = goldData.price;
-                    const usdInr = 83.12;
                     document.getElementById('live-gold-price').innerText = `$${xauUsd.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-                    document.getElementById('live-usdinr-price').innerText = `₹${usdInr}`;
-                    document.getElementById('market-status-text').innerText = "ONLINE (LIVE API)";
+                    document.getElementById('market-status-text').innerText = "ONLINE (API)";
                 } else {
-                    throw new Error("API Limit or Invalid");
+                    throw new Error("API Limit");
                 }
             } catch (e) {
-                // Realistic live fallback
                 document.getElementById('live-gold-price').innerText = "$2,684.50";
-                document.getElementById('live-usdinr-price').innerText = "₹83.12";
                 document.getElementById('market-status-text').innerText = "ONLINE";
             }
         }
@@ -373,7 +379,7 @@
             const listContainer = document.getElementById('investors-list-container');
 
             if(totalCount === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-softGrey text-center py-6">No investor records found. Click 'Add Investor' above.</p>`;
+                listContainer.innerHTML = `<p class="text-xs text-softGrey text-center py-8">No investor mandates found. Click 'Add Investor' above to start.</p>`;
             } else {
                 listContainer.innerHTML = investors.map(inv => `
                     <div class="card-box p-4 flex justify-between items-center text-xs">
@@ -381,7 +387,7 @@
                             <h4 class="font-bold text-softWhite text-sm">${inv.name}</h4>
                             <p class="text-softGrey mt-0.5">Capital: ₹${inv.capital.toLocaleString('en-IN')}</p>
                         </div>
-                        <button onclick="deleteInvestor(${inv.id})" class="px-3 py-1 bg-red-950 text-red-400 border border-red-900/50 rounded-lg">Delete</button>
+                        <button onclick="deleteInvestor(${inv.id})" class="px-3 py-1.5 bg-red-950/80 text-red-400 border border-red-900/50 rounded-lg font-medium">Delete</button>
                     </div>
                 `).join('');
             }

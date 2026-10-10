@@ -60,7 +60,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 19:20</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SAT, OCT 10 · 19:40</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -85,24 +85,24 @@
                     </div>
                     <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
                         <div class="flex justify-between items-center">
-                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Current MTD</p>
-                            <span class="flex items-center text-[9px] text-emeraldLive font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> HEDGED</span>
+                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Active Strategy</p>
+                            <span class="flex items-center text-[9px] text-emeraldLive font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> SECURE</span>
                         </div>
-                        <h3 class="text-base font-bold text-emeraldLive mt-1 tabular-nums" id="live-mtd-display">9.03%</h3>
+                        <h3 class="text-xs font-bold text-emeraldLive mt-1.5 tracking-wide">Alpha-X Hedged</h3>
                     </div>
                 </div>
             </div>
 
-            <!-- Portfolio Overview Card -->
+            <!-- Portfolio Overview Card (Promoter + Investors Capital Combined) -->
             <div class="card-box p-5 space-y-3.5">
                 <div class="flex justify-between items-center">
                     <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">Portfolio Overview</p>
                     <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-goldAccent/10 text-goldAccent border border-goldAccent/20">Active</span>
                 </div>
                 <div>
-                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital</p>
-                    <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">₹0</h3>
-                    <p class="text-xs text-softGrey mt-0.5 font-medium" id="home-usd-indicative">≈ $0.00 indicative</p>
+                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
+                    <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">₹50,000</h3>
+                    <p class="text-xs text-softGrey mt-0.5 font-medium" id="home-usd-indicative">≈ $601.54 indicative</p>
                 </div>
                 <div class="grid grid-cols-3 gap-2 pt-3 border-t border-gray-900 text-xs">
                     <div>
@@ -115,7 +115,7 @@
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
-                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit">₹0</p>
+                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit">₹4,515</p>
                     </div>
                 </div>
             </div>
@@ -167,17 +167,19 @@
             </div>
         </section>
 
-        <!-- TAB 2: INVESTORS -->
+        <!-- TAB 2: INVESTOR PORTFOLIO -->
         <section id="tab-investors" class="space-y-4 hidden">
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center card-box p-4 bg-gradient-to-r from-graphite to-midnight">
                 <div>
-                    <h2 class="text-base font-bold text-softWhite tracking-tight">Investors CRM</h2>
-                    <p class="text-xs text-softGrey">Add and manage institutional capital allocations.</p>
+                    <h2 class="text-base font-bold text-softWhite tracking-tight">Investor Portfolio</h2>
+                    <p class="text-xs text-softGrey">Manage allocations and generate payout confirmations.</p>
                 </div>
-                <button onclick="openAddInvestorModal()" class="px-3.5 py-2 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-bold rounded-xl transition shadow-lg shadow-goldAccent/10">Add Investor</button>
+                <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/20 flex items-center">
+                    + Add Investor
+                </button>
             </div>
             <div class="space-y-3" id="investors-list-container">
-                <!-- Dynamically populated investor cards -->
+                <!-- Dynamically populated designer investor cards -->
             </div>
         </section>
 
@@ -226,6 +228,23 @@
             </button>
         </div>
     </nav>
+
+    <!-- INVESTOR ACTION / PAYOUT MODAL -->
+    <div id="action-modal" class="fixed inset-0 bg-midnight/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="card-box rounded-2xl max-w-sm w-full p-6 space-y-4 border border-gray-800 shadow-2xl text-center">
+            <h3 class="text-base font-bold text-softWhite uppercase" id="modal-inv-name">Investor Actions</h3>
+            <p class="text-xs text-softGrey" id="modal-inv-details">Capital & Payout Breakdown</p>
+            <div class="space-y-2.5 pt-2">
+                <button onclick="copyPayoutMessage()" class="w-full py-3 bg-emerald-950 text-emeraldLive border border-emerald-800/60 font-bold text-xs rounded-xl shadow-md hover:bg-emerald-900 transition flex items-center justify-center space-x-2">
+                    <span>📋 Copy Professional Payout</span>
+                </button>
+                <button onclick="deleteCurrentInvestor()" class="w-full py-2.5 bg-red-950/80 text-red-400 border border-red-900/50 font-bold text-xs rounded-xl transition">
+                    🗑️ Delete Mandate
+                </button>
+                <button onclick="closeActionModal()" class="w-full py-2 bg-midnight text-softGrey text-xs rounded-xl border border-gray-800">Close</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ADD INVESTOR MODAL -->
     <div id="investor-modal" class="fixed inset-0 bg-midnight/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
@@ -276,7 +295,11 @@
 
     <!-- APPLICATION LOGIC -->
     <script>
-        let investors = [];
+        let investors = [
+            { id: 101, name: "zaif alvi", capital: 50000 }
+        ];
+        let selectedInvestorId = null;
+        const promoterHolding = 50000;
 
         function switchTab(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
@@ -299,6 +322,45 @@
         function openAddInvestorModal() { document.getElementById('investor-modal').classList.remove('hidden'); }
         function closeAddInvestorModal() { document.getElementById('investor-modal').classList.add('hidden'); }
 
+        function openActionModal(id, name, capital) {
+            selectedInvestorId = id;
+            const now = new Date();
+            const currentDay = Math.min(now.getDate(), 30);
+            const returnPct = 8.0 + (currentDay * 0.1027);
+            const profit = capital * (returnPct / 100);
+            const totalPayout = capital + profit;
+            const usdVal = totalPayout / 83.12;
+
+            document.getElementById('modal-inv-name').innerText = name;
+            document.getElementById('modal-inv-details').innerHTML = `Capital: ₹${capital.toLocaleString('en-IN')}<br>Est. Profit (${returnPct.toFixed(2)}%): <span class="text-emeraldLive font-bold">+₹${profit.toLocaleString('en-IN', {maximumFractionDigits:0})}</span><br>Total Payout: ₹${totalPayout.toLocaleString('en-IN', {maximumFractionDigits:0})} (≈ $${usdVal.toFixed(2)})`;
+            document.getElementById('action-modal').classList.remove('hidden');
+        }
+
+        function closeActionModal() { document.getElementById('action-modal').classList.add('hidden'); }
+
+        function copyPayoutMessage() {
+            const inv = investors.find(i => i.id === selectedInvestorId);
+            if(!inv) return;
+            const now = new Date();
+            const currentDay = Math.min(now.getDate(), 30);
+            const returnPct = 8.0 + (currentDay * 0.1027);
+            const profit = inv.capital * (returnPct / 100);
+            const totalPayout = inv.capital + profit;
+            const usdVal = (totalPayout / 83.12).toFixed(2);
+
+            const msg = `╔══════════════════════╗\n✨ 𝐏𝐀𝐘𝐎𝐔𝐓 𝐂𝐎𝐍𝐅𝐈𝐑𝐌𝐀𝐓𝐈𝐎𝐍 ✨\n╚══════════════════════╝\n\n👤 Investor\n　　└─ ${inv.name.toUpperCase()}\n\n🔥 Status\n　　└─ 🟢 Active (Hedged)\n\n💵 Payout (USD)\n　　└─ 💰 $${usdVal}\n\n🇮🇳 Return (INR)\n　　└─ 💎 ₹${totalPayout.toLocaleString('en-IN', {maximumFractionDigits:0})}\n\n━━━━━━━━━━━━━━━━━━━━\n🏆 AUREUS CAPITAL 🏆\n━━━━━━━━━━━━━━━━━━━━`;
+
+            navigator.clipboard.writeText(msg);
+            alert(`Professional Payout confirmation copied for ${inv.name}!`);
+            closeActionModal();
+        }
+
+        function deleteCurrentInvestor() {
+            investors = investors.filter(inv => inv.id !== selectedInvestorId);
+            closeActionModal();
+            updateDashboard();
+        }
+
         function saveInvestor() {
             const name = document.getElementById('inv-name').value.trim();
             const capital = parseFloat(document.getElementById('inv-capital').value);
@@ -315,11 +377,6 @@
             updateDashboard();
         }
 
-        function deleteInvestor(id) {
-            investors = investors.filter(inv => inv.id !== id);
-            updateDashboard();
-        }
-
         function initSystemMetrics() {
             const now = new Date();
             const dayOfMonth = now.getDate();
@@ -330,7 +387,6 @@
             
             document.getElementById('cycle-day-count').innerText = `${currentDay}/30`;
             document.getElementById('cycle-return-pct').innerText = `${calculatedReturn}%`;
-            document.getElementById('live-mtd-display').innerText = `${calculatedReturn}%`;
             document.getElementById('cycle-progress-bar').style.width = `${(currentDay / 30) * 100}%`;
             document.getElementById('cycle-days-remaining').innerText = `${remainingDays} days remaining`;
 
@@ -361,33 +417,39 @@
 
         function updateDashboard() {
             const totalCount = investors.length;
-            const totalCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
+            const investorsCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
+            const totalPoolCap = promoterHolding + investorsCap;
             
             const now = new Date();
             const currentDay = Math.min(now.getDate(), 30);
             const currentRateFactor = (8.0 + (currentDay * 0.1027)) / 100;
             
-            const calcProfit = totalCap * currentRateFactor; 
-            const usdIndicative = totalCap / 83.12;
+            const calcProfit = totalPoolCap * currentRateFactor; 
+            const usdIndicative = totalPoolCap / 83.12;
 
-            document.getElementById('home-total-capital').innerText = `₹${totalCap.toLocaleString('en-IN')}`;
+            document.getElementById('home-total-capital').innerText = `₹${totalPoolCap.toLocaleString('en-IN')}`;
             document.getElementById('home-usd-indicative').innerText = `≈ $${usdIndicative.toFixed(2)} indicative`;
             document.getElementById('home-active-count').innerText = totalCount;
-            document.getElementById('home-active-capital').innerText = `₹${totalCap.toLocaleString('en-IN')}`;
+            document.getElementById('home-active-capital').innerText = `₹${investorsCap.toLocaleString('en-IN')}`;
             document.getElementById('home-calc-profit').innerText = `₹${calcProfit.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
 
             const listContainer = document.getElementById('investors-list-container');
 
             if(totalCount === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-softGrey text-center py-8">No investor mandates found. Click 'Add Investor' above to start.</p>`;
+                listContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No Investor Mandates Found</p><p class="text-[11px] text-softGrey">Click 'Add Investor' above to register capital.</p></div>`;
             } else {
                 listContainer.innerHTML = investors.map(inv => `
-                    <div class="card-box p-4 flex justify-between items-center text-xs">
-                        <div>
-                            <h4 class="font-bold text-softWhite text-sm">${inv.name}</h4>
-                            <p class="text-softGrey mt-0.5">Capital: ₹${inv.capital.toLocaleString('en-IN')}</p>
+                    <div onclick="openActionModal(${inv.id}, '${inv.name}', ${inv.capital})" class="card-box p-4 flex justify-between items-center cursor-pointer hover:border-goldAccent/40 transition">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-midnight border border-goldAccent/30 flex items-center justify-center text-goldAccent font-bold text-sm">
+                                ${inv.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-softWhite text-sm capitalize">${inv.name}</h4>
+                                <p class="text-[11px] text-softGrey mt-0.5">Capital: <span class="text-goldAccent font-semibold">₹${inv.capital.toLocaleString('en-IN')}</span></p>
+                            </div>
                         </div>
-                        <button onclick="deleteInvestor(${inv.id})" class="px-3 py-1.5 bg-red-950/80 text-red-400 border border-red-900/50 rounded-lg font-medium">Delete</button>
+                        <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold">Manage ↗</span>
                     </div>
                 `).join('');
             }

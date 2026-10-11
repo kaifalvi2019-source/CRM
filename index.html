@@ -82,7 +82,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 06:45</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 06:50</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -132,22 +132,22 @@
                 </div>
                 <div>
                     <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
-                    <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">₹3,25,000</h3>
-                    <p class="text-xs text-emeraldLive mt-0.5 font-semibold tabular-nums" id="home-usd-indicative">≈ $3,358.48 indicative</p>
+                    <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">₹1,00,000</h3>
+                    <p class="text-xs text-emeraldLive mt-0.5 font-semibold tabular-nums" id="home-usd-indicative">≈ $1,033.38 indicative</p>
                 </div>
                 <div class="grid grid-cols-3 gap-2 pt-3 border-t border-gray-900 text-xs">
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Investors</p>
-                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">4</p>
+                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">1</p>
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Capital</p>
-                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">₹2,75,000</p>
+                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">₹50,000</p>
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
-                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$303.17</p>
-                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">₹29,338</p>
+                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$94.34</p>
+                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">₹9,130</p>
                     </div>
                 </div>
             </div>
@@ -303,10 +303,7 @@
     <script>
         // Load investors from localStorage or default list if empty
         let investors = JSON.parse(localStorage.getItem('aureus_investors')) || [
-            { id: 101, name: "Huzayf Khan", capital: 75000, active: true },
-            { id: 102, name: "Priya Verma", capital: 60000, active: true },
-            { id: 103, name: "Amit Sharma", capital: 50000, active: true },
-            { id: 104, name: "Harsh Gupta", capital: 40000, active: true }
+            { id: 101, name: "Zaif", capital: 50000, active: true }
         ];
         
         let promoterHolding = 50000;
@@ -389,7 +386,7 @@
             }
         }
 
-        // FIXED INDIVIDUAL PAYOUT CALCULATION BASED ON THE SPECIFIC INVESTOR CAPITAL
+        // STRICTLY FIXED INDIVIDUAL PROPORTIONAL PAYOUT CALCULATION
         function copyPayoutMessage(id, event) {
             event.stopPropagation();
             const inv = investors.find(i => i.id === id);
@@ -397,11 +394,18 @@
             
             const now = new Date();
             const currentDay = Math.min(now.getDate(), 30);
-            const returnPct = 8.0 + (currentDay * 0.1027); // e.g. 9.13%
             
-            // Calculate individual profit & total payout accurately for this specific investor
-            const profit = inv.capital * (returnPct / 100);
-            const totalPayout = inv.capital + profit;
+            // Total pool calculations
+            const investorsCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
+            const totalPoolCap = promoterHolding + investorsCap;
+            
+            // Total pool profit based on current cycle day return percentage
+            const currentRateFactor = (8.0 + (currentDay * 0.1027)) / 100;
+            const totalPoolProfit = totalPoolCap * currentRateFactor;
+            
+            // Correct proportional share: Investor gets profit proportional to their share in total pool capital
+            const investorProfit = totalPoolProfit * (inv.capital / totalPoolCap);
+            const totalPayout = inv.capital + investorProfit;
             const usdVal = (totalPayout / currentUsdInrRate).toFixed(2);
 
             // Date & Time formatting (DD-MM-YYYY | HH:MM AM/PM)
@@ -416,7 +420,7 @@
             const timeFormatted = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
             const dateTimeStr = `${dayFormatted}-${monthFormatted}-${yearFormatted} | ${timeFormatted}`;
 
-            const msg = `╔══════════════════════════════════╗\n       ✨ 𝐏𝐀𝐘𝐎𝐔𝐓 𝐂𝐎𝐍𝐅𝐈𝐑𝐌𝐀𝐓𝐈𝐎𝐍 ✨\n╚══════════════════════════════════╝\n\n👤 Investor\n    └─ ${inv.name.toUpperCase()}\n\n🔥 Status\n    └─ 🟢 Active\n\n💵 Payout (USD)\n    └─ 💰 $${usdVal}\n\n🇮🇳 Return (INR)\n    └─ 💎 ₹${totalPayout.toLocaleString('en-IN', {maximumFractionDigits:0})}\n\n📅 Date & Time\n    └─ 🕒 ${dateTimeStr}\n\n💬 Message\n    └─ 🎉 Congratulations! Funds successfully transferred.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\n🏆 AUREUS CAPITAL 🏆\n━━━━━━━━━━━━━━━━━━━━━━━━━`;
+            const msg = `╔══════════════════════════════════╗\n       ✨ 𝐏𝐀𝐘𝐎𝐔𝐓 𝐂𝐎𝐍𝐅𝐈𝐑𝐌𝐀𝐓𝐈𝐎𝐍 ✨\n╚══════════════════════════════════╝\n\n👤 Investor\n    └─ ${inv.name.toUpperCase()}\n\n🔥 Status\n    └─ 🟢 Active\n\n💵 Payout (USD)\n    └─ 💰 $${usdVal}\n\n🇮🇳 Return (INR)\n    └─ 💎 ₹${Math.round(totalPayout).toLocaleString('en-IN')}\n\n📅 Date & Time\n    └─ 🕒 ${dateTimeStr}\n\n💬 Message\n    └─ 🎉 Congratulations! Funds successfully transferred.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\n🏆 AUREUS CAPITAL 🏆\n━━━━━━━━━━━━━━━━━━━━━━━━━`;
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(msg).then(() => {
@@ -539,7 +543,7 @@
         }
 
         function updateDashboard() {
-            const searchQuery = document.getElementById('investor-search').value.toLowerCase().trim();
+            const searchQuery = document.getElementById('investor-search'].value.toLowerCase().trim();
             investors.sort((a, b) => b.capital - a.capital);
 
             let filteredInvestors = investors.filter((inv, index) => {
@@ -570,7 +574,7 @@
             document.getElementById('home-active-capital').innerText = `₹${investorsCap.toLocaleString('en-IN')}`;
             
             document.getElementById('home-calc-profit-usd').innerText = `$${usdProfit.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-            document.getElementById('home-calc-profit-inr').innerText = `₹${calcProfit.toLocaleString('en-IN', {maximumFractionDigits:0})}`;
+            document.getElementById('home-calc-profit-inr').innerText = `₹${Math.round(calcProfit).toLocaleString('en-IN')}`;
 
             const listContainer = document.getElementById('investors-list-container');
 

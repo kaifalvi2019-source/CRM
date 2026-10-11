@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:15</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:22</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -312,7 +312,7 @@
         // PROFESSIONAL CYCLE & PRORATED CALCULATION LOGIC
         const CYCLE_LENGTH_DAYS = 30;
         const CYCLE_TARGET_RETURN_PCT = 10;
-        const CYCLE_START_DATE = '2026-10-01'; // अपने वास्तविक cycle की शुरुआत की तारीख
+        const CYCLE_START_DATE = '2026-10-01';
 
         function getCurrentCycleDay() {
             const [year, month, day] = CYCLE_START_DATE.split('-').map(Number);
@@ -402,39 +402,112 @@
             }
         }
 
-        // PERFECT INDIVIDUAL PRORATED PAYOUT CALCULATION
+        // INTEGRATED ROBUST COPY PAYOUT FUNCTION
         function copyPayoutMessage(id, event) {
-            event.stopPropagation();
-            const inv = investors.find(i => i.id === id);
-            if(!inv) return;
-            
-            const now = new Date();
-            const proratedReturnPct = getProratedReturnPct();
-            const investorCapital = Number(inv.capital);
-            
-            const profit = investorCapital * (proratedReturnPct / 100);
-            const totalPayout = investorCapital + profit;
-            const usdVal = (totalPayout / currentUsdInrRate).toFixed(2);
+            if (event) event.stopPropagation();
 
-            const dayFormatted = String(now.getDate()).padStart(2, '0');
-            const monthFormatted = String(now.getMonth() + 1).padStart(2, '0');
-            const yearFormatted = now.getFullYear();
-            let hours = now.getHours();
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            const timeFormatted = `${String(hours).padStart(2, '0')}:${minutes} ${ampm}`;
-            const dateTimeStr = `${dayFormatted}-${monthFormatted}-${yearFormatted} | ${timeFormatted}`;
+            const inv = investors.find(
+                investor => String(investor.id) === String(id)
+            );
 
-            const msg = `╔══════════════════════════════════╗\n       ✨ 𝐏𝐀𝐘𝐎𝐔𝐓 𝐂𝐎𝐍𝐅𝐈𝐑𝐌𝐀𝐓𝐈𝐎𝐍 ✨\n╚══════════════════════════════════╝\n\n👤 Investor\n    └─ ${inv.name.toUpperCase()}\n\n🔥 Status\n    └─ 🟢 Active\n\n💵 Payout (USD)\n    └─ 💰 $${usdVal}\n\n🇮🇳 Return (INR)\n    └─ 💎 ₹${Math.round(totalPayout).toLocaleString('en-IN')}\n\n📅 Date & Time\n    └─ 🕒 ${dateTimeStr}\n\n💬 Message\n    └─ 🎉 Congratulations! Funds successfully transferred.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━\n🏆 AUREUS CAPITAL 🏆\n━━━━━━━━━━━━━━━━━━━━━━━━━`;
+            if (!inv) {
+                alert("Investor not found.");
+                return;
+            }
 
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(msg).then(() => {
-                    alert(`✅ Professional Payout confirmation copied for ${inv.name}!`);
-                }).catch(() => {
-                    fallbackCopyText(msg, inv.name);
+            const capital = Number(inv.capital);
+            const rate = Number(currentUsdInrRate);
+            const cycleDay = getCurrentCycleDay();
+
+            if (!Number.isFinite(capital) || capital <= 0) {
+                alert("Invalid investor capital.");
+                return;
+            }
+
+            if (!Number.isFinite(rate) || rate <= 0) {
+                alert("Invalid USD/INR rate.");
+                return;
+            }
+
+            const returnPct = getProratedReturnPct();
+
+            const profit = capital * returnPct / 100;
+            const totalPayout = capital + profit;
+            const payoutUSD = totalPayout / rate;
+
+            const inr = value =>
+                value.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                 });
+
+            const usd = value =>
+                value.toLocaleString("en-US", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+            const now = new Date();
+
+            const date = [
+                String(now.getDate()).padStart(2, "0"),
+                String(now.getMonth() + 1).padStart(2, "0"),
+                now.getFullYear()
+            ].join("-");
+
+            const time = now.toLocaleTimeString("en-IN", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true
+            });
+
+            const msg = [
+                "╔══════════════════════════════════╗",
+                "       ✨ 𝐏𝐀𝐘𝐎𝐔𝐓 𝐂𝐎𝐍𝐅𝐈𝐑𝐌𝐀𝐓𝐈𝐎𝐍 ✨",
+                "╚══════════════════════════════════╝",
+                "",
+                "👤 Investor",
+                `    └─ ${inv.name.toUpperCase()}`,
+                "",
+                "🔥 Status",
+                "    └─ 🟢 Active",
+                "",
+                "📅 Performance Cycle",
+                `    └─ Day ${cycleDay}/${CYCLE_LENGTH_DAYS}`,
+                "",
+                "💼 Investor Capital (INR)",
+                `    └─ ₹${inr(capital)}`,
+                "",
+                "📈 Prorated Return",
+                `    └─ ${returnPct.toFixed(2)}%`,
+                "",
+                "💹 Investor Profit (INR)",
+                `    └─ ₹${inr(profit)}`,
+                "",
+                "🇮🇳 Total Payout (INR)",
+                `    └─ ₹${inr(totalPayout)}`,
+                "",
+                "💵 Payout (USD)",
+                `    └─ $${usd(payoutUSD)}`,
+                "",
+                "💱 USD/INR Rate",
+                `    └─ ₹${rate.toFixed(2)}`,
+                "",
+                "📅 Date & Time",
+                `    └─ 🕒 ${date} | ${time}`,
+                "",
+                "💬 Message",
+                "    └─ 🎉 Congratulations! Funds successfully transferred.",
+                "",
+                "━━━━━━━━━━━━━━━━━━━━━━━━━",
+                "🏆 AUREUS CAPITAL 🏆",
+                "━━━━━━━━━━━━━━━━━━━━━━━━━"
+            ].join("\n");
+
+            if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(msg)
+                    .then(() => alert(`✅ Professional Payout confirmation copied for ${inv.name}!`))
+                    .catch(() => fallbackCopyText(msg, inv.name));
             } else {
                 fallbackCopyText(msg, inv.name);
             }

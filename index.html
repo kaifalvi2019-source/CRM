@@ -69,7 +69,6 @@
             background: linear-gradient(145deg, #111816 0%, #0d1311 100%) !important;
             border: 1px solid rgba(255, 255, 255, 0.07) !important;
         }
-        /* Ripple effect container */
         .ripple-btn { position: relative; overflow: hidden; }
         .ripple-span {
             position: absolute;
@@ -109,7 +108,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:50 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 1:25 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -297,6 +296,9 @@
 
     </main>
 
+    <!-- HIDDEN CANVAS FOR WHATSAPP CARD IMAGE GENERATION -->
+    <canvas id="payout-canvas" width="1080" height="1350" style="display:none;"></canvas>
+
     <!-- FIXED 4-TAB BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur-xl border-t border-gray-900/80 py-2.5 px-4 z-40 shadow-2xl">
         <div class="max-w-md mx-auto grid grid-cols-4 gap-2 text-center">
@@ -483,7 +485,6 @@
         function toggleSettled(id, event) {
             if(event) event.stopPropagation();
             
-            // Add ripple animation effect on click
             const btn = event.currentTarget;
             const circle = document.createElement('span');
             const diameter = Math.max(btn.clientWidth, btn.clientHeight);
@@ -772,29 +773,157 @@
             link.click();
         }
 
-        function copyPayoutMessage(id, event) {
+        /* DYNAMIC WHATSAPP PAYOUT CARD & MESSAGE SHARING FEATURE */
+        async function copyPayoutMessage(id, event) {
             if (event) event.stopPropagation();
             const inv = investors.find(i => String(i.id) === String(id));
             if (!inv) return;
-            const profitINR = inv.capital * (getProratedReturnPct() / 100);
-            const profitUSD = profitINR / currentUsdInrRate;
 
-            const msg = [
-                "==================================",
-                "       PAYOUT CONFIRMATION        ",
-                "==================================",
+            const returnPct = getProratedReturnPct();
+            const profitINR = inv.capital * (returnPct / 100);
+            const profitUSD = profitINR / currentUsdInrRate;
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-GB');
+            const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true});
+
+            // WhatsApp Message Text as requested
+            const shareText = [
+                "✨ Dear Valued Client,",
                 "",
-                `Investor: ${inv.name.toUpperCase()}`,
-                `Status: Active (Principal 100% Protected)`,
-                `Return Payout (INR): INR ${profitINR.toLocaleString('en-IN', {maximumFractionDigits:2})}`,
-                `Return Payout (USD): $${profitUSD.toFixed(2)}`,
+                "Your payout details are shared above for your reference. 💸",
                 "",
-                "AUREUS CAPITAL"
+                "Thank you for your continued trust in AUREUS CAPITAL. We look forward to growing together and building a successful financial journey. 🤝📈",
+                "",
+                "💎 AUREUS CAPITAL Invest • Grow • Prosper"
             ].join("\n");
 
-            navigator.clipboard.writeText(msg).then(() => {
-                alert(`Professional Payout confirmation copied for ${inv.name}!`);
+            // Generate Canvas Payout Notification Card
+            const canvas = document.getElementById('payout-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Background Deep Midnight Gradient
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, 1350);
+            bgGrad.addColorStop(0, '#080B0A');
+            bgGrad.addColorStop(1, '#0d1311');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, 1080, 1350);
+
+            // Top Header Branding
+            ctx.fillStyle = '#C6A56A';
+            ctx.font = 'bold 36px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('AUREUS CAPITAL', 540, 90);
+            ctx.fillStyle = '#8D9A93';
+            ctx.font = '20px Arial';
+            ctx.fillText('INVEST  •  GROW  •  PROSPER', 540, 130);
+
+            // Notification Banner Box
+            ctx.fillStyle = '#111816';
+            ctx.strokeStyle = 'rgba(198, 165, 106, 0.4)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(80, 170, 920, 220, 24);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = '#F3F4F6';
+            ctx.font = 'bold 44px Arial';
+            ctx.fillText('PAYOUT TRANSFER NOTIFICATION', 540, 245);
+            ctx.fillStyle = '#C6A56A';
+            ctx.font = '24px Arial';
+            ctx.fillText('Your payout has been successfully transferred!', 540, 300);
+            ctx.fillStyle = '#00B982';
+            ctx.fillText('⏳ It will be credited to your account within 24 to 48 hours.', 540, 350);
+
+            // Details Container Card
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.roundRect(80, 430, 920, 640, 24);
+            ctx.fill();
+
+            // Card Title inside Details
+            ctx.fillStyle = '#111111';
+            ctx.font = 'bold 28px Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText('📊 AUREUS CAPITAL DETAILS', 130, 495);
+
+            ctx.strokeStyle = '#C6A56A';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(130, 520);
+            ctx.lineTo(950, 520);
+            ctx.stroke();
+
+            // Details Rows Data
+            const rows = [
+                { label: 'Client Name', val: inv.name.toUpperCase() },
+                { label: 'Date', val: dateStr },
+                { label: 'Time', val: timeStr },
+                { label: 'Return Generated', val: `${returnPct.toFixed(2)}%` },
+                { label: 'Amount in USD', val: `$${profitUSD.toFixed(2)}` },
+                { label: 'Amount in INR', val: `₹${Math.round(profitINR).toLocaleString('en-IN')}` }
+            ];
+
+            let startY = 585;
+            rows.forEach((row) => {
+                ctx.fillStyle = '#555555';
+                ctx.font = 'bold 22px Arial';
+                ctx.fillText(row.label, 140, startY);
+                ctx.fillText(':', 420, startY);
+
+                ctx.fillStyle = '#111111';
+                ctx.font = 'bold 24px Arial';
+                ctx.fillText(row.val, 460, startY);
+
+                // Row Divider
+                ctx.strokeStyle = '#F3F4F6';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(130, startY + 25);
+                ctx.lineTo(950, startY + 25);
+                ctx.stroke();
+
+                startY += 80;
             });
+
+            // Footer Appreciation Text
+            ctx.fillStyle = '#111816';
+            ctx.font = 'bold 28px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Thank you for investing with us!', 540, 1150);
+            ctx.fillStyle = '#555555';
+            ctx.font = '20px Arial';
+            ctx.fillText('We truly appreciate your trust and look forward to building success together!', 540, 1190);
+
+            // Bottom Brand Footer
+            ctx.fillStyle = '#C6A56A';
+            ctx.font = 'bold 22px Arial';
+            ctx.fillText('AUREUS CAPITAL  •  TOGETHER WE GROW', 540, 1280);
+
+            // Convert Canvas to Blob and Trigger WhatsApp / Native Share
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], `Aureus_Payout_${inv.name}.png`, { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            title: 'Aureus Payout Notification',
+                            text: shareText,
+                            files: [file]
+                        });
+                    } catch (err) {
+                        console.log('Share canceled or failed', err);
+                    }
+                } else {
+                    // Fallback to clipboard and direct image download if Web Share API is restricted
+                    navigator.clipboard.writeText(shareText);
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/png');
+                    link.download = `Aureus_Payout_${inv.name}.png`;
+                    link.click();
+                    alert(`Payout message copied to clipboard & notification card downloaded for ${inv.name}!`);
+                }
+            }, 'image/png');
         }
 
         function deleteInvestor(id, event) {
@@ -846,7 +975,6 @@
             const goldEl = document.getElementById('live-gold-price');
             const inrEl = document.getElementById('live-usdinr-price');
             
-            // Add pulse blink animation class
             goldEl.classList.add('animate-price-blink');
             inrEl.classList.add('animate-price-blink');
             setTimeout(() => {
@@ -933,8 +1061,8 @@
                                 </span>
                             </div>
                             <div id="actions-${inv.id}" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-gray-900/80 text-xs">
-                                <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-emerald-950/80 text-emeraldLive border border-emerald-800/50 rounded-xl font-semibold hover:bg-emerald-900 transition flex items-center justify-center space-x-1.5 active:scale-95">
-                                    <span>📋 Copy Payout</span>
+                                <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-royalBlue text-white border border-blue-500/50 rounded-xl font-semibold hover:bg-blue-600 transition flex items-center justify-center space-x-1.5 active:scale-95 shadow">
+                                    <span>📤 Share Payout</span>
                                 </button>
                                 <button onclick="deleteInvestor(${inv.id}, event)" class="py-2 bg-red-950/80 text-red-400 border border-red-900/50 rounded-xl font-semibold hover:bg-red-900 transition flex items-center justify-center space-x-1.5 active:scale-95">
                                     <span>🗑️ Delete</span>

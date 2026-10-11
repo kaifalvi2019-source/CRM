@@ -82,7 +82,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 07:05</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 07:10</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -386,7 +386,7 @@
             }
         }
 
-        // STRICTLY FIXED INDIVIDUAL PROPORTIONAL PAYOUT CALCULATION
+        // CORRECTED PROPORTIONAL PAYOUT CALCULATION (Based on exact daily return percentage, e.g., 9.13% total target range on day 11)
         function copyPayoutMessage(id, event) {
             event.stopPropagation();
             const inv = investors.find(i => i.id === id);
@@ -395,15 +395,15 @@
             const now = new Date();
             const currentDay = Math.min(now.getDate(), 30);
             
-            // Total pool calculations
+            // Total pool capital
             const investorsCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
             const totalPoolCap = promoterHolding + investorsCap;
             
-            // Total pool profit based on current cycle day return percentage
+            // Correct total pool profit for the current day factor (e.g. 9.13%)
             const currentRateFactor = (8.0 + (currentDay * 0.1027)) / 100;
             const totalPoolProfit = totalPoolCap * currentRateFactor;
             
-            // Correct proportional share: Investor gets profit proportional to their share in total pool capital
+            // Individual investor's exact proportionate profit share
             const investorProfit = totalPoolProfit * (inv.capital / totalPoolCap);
             const totalPayout = inv.capital + investorProfit;
             const usdVal = (totalPayout / currentUsdInrRate).toFixed(2);

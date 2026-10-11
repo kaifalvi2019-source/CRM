@@ -94,7 +94,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 2:11 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 2:16 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -663,7 +663,7 @@
         </div>
 
         <div class="grid">
-            <div>Active Return Rate: <b style="color: #047857;">${returnPct.textField ? returnPct.textField : returnPct.toFixed(2)}%</b></div>
+            <div>Active Return Rate: <b style="color: #047857;">${returnPct.toFixed(2)}%</b></div>
             <div>Total Pool Capital (Principal Protected): <b>INR ${totalCap.toLocaleString('en-IN')}</b></div>
             <div>Total Gross Cycle Profit: <b style="color: #b45309;">$${totalProfitUsd.toFixed(2)} (INR ${Math.round(totalProfitInr).toLocaleString('en-IN')})</b></div>
             <div>Active Mandates: <b>${investors.length} Investor(s)</b></div>
@@ -944,7 +944,7 @@
                         card.style.transform = `translateX(-100%)`;
                         setTimeout(() => deleteInvestor(id), 250);
                     } else {
-                        card.style.transform = `translateX(0px)`;
+                        card.style.transform = `translateX(0px)`
                     }
                 }
                 activeCardId = null;
@@ -968,7 +968,7 @@
             }
 
             container.innerHTML = investors.map((inv) => {
-                const profitINR = inv.capital * (returnPtr ? inv.capital : returnPct / 100);
+                const profitINR = inv.capital * (returnPct / 100);
                 const profitUSD = profitINR / currentUsdInrRate;
                 const isSettled = inv.settled || false;
 
@@ -992,7 +992,7 @@
                         <div class="flex justify-between items-center pt-2 border-t border-gray-900/80 text-xs">
                             <div>
                                 <p class="text-[9px] text-softGrey uppercase">Gross Profit ($ / INR)</p>
-                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</i></p>
+                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</p>
                             </div>
                             <button onclick="toggleSettled(${inv.id}, event)" class="${btnClass}">
                                 ${isSettled ? "↺ Mark Pending" : "✓ Settle / Mark Paid"}

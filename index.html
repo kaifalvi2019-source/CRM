@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 20:12</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 21:04</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -229,11 +229,11 @@
                     <!-- Live calculated summary -->
                 </div>
 
-                <!-- IDENTICAL CLEAN WHITE CORPORATE STATEMENT PREVIEW -->
+                <!-- IDENTICAL PURE WHITE CORPORATE STATEMENT PREVIEW -->
                 <div class="pt-3">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold mb-2">Live White Statement Preview (Identical to Download PDF)</p>
                     <div id="white-preview-container" class="bg-white text-gray-900 p-4 rounded-xl border border-gray-300 shadow-xl font-sans text-[11px] overflow-x-auto">
-                        <!-- Populated dynamically to match downloaded file exactly -->
+                        <!-- Populated dynamically -->
                     </div>
                 </div>
             </div>
@@ -499,8 +499,8 @@
     <meta charset="UTF-8">
     <title>Aureus Capital - Statement $${usd}</title>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #ffffff; color: #111111; padding: 30px; margin: 0; }
-        .invoice-box { max-width: 800px; margin: auto; padding: 25px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 6px; background: #fff; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 25px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 6px; background: #ffffff !important; color: #111111 !important; }
         .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px; }
         .company { font-size: 18px; font-weight: bold; color: #111; letter-spacing: 1px; }
         .sub { font-size: 10px; color: #555; text-transform: uppercase; }
@@ -508,10 +508,10 @@
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 11px; }
         .item span { font-weight: bold; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb; }
-        th { background: #f3f4f6; color: #333; font-weight: bold; }
-        .total-row { font-weight: bold; background: #f9fafb; }
-        .footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; }
+        th, td { padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb; color: #111 !important; }
+        th { background: #f3f4f6 !important; color: #333 !important; font-weight: bold; }
+        .total-row { font-weight: bold; background: #f9fafb !important; }
+        .footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #333; }
         .sig { border-top: 1px solid #333; padding-top: 4px; text-align: center; width: 180px; }
     </style>
 </head>
@@ -581,7 +581,6 @@
             `;
 
             if(previewContainer) {
-                // Renders the exact same structured layout inside the app preview box
                 const now = new Date();
                 const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
                 
@@ -596,15 +595,15 @@
                             <div style="font-size:9px; color:#555;">${dateStr}</div>
                         </div>
                     </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9f9f9; padding:8px; border-radius:4px; margin-bottom:10px; font-size:10px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9f9f9; padding:8px; border-radius:4px; margin-bottom:10px; font-size:10px; color:#111;">
                         <div>Withdrawal: <b>$${usd.toLocaleString()}</b></div>
                         <div>Gross INR: <b>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
                         <div>Deductions: <b style="color:#b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div>
                         <div>Net Payout: <b style="color:#047857;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
                     </div>
-                    <div style="font-weight:bold; font-size:10px; margin-bottom:4px; color:#333;">12-POINT COST SUMMARY</div>
-                    <table style="width:100%; border-collapse:collapse; font-size:10px;">
-                        <tr style="background:#f3f4f6;"><th style="padding:4px; border-bottom:1px solid #ddd; text-align:left;">Component</th><th style="padding:4px; border-bottom:1px solid #ddd; text-align:right;">Amount (INR)</th></tr>
+                    <div style="font-weight:bold; font-size:10px; margin-bottom:4px; color:#111;">12-POINT COST SUMMARY</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:10px; color:#111;">
+                        <tr style="background:#f3f4f6;"><th style="padding:4px; border-bottom:1px solid #ddd; text-align:left; color:#111;">Component</th><th style="padding:4px; border-bottom:1px solid #ddd; text-align:right; color:#111;">Amount (INR)</th></tr>
                         <tr><td style="padding:3px; border-bottom:1px solid #eee;">1. Bank → CoinDCX Deposit</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right;">INR 0.00</td></tr>
                         <tr><td style="padding:3px; border-bottom:1px solid #eee;">2. USDT Buy Fee (1.5% + GST)</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right;">INR ${(res.buyFee + res.gstBuy).toFixed(2)}</td></tr>
                         <tr><td style="padding:3px; border-bottom:1px solid #eee;">3. Multi-Hop Network & Gas Buffers</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right;">INR 1,900.00</td></tr>
@@ -614,7 +613,7 @@
                     </table>
                     <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:flex-end; font-size:9px; color:#555;">
                         <div>Rate: USD/INR ${currentUsdInrRate}<br>Cryptographic Ledger Verified</div>
-                        <div style="border-top:1px solid #333; padding-top:2px; text-align:center; width:100px;"><b>${leadManagerName}</b></div>
+                        <div style="border-top:1px solid #333; padding-top:2px; text-align:center; width:100px; color:#111;"><b>${leadManagerName}</b></div>
                     </div>
                 `;
             }

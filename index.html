@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:13 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:17 AM</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -206,7 +206,7 @@
                     <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <!-- Natural gold button with active scale/click blink effect -->
+                <!-- Pure natural gold button without persistent orange state -->
                 <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-amber-600 active:scale-95 transition">Master Sheet PDF</button>
             </div>
 
@@ -1065,7 +1065,7 @@
                     ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-emerald-800/40">Settled / Paid</span>`
                     : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>`;
 
-                const btnTest = isSettled ? "↺ Mark Pending" : "✓ Settle / Mark Paid";
+                const btnText = isSettled ? "↺ Mark Pending" : "✓ Settle / Mark Paid";
                 const btnClass = isSettled 
                     ? "px-3 py-1.5 bg-midnight text-softGrey border border-gray-800 hover:text-softWhite text-[11px] font-semibold rounded-xl transition"
                     : "px-3 py-1.5 bg-goldAccent text-midnight hover:bg-amber-600 text-[11px] font-bold rounded-xl transition shadow-md";
@@ -1085,7 +1085,7 @@
                                 <p class="font-bold text-emeraldLive tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</p>
                             </div>
                             <button onclick="toggleSettled(${inv.id}, event)" class="${btnClass}">
-                                ${btnTest}
+                                ${btnText}
                             </button>
                         </div>
                     </div>

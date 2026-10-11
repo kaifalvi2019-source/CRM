@@ -28,30 +28,26 @@
                             '0%': { opacity: '1', transform: 'scale(1)' },
                             '50%': { opacity: '0.6', transform: 'scale(1.03)' },
                             '100%': { opacity: '1', transform: 'scale(1)' },
-                        },
-                        ripple: {
-                            '0%': { transform: 'scale(0)', opacity: '0.8' },
-                            '100%': { transform: 'scale(4)', opacity: '0' },
                         }
                     },
                     animation: {
                         'pulse-glow': 'pulseGlow 3s infinite ease-in-out',
                         'price-blink': 'priceBlink 0.6s ease-in-out',
-                        'ripple-effect': 'ripple 0.6s linear'
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #080B0A; color: #F3F4F6; font-family: ui-sans-serif, system-ui, sans-serif; }
+        body { background-color: #080B0A; color: #F3F4F6; font-family: ui-sans-serif, system-ui, sans-serif; overflow-x: hidden; }
         .tabular-nums { font-variant-numeric: tabular-nums; }
         .card-box {
             background: linear-gradient(145deg, #111816 0%, #0d1311 100%);
             border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: 1.25rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            touch-action: pan-y;
         }
         .tier-gold-card {
             background: linear-gradient(135deg, rgba(198, 165, 106, 0.42) 0%, #111816 75%) !important;
@@ -68,16 +64,6 @@
         .tier-normal-card {
             background: linear-gradient(145deg, #111816 0%, #0d1311 100%) !important;
             border: 1px solid rgba(255, 255, 255, 0.07) !important;
-        }
-        .ripple-btn { position: relative; overflow: hidden; }
-        .ripple-span {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            pointer-events: none;
-            width: 100px; height: 100px;
-            margin-top: -50px; margin-left: -50px;
-            animation: ripple 0.6s linear;
         }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
@@ -108,7 +94,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 1:25 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 1:32 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -222,7 +208,7 @@
             </div>
 
             <div class="space-y-3.5 pt-1" id="investors-list-container">
-                <!-- Dynamically populated tiered cards -->
+                <!-- Dynamically populated tiered cards with Swipe-to-Delete -->
             </div>
         </section>
 
@@ -475,28 +461,8 @@
 
         function closeAddInvestorModal() { document.getElementById('investor-modal').classList.add('hidden'); }
 
-        function toggleCardActions(id) {
-            const actionsDiv = document.getElementById(`actions-${id}`);
-            if(actionsDiv) {
-                actionsDiv.classList.toggle('hidden');
-            }
-        }
-
         function toggleSettled(id, event) {
             if(event) event.stopPropagation();
-            
-            const btn = event.currentTarget;
-            const circle = document.createElement('span');
-            const diameter = Math.max(btn.clientWidth, btn.clientHeight);
-            const radius = diameter / 2;
-            circle.style.width = circle.style.height = `${diameter}px`;
-            circle.style.left = `${event.clientX - btn.getBoundingClientRect().left - radius}px`;
-            circle.style.top = `${event.clientY - btn.getBoundingClientRect().top - radius}px`;
-            circle.classList.add('ripple-span');
-            const rippleDiv = btn.getElementsByClassName('ripple-span')[0];
-            if (rippleDiv) rippleDiv.remove();
-            btn.appendChild(circle);
-
             const inv = investors.find(i => i.id === id);
             if(inv) {
                 inv.settled = !inv.settled;
@@ -568,8 +534,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="color-scheme" content="light">
-    <meta name="supported-color-schemes" content="light">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aureus Capital - Statement $${usd}</title>
     <style>
@@ -773,9 +737,9 @@
             link.click();
         }
 
-        /* DYNAMIC WHATSAPP PAYOUT CARD & MESSAGE SHARING FEATURE */
-        async function copyPayoutMessage(id, event) {
-            if (event) event.stopPropagation();
+        /* WHATSAPP PAYOUT CARD & MESSAGE SHARING VIA PENDING SHARE ICON */
+        function shareSettlementPayout(id, event) {
+            if(event) event.stopPropagation();
             const inv = investors.find(i => String(i.id) === String(id));
             if (!inv) return;
 
@@ -786,7 +750,6 @@
             const dateStr = now.toLocaleDateString('en-GB');
             const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true});
 
-            // WhatsApp Message Text as requested
             const shareText = [
                 "✨ Dear Valued Client,",
                 "",
@@ -797,18 +760,15 @@
                 "💎 AUREUS CAPITAL Invest • Grow • Prosper"
             ].join("\n");
 
-            // Generate Canvas Payout Notification Card
             const canvas = document.getElementById('payout-canvas');
             const ctx = canvas.getContext('2d');
 
-            // Background Deep Midnight Gradient
             const bgGrad = ctx.createLinearGradient(0, 0, 0, 1350);
             bgGrad.addColorStop(0, '#080B0A');
             bgGrad.addColorStop(1, '#0d1311');
             ctx.fillStyle = bgGrad;
             ctx.fillRect(0, 0, 1080, 1350);
 
-            // Top Header Branding
             ctx.fillStyle = '#C6A56A';
             ctx.font = 'bold 36px Arial';
             ctx.textAlign = 'center';
@@ -817,7 +777,6 @@
             ctx.font = '20px Arial';
             ctx.fillText('INVEST  •  GROW  •  PROSPER', 540, 130);
 
-            // Notification Banner Box
             ctx.fillStyle = '#111816';
             ctx.strokeStyle = 'rgba(198, 165, 106, 0.4)';
             ctx.lineWidth = 2;
@@ -835,13 +794,11 @@
             ctx.fillStyle = '#00B982';
             ctx.fillText('⏳ It will be credited to your account within 24 to 48 hours.', 540, 350);
 
-            // Details Container Card
             ctx.fillStyle = '#FFFFFF';
             ctx.beginPath();
             ctx.roundRect(80, 430, 920, 640, 24);
             ctx.fill();
 
-            // Card Title inside Details
             ctx.fillStyle = '#111111';
             ctx.font = 'bold 28px Arial';
             ctx.textAlign = 'left';
@@ -854,7 +811,6 @@
             ctx.lineTo(950, 520);
             ctx.stroke();
 
-            // Details Rows Data
             const rows = [
                 { label: 'Client Name', val: inv.name.toUpperCase() },
                 { label: 'Date', val: dateStr },
@@ -875,7 +831,6 @@
                 ctx.font = 'bold 24px Arial';
                 ctx.fillText(row.val, 460, startY);
 
-                // Row Divider
                 ctx.strokeStyle = '#F3F4F6';
                 ctx.lineWidth = 1;
                 ctx.beginPath();
@@ -886,7 +841,6 @@
                 startY += 80;
             });
 
-            // Footer Appreciation Text
             ctx.fillStyle = '#111816';
             ctx.font = 'bold 28px Arial';
             ctx.textAlign = 'center';
@@ -895,12 +849,10 @@
             ctx.font = '20px Arial';
             ctx.fillText('We truly appreciate your trust and look forward to building success together!', 540, 1190);
 
-            // Bottom Brand Footer
             ctx.fillStyle = '#C6A56A';
             ctx.font = 'bold 22px Arial';
             ctx.fillText('AUREUS CAPITAL  •  TOGETHER WE GROW', 540, 1280);
 
-            // Convert Canvas to Blob and Trigger WhatsApp / Native Share
             canvas.toBlob(async (blob) => {
                 const file = new File([blob], `Aureus_Payout_${inv.name}.png`, { type: 'image/png' });
 
@@ -912,28 +864,24 @@
                             files: [file]
                         });
                     } catch (err) {
-                        console.log('Share canceled or failed', err);
+                        console.log('Share canceled', err);
                     }
                 } else {
-                    // Fallback to clipboard and direct image download if Web Share API is restricted
                     navigator.clipboard.writeText(shareText);
                     const link = document.createElement('a');
                     link.href = canvas.toDataURL('image/png');
                     link.download = `Aureus_Payout_${inv.name}.png`;
                     link.click();
-                    alert(`Payout message copied to clipboard & notification card downloaded for ${inv.name}!`);
+                    alert(`Payout card downloaded & message copied for ${inv.name}!`);
                 }
             }, 'image/png');
         }
 
-        function deleteInvestor(id, event) {
-            event.stopPropagation();
-            if(confirm('Are you sure you want to delete this investor mandate?')) {
-                investors = investors.filter(inv => inv.id !== id);
-                saveInvestorsToStorage();
-                updateDashboard();
-                updateSettlementLedger();
-            }
+        function deleteInvestor(id) {
+            investors = investors.filter(inv => inv.id !== id);
+            saveInvestorsToStorage();
+            updateDashboard();
+            updateSettlementLedger();
         }
 
         function saveInvestor() {
@@ -1047,31 +995,105 @@
                     let cardClass = rank === 1 ? "card-box tier-gold-card" : rank === 2 ? "card-box tier-silver-card" : rank === 3 ? "card-box tier-bronze-card" : "card-box tier-normal-card";
 
                     return `
-                        <div onclick="toggleCardActions(${inv.id})" class="${cardClass} p-4 space-y-3 cursor-pointer transition hover:border-goldAccent/40">
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>
-                                    <div onclick="openAddInvestorModal(${inv.id}, event)" title="Click to Edit">
-                                        <h4 class="font-bold text-softWhite text-sm capitalize hover:text-goldAccent transition">${inv.name}</h4>
-                                        <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">INR ${inv.capital.toLocaleString('en-IN')}</span></p>
+                        <div class="relative overflow-hidden rounded-[1.25rem] mb-3.5 shadow-lg">
+                            <div class="absolute inset-0 bg-red-950 flex items-center justify-end pr-6 text-red-400 font-bold text-xs">
+                                <span>🗑️ Delete</span>
+                            </div>
+                            <div id="card-${inv.id}" 
+                                 ontouchstart="handleTouchStart(event, ${inv.id})" 
+                                 ontouchmove="handleTouchMove(event, ${inv.id})" 
+                                 ontouchend="handleTouchEnd(event, ${inv.id})"
+                                 onmousedown="handleMouseDown(event, ${inv.id})"
+                                 class="${cardClass} p-4 space-y-3 relative z-10 select-none">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>
+                                        <div>
+                                            <h4 class="font-bold text-softWhite text-sm capitalize">${inv.name}</h4>
+                                            <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">INR ${inv.capital.toLocaleString('en-IN')}</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold flex items-center">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> Active
+                                        </span>
                                     </div>
                                 </div>
-                                <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold flex items-center">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> Active
-                                </span>
-                            </div>
-                            <div id="actions-${inv.id}" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-gray-900/80 text-xs">
-                                <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-royalBlue text-white border border-blue-500/50 rounded-xl font-semibold hover:bg-blue-600 transition flex items-center justify-center space-x-1.5 active:scale-95 shadow">
-                                    <span>📤 Share Payout</span>
-                                </button>
-                                <button onclick="deleteInvestor(${inv.id}, event)" class="py-2 bg-red-950/80 text-red-400 border border-red-900/50 rounded-xl font-semibold hover:bg-red-900 transition flex items-center justify-center space-x-1.5 active:scale-95">
-                                    <span>🗑️ Delete</span>
-                                </button>
                             </div>
                         </div>
                     `;
                 }).join('');
             }
+        }
+
+        let startX = 0;
+        let currentX = 0;
+        let activeCardId = null;
+
+        function handleTouchStart(e, id) {
+            startX = e.touches[0].clientX;
+            activeCardId = id;
+        }
+
+        function handleTouchMove(e, id) {
+            if (activeCardId !== id) return;
+            currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+            const card = document.getElementById(`card-${id}`);
+            if (card && diff < 0) {
+                card.style.transform = `translateX(${diff}px)`;
+            }
+        }
+
+        function handleTouchEnd(e, id) {
+            if (activeCardId !== id) return;
+            const card = document.getElementById(`card-${id}`);
+            const diff = currentX - startX;
+            if (card) {
+                if (diff < -120) {
+                    card.style.transform = `translateX(-100%)`;
+                    setTimeout(() => deleteInvestor(id), 250);
+                } else {
+                    card.style.transform = `translateX(0px)`;
+                }
+            }
+            activeCardId = null;
+            startX = 0;
+            currentX = 0;
+        }
+
+        function handleMouseDown(e, id) {
+            startX = e.clientX;
+            activeCardId = id;
+            const onMouseMove = (moveEvent) => {
+                if (activeCardId !== id) return;
+                currentX = moveEvent.clientX;
+                const diff = currentX - startX;
+                const card = document.getElementById(`card-${id}`);
+                if (card && diff < 0) {
+                    card.style.transform = `translateX(${diff}px)`;
+                }
+            };
+            const onMouseUp = (upEvent) => {
+                if (activeCardId !== id) return;
+                const card = document.getElementById(`card-${id}`);
+                const diff = currentX - startX;
+                if (card) {
+                    if (diff < -120) {
+                        card.style.transform = `translateX(-100%)`;
+                        setTimeout(() => deleteInvestor(id), 250);
+                    } else {
+                        card.style.transform = `translateX(0px)`;
+                    }
+                }
+                activeCardId = null;
+                startX = 0;
+                currentX = 0;
+                window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('mouseup', onMouseUp);
+            };
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
         }
 
         function updateSettlementLedger() {
@@ -1091,7 +1113,14 @@
 
                 const statusBadge = isSettled 
                     ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-emerald-800/40">Settled / Paid</span>`
-                    : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>`;
+                    : `
+                        <div class="flex items-center space-x-1.5">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>
+                            <button onclick="shareSettlementPayout(${inv.id}, event)" title="Share Payout via WhatsApp" class="p-1.5 bg-midnight hover:bg-graphite text-emeraldLive border border-emerald-500/40 rounded-lg transition active:scale-95 shadow">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                            </button>
+                        </div>
+                      `;
 
                 const btnClass = isSettled 
                     ? "px-3 py-1.5 bg-midnight text-softGrey border border-gray-800 hover:text-softWhite text-[11px] font-semibold rounded-xl transition active:scale-95"

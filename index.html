@@ -82,7 +82,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:41 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:45 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -113,12 +113,10 @@
                         <div class="flex justify-between items-center mt-1">
                             <div>
                                 <p class="text-[8px] text-softGrey">GOLD (XAU)</p>
-                                <!-- Golden Color for Gold Price -->
                                 <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-gold-price">$4,194.50</h3>
                             </div>
                             <div>
                                 <p class="text-[8px] text-softGrey">USD / INR</p>
-                                <!-- Emerald Green Color for USD/INR Rate -->
                                 <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-usdinr-price">INR 96.77</h3>
                             </div>
                         </div>
@@ -313,7 +311,7 @@
                 </div>
                 <div>
                     <label class="block text-softGrey mb-1 font-medium">Gemini API Key (Live Data Sync)</label>
-                    <input type="text" id="setting-gemini-apikey" placeholder="Paste your Gemini API Key here..." class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2.5 text-emeraldLive font-mono text-[11px] focus:outline-none focus:border-goldAccent">
+                    <input type="text" id="setting-gemini-apikey" placeholder="Paste your Gemini API Key here..." class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2.5 text-royalBlue font-mono text-[11px] focus:outline-none focus:border-goldAccent">
                 </div>
             </div>
             <div class="flex justify-end space-x-2 pt-2">
@@ -1075,9 +1073,10 @@
                     : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>`;
 
                 const btnText = isSettled ? "↺ Mark Pending" : "✓ Settle / Mark Paid";
+                // Updated to Royal Blue for "Settle / Mark Paid" action button
                 const btnClass = isSettled 
                     ? "px-3 py-1.5 bg-midnight text-softGrey border border-gray-800 hover:text-softWhite text-[11px] font-semibold rounded-xl transition"
-                    : "px-3 py-1.5 bg-goldAccent text-midnight hover:bg-amber-600 text-[11px] font-bold rounded-xl transition shadow-md";
+                    : "px-3 py-1.5 bg-royalBlue text-white hover:bg-blue-600 text-[11px] font-bold rounded-xl transition shadow-md shadow-blue-500/20";
 
                 return `
                     <div class="card-box p-4 space-y-3">

@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 20:09</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 20:12</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -229,11 +229,11 @@
                     <!-- Live calculated summary -->
                 </div>
 
-                <!-- CLEAN WHITE BACKGROUND LIVE STATEMENT PREVIEW -->
+                <!-- IDENTICAL CLEAN WHITE CORPORATE STATEMENT PREVIEW -->
                 <div class="pt-3">
-                    <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold mb-2">Clean White Statement Preview (PDF Format)</p>
-                    <div id="white-preview-container" class="bg-white text-gray-900 p-5 rounded-xl border border-gray-300 shadow-inner font-mono text-[11px] leading-relaxed overflow-x-auto">
-                        <!-- Populated dynamically with clean HTML format -->
+                    <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold mb-2">Live White Statement Preview (Identical to Download PDF)</p>
+                    <div id="white-preview-container" class="bg-white text-gray-900 p-4 rounded-xl border border-gray-300 shadow-xl font-sans text-[11px] overflow-x-auto">
+                        <!-- Populated dynamically to match downloaded file exactly -->
                     </div>
                 </div>
             </div>
@@ -499,20 +499,20 @@
     <meta charset="UTF-8">
     <title>Aureus Capital - Statement $${usd}</title>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #ffffff; color: #111111; padding: 40px; margin: 0; }
-        .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); border-radius: 8px; }
-        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 15px; margin-bottom: 20px; }
-        .company { font-size: 20px; font-weight: bold; color: #111; letter-spacing: 1px; }
-        .sub { font-size: 11px; color: #666; text-transform: uppercase; }
-        .title { font-size: 14px; font-weight: bold; color: #C6A56A; text-align: right; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; background: #f9f9f9; padding: 15px; border-radius: 6px; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #ffffff; color: #111111; padding: 30px; margin: 0; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 25px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 6px; background: #fff; }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px; }
+        .company { font-size: 18px; font-weight: bold; color: #111; letter-spacing: 1px; }
+        .sub { font-size: 10px; color: #555; text-transform: uppercase; }
+        .title { font-size: 13px; font-weight: bold; color: #C6A56A; text-align: right; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 11px; }
         .item span { font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 8px 10px; text-align: left; font-size: 12px; border-bottom: 1px solid #ddd; }
-        th { background: #f1f1f1; color: #333; }
-        .total-row { font-weight: bold; background: #fafafa; }
-        .footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 12px; }
-        .sig { border-top: 1px solid #333; padding-top: 5px; text-align: center; width: 200px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f3f4f6; color: #333; font-weight: bold; }
+        .total-row { font-weight: bold; background: #f9fafb; }
+        .footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; }
+        .sig { border-top: 1px solid #333; padding-top: 4px; text-align: center; width: 180px; }
     </style>
 </head>
 <body>
@@ -531,11 +531,11 @@
         <div class="grid">
             <div>Withdrawal Amount: <span>$${usd.toLocaleString()}</span></div>
             <div>Equivalent Gross INR: <span>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
-            <div>Total 12-Point Deductions: <span style="color: #d97706;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</span></div>
-            <div>Net Amount Received: <span style="color: #059669; font-size: 14px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
+            <div>Total 12-Point Deductions: <span style="color: #b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</span></div>
+            <div>Net Amount Received: <span style="color: #047857; font-size: 13px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
         </div>
 
-        <div style="font-size: 13px; font-weight: bold; margin-top: 20px; color: #333;">12-POINT TRANSACTION COST BREAKDOWN</div>
+        <div style="font-size: 12px; font-weight: bold; margin-top: 15px; color: #111;">12-POINT TRANSACTION COST BREAKDOWN</div>
         <table>
             <tr><th>#</th><th>Cost Component / Description</th><th>Amount (INR)</th></tr>
             <tr><td>1</td><td>Bank to CoinDCX Deposit</td><td>INR 0.00</td></tr>
@@ -555,12 +555,12 @@
 
         <div class="footer">
             <div>
-                <p><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p>
-                <p style="color: #666; font-size: 10px;">This is a system-generated cryptographic ledger statement.</p>
+                <p style="margin:0;"><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p>
+                <p style="color: #666; font-size: 9px; margin: 2px 0 0 0;">This is a system-generated cryptographic ledger statement.</p>
             </div>
             <div class="sig">
                 <p style="margin: 0; font-weight: bold;">${leadManagerName}</p>
-                <p style="margin: 0; font-size: 10px; color: #666;">Lead Portfolio Manager</p>
+                <p style="margin: 0; font-size: 9px; color: #666;">Lead Portfolio Manager</p>
             </div>
         </div>
     </div>
@@ -581,16 +581,41 @@
             `;
 
             if(previewContainer) {
-                // Generate clean white text summary for in-app preview
+                // Renders the exact same structured layout inside the app preview box
+                const now = new Date();
+                const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                
                 previewContainer.innerHTML = `
-                    <div style="border-bottom: 2px solid #C6A56A; padding-bottom: 8px; margin-bottom: 10px; display:flex; justify-content:space-between;">
-                        <strong>AUREUS CAPITAL STATEMENT</strong>
-                        <span>$${usd} Withdrawal</span>
+                    <div style="border-bottom: 2px solid #C6A56A; padding-bottom: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <div style="font-weight:bold; font-size:13px; color:#111;">AUREUS CAPITAL</div>
+                            <div style="font-size:9px; color:#555; text-transform:uppercase;">Institutional Private Pool</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:bold; font-size:11px; color:#C6A56A;">PAYOUT STATEMENT</div>
+                            <div style="font-size:9px; color:#555;">${dateStr}</div>
+                        </div>
                     </div>
-                    <div>Gross INR: INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</div>
-                    <div>Total Deductions: INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</div>
-                    <div style="color: #059669; font-weight:bold;">Net Payout: INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</div>
-                    <div style="margin-top: 8px; font-size: 10px; color: #555;">[ 12-Point Cost breakdown applied successfully. Click 'White HTML / PDF' to download full professional sheet. ]</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9f9f9; padding:8px; border-radius:4px; margin-bottom:10px; font-size:10px;">
+                        <div>Withdrawal: <b>$${usd.toLocaleString()}</b></div>
+                        <div>Gross INR: <b>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
+                        <div>Deductions: <b style="color:#b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div>
+                        <div>Net Payout: <b style="color:#047857;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
+                    </div>
+                    <div style="font-weight:bold; font-size:10px; margin-bottom:4px; color:#333;">12-POINT COST SUMMARY</div>
+                    <table style="width:100%; border-collapse:collapse; font-size:10px;">
+                        <tr style="background:#f3f4f6;"><th style="padding:4px; border-bottom:1px solid #ddd; text-align:left;">Component</th><th style="padding:4px; border-bottom:1px solid #ddd; text-align:right;">Amount (INR)</th></tr>
+                        <tr><td style="padding:3px; border-bottom:1px solid #eee;">1. Bank → CoinDCX Deposit</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right;">INR 0.00</td></tr>
+                        <tr><td style="padding:3px; border-bottom:1px solid #eee;">2. USDT Buy Fee (1.5% + GST)</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right;">INR ${(res.buyFee + res.gstBuy).toFixed(2)}</td></tr>
+                        <tr><td style="padding:3px; border-bottom:1px solid #eee;">3. Multi-Hop Network & Gas Buffers</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right;">INR 1,900.00</td></tr>
+                        <tr><td style="padding:3px; border-bottom:1px solid #eee;">4. USDT Sell Fee (1.5% + GST)</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right;">INR ${(res.sellFee + res.gstSell).toFixed(2)}</td></tr>
+                        <tr><td style="padding:3px; border-bottom:1px solid #eee;">5. TDS (1%) & Bank Payout</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right;">INR ${(res.tds + res.bankPayout).toFixed(2)}</td></tr>
+                        <tr style="font-weight:bold; background:#f9fafb;"><td style="padding:4px;">TOTAL DEDUCTIONS</td><td style="padding:4px; text-align:right;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr>
+                    </table>
+                    <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:flex-end; font-size:9px; color:#555;">
+                        <div>Rate: USD/INR ${currentUsdInrRate}<br>Cryptographic Ledger Verified</div>
+                        <div style="border-top:1px solid #333; padding-top:2px; text-align:center; width:100px;"><b>${leadManagerName}</b></div>
+                    </div>
                 `;
             }
         }

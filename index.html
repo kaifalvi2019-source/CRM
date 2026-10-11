@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:17 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:23 AM</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -206,8 +206,14 @@
                     <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <!-- Pure natural gold button without persistent orange state -->
-                <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-amber-600 active:scale-95 transition">Master Sheet PDF</button>
+                <!-- 100% Fixed Button without persistent orange bug -->
+                <button 
+                    onclick="downloadMasterStatementPDF()" 
+                    class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-goldAccent focus:bg-goldAccent focus:hover:bg-goldAccent active:bg-goldAccent active:scale-95 transition"
+                    style="background-color: #C6A56A;"
+                >
+                    Master Sheet PDF
+                </button>
             </div>
 
             <!-- QUICK PRESET BUTTONS & CUSTOM CALCULATOR -->

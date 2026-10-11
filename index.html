@@ -82,7 +82,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:31 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:41 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -113,11 +113,13 @@
                         <div class="flex justify-between items-center mt-1">
                             <div>
                                 <p class="text-[8px] text-softGrey">GOLD (XAU)</p>
-                                <h3 class="text-xs font-bold text-royalBlue tabular-nums" id="live-gold-price">$4,194.50</h3>
+                                <!-- Golden Color for Gold Price -->
+                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-gold-price">$4,194.50</h3>
                             </div>
                             <div>
                                 <p class="text-[8px] text-softGrey">USD / INR</p>
-                                <h3 class="text-xs font-bold text-royalBlue tabular-nums" id="live-usdinr-price">INR 96.77</h3>
+                                <!-- Emerald Green Color for USD/INR Rate -->
+                                <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-usdinr-price">INR 96.77</h3>
                             </div>
                         </div>
                     </div>
@@ -1089,7 +1091,7 @@
                         <div class="flex justify-between items-center pt-2 border-t border-gray-900/80 text-xs">
                             <div>
                                 <p class="text-[9px] text-softGrey uppercase">Gross Profit ($ / INR)</p>
-                                <p class="font-bold text-royalBlue tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</p>
+                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</p>
                             </div>
                             <button onclick="toggleSettled(${inv.id}, event)" class="${btnClass}">
                                 ${btnText}

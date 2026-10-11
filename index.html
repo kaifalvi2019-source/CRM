@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 20:05</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 20:09</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -222,17 +222,19 @@
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
                         <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" value="500" placeholder="e.g. 500" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
-                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-emeraldLive text-midnight text-xs font-bold rounded-xl hover:bg-emerald-600 transition shadow">White PDF</button>
+                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-emeraldLive text-midnight text-xs font-bold rounded-xl hover:bg-emerald-600 transition shadow">White HTML / PDF</button>
                     </div>
                 </div>
                 <div id="calculator-result-box" class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900 text-xs space-y-1.5 tabular-nums">
                     <!-- Live calculated summary -->
                 </div>
 
-                <!-- LIVE STATEMENT TEXT PREVIEW BOX -->
-                <div class="pt-2">
-                    <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold mb-1.5">Live Generated Statement Preview</p>
-                    <pre id="statement-preview-box" class="bg-midnight p-3 rounded-xl border border-gray-800 text-[10px] text-emerald-400 font-mono overflow-x-auto whitespace-pre-wrap">Generating statement preview...</pre>
+                <!-- CLEAN WHITE BACKGROUND LIVE STATEMENT PREVIEW -->
+                <div class="pt-3">
+                    <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold mb-2">Clean White Statement Preview (PDF Format)</p>
+                    <div id="white-preview-container" class="bg-white text-gray-900 p-5 rounded-xl border border-gray-300 shadow-inner font-mono text-[11px] leading-relaxed overflow-x-auto">
+                        <!-- Populated dynamically with clean HTML format -->
+                    </div>
                 </div>
             </div>
 
@@ -486,44 +488,90 @@
             }
         }
 
-        function generateStatementText(usd) {
+        function generateWhiteHtmlDocument(usd) {
             const res = calculate12PointCost(usd);
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
-            return `==================================================
-       AUREUS CAPITAL - INSTITUTIONAL STATEMENT   
-==================================================
-Date: ${dateStr} | Rate: USD/INR ${currentUsdInrRate}
+            return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Aureus Capital - Statement $${usd}</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #ffffff; color: #111111; padding: 40px; margin: 0; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); border-radius: 8px; }
+        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 15px; margin-bottom: 20px; }
+        .company { font-size: 20px; font-weight: bold; color: #111; letter-spacing: 1px; }
+        .sub { font-size: 11px; color: #666; text-transform: uppercase; }
+        .title { font-size: 14px; font-weight: bold; color: #C6A56A; text-align: right; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; background: #f9f9f9; padding: 15px; border-radius: 6px; }
+        .item span { font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 8px 10px; text-align: left; font-size: 12px; border-bottom: 1px solid #ddd; }
+        th { background: #f1f1f1; color: #333; }
+        .total-row { font-weight: bold; background: #fafafa; }
+        .footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 12px; }
+        .sig { border-top: 1px solid #333; padding-top: 5px; text-align: center; width: 200px; }
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <div class="header">
+            <div>
+                <div class="company">AUREUS CAPITAL</div>
+                <div class="sub">Institutional Private Pool Settlement</div>
+            </div>
+            <div>
+                <div class="title">PAYOUT STATEMENT</div>
+                <div class="sub" style="text-align: right;">Date: ${dateStr}</div>
+            </div>
+        </div>
 
-• Withdrawal Amount   : $${usd.toLocaleString()}
-• Equivalent INR      : INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}
-• Total Deductions    : INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)
-• Net Amount Received : INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}
+        <div class="grid">
+            <div>Withdrawal Amount: <span>$${usd.toLocaleString()}</span></div>
+            <div>Equivalent Gross INR: <span>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
+            <div>Total 12-Point Deductions: <span style="color: #d97706;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</span></div>
+            <div>Net Amount Received: <span style="color: #059669; font-size: 14px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
+        </div>
 
---- 12-POINT COST BREAKDOWN ---
-1. Bank -> CoinDCX Deposit: INR 0.00
-2. CoinDCX USDT Buy Fee (1.5%): INR ${res.buyFee.toFixed(2)}
-3. GST on Buy Fee (18%): INR ${res.gstBuy.toFixed(2)}
-4. CoinDCX -> Trust Transfer: INR ${res.transferOut.toFixed(2)}
-5. Trust -> XM360 Gas: INR ${res.gas1.toFixed(2)}
-6. XM360 -> Trust Withdrawal: INR ${res.xm360Fee.toFixed(2)}
-7. Trust -> CoinDCX Return Gas: INR ${res.gas2.toFixed(2)}
-8. CoinDCX USDT Sell Fee (1.5%): INR ${res.sellFee.toFixed(2)}
-9. GST on Sell Fee (18%): INR ${res.gstSell.toFixed(2)}
-10. TDS (1.0% Mandate): INR ${res.tds.toFixed(2)}
-11. UPI / P2M Merchant Fee: INR 0.00 (Personal Account Payout)
-12. CoinDCX -> Bank Handling: INR ${res.bankPayout.toFixed(2)}
+        <div style="font-size: 13px; font-weight: bold; margin-top: 20px; color: #333;">12-POINT TRANSACTION COST BREAKDOWN</div>
+        <table>
+            <tr><th>#</th><th>Cost Component / Description</th><th>Amount (INR)</th></tr>
+            <tr><td>1</td><td>Bank to CoinDCX Deposit</td><td>INR 0.00</td></tr>
+            <tr><td>2</td><td>CoinDCX USDT Buy Fee (1.5%)</td><td>INR ${res.buyFee.toFixed(2)}</td></tr>
+            <tr><td>3</td><td>GST on Buy Fee (18%)</td><td>INR ${res.gstBuy.toFixed(2)}</td></tr>
+            <tr><td>4</td><td>CoinDCX to Trust Wallet Transfer</td><td>INR ${res.transferOut.toFixed(2)}</td></tr>
+            <tr><td>5</td><td>Trust Wallet to XM360 Gas</td><td>INR ${res.gas1.toFixed(2)}</td></tr>
+            <tr><td>6</td><td>XM360 to Trust Wallet Withdrawal</td><td>INR ${res.xm360Fee.toFixed(2)}</td></tr>
+            <tr><td>7</td><td>Trust Wallet to CoinDCX Return Gas</td><td>INR ${res.gas2.toFixed(2)}</td></tr>
+            <tr><td>8</td><td>CoinDCX USDT Sell Fee (1.5%)</td><td>INR ${res.sellFee.toFixed(2)}</td></tr>
+            <tr><td>9</td><td>GST on Sell Fee (18%)</td><td>INR ${res.gstSell.toFixed(2)}</td></tr>
+            <tr><td>10</td><td>TDS (1.0% Legal Mandate)</td><td>INR ${res.tds.toFixed(2)}</td></tr>
+            <tr><td>11</td><td>UPI / P2M Merchant Fee (Personal Account)</td><td>INR 0.00</td></tr>
+            <tr><td>12</td><td>CoinDCX to Bank Payout & Handling</td><td>INR ${res.bankPayout.toFixed(2)}</td></tr>
+            <tr class="total-row"><td colspan="2">TOTAL DEDUCTIONS</td><td>INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr>
+        </table>
 
---------------------------------------------------
-Authorized Signatory: ${leadManagerName} (Lead Manager)
-Aureus Capital Private Pool`;
+        <div class="footer">
+            <div>
+                <p><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p>
+                <p style="color: #666; font-size: 10px;">This is a system-generated cryptographic ledger statement.</p>
+            </div>
+            <div class="sig">
+                <p style="margin: 0; font-weight: bold;">${leadManagerName}</p>
+                <p style="margin: 0; font-size: 10px; color: #666;">Lead Portfolio Manager</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
         }
 
         function renderCalculatorResult(usd) {
             const res = calculate12PointCost(usd);
             const box = document.getElementById('calculator-result-box');
-            const previewBox = document.getElementById('statement-preview-box');
+            const previewContainer = document.getElementById('white-preview-container');
             if(!box) return;
 
             box.innerHTML = `
@@ -532,21 +580,31 @@ Aureus Capital Private Pool`;
                 <div class="flex justify-between text-softGrey pt-1 border-t border-gray-800"><span>Net Amount Received:</span><span class="text-emeraldLive font-extrabold text-sm">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
             `;
 
-            if(previewBox) {
-                previewBox.innerText = generateStatementText(usd);
+            if(previewContainer) {
+                // Generate clean white text summary for in-app preview
+                previewContainer.innerHTML = `
+                    <div style="border-bottom: 2px solid #C6A56A; padding-bottom: 8px; margin-bottom: 10px; display:flex; justify-content:space-between;">
+                        <strong>AUREUS CAPITAL STATEMENT</strong>
+                        <span>$${usd} Withdrawal</span>
+                    </div>
+                    <div>Gross INR: INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</div>
+                    <div>Total Deductions: INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</div>
+                    <div style="color: #059669; font-weight:bold;">Net Payout: INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</div>
+                    <div style="margin-top: 8px; font-size: 10px; color: #555;">[ 12-Point Cost breakdown applied successfully. Click 'White HTML / PDF' to download full professional sheet. ]</div>
+                `;
             }
         }
 
         function downloadWhiteTemplatePDF() {
             const usd = activeSelectedWithdrawalUsd;
-            const textContent = generateStatementText(usd);
+            const htmlContent = generateWhiteHtmlDocument(usd);
 
-            const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8;' });
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `Aureus_Statement_$${usd}.txt`;
+            link.download = `Aureus_Statement_$${usd}.html`;
             link.click();
-            alert(`✅ White Statement for $${usd} downloaded successfully!`);
+            alert(`✅ Professional White Statement HTML/PDF for $${usd} downloaded successfully!`);
         }
 
         function downloadMasterStatementPDF() {

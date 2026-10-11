@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 21:50</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 21:55</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -229,11 +229,11 @@
                     <!-- Live calculated summary -->
                 </div>
 
-                <!-- LIVE WHITE STATEMENT PREVIEW -->
+                <!-- ISOLATED IFRAME WHITE STATEMENT PREVIEW -->
                 <div class="pt-3">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold mb-2">Live White Statement Preview (Identical to Download PDF)</p>
-                    <div id="white-preview-container" style="background-color: #ffffff !important; color: #111111 !important;" class="p-4 rounded-xl border border-gray-300 shadow-xl font-sans text-[11px] overflow-x-auto">
-                        <!-- Populated dynamically -->
+                    <div id="white-preview-container" class="rounded-xl border border-gray-300 shadow-xl overflow-hidden">
+                        <!-- Populated dynamically with isolated iframe -->
                     </div>
                 </div>
             </div>
@@ -493,75 +493,153 @@
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
-            // THIS HTML STRING HAS EXPLICIT FORCED WHITE BACKGROUND STYLES TO BYPASS MOBILE DARK MODE
             return `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="light">
+    <meta name="supported-color-schemes" content="light">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aureus Capital - Statement $${usd}</title>
+
     <style>
-        html { background-color: #ffffff !important; }
-        body { background-color: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; font-family: Arial, sans-serif; }
-        .invoice-box { max-width: 800px; margin: auto; padding: 25px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 6px; background-color: #ffffff !important; color: #111111 !important; }
-        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px; background-color: #ffffff !important; }
-        .company { font-size: 18px; font-weight: bold; color: #111111 !important; letter-spacing: 1px; }
-        .sub { font-size: 10px; color: #555555 !important; text-transform: uppercase; }
-        .title { font-size: 13px; font-weight: bold; color: #b45309 !important; text-align: right; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; background-color: #f9f9f9 !important; padding: 12px; border-radius: 6px; font-size: 11px; color: #111111 !important; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; background-color: #ffffff !important; }
-        th, td { padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb; color: #111111 !important; background-color: #ffffff !important; }
-        th { background-color: #f3f4f6 !important; font-weight: bold; color: #111111 !important; }
-        .total-row { font-weight: bold; background-color: #f9fafb !important; color: #111111 !important; }
-        .footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #111111 !important; background-color: #ffffff !important; }
-        .sig { border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px; color: #111111 !important; }
+        :root {
+            color-scheme: light !important;
+            supported-color-schemes: light;
+            background: #ffffff !important;
+            color: #111111 !important;
+        }
+
+        html {
+            background: #ffffff !important;
+            color: #111111 !important;
+            color-scheme: light !important;
+            forced-color-adjust: none !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        html body {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            color: #111111 !important;
+            color-scheme: light !important;
+            forced-color-adjust: none !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            padding: 30px;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            color-scheme: light !important;
+            forced-color-adjust: none !important;
+        }
+
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 25px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            color: #111111 !important;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-box * {
+            color-scheme: light !important;
+        }
+
+        .header, .footer, table, tbody, tr, td {
+            background-color: #ffffff !important;
+            color: #111111 !important;
+        }
+
+        th {
+            background-color: #f3f4f6 !important;
+            color: #111111 !important;
+        }
+
+        .grid, .total-row {
+            background-color: #f9fafb !important;
+            color: #111111 !important;
+        }
+
+        .company {
+            color: #111111 !important;
+        }
+
+        .sub {
+            color: #555555 !important;
+        }
+
+        .title {
+            color: #b45309 !important;
+        }
+
+        .net-amount {
+            color: #047857 !important;
+        }
+
+        @media print {
+            html, body, .invoice-box {
+                background: #ffffff !important;
+                color: #111111 !important;
+                box-shadow: none !important;
+            }
+        }
     </style>
 </head>
-<body style="background-color: #ffffff !important; color: #111111 !important;">
-    <div class="invoice-box" style="background-color: #ffffff !important; color: #111111 !important;">
-        <div class="header" style="background-color: #ffffff !important;">
+<body>
+    <div class="invoice-box">
+        <div class="header" style="display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px;">
             <div>
-                <div class="company" style="color: #111111 !important;">AUREUS CAPITAL</div>
-                <div class="sub" style="color: #555555 !important;">Institutional Private Pool Settlement</div>
+                <div class="company" style="font-size: 18px; font-weight: bold; letter-spacing: 1px;">AUREUS CAPITAL</div>
+                <div class="sub" style="font-size: 10px; text-transform: uppercase;">Institutional Private Pool Settlement</div>
             </div>
             <div>
-                <div class="title" style="color: #b45309 !important;">PAYOUT STATEMENT</div>
-                <div class="sub" style="text-align: right; color: #555555 !important;">Date: ${dateStr}</div>
+                <div class="title" style="font-size: 13px; font-weight: bold; text-align: right;">PAYOUT STATEMENT</div>
+                <div class="sub" style="font-size: 10px; text-align: right;">Date: ${dateStr}</div>
             </div>
         </div>
 
-        <div class="grid" style="background-color: #f9f9f9 !important; color: #111111 !important;">
-            <div style="color: #111111 !important;">Withdrawal Amount: <b style="color: #111111 !important;">$${usd.toLocaleString()}</b></div>
-            <div style="color: #111111 !important;">Equivalent Gross INR: <b style="color: #111111 !important;">INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
-            <div style="color: #111111 !important;">Total 12-Point Deductions: <b style="color: #b45309 !important;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div>
-            <div style="color: #111111 !important;">Net Amount Received: <b style="color: #047857 !important; font-size: 13px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
+        <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; padding: 12px; border-radius: 6px; font-size: 11px;">
+            <div>Withdrawal Amount: <b>$${usd.toLocaleString()}</b></div>
+            <div>Equivalent Gross INR: <b>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
+            <div>Total 12-Point Deductions: <b style="color: #b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div>
+            <div>Net Amount Received: <b class="net-amount" style="font-size: 13px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
         </div>
 
-        <div style="font-size: 12px; font-weight: bold; margin-top: 15px; color: #111111 !important;">12-POINT TRANSACTION COST BREAKDOWN</div>
-        <table style="background-color: #ffffff !important;">
-            <tr style="background-color: #ffffff !important;"><th style="background-color: #f3f4f6 !important; color: #111111 !important;">#</th><th style="background-color: #f3f4f6 !important; color: #111111 !important;">Cost Component / Description</th><th style="background-color: #f3f4f6 !important; color: #111111 !important;">Amount (INR)</th></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">1</td><td style="background-color: #ffffff !important; color: #111111 !important;">Bank to CoinDCX Deposit</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR 0.00</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">2</td><td style="background-color: #ffffff !important; color: #111111 !important;">CoinDCX USDT Buy Fee (1.5%)</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.buyFee.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">3</td><td style="background-color: #ffffff !important; color: #111111 !important;">GST on Buy Fee (18%)</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.gstBuy.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">4</td><td style="background-color: #ffffff !important; color: #111111 !important;">CoinDCX to Trust Wallet Transfer</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.transferOut.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">5</td><td style="background-color: #ffffff !important; color: #111111 !important;">Trust Wallet to XM360 Gas</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.gas1.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">6</td><td style="background-color: #ffffff !important; color: #111111 !important;">XM360 to Trust Wallet Withdrawal</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.xm360Fee.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">7</td><td style="background-color: #ffffff !important; color: #111111 !important;">Trust Wallet to CoinDCX Return Gas</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.gas2.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">8</td><td style="background-color: #ffffff !important; color: #111111 !important;">CoinDCX USDT Sell Fee (1.5%)</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.sellFee.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">9</td><td style="background-color: #ffffff !important; color: #111111 !important;">GST on Sell Fee (18%)</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.gstSell.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">10</td><td style="background-color: #ffffff !important; color: #111111 !important;">TDS (1.0% Legal Mandate)</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.tds.toFixed(2)}</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">11</td><td style="background-color: #ffffff !important; color: #111111 !important;">UPI / P2M Merchant Fee (Personal Account)</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR 0.00</td></tr>
-            <tr style="background-color: #ffffff !important;"><td style="background-color: #ffffff !important; color: #111111 !important;">12</td><td style="background-color: #ffffff !important; color: #111111 !important;">CoinDCX to Bank Payout & Handling</td><td style="background-color: #ffffff !important; color: #111111 !important;">INR ${res.bankPayout.toFixed(2)}</td></tr>
-            <tr class="total-row" style="background-color: #f9fafb !important;"><td colspan="2" style="background-color: #f9fafb !important; color: #111111 !important;">TOTAL DEDUCTIONS</td><td style="background-color: #f9fafb !important; color: #111111 !important;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr>
+        <div style="font-size: 12px; font-weight: bold; margin-top: 15px;">12-POINT TRANSACTION COST BREAKDOWN</div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr><th style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">#</th><th style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Cost Component / Description</th><th style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Amount (INR)</th></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">1</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Bank to CoinDCX Deposit</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR 0.00</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">2</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">CoinDCX USDT Buy Fee (1.5%)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.buyFee.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">3</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">GST on Buy Fee (18%)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.gstBuy.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">4</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">CoinDCX to Trust Wallet Transfer</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.transferOut.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">5</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Trust Wallet to XM360 Gas</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.gas1.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">6</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">XM360 to Trust Wallet Withdrawal</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.xm360Fee.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">7</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Trust Wallet to CoinDCX Return Gas</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.gas2.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">8</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">CoinDCX USDT Sell Fee (1.5%)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.sellFee.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">9</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">GST on Sell Fee (18%)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.gstSell.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">10</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">TDS (1.0% Legal Mandate)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.tds.toFixed(2)}</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">11</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">UPI / P2M Merchant Fee (Personal Account)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR 0.00</td></tr>
+            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">12</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">CoinDCX to Bank Payout & Handling</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.bankPayout.toFixed(2)}</td></tr>
+            <tr class="total-row" style="font-weight: bold;"><td colspan="2" style="padding: 6px 8px; text-align: left; font-size: 11px;">TOTAL DEDUCTIONS</td><td style="padding: 6px 8px; text-align: left; font-size: 11px;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr>
         </table>
 
-        <div class="footer" style="background-color: #ffffff !important;">
-            <div style="background-color: #ffffff !important;">
-                <p style="margin:0; color: #111111 !important;"><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p>
-                <p style="color: #555555 !important; font-size: 9px; margin: 2px 0 0 0;">This is a system-generated cryptographic ledger statement.</p>
+        <div class="footer" style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;">
+            <div>
+                <p style="margin:0;"><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p>
+                <p class="sub" style="font-size: 9px; margin: 2px 0 0 0;">This is a system-generated cryptographic ledger statement.</p>
             </div>
-            <div class="sig" style="background-color: #ffffff !important; color: #111111 !important;">
-                <p style="margin: 0; font-weight: bold; color: #111111 !important;">${leadManagerName}</p>
-                <p style="margin: 0; font-size: 9px; color: #555555 !important;">Lead Portfolio Manager</p>
+            <div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;">
+                <p style="margin: 0; font-weight: bold;">${leadManagerName}</p>
+                <p class="sub" style="font-size: 9px; margin: 0;">Lead Portfolio Manager</p>
             </div>
         </div>
     </div>
@@ -582,43 +660,31 @@
             `;
 
             if(previewContainer) {
-                const now = new Date();
-                const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                
-                previewContainer.innerHTML = `
-                    <div style="background-color: #ffffff !important; color: #111111 !important; padding: 12px; border-radius: 8px;">
-                        <div style="border-bottom: 2px solid #C6A56A; padding-bottom: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:center; background-color: #ffffff !important;">
-                            <div>
-                                <div style="font-weight:bold; font-size:13px; color:#111111 !important;">AUREUS CAPITAL</div>
-                                <div style="font-size:9px; color:#555555 !important; text-transform:uppercase;">Institutional Private Pool</div>
-                            </div>
-                            <div style="text-align:right;">
-                                <div style="font-weight:bold; font-size:11px; color:#b45309 !important;">PAYOUT STATEMENT</div>
-                                <div style="font-size:9px; color:#555555 !important;">${dateStr}</div>
-                            </div>
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; background:#f9f9f9 !important; padding:8px; border-radius:4px; margin-bottom:10px; font-size:10px; color:#111111 !important;">
-                            <div style="color:#111111 !important;">Withdrawal: <b style="color:#111111 !important;">$${usd.toLocaleString()}</b></div>
-                            <div style="color:#111111 !important;">Gross INR: <b style="color:#111111 !important;">INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
-                            <div style="color:#111111 !important;">Deductions: <b style="color:#b45309 !important;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div>
-                            <div style="color:#111111 !important;">Net Payout: <b style="color:#047857 !important;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
-                        </div>
-                        <div style="font-weight:bold; font-size:10px; margin-bottom:4px; color:#111111 !important;">12-POINT COST SUMMARY</div>
-                        <table style="width:100%; border-collapse:collapse; font-size:10px; background:#ffffff !important; color:#111111 !important;">
-                            <tr style="background:#f3f4f6 !important;"><th style="padding:4px; border-bottom:1px solid #ddd; text-align:left; color:#111111 !important;">Component</th><th style="padding:4px; border-bottom:1px solid #ddd; text-align:right; color:#111111 !important;">Amount (INR)</th></tr>
-                            <tr style="background:#ffffff !important;"><td style="padding:3px; border-bottom:1px solid #eee; color:#111111 !important;">1. Bank → CoinDCX Deposit</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right; color:#111111 !important;">INR 0.00</td></tr>
-                            <tr style="background:#ffffff !important;"><td style="padding:3px; border-bottom:1px solid #eee; color:#111111 !important;">2. USDT Buy Fee (1.5% + GST)</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right; color:#111111 !important;">INR ${(res.buyFee + res.gstBuy).toFixed(2)}</td></tr>
-                            <tr style="background:#ffffff !important;"><td style="padding:3px; border-bottom:1px solid #eee; color:#111111 !important;">3. Multi-Hop Network & Gas Buffers</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right; color:#111111 !important;">INR 1,900.00</td></tr>
-                            <tr style="background:#ffffff !important;"><td style="padding:3px; border-bottom:1px solid #eee; color:#111111 !important;">4. USDT Sell Fee (1.5% + GST)</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right; color:#111111 !important;">INR ${(res.sellFee + res.gstSell).toFixed(2)}</td></tr>
-                            <tr style="background:#ffffff !important;"><td style="padding:3px; border-bottom:1px solid #eee; color:#111111 !important;">5. TDS (1%) & Bank Payout</td><td style="padding:3px; border-bottom:1px solid #eee; text-align:right; color:#111111 !important;">INR ${(res.tds + res.bankPayout).toFixed(2)}</td></tr>
-                            <tr style="font-weight:bold; background:#f9fafb !important;"><td style="padding:4px; color:#111111 !important;">TOTAL DEDUCTIONS</td><td style="padding:4px; text-align:right; color:#111111 !important;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr>
-                        </table>
-                        <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:flex-end; font-size:9px; color:#555555 !important;">
-                            <div style="color:#555555 !important;">Rate: USD/INR ${currentUsdInrRate}<br>Cryptographic Ledger Verified</div>
-                            <div style="border-top:1px solid #333333; padding-top:2px; text-align:center; width:100px; color:#111111 !important;"><b style="color:#111111 !important;">${leadManagerName}</b></div>
-                        </div>
-                    </div>
-                `;
+                const iframe = document.createElement('iframe');
+
+                iframe.title = 'Aureus Capital White Payout Statement';
+                iframe.setAttribute('sandbox', '');
+                iframe.setAttribute('loading', 'eager');
+
+                iframe.style.cssText = [
+                    'display: block',
+                    'width: 100%',
+                    'height: 520px',
+                    'border: 0',
+                    'border-radius: 6px',
+                    'background: #ffffff',
+                    'color-scheme: light',
+                    'color-scheme: only light'
+                ].join(';');
+
+                iframe.srcdoc = generateWhiteHtmlDocument(usd);
+
+                previewContainer.style.setProperty('background-color', '#ffffff', 'important');
+                previewContainer.style.setProperty('color', '#111111', 'important');
+                previewContainer.style.setProperty('padding', '0', 'important');
+                previewContainer.style.setProperty('overflow', 'hidden', 'important');
+
+                previewContainer.replaceChildren(iframe);
             }
         }
 

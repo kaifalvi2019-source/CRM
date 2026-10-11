@@ -94,7 +94,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 1:35 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 1:37 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -281,9 +281,6 @@
         </section>
 
     </main>
-
-    <!-- HIDDEN CANVAS FOR WHATSAPP CARD IMAGE GENERATION -->
-    <canvas id="payout-canvas" width="1080" height="1350" style="display:none;"></canvas>
 
     <!-- FIXED 4-TAB BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur-xl border-t border-gray-900/80 py-2.5 px-4 z-40 shadow-2xl">
@@ -739,146 +736,6 @@
             link.click();
         }
 
-        /* WHATSAPP PAYOUT CARD & MESSAGE SHARING VIA PENDING SHARE ICON */
-        function shareSettlementPayout(id, event) {
-            if(event) event.stopPropagation();
-            const inv = investors.find(i => String(i.id) === String(id));
-            if (!inv) return;
-
-            const returnPct = getProratedReturnPct();
-            const profitINR = inv.capital * (returnPct / 100);
-            const profitUSD = profitINR / currentUsdInrRate;
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-GB');
-            const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', hour12: true});
-
-            const shareText = [
-                "✨ Dear Valued Client,",
-                "",
-                "Your payout details are shared above for your reference. 💸",
-                "",
-                "Thank you for your continued trust in AUREUS CAPITAL. We look forward to growing together and building a successful financial journey. 🤝📈",
-                "",
-                "💎 AUREUS CAPITAL Invest • Grow • Prosper"
-            ].join("\n");
-
-            const canvas = document.getElementById('payout-canvas');
-            const ctx = canvas.getContext('2d');
-
-            const bgGrad = ctx.createLinearGradient(0, 0, 0, 1350);
-            bgGrad.addColorStop(0, '#080B0A');
-            bgGrad.addColorStop(1, '#0d1311');
-            ctx.fillStyle = bgGrad;
-            ctx.fillRect(0, 0, 1080, 1350);
-
-            ctx.fillStyle = '#C6A56A';
-            ctx.font = 'bold 36px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('AUREUS CAPITAL', 540, 90);
-            ctx.fillStyle = '#8D9A93';
-            ctx.font = '20px Arial';
-            ctx.fillText('INVEST  •  GROW  •  PROSPER', 540, 130);
-
-            ctx.fillStyle = '#111816';
-            ctx.strokeStyle = 'rgba(198, 165, 106, 0.4)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(80, 170, 920, 220, 24);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.fillStyle = '#F3F4F6';
-            ctx.font = 'bold 44px Arial';
-            ctx.fillText('PAYOUT TRANSFER NOTIFICATION', 540, 245);
-            ctx.fillStyle = '#C6A56A';
-            ctx.font = '24px Arial';
-            ctx.fillText('Your payout has been successfully transferred!', 540, 300);
-            ctx.fillStyle = '#00B982';
-            ctx.fillText('⏳ It will be credited to your account within 24 to 48 hours.', 540, 350);
-
-            ctx.fillStyle = '#FFFFFF';
-            ctx.beginPath();
-            ctx.roundRect(80, 430, 920, 640, 24);
-            ctx.fill();
-
-            ctx.fillStyle = '#111111';
-            ctx.font = 'bold 28px Arial';
-            ctx.textAlign = 'left';
-            ctx.fillText('📊 AUREUS CAPITAL DETAILS', 130, 495);
-
-            ctx.strokeStyle = '#C6A56A';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(130, 520);
-            ctx.lineTo(950, 520);
-            ctx.stroke();
-
-            const rows = [
-                { label: 'Client Name', val: inv.name.toUpperCase() },
-                { label: 'Date', val: dateStr },
-                { label: 'Time', val: timeStr },
-                { label: 'Return Generated', val: `${returnPct.toFixed(2)}%` },
-                { label: 'Amount in USD', val: `$${profitUSD.toFixed(2)}` },
-                { label: 'Amount in INR', val: `₹${Math.round(profitINR).toLocaleString('en-IN')}` }
-            ];
-
-            let startY = 585;
-            rows.forEach((row) => {
-                ctx.fillStyle = '#555555';
-                ctx.font = 'bold 22px Arial';
-                ctx.fillText(row.label, 140, startY);
-                ctx.fillText(':', 420, startY);
-
-                ctx.fillStyle = '#111111';
-                ctx.font = 'bold 24px Arial';
-                ctx.fillText(row.val, 460, startY);
-
-                ctx.strokeStyle = '#F3F4F6';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.moveTo(130, startY + 25);
-                ctx.lineTo(950, startY + 25);
-                ctx.stroke();
-
-                startY += 80;
-            });
-
-            ctx.fillStyle = '#111816';
-            ctx.font = 'bold 28px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('Thank you for investing with us!', 540, 1150);
-            ctx.fillStyle = '#555555';
-            ctx.font = '20px Arial';
-            ctx.fillText('We truly appreciate your trust and look forward to building success together!', 540, 1190);
-
-            ctx.fillStyle = '#C6A56A';
-            ctx.font = 'bold 22px Arial';
-            ctx.fillText('AUREUS CAPITAL  •  TOGETHER WE GROW', 540, 1280);
-
-            canvas.toBlob(async (blob) => {
-                const file = new File([blob], `Aureus_Payout_${inv.name}.png`, { type: 'image/png' });
-
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            title: 'Aureus Payout Notification',
-                            text: shareText,
-                            files: [file]
-                        });
-                    } catch (err) {
-                        console.log('Share canceled', err);
-                    }
-                } else {
-                    navigator.clipboard.writeText(shareText);
-                    const link = document.createElement('a');
-                    link.href = canvas.toDataURL('image/png');
-                    link.download = `Aureus_Payout_${inv.name}.png`;
-                    link.click();
-                    alert(`Payout card downloaded & message copied for ${inv.name}!`);
-                }
-            }, 'image/png');
-        }
-
         function deleteInvestor(id) {
             investors = investors.filter(inv => inv.id !== id);
             saveInvestorsToStorage();
@@ -1117,14 +974,7 @@
 
                 const statusBadge = isSettled 
                     ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-emerald-800/40">Settled / Paid</span>`
-                    : `
-                        <div class="flex items-center space-x-1.5">
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>
-                            <button onclick="shareSettlementPayout(${inv.id}, event)" title="Share Payout via WhatsApp" class="p-1.5 bg-midnight hover:bg-graphite text-emeraldLive border border-emerald-500/40 rounded-lg transition active:scale-95 shadow">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-                            </button>
-                        </div>
-                      `;
+                    : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>`;
 
                 const btnClass = isSettled 
                     ? "px-3 py-1.5 bg-midnight text-softGrey border border-gray-800 hover:text-softWhite text-[11px] font-semibold rounded-xl transition active:scale-95"

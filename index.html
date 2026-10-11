@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:03</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:10</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -145,8 +145,8 @@
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
-                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$17.10</p>
-                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">₹1,655</p>
+                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$6.20</p>
+                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">₹600</p>
                     </div>
                 </div>
             </div>
@@ -162,7 +162,7 @@
                 </div>
                 <div class="space-y-2 pt-1">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">3.31%</span>
+                        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">1.20%</span>
                     </div>
                     <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-gray-900 p-0.5">
                         <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 to-emeraldLive h-full rounded-full transition-all duration-500" style="width: 36%"></div>
@@ -384,20 +384,21 @@
             }
         }
 
-        // UNIVERSAL & DIRECT PAYOUT CALCULATION FOR ANY INVESTOR / ANY AMOUNT
+        // STRICTLY PRORATED ACCURATE DAILY PAYOUT CALCULATION
         function copyPayoutMessage(id, event) {
             event.stopPropagation();
             const inv = investors.find(i => i.id === id);
             if(!inv) return;
             
             const now = new Date();
+            const currentDay = Math.min(now.getDate(), 30);
             
-            // Current return percentage from dashboard (e.g. 3.31%)
-            const returnPctStr = document.getElementById('cycle-return-pct').innerText.replace('%', '');
-            const returnPct = parseFloat(returnPctStr) || 3.31;
+            // Correct Prorated Daily Return calculation (e.g. 10% total target / 30 days * elapsed days)
+            const cycleTargetPct = 10.0; // 10% standard target for the 30-day cycle
+            const dailyRate = cycleTargetPct / 30;
+            const proratedReturnPct = +(currentDay * dailyRate).toFixed(2); // e.g. on day 11 -> ~3.67%
             
-            // Universal Formula: Capital + (Capital * Current Return %)
-            const profit = inv.capital * (returnPct / 100);
+            const profit = inv.capital * (proratedReturnPct / 100);
             const totalPayout = inv.capital + profit;
             const usdVal = (totalPayout / currentUsdInrRate).toFixed(2);
 
@@ -481,7 +482,8 @@
             const currentDay = Math.min(dayOfMonth, 30);
             const remainingDays = 30 - currentDay;
 
-            const calculatedReturn = 3.31;
+            const dailyRate = 10.0 / 30;
+            const calculatedReturn = +(currentDay * dailyRate).toFixed(2);
             
             document.getElementById('cycle-day-count').innerText = `${currentDay}/30`;
             document.getElementById('cycle-return-pct').innerText = `${calculatedReturn}%`;
@@ -554,7 +556,10 @@
             
             const totalPoolCap = promoterHolding + investorsCap;
             
-            const currentRateFactor = 0.0331; // 3.31%
+            const now = new Date();
+            const currentDay = Math.min(now.getDate(), 30);
+            const dailyRate = 10.0 / 30;
+            const currentRateFactor = (currentDay * dailyRate) / 100;
             
             const calcProfit = totalPoolCap * currentRateFactor; 
             const usdProfit = calcProfit / currentUsdInrRate;

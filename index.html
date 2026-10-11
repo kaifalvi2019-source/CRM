@@ -18,6 +18,26 @@
                         royalBlue: '#3B82F6',
                         softGrey: '#8D9A93',
                         softWhite: '#F3F4F6'
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 15px rgba(198, 165, 106, 0.2)' },
+                            '50%': { boxShadow: '0 0 30px rgba(198, 165, 106, 0.5)' },
+                        },
+                        priceBlink: {
+                            '0%': { opacity: '1', transform: 'scale(1)' },
+                            '50%': { opacity: '0.6', transform: 'scale(1.03)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        ripple: {
+                            '0%': { transform: 'scale(0)', opacity: '0.8' },
+                            '100%': { transform: 'scale(4)', opacity: '0' },
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite ease-in-out',
+                        'price-blink': 'priceBlink 0.6s ease-in-out',
+                        'ripple-effect': 'ripple 0.6s linear'
                     }
                 }
             }
@@ -36,22 +56,29 @@
         .tier-gold-card {
             background: linear-gradient(135deg, rgba(198, 165, 106, 0.42) 0%, #111816 75%) !important;
             border: 1px solid rgba(198, 165, 106, 0.8) !important;
-            box-shadow: 0 14px 40px rgba(198, 165, 106, 0.3), inset 0 1px 0 rgba(198, 165, 106, 0.6) !important;
         }
         .tier-silver-card {
             background: linear-gradient(135deg, rgba(156, 163, 175, 0.35) 0%, #111816 75%) !important;
             border: 1px solid rgba(156, 163, 175, 0.7) !important;
-            box-shadow: 0 14px 40px rgba(156, 163, 175, 0.22), inset 0 1px 0 rgba(156, 163, 175, 0.5) !important;
         }
         .tier-bronze-card {
             background: linear-gradient(135deg, rgba(180, 115, 75, 0.42) 0%, #111816 75%) !important;
             border: 1px solid rgba(180, 115, 75, 0.8) !important;
-            box-shadow: 0 14px 40px rgba(180, 115, 75, 0.3), inset 0 1px 0 rgba(180, 115, 75, 0.6) !important;
         }
         .tier-normal-card {
             background: linear-gradient(145deg, #111816 0%, #0d1311 100%) !important;
             border: 1px solid rgba(255, 255, 255, 0.07) !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        }
+        /* Ripple effect container */
+        .ripple-btn { position: relative; overflow: hidden; }
+        .ripple-span {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            width: 100px; height: 100px;
+            margin-top: -50px; margin-left: -50px;
+            animation: ripple 0.6s linear;
         }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
@@ -71,7 +98,7 @@
         </div>
         <div class="flex items-center space-x-2.5">
             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-950/80 text-royalBlue border border-blue-800/40">
-                <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-pulse"></span> LIVE API
+                <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-ping"></span> LIVE API
             </span>
             <button onclick="openSettings()" class="p-2.5 rounded-xl card-box text-softGrey hover:text-softWhite transition active:scale-95" title="Settings">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -82,7 +109,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:45 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:50 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -90,7 +117,7 @@
         <section id="tab-home" class="space-y-4">
             
             <!-- Lead Portfolio Manager Card -->
-            <div class="card-box p-5 space-y-4">
+            <div class="card-box p-5 space-y-4 animate-pulse-glow">
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">Lead Portfolio Manager</p>
@@ -108,16 +135,16 @@
                     <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
                         <div class="flex justify-between items-center">
                             <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Market Feed</p>
-                            <span class="flex items-center text-[9px] text-royalBlue font-bold"><span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1 animate-pulse"></span> <span id="market-status-text">ONLINE</span></span>
+                            <span class="flex items-center text-[9px] text-royalBlue font-bold"><span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1 animate-ping"></span> <span id="market-status-text">ONLINE</span></span>
                         </div>
                         <div class="flex justify-between items-center mt-1">
                             <div>
                                 <p class="text-[8px] text-softGrey">GOLD (XAU)</p>
-                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-gold-price">$4,194.50</h3>
+                                <h3 class="text-xs font-bold text-goldAccent tabular-nums transition-all duration-300" id="live-gold-price">$4,194.50</h3>
                             </div>
                             <div>
                                 <p class="text-[8px] text-softGrey">USD / INR</p>
-                                <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-usdinr-price">INR 96.77</h3>
+                                <h3 class="text-xs font-bold text-emeraldLive tabular-nums transition-all duration-300" id="live-usdinr-price">INR 96.77</h3>
                             </div>
                         </div>
                     </div>
@@ -166,7 +193,7 @@
                         <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">4.00%</span>
                     </div>
                     <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-gray-900 p-0.5">
-                        <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 to-emeraldLive h-full rounded-full transition-all duration-500" style="width: 40%"></div>
+                        <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 to-emeraldLive h-full rounded-full transition-all duration-700 ease-out" style="width: 40%"></div>
                     </div>
                     <div class="flex justify-between text-[11px] text-softGrey pt-0.5 font-medium">
                         <span>Strategy Alpha · Active</span>
@@ -183,7 +210,7 @@
                     <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">DIRECTORY</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Investors</h2>
                 </div>
-                <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/20 flex items-center">
+                <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-goldAccent hover:bg-amber-600 text-midnight text-xs font-extrabold rounded-xl transition-all duration-300 shadow-lg shadow-goldAccent/20 flex items-center active:scale-95">
                     + Add
                 </button>
             </div>
@@ -207,10 +234,9 @@
                     <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <!-- 100% Fixed Button -->
                 <button 
                     onclick="downloadMasterStatementPDF()" 
-                    class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-goldAccent focus:bg-goldAccent focus:hover:bg-goldAccent active:bg-goldAccent active:scale-95 transition"
+                    class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-goldAccent focus:bg-goldAccent focus:hover:bg-goldAccent active:bg-goldAccent active:scale-95 transition-all duration-300"
                     style="background-color: #C6A56A;"
                 >
                     Master Sheet PDF
@@ -221,16 +247,16 @@
             <div class="card-box p-4 space-y-3.5">
                 <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">Quick Preset Withdrawal ($)</p>
                 <div class="grid grid-cols-4 gap-2">
-                    <button onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition shadow"> $500 </button>
-                    <button onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition shadow"> $700 </button>
-                    <button onclick="selectPresetAmount(1200)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition shadow"> $1200 </button>
-                    <button onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition shadow"> $1500 </button>
+                    <button onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition active:scale-95 shadow"> $500 </button>
+                    <button onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition active:scale-95 shadow"> $700 </button>
+                    <button onclick="selectPresetAmount(1200)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition active:scale-95 shadow"> $1200 </button>
+                    <button onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition active:scale-95 shadow"> $1500 </button>
                 </div>
                 <div class="pt-2">
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
                         <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount (e.g. 500)" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
-                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-royalBlue text-white text-xs font-bold rounded-xl hover:bg-blue-600 transition shadow">Download White HTML</button>
+                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-royalBlue text-white text-xs font-bold rounded-xl hover:bg-blue-600 transition active:scale-95 shadow">Download White HTML</button>
                     </div>
                 </div>
                 <div id="calculator-result-box" class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900 text-xs space-y-1.5 tabular-nums">
@@ -241,7 +267,7 @@
                 <div class="pt-3">
                     <div class="flex justify-between items-center mb-2">
                         <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold">Live White Statement Preview</p>
-                        <button onclick="toggleStatementPreview()" id="preview-toggle-btn" class="px-3 py-1 bg-midnight border border-goldAccent/30 text-goldAccent text-[10px] font-bold rounded-lg hover:bg-graphite transition flex items-center space-x-1">
+                        <button onclick="toggleStatementPreview()" id="preview-toggle-btn" class="px-3 py-1 bg-midnight border border-goldAccent/30 text-goldAccent text-[10px] font-bold rounded-lg hover:bg-graphite transition flex items-center space-x-1 active:scale-95">
                             <span>▼ Expand Preview</span>
                         </button>
                     </div>
@@ -456,6 +482,20 @@
 
         function toggleSettled(id, event) {
             if(event) event.stopPropagation();
+            
+            // Add ripple animation effect on click
+            const btn = event.currentTarget;
+            const circle = document.createElement('span');
+            const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+            const radius = diameter / 2;
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - btn.getBoundingClientRect().left - radius}px`;
+            circle.style.top = `${event.clientY - btn.getBoundingClientRect().top - radius}px`;
+            circle.classList.add('ripple-span');
+            const rippleDiv = btn.getElementsByClassName('ripple-span')[0];
+            if (rippleDiv) rippleDiv.remove();
+            btn.appendChild(circle);
+
             const inv = investors.find(i => i.id === id);
             if(inv) {
                 inv.settled = !inv.settled;
@@ -531,113 +571,34 @@
     <meta name="supported-color-schemes" content="light">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aureus Capital - Statement $${usd}</title>
-
     <style>
-        :root {
-            color-scheme: light !important;
-            supported-color-schemes: light;
-            background: #ffffff !important;
-            color: #111111 !important;
-        }
-
-        html {
-            background: #ffffff !important;
-            color: #111111 !important;
-            color-scheme: light !important;
-            forced-color-adjust: none !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        html body {
-            background: #ffffff !important;
-            background-color: #ffffff !important;
-            color: #111111 !important;
-            color-scheme: light !important;
-            forced-color-adjust: none !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            padding: 30px;
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        *, *::before, *::after {
-            box-sizing: border-box;
-            color-scheme: light !important;
-            forced-color-adjust: none !important;
-        }
-
-        .invoice-box {
-            max-width: 800px;
-            margin: auto;
-            padding: 25px;
-            border: 1px solid #cccccc;
-            border-radius: 6px;
-            background: #ffffff !important;
-            background-color: #ffffff !important;
-            color: #111111 !important;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .invoice-box * {
-            color-scheme: light !important;
-        }
-
-        .header, .footer, table, tbody, tr, td {
-            background-color: #ffffff !important;
-            color: #111111 !important;
-        }
-
-        th {
-            background-color: #f3f4f6 !important;
-            color: #111111 !important;
-        }
-
-        .grid, .total-row {
-            background-color: #f9fafb !important;
-            color: #111111 !important;
-        }
-
-        .company {
-            color: #C6A56A !important;
-        }
-
-        .sub {
-            color: #555555 !important;
-        }
-
-        .title {
-            color: #b45309 !important;
-        }
-
-        .net-amount {
-            color: #047857 !important;
-        }
-
-        @media print {
-            html, body, .invoice-box {
-                background: #ffffff !important;
-                color: #111111 !important;
-                box-shadow: none !important;
-            }
-        }
+        :root { color-scheme: light !important; background: #ffffff !important; color: #111111 !important; }
+        html, body { background: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; font-family: Arial, Helvetica, sans-serif; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 25px; border: 1px solid #cccccc; border-radius: 6px; background: #ffffff !important; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .company { color: #C6A56A !important; font-size: 18px; font-weight: bold; }
+        .sub { color: #555555 !important; font-size: 10px; text-transform: uppercase; }
+        .title { color: #b45309 !important; font-size: 13px; font-weight: bold; text-align: right; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; background: #f9fafb !important; padding: 12px; border-radius: 6px; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { padding: 6px 8px; text-align: left; font-size: 11px; background: #f3f4f6 !important; border-bottom: 1px solid #e5e7eb; }
+        td { padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb; }
+        .net-amount { color: #047857 !important; }
     </style>
 </head>
 <body>
     <div class="invoice-box">
-        <div class="header" style="display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px;">
+        <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px;">
             <div>
-                <div class="company" style="font-size: 18px; font-weight: bold; letter-spacing: 1px; color: #C6A56A !important;">AUREUS CAPITAL</div>
-                <div class="sub" style="font-size: 10px; text-transform: uppercase;">Institutional Private Pool Settlement</div>
+                <div class="company">AUREUS CAPITAL</div>
+                <div class="sub">Institutional Private Pool Settlement</div>
             </div>
             <div>
-                <div class="title" style="font-size: 13px; font-weight: bold; text-align: right;">PAYOUT STATEMENT</div>
-                <div class="sub" style="font-size: 10px; text-align: right;">Date: ${dateStr}</div>
+                <div class="title">PAYOUT STATEMENT</div>
+                <div class="sub" style="text-align: right;">Date: ${dateStr}</div>
             </div>
         </div>
 
-        <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; padding: 12px; border-radius: 6px; font-size: 11px;">
+        <div class="grid">
             <div>Withdrawal Amount: <b>$${usd.toLocaleString()}</b></div>
             <div>Equivalent Gross INR: <b>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div>
             <div>Total 12-Point Deductions: <b style="color: #b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div>
@@ -645,24 +606,24 @@
         </div>
 
         <div style="font-size: 12px; font-weight: bold; margin-top: 15px;">12-POINT TRANSACTION COST BREAKDOWN (Deducted from Pool Trading Profit)</div>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-            <tr><th style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">#</th><th style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Cost Component / Description</th><th style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Amount (INR)</th></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">1</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Bank to CoinDCX Deposit</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR 0.00</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">2</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">CoinDCX USDT Buy Fee (1.5%)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.buyFee.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">3</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">GST on Buy Fee (18%)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.gstBuy.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">4</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">CoinDCX to Trust Wallet Transfer</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.transferOut.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">5</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Trust Wallet to XM360 Gas</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.gas1.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">6</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">XM360 to Trust Wallet Withdrawal</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.xm360Fee.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">7</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">Trust Wallet to CoinDCX Return Gas</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.gas2.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">8</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">CoinDCX USDT Sell Fee (1.5%)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.sellFee.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">9</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">GST on Sell Fee (18%)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.gstSell.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">10</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">TDS (1.0% Legal Mandate)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.tds.toFixed(2)}</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">11</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">UPI / P2M Merchant Fee (Personal Account)</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR 0.00</td></tr>
-            <tr><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">12</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">CoinDCX to Bank Payout & Handling</td><td style="padding: 6px 8px; text-align: left; font-size: 11px; border-bottom: 1px solid #e5e7eb;">INR ${res.bankPayout.toFixed(2)}</td></tr>
-            <tr class="total-row" style="font-weight: bold;"><td colspan="2" style="padding: 6px 8px; text-align: left; font-size: 11px;">TOTAL DEDUCTIONS</td><td style="padding: 6px 8px; text-align: left; font-size: 11px;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr>
+        <table>
+            <tr><th>#</th><th>Cost Component / Description</th><th>Amount (INR)</th></tr>
+            <tr><td>1</td><td>Bank to CoinDCX Deposit</td><td>INR 0.00</td></tr>
+            <tr><td>2</td><td>CoinDCX USDT Buy Fee (1.5%)</td><td>INR ${res.buyFee.toFixed(2)}</td></tr>
+            <tr><td>3</td><td>GST on Buy Fee (18%)</td><td>INR ${res.gstBuy.toFixed(2)}</td></tr>
+            <tr><td>4</td><td>CoinDCX to Trust Wallet Transfer</td><td>INR ${res.transferOut.toFixed(2)}</td></tr>
+            <tr><td>5</td><td>Trust Wallet to XM360 Gas</td><td>INR ${res.gas1.toFixed(2)}</td></tr>
+            <tr><td>6</td><td>XM360 to Trust Wallet Withdrawal</td><td>INR ${res.xm360Fee.toFixed(2)}</td></tr>
+            <tr><td>7</td><td>Trust Wallet to CoinDCX Return Gas</td><td>INR ${res.gas2.toFixed(2)}</td></tr>
+            <tr><td>8</td><td>CoinDCX USDT Sell Fee (1.5%)</td><td>INR ${res.sellFee.toFixed(2)}</td></tr>
+            <tr><td>9</td><td>GST on Sell Fee (18%)</td><td>INR ${res.gstSell.toFixed(2)}</td></tr>
+            <tr><td>10</td><td>TDS (1.0% Legal Mandate)</td><td>INR ${res.tds.toFixed(2)}</td></tr>
+            <tr><td>11</td><td>UPI / P2M Merchant Fee (Personal Account)</td><td>INR 0.00</td></tr>
+            <tr><td>12</td><td>CoinDCX to Bank Payout & Handling</td><td>INR ${res.bankPayout.toFixed(2)}</td></tr>
+            <tr style="font-weight: bold;"><td colspan="2">TOTAL DEDUCTIONS</td><td>INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr>
         </table>
 
-        <div class="footer" style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;">
+        <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;">
             <div>
                 <p style="margin:0;"><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p>
                 <p class="sub" style="font-size: 9px; margin: 2px 0 0 0;">Note: All 12-point operational costs are absorbed entirely from pool trading profits. Client principal is 100% protected.</p>
@@ -689,12 +650,10 @@
 
             let investorRows = investors.map((inv, index) => {
                 const profitInr = inv.capital * (returnPct / 100);
-                const profitUsd = profitInr / currentUsdInrRate;
                 const netPayoutInr = profitInr * 0.90; 
-                
                 totalCap += inv.capital;
                 totalProfitInr += profitInr;
-                totalProfitUsd += profitUsd;
+                totalProfitUsd += profitInr / currentUsdInrRate;
 
                 return `
                     <tr>
@@ -710,23 +669,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="color-scheme" content="light">
-    <meta name="supported-color-schemes" content="light">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aureus Capital - Master Settlement Sheet</title>
     <style>
-        :root { color-scheme: light !important; background: #ffffff !important; color: #111111 !important; }
-        html, body { background: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; font-family: Arial, Helvetica, sans-serif; }
-        .invoice-box { max-width: 900px; margin: auto; padding: 25px; border: 1px solid #cccccc; border-radius: 6px; background: #ffffff !important; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        body { background: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; font-family: Arial, sans-serif; }
+        .invoice-box { max-width: 900px; margin: auto; padding: 25px; border: 1px solid #cccccc; border-radius: 6px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px; }
-        .company { font-size: 18px; font-weight: bold; color: #C6A56A !important; letter-spacing: 1px; }
-        .sub { font-size: 10px; color: #555555 !important; text-transform: uppercase; }
+        .company { font-size: 18px; font-weight: bold; color: #C6A56A !important; }
+        .sub { font-size: 10px; color: #555 !important; text-transform: uppercase; }
         .title { font-size: 13px; font-weight: bold; color: #b45309 !important; text-align: right; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; background: #f9fafb !important; padding: 12px; border-radius: 6px; font-size: 11px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #ffffff !important; }
-        th { padding: 8px; text-align: left; font-size: 11px; background: #f3f4f6 !important; color: #111111 !important; border-bottom: 2px solid #d1d5db; }
-        td { font-size: 11px; color: #111111 !important; background: #ffffff !important; }
-        .footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { padding: 8px; text-align: left; font-size: 11px; background: #f3f4f6 !important; border-bottom: 2px solid #d1d5db; }
+        td { font-size: 11px; }
     </style>
 </head>
 <body>
@@ -745,24 +700,18 @@
 
         <div class="grid">
             <div>Active Return Rate: <b style="color: #047857;">${returnPct.toFixed(2)}%</b></div>
-            <div>Total Pool Capital (Principal Protected): <b style="color: #111;">INR ${totalCap.toLocaleString('en-IN')}</b></div>
+            <div>Total Pool Capital (Principal Protected): <b>INR ${totalCap.toLocaleString('en-IN')}</b></div>
             <div>Total Gross Cycle Profit: <b style="color: #b45309;">$${totalProfitUsd.toFixed(2)} (INR ${Math.round(totalProfitInr).toLocaleString('en-IN')})</b></div>
             <div>Active Mandates: <b>${investors.length} Investor(s)</b></div>
         </div>
 
         <div style="font-size: 12px; font-weight: bold; margin-top: 15px;">INVESTOR PORTFOLIO ALLOCATION & NET PAYOUTS</div>
-        <p style="font-size: 10px; color: #555; margin-top: 2px;">* Note: 12-point operational costs and network fees are absorbed entirely from pool trading profits. Client capital is untouched.</p>
         <table>
-            <tr>
-                <th>#</th>
-                <th>Investor Entity</th>
-                <th style="text-align: right;">Principal Capital</th>
-                <th style="text-align: right;">Net INR Payout (After Pool Fees)</th>
-            </tr>
+            <tr><th>#</th><th>Investor Entity</th><th style="text-align: right;">Principal Capital</th><th style="text-align: right;">Net INR Payout (After Pool Fees)</th></tr>
             ${investorRows}
         </table>
 
-        <div class="footer">
+        <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;">
             <div>
                 <p style="margin:0;"><strong>Strategy:</strong> Alpha Private Pool Payout Ledger</p>
                 <p class="sub" style="font-size: 9px; margin: 2px 0 0 0; color: #3B82F6 !important;">Cryptographically Verified Master Document.</p>
@@ -797,70 +746,38 @@
 
             if(previewContainer && isStatementPreviewVisible) {
                 const iframe = document.createElement('iframe');
-
                 iframe.title = 'Aureus Capital White Payout Statement';
                 iframe.setAttribute('sandbox', '');
-                iframe.setAttribute('loading', 'eager');
-
-                iframe.style.cssText = [
-                    'display: block',
-                    'width: 100%',
-                    'height: 520px',
-                    'border: 0',
-                    'border-radius: 6px',
-                    'background: #ffffff',
-                    'color-scheme: light',
-                    'color-scheme: only light'
-                ].join(';');
-
+                iframe.style.cssText = 'display: block; width: 100%; height: 520px; border: 0; border-radius: 6px; background: #ffffff;';
                 iframe.srcdoc = generateWhiteHtmlDocument(usd);
-
-                previewContainer.style.setProperty('background-color', '#ffffff', 'important');
-                previewContainer.style.setProperty('color', '#111111', 'important');
-                previewContainer.style.setProperty('padding', '0', 'important');
-                previewContainer.style.setProperty('overflow', 'hidden', 'important');
-
                 previewContainer.replaceChildren(iframe);
             }
         }
 
         function downloadWhiteTemplatePDF() {
             const usd = activeSelectedWithdrawalUsd;
-            if (usd <= 0) {
-                alert('Please enter or select a valid withdrawal amount first.');
-                return;
-            }
-            const htmlContent = generateWhiteHtmlDocument(usd);
-
-            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
+            if (usd <= 0) { alert('Please enter or select a valid withdrawal amount first.'); return; }
+            const blob = new Blob([generateWhiteHtmlDocument(usd)], { type: 'text/html;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `Aureus_Statement_$${usd}.html`;
             link.click();
-            alert(`White statement HTML downloaded for $${usd}.`);
         }
 
         function downloadMasterStatementPDF() {
-            const htmlContent = generateMasterSheetHtmlDocument();
-
-            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
+            const blob = new Blob([generateMasterSheetHtmlDocument()], { type: 'text/html;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `Aureus_Master_Settlement_Sheet.html`;
             link.click();
-            alert("Master Investor Settlement Sheet downloaded as Professional White HTML successfully!");
         }
 
         function copyPayoutMessage(id, event) {
             if (event) event.stopPropagation();
             const inv = investors.find(i => String(i.id) === String(id));
             if (!inv) return;
-
-            const capital = Number(inv.capital);
-            const rate = Number(currentUsdInrRate);
-            const returnPct = getProratedReturnPct();
-            const profitINR = capital * (returnPct / 100);
-            const profitUSD = profitINR / rate;
+            const profitINR = inv.capital * (getProratedReturnPct() / 100);
+            const profitUSD = profitINR / currentUsdInrRate;
 
             const msg = [
                 "==================================",
@@ -869,7 +786,6 @@
                 "",
                 `Investor: ${inv.name.toUpperCase()}`,
                 `Status: Active (Principal 100% Protected)`,
-                `Return: ${returnPct.toFixed(2)}%`,
                 `Return Payout (INR): INR ${profitINR.toLocaleString('en-IN', {maximumFractionDigits:2})}`,
                 `Return Payout (USD): $${profitUSD.toFixed(2)}`,
                 "",
@@ -896,17 +812,11 @@
             const name = document.getElementById('inv-name').value.trim();
             const capital = parseFloat(document.getElementById('inv-capital').value);
 
-            if(!name || isNaN(capital) || capital <= 0) {
-                alert('Please enter a valid investor name and capital amount.');
-                return;
-            }
+            if(!name || isNaN(capital) || capital <= 0) { alert('Please enter a valid investor name and capital amount.'); return; }
 
             if(editId) {
                 const inv = investors.find(i => i.id == editId);
-                if(inv) {
-                    inv.name = name;
-                    inv.capital = capital;
-                }
+                if(inv) { inv.name = name; inv.capital = capital; }
             } else {
                 investors.push({ id: Date.now(), name, capital, active: true, settled: false });
             }
@@ -929,14 +839,24 @@
             document.getElementById('cycle-days-remaining').innerText = `${remainingDays} days remaining`;
 
             const options = { weekday: 'short', month: 'short', day: 'numeric' };
-            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-            document.getElementById('current-date-display').innerText = `${now.toLocaleDateString('en-US', options).toUpperCase()} · ${timeStr}`;
+            document.getElementById('current-date-display').innerText = `${now.toLocaleDateString('en-US', options).toUpperCase()} · ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}`;
         }
 
         async function fetchLiveMarketPrices() {
+            const goldEl = document.getElementById('live-gold-price');
+            const inrEl = document.getElementById('live-usdinr-price');
+            
+            // Add pulse blink animation class
+            goldEl.classList.add('animate-price-blink');
+            inrEl.classList.add('animate-price-blink');
+            setTimeout(() => {
+                goldEl.classList.remove('animate-price-blink');
+                inrEl.classList.remove('animate-price-blink');
+            }, 600);
+
             if (!activeGeminiApiKey) {
-                document.getElementById('live-gold-price').innerText = "$4,194.50";
-                document.getElementById('live-usdinr-price').innerText = `INR ${currentUsdInrRate}`;
+                goldEl.innerText = "$4,194.50";
+                inrEl.innerText = `INR ${currentUsdInrRate}`;
                 document.getElementById('market-status-text').innerText = "ONLINE";
                 updateDashboard();
                 updateSettlementLedger();
@@ -948,30 +868,23 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: "Provide the current live spot price of Gold per troy ounce in USD (XAU/USD) and the exact live USD to INR exchange rate right now. Reply ONLY with a valid JSON object in this exact format: {\"gold\": 4194.50, \"inr\": 96.77}" }]
-                        }]
+                        contents: [{ parts: [{ text: "Provide the current live spot price of Gold per troy ounce in USD (XAU/USD) and the exact live USD to INR exchange rate right now. Reply ONLY with a valid JSON object in this exact format: {\"gold\": 4194.50, \"inr\": 96.77}" }] }]
                     })
                 });
 
                 const data = await response.json();
-                const textResponse = data.candidates[0].content.parts[0].text;
-                const cleanedJson = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-                const marketValues = JSON.parse(cleanedJson);
+                const marketValues = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim());
 
                 if (marketValues && marketValues.gold) {
-                    document.getElementById('live-gold-price').innerText = `$${marketValues.gold.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-                    if(marketValues.inr) {
-                        currentUsdInrRate = marketValues.inr;
-                    }
-                    document.getElementById('live-usdinr-price').innerText = `INR ${currentUsdInrRate.toFixed(2)}`;
+                    goldEl.innerText = `$${marketValues.gold.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+                    if(marketValues.inr) currentUsdInrRate = marketValues.inr;
+                    inrEl.innerText = `INR ${currentUsdInrRate.toFixed(2)}`;
                     document.getElementById('market-status-text').innerText = "ONLINE";
                     updateDashboard();
                     updateSettlementLedger();
                 }
             } catch (e) {
-                console.warn("Gemini Live Fetch Error:", e);
-                document.getElementById('live-usdinr-price').innerText = `INR ${currentUsdInrRate}`;
+                inrEl.innerText = `INR ${currentUsdInrRate}`;
                 document.getElementById('market-status-text').innerText = "ONLINE";
                 updateDashboard();
                 updateSettlementLedger();
@@ -981,54 +894,35 @@
         function updateDashboard() {
             const searchInput = document.getElementById('investor-search');
             const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
-            
             investors.sort((a, b) => b.capital - a.capital);
 
             let filteredInvestors = investors.filter((inv, index) => {
-                const rank = index + 1;
-                const nameMatch = inv.name.toLowerCase().includes(searchQuery);
-                const rankMatch = rank.toString() === searchQuery;
-                const capitalMatch = inv.capital.toString().includes(searchQuery);
-                return nameMatch || rankMatch || capitalMatch;
+                return (index + 1).toString() === searchQuery || inv.name.toLowerCase().includes(searchQuery) || inv.capital.toString().includes(searchQuery);
             });
 
-            const totalCount = investors.length;
-            const investorsCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
-            
-            const totalPoolCap = promoterHolding + investorsCap;
-            const currentRateFactor = getProratedReturnPct() / 100;
-            
-            const calcProfit = totalPoolCap * currentRateFactor; 
-            const usdProfit = calcProfit / currentUsdInrRate;
-            const usdIndicative = totalPoolCap / currentUsdInrRate;
+            const totalPoolCap = promoterHolding + investors.reduce((acc, curr) => acc + curr.capital, 0);
+            const calcProfit = totalPoolCap * (getProratedReturnPct() / 100); 
 
             document.getElementById('home-total-capital').innerText = `INR ${totalPoolCap.toLocaleString('en-IN')}`;
-            document.getElementById('home-usd-indicative').innerText = `≈ $${usdIndicative.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} indicative`;
-            document.getElementById('home-active-count').innerText = totalCount;
-            document.getElementById('home-active-capital').innerText = `INR ${investorsCap.toLocaleString('en-IN')}`;
-            
-            document.getElementById('home-calc-profit-usd').innerText = `$${usdProfit.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+            document.getElementById('home-usd-indicative').innerText = `≈ $${(totalPoolCap / currentUsdInrRate).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} indicative`;
+            document.getElementById('home-active-count').innerText = investors.length;
+            document.getElementById('home-active-capital').innerText = `INR ${investors.reduce((a,c)=>a+c.capital,0).toLocaleString('en-IN')}`;
+            document.getElementById('home-calc-profit-usd').innerText = `$${(calcProfit / currentUsdInrRate).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
             document.getElementById('home-calc-profit-inr').innerText = `INR ${Math.round(calcProfit).toLocaleString('en-IN')}`;
 
             const listContainer = document.getElementById('investors-list-container');
-
             if(filteredInvestors.length === 0) {
-                listContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No investors found</p></div>`;
+                listContainer.innerHTML = `<div class="card-box p-8 text-center"><p class="text-xs text-softWhite font-bold">No investors found</p></div>`;
             } else {
                 listContainer.innerHTML = filteredInvestors.map((inv) => {
                     const rank = investors.findIndex(i => i.id === inv.id) + 1;
-                    const rankBadge = `<div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>`;
-                    
-                    let cardClass = "card-box tier-normal-card";
-                    if (rank === 1) cardClass = "card-box tier-gold-card";
-                    else if (rank === 2) cardClass = "card-box tier-silver-card";
-                    else if (rank === 3) cardClass = "card-box tier-bronze-card";
+                    let cardClass = rank === 1 ? "card-box tier-gold-card" : rank === 2 ? "card-box tier-silver-card" : rank === 3 ? "card-box tier-bronze-card" : "card-box tier-normal-card";
 
                     return `
                         <div onclick="toggleCardActions(${inv.id})" class="${cardClass} p-4 space-y-3 cursor-pointer transition hover:border-goldAccent/40">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center space-x-3">
-                                    ${rankBadge}
+                                    <div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>
                                     <div onclick="openAddInvestorModal(${inv.id}, event)" title="Click to Edit">
                                         <h4 class="font-bold text-softWhite text-sm capitalize hover:text-goldAccent transition">${inv.name}</h4>
                                         <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">INR ${inv.capital.toLocaleString('en-IN')}</span></p>
@@ -1039,10 +933,10 @@
                                 </span>
                             </div>
                             <div id="actions-${inv.id}" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-gray-900/80 text-xs">
-                                <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-emerald-950/80 text-emeraldLive border border-emerald-800/50 rounded-xl font-semibold hover:bg-emerald-900 transition flex items-center justify-center space-x-1.5">
+                                <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-emerald-950/80 text-emeraldLive border border-emerald-800/50 rounded-xl font-semibold hover:bg-emerald-900 transition flex items-center justify-center space-x-1.5 active:scale-95">
                                     <span>📋 Copy Payout</span>
                                 </button>
-                                <button onclick="deleteInvestor(${inv.id}, event)" class="py-2 bg-red-950/80 text-red-400 border border-red-900/50 rounded-xl font-semibold hover:bg-red-900 transition flex items-center justify-center space-x-1.5">
+                                <button onclick="deleteInvestor(${inv.id}, event)" class="py-2 bg-red-950/80 text-red-400 border border-red-900/50 rounded-xl font-semibold hover:bg-red-900 transition flex items-center justify-center space-x-1.5 active:scale-95">
                                     <span>🗑️ Delete</span>
                                 </button>
                             </div>
@@ -1053,17 +947,16 @@
         }
 
         function updateSettlementLedger() {
-            const settlementContainer = document.getElementById('settlement-list-container');
-            if(!settlementContainer) return;
-
+            const container = document.getElementById('settlement-list-container');
+            if(!container) return;
             const returnPct = getProratedReturnPct();
 
             if(investors.length === 0) {
-                settlementContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No settlement records found</p></div>`;
+                container.innerHTML = `<div class="card-box p-8 text-center"><p class="text-xs text-softWhite font-bold">No settlement records found</p></div>`;
                 return;
             }
 
-            settlementContainer.innerHTML = investors.map((inv) => {
+            container.innerHTML = investors.map((inv) => {
                 const profitINR = inv.capital * (returnPct / 100);
                 const profitUSD = profitINR / currentUsdInrRate;
                 const isSettled = inv.settled || false;
@@ -1072,11 +965,9 @@
                     ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-emerald-800/40">Settled / Paid</span>`
                     : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>`;
 
-                const btnText = isSettled ? "↺ Mark Pending" : "✓ Settle / Mark Paid";
-                // Updated to Royal Blue for "Settle / Mark Paid" action button
                 const btnClass = isSettled 
-                    ? "px-3 py-1.5 bg-midnight text-softGrey border border-gray-800 hover:text-softWhite text-[11px] font-semibold rounded-xl transition"
-                    : "px-3 py-1.5 bg-royalBlue text-white hover:bg-blue-600 text-[11px] font-bold rounded-xl transition shadow-md shadow-blue-500/20";
+                    ? "px-3 py-1.5 bg-midnight text-softGrey border border-gray-800 hover:text-softWhite text-[11px] font-semibold rounded-xl transition active:scale-95"
+                    : "ripple-btn px-3 py-1.5 bg-royalBlue text-white hover:bg-blue-600 text-[11px] font-bold rounded-xl transition shadow-md shadow-blue-500/20 active:scale-95";
 
                 return `
                     <div class="card-box p-4 space-y-3">
@@ -1093,7 +984,7 @@
                                 <p class="font-bold text-emeraldLive tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</p>
                             </div>
                             <button onclick="toggleSettled(${inv.id}, event)" class="${btnClass}">
-                                ${btnText}
+                                ${isSettled ? "↺ Mark Pending" : "✓ Settle / Mark Paid"}
                             </button>
                         </div>
                     </div>

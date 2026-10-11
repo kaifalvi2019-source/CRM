@@ -94,7 +94,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 1:32 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 1:35 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -409,6 +409,8 @@
             window.scrollTo(0,0);
             if(tabId === 'settlement') {
                 updateSettlementLedger();
+            } else if(tabId === 'investors') {
+                updateDashboard();
             }
         }
 
@@ -987,6 +989,8 @@
             document.getElementById('home-calc-profit-inr').innerText = `INR ${Math.round(calcProfit).toLocaleString('en-IN')}`;
 
             const listContainer = document.getElementById('investors-list-container');
+            if(!listContainer) return;
+
             if(filteredInvestors.length === 0) {
                 listContainer.innerHTML = `<div class="card-box p-8 text-center"><p class="text-xs text-softWhite font-bold">No investors found</p></div>`;
             } else {

@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 22:34</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 11:09 PM</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -191,7 +191,8 @@
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </span>
-                <input type="text" id="investor-search" oninput="updateDashboard()" placeholder="Search by name or number (e.g. Zaif, 1)..." class="w-full card-box border border-gray-800 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
+                <!-- Updated placeholder to remove brackets -->
+                <input type="text" id="investor-search" oninput="updateDashboard()" placeholder="Search by name or number" class="w-full card-box border border-gray-800 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
             </div>
 
             <div class="space-y-3.5 pt-1" id="investors-list-container">
@@ -229,11 +230,16 @@
                     <!-- Live calculated summary -->
                 </div>
 
-                <!-- LIVE WHITE STATEMENT PREVIEW -->
+                <!-- COLLAPSIBLE LIVE WHITE STATEMENT PREVIEW -->
                 <div class="pt-3">
-                    <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold mb-2">Live White Statement Preview (Identical to Download PDF)</p>
-                    <div id="white-preview-container" class="rounded-xl border border-gray-300 shadow-xl overflow-hidden">
-                        <!-- Populated dynamically -->
+                    <div class="flex justify-between items-center mb-2">
+                        <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold">Live White Statement Preview</p>
+                        <button onclick="toggleStatementPreview()" id="preview-toggle-btn" class="px-3 py-1 bg-midnight border border-goldAccent/30 text-goldAccent text-[10px] font-bold rounded-lg hover:bg-graphite transition flex items-center space-x-1">
+                            <span>▼ Expand Preview</span>
+                        </button>
+                    </div>
+                    <div id="white-preview-container" class="rounded-xl border border-gray-300 shadow-xl overflow-hidden hidden">
+                        <!-- Populated dynamically with isolated iframe -->
                     </div>
                 </div>
             </div>
@@ -344,6 +350,7 @@
         let activeGeminiApiKey = "";
         let currentUsdInrRate = 96.77;
         let activeSelectedWithdrawalUsd = 500;
+        let isStatementPreviewVisible = false;
 
         const CYCLE_LENGTH_DAYS = 30;
         const CYCLE_TARGET_RETURN_PCT = 10;
@@ -488,10 +495,24 @@
             }
         }
 
+        function toggleStatementPreview() {
+            isStatementPreviewVisible = !isStatementPreviewVisible;
+            const container = document.getElementById('white-preview-container');
+            const btn = document.getElementById('preview-toggle-btn');
+            if(isStatementPreviewVisible) {
+                container.classList.remove('hidden');
+                btn.innerHTML = `<span>▲ Hide Preview</span>`;
+                renderCalculatorResult(activeSelectedWithdrawalUsd);
+            } else {
+                container.classList.add('hidden');
+                btn.innerHTML = `<span>▼ Expand Preview</span>`;
+            }
+        }
+
         function generateWhiteHtmlDocument(usd) {
             const res = calculate12PointCost(usd);
             const now = new Date();
-            const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+            const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:true});
 
             return `<!DOCTYPE html>
 <html lang="en">
@@ -659,7 +680,7 @@
                 <div class="flex justify-between text-softGrey pt-1 border-t border-gray-800"><span>Net Amount Received:</span><span class="text-emeraldLive font-extrabold text-sm">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
             `;
 
-            if(previewContainer) {
+            if(previewContainer && isStatementPreviewVisible) {
                 const iframe = document.createElement('iframe');
 
                 iframe.title = 'Aureus Capital White Payout Statement';
@@ -822,7 +843,9 @@
             document.getElementById('cycle-days-remaining').innerText = `${remainingDays} days remaining`;
 
             const options = { weekday: 'short', month: 'short', day: 'numeric' };
-            document.getElementById('current-date-display').innerText = `${now.toLocaleDateString('en-US', options).toUpperCase()} · ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+            // 12-hour format with AM/PM
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            document.getElementById('current-date-display').innerText = `${now.toLocaleDateString('en-US', options).toUpperCase()} · ${timeStr}`;
         }
 
         async function fetchLiveMarketPrices() {

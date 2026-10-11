@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:22</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:30</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -402,7 +402,7 @@
             }
         }
 
-        // INTEGRATED ROBUST COPY PAYOUT FUNCTION
+        // CLEAN & CONCISE PROFESSIONAL PAYOUT TEMPLATE
         function copyPayoutMessage(id, event) {
             if (event) event.stopPropagation();
 
@@ -472,26 +472,14 @@
                 "🔥 Status",
                 "    └─ 🟢 Active",
                 "",
-                "📅 Performance Cycle",
-                `    └─ Day ${cycleDay}/${CYCLE_LENGTH_DAYS}`,
-                "",
-                "💼 Investor Capital (INR)",
-                `    └─ ₹${inr(capital)}`,
-                "",
-                "📈 Prorated Return",
+                "📈 Return",
                 `    └─ ${returnPct.toFixed(2)}%`,
-                "",
-                "💹 Investor Profit (INR)",
-                `    └─ ₹${inr(profit)}`,
                 "",
                 "🇮🇳 Total Payout (INR)",
                 `    └─ ₹${inr(totalPayout)}`,
                 "",
                 "💵 Payout (USD)",
                 `    └─ $${usd(payoutUSD)}`,
-                "",
-                "💱 USD/INR Rate",
-                `    └─ ₹${rate.toFixed(2)}`,
                 "",
                 "📅 Date & Time",
                 `    └─ 🕒 ${date} | ${time}`,

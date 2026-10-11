@@ -82,7 +82,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 07:12</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 07:20</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -146,8 +146,8 @@
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
-                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$94.34</p>
-                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">₹9,130</p>
+                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$34.19</p>
+                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">₹3,308</p>
                     </div>
                 </div>
             </div>
@@ -163,7 +163,7 @@
                 </div>
                 <div class="space-y-2 pt-1">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">9.13%</span>
+                        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">3.31%</span>
                     </div>
                     <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-gray-900 p-0.5">
                         <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 to-emeraldLive h-full rounded-full transition-all duration-500" style="width: 36%"></div>
@@ -301,7 +301,6 @@
 
     <!-- APPLICATION LOGIC -->
     <script>
-        // Load investors from localStorage or default list if empty
         let investors = JSON.parse(localStorage.getItem('aureus_investors')) || [
             { id: 101, name: "Zaif", capital: 50000, active: true }
         ];
@@ -310,6 +309,15 @@
         let leadManagerName = "Kaif Alvi";
         let activeGeminiApiKey = "";
         let currentUsdInrRate = 96.77;
+
+        // FIXED: single source of truth for the 30-day prorated return
+        const CYCLE_DAYS = 30;
+        const TARGET_CYCLE_RETURN_PCT = 8.0 + (10 * 0.1027); // ≈ 9.03% (within 8%–12% range)
+
+        function getAccruedFactor(day) {
+            const d = Math.min(Math.max(day, 0), CYCLE_DAYS);
+            return (TARGET_CYCLE_RETURN_PCT / 100) * (d / CYCLE_DAYS);
+        }
 
         function saveInvestorsToStorage() {
             localStorage.setItem('aureus_investors', JSON.stringify(investors));
@@ -386,24 +394,20 @@
             }
         }
 
-        // STRICTLY INDIVIDUAL DIRECT RETURN CALCULATION (Capital + (Capital * ReturnPct))
+        // ACCURATE ACCRUED DAILY PRORATED PAYOUT CALCULATION
         function copyPayoutMessage(id, event) {
             event.stopPropagation();
             const inv = investors.find(i => i.id === id);
             if(!inv) return;
             
             const now = new Date();
-            const currentDay = Math.min(now.getDate(), 30);
+            const currentDay = Math.min(now.getDate(), CYCLE_DAYS);
             
-            // Current target return percentage factor based on cycle day (e.g., 9.13% on day 11)
-            const currentRateFactor = (8.0 + (currentDay * 0.1027)) / 100;
-            
-            // Direct calculation on individual client investment
-            const investorProfit = inv.capital * currentRateFactor;
+            // FIXED: profit based only on this investor's own capital, prorated daily
+            const investorProfit = inv.capital * getAccruedFactor(currentDay);
             const totalPayout = inv.capital + investorProfit;
             const usdVal = (totalPayout / currentUsdInrRate).toFixed(2);
 
-            // Date & Time formatting (DD-MM-YYYY | HH:MM AM/PM)
             const dayFormatted = String(now.getDate()).padStart(2, '0');
             const monthFormatted = String(now.getMonth() + 1).padStart(2, '0');
             const yearFormatted = now.getFullYear();
@@ -484,7 +488,8 @@
             const currentDay = Math.min(dayOfMonth, 30);
             const remainingDays = 30 - currentDay;
 
-            const calculatedReturn = +(8.0 + (currentDay * 0.1027)).toFixed(2);
+            // FIXED: uses the same shared prorated formula
+            const calculatedReturn = +(getAccruedFactor(currentDay) * 100).toFixed(2);
             
             document.getElementById('cycle-day-count').innerText = `${currentDay}/30`;
             document.getElementById('cycle-return-pct').innerText = `${calculatedReturn}%`;
@@ -559,7 +564,8 @@
             
             const now = new Date();
             const currentDay = Math.min(now.getDate(), 30);
-            const currentRateFactor = (8.0 + (currentDay * 0.1027)) / 100;
+            // FIXED: uses the same shared prorated formula
+            const currentRateFactor = getAccruedFactor(currentDay);
             
             const calcProfit = totalPoolCap * currentRateFactor; 
             const usdProfit = calcProfit / currentUsdInrRate;

@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light">
     <title>Aureus — Executive Summary & Settlement</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,6 +25,12 @@
         }
     </script>
     <style>
+        :root {
+            color-scheme: light only !important;
+            supported-color-schemes: light;
+            background-color: #ffffff !important;
+            color: #111111 !important;
+        }
         body { background-color: #080B0A; color: #F3F4F6; font-family: ui-sans-serif, system-ui, sans-serif; }
         .tabular-nums { font-variant-numeric: tabular-nums; }
         .card-box {
@@ -57,7 +65,7 @@
         ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
     </style>
 </head>
-<body class="min-h-screen pb-32 selection:bg-emerald-500 selection:text-midnight">
+<body class="min-h-screen pb-32 selection:bg-emerald-500 selection:text-midnight" style="color-scheme: light only !important; background-color: #ffffff !important; color: #111111 !important;">
 
     <!-- TOP HEADER -->
     <header class="sticky top-0 z-40 bg-midnight/95 backdrop-blur-md border-b border-gray-900/80 px-4 py-3.5 flex items-center justify-between">
@@ -81,7 +89,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 21:30</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 21:39</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -222,7 +230,7 @@
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
                         <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" value="500" placeholder="e.g. 500" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
-                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-emeraldLive text-midnight text-xs font-bold rounded-xl hover:bg-emerald-600 transition shadow">White HTML / PDF</button>
+                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-emeraldLive text-midnight text-xs font-bold rounded-xl hover:bg-emerald-600 transition shadow">Download White HTML</button>
                     </div>
                 </div>
                 <div id="calculator-result-box" class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900 text-xs space-y-1.5 tabular-nums">
@@ -232,7 +240,7 @@
                 <!-- FORCED WHITE CORPORATE STATEMENT PREVIEW -->
                 <div class="pt-3">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-bold mb-2">Live White Statement Preview (Identical to Download PDF)</p>
-                    <div id="white-preview-container" style="background-color: #ffffff !important; color: #111111 !important;" class="p-4 rounded-xl border border-gray-300 shadow-xl font-sans text-[11px] overflow-x-auto">
+                    <div id="white-preview-container" style="color-scheme: light only !important; background-color: #ffffff !important; color: #111111 !important; forced-color-adjust: none; isolation: isolate;" class="p-4 rounded-xl border border-gray-300 shadow-xl font-sans text-[11px] overflow-x-auto">
                         <!-- Populated dynamically -->
                     </div>
                 </div>
@@ -494,16 +502,17 @@
             const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
             return `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light">
     <title>Aureus Capital - Statement $${usd}</title>
     <style>
-        @media print {
-            body { background: #ffffff !important; -webkit-print-color-adjust: exact; }
-        }
-        body { background-color: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; font-family: Arial, sans-serif; }
-        .invoice-box { max-width: 800px; margin: auto; padding: 25px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 6px; background-color: #ffffff !important; color: #111111 !important; }
+        :root { color-scheme: light only !important; background-color: #ffffff !important; color: #111111 !important; }
+        @media print { body { background: #ffffff !important; -webkit-print-color-adjust: exact; } }
+        body { background-color: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; font-family: Arial, sans-serif; color-scheme: light only !important; forced-color-adjust: none; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 25px; border: 1px solid #ccc; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 6px; background-color: #ffffff !important; color: #111111 !important; color-scheme: light only !important; forced-color-adjust: none; }
         .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px; background: #ffffff !important; }
         .company { font-size: 18px; font-weight: bold; color: #111111 !important; letter-spacing: 1px; }
         .sub { font-size: 10px; color: #555555 !important; text-transform: uppercase; }
@@ -517,7 +526,7 @@
         .sig { border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px; color: #111111 !important; }
     </style>
 </head>
-<body style="background: #ffffff !important; color: #111111 !important;">
+<body style="background: #ffffff !important; color: #111111 !important; color-scheme: light only !important;">
     <div class="invoice-box" style="background: #ffffff !important; color: #111111 !important;">
         <div class="header">
             <div>
@@ -587,7 +596,7 @@
                 const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
                 
                 previewContainer.innerHTML = `
-                    <div style="background-color: #ffffff !important; color: #111111 !important; padding: 12px; border-radius: 8px;">
+                    <div style="color-scheme: light only !important; background-color: #ffffff !important; color: #111111 !important; forced-color-adjust: none; isolation: isolate; padding: 12px; border-radius: 8px;">
                         <div style="border-bottom: 2px solid #C6A56A; padding-bottom: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; align-items:center;">
                             <div>
                                 <div style="font-weight:bold; font-size:13px; color:#111111 !important;">AUREUS CAPITAL</div>
@@ -632,7 +641,7 @@
             link.href = URL.createObjectURL(blob);
             link.download = `Aureus_Statement_$${usd}.html`;
             link.click();
-            alert(`✅ Professional White Statement HTML/PDF for $${usd} downloaded successfully!`);
+            alert(`White statement HTML downloaded for $${usd}.`);
         }
 
         function downloadMasterStatementPDF() {
@@ -676,7 +685,7 @@
             link.href = URL.createObjectURL(blob);
             link.download = `Aureus_Master_Settlement_Sheet.txt`;
             link.click();
-            alert("✅ Master Investor Settlement Sheet downloaded successfully!");
+            alert("Master Investor Settlement Sheet downloaded successfully!");
         }
 
         function copyPayoutMessage(id, event) {
@@ -705,7 +714,7 @@
             ].join("\n");
 
             navigator.clipboard.writeText(msg).then(() => {
-                alert(`✅ Professional Payout confirmation copied for ${inv.name}!`);
+                alert(`Professional Payout confirmation copied for ${inv.name}!`);
             });
         }
 

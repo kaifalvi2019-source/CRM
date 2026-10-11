@@ -28,30 +28,26 @@
                             '0%': { opacity: '1', transform: 'scale(1)' },
                             '50%': { opacity: '0.6', transform: 'scale(1.03)' },
                             '100%': { opacity: '1', transform: 'scale(1)' },
-                        },
-                        ripple: {
-                            '0%': { transform: 'scale(0)', opacity: '0.8' },
-                            '100%': { transform: 'scale(4)', opacity: '0' },
                         }
                     },
                     animation: {
                         'pulse-glow': 'pulseGlow 3s infinite ease-in-out',
                         'price-blink': 'priceBlink 0.6s ease-in-out',
-                        'ripple-effect': 'ripple 0.6s linear'
                     }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #080B0A; color: #F3F4F6; font-family: ui-sans-serif, system-ui, sans-serif; }
+        body { background-color: #080B0A; color: #F3F4F6; font-family: ui-sans-serif, system-ui, sans-serif; overflow-x: hidden; }
         .tabular-nums { font-variant-numeric: tabular-nums; }
         .card-box {
             background: linear-gradient(145deg, #111816 0%, #0d1311 100%);
             border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: 1.25rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            touch-action: pan-y;
         }
         .tier-gold-card {
             background: linear-gradient(135deg, rgba(198, 165, 106, 0.42) 0%, #111816 75%) !important;
@@ -68,17 +64,6 @@
         .tier-normal-card {
             background: linear-gradient(145deg, #111816 0%, #0d1311 100%) !important;
             border: 1px solid rgba(255, 255, 255, 0.07) !important;
-        }
-        /* Ripple effect container */
-        .ripple-btn { position: relative; overflow: hidden; }
-        .ripple-span {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 50%;
-            pointer-events: none;
-            width: 100px; height: 100px;
-            margin-top: -50px; margin-left: -50px;
-            animation: ripple 0.6s linear;
         }
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: #080B0A; }
@@ -109,7 +94,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:50 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 1:54 AM</p>
             <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
@@ -223,7 +208,7 @@
             </div>
 
             <div class="space-y-3.5 pt-1" id="investors-list-container">
-                <!-- Dynamically populated tiered cards -->
+                <!-- Dynamically populated tiered cards with Swipe-to-Delete -->
             </div>
         </section>
 
@@ -421,6 +406,8 @@
             window.scrollTo(0,0);
             if(tabId === 'settlement') {
                 updateSettlementLedger();
+            } else if(tabId === 'investors') {
+                updateDashboard();
             }
         }
 
@@ -473,29 +460,8 @@
 
         function closeAddInvestorModal() { document.getElementById('investor-modal').classList.add('hidden'); }
 
-        function toggleCardActions(id) {
-            const actionsDiv = document.getElementById(`actions-${id}`);
-            if(actionsDiv) {
-                actionsDiv.classList.toggle('hidden');
-            }
-        }
-
         function toggleSettled(id, event) {
             if(event) event.stopPropagation();
-            
-            // Add ripple animation effect on click
-            const btn = event.currentTarget;
-            const circle = document.createElement('span');
-            const diameter = Math.max(btn.clientWidth, btn.clientHeight);
-            const radius = diameter / 2;
-            circle.style.width = circle.style.height = `${diameter}px`;
-            circle.style.left = `${event.clientX - btn.getBoundingClientRect().left - radius}px`;
-            circle.style.top = `${event.clientY - btn.getBoundingClientRect().top - radius}px`;
-            circle.classList.add('ripple-span');
-            const rippleDiv = btn.getElementsByClassName('ripple-span')[0];
-            if (rippleDiv) rippleDiv.remove();
-            btn.appendChild(circle);
-
             const inv = investors.find(i => i.id === id);
             if(inv) {
                 inv.settled = !inv.settled;
@@ -567,8 +533,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="color-scheme" content="light">
-    <meta name="supported-color-schemes" content="light">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aureus Capital - Statement $${usd}</title>
     <style>
@@ -772,39 +736,11 @@
             link.click();
         }
 
-        function copyPayoutMessage(id, event) {
-            if (event) event.stopPropagation();
-            const inv = investors.find(i => String(i.id) === String(id));
-            if (!inv) return;
-            const profitINR = inv.capital * (getProratedReturnPct() / 100);
-            const profitUSD = profitINR / currentUsdInrRate;
-
-            const msg = [
-                "==================================",
-                "       PAYOUT CONFIRMATION        ",
-                "==================================",
-                "",
-                `Investor: ${inv.name.toUpperCase()}`,
-                `Status: Active (Principal 100% Protected)`,
-                `Return Payout (INR): INR ${profitINR.toLocaleString('en-IN', {maximumFractionDigits:2})}`,
-                `Return Payout (USD): $${profitUSD.toFixed(2)}`,
-                "",
-                "AUREUS CAPITAL"
-            ].join("\n");
-
-            navigator.clipboard.writeText(msg).then(() => {
-                alert(`Professional Payout confirmation copied for ${inv.name}!`);
-            });
-        }
-
-        function deleteInvestor(id, event) {
-            event.stopPropagation();
-            if(confirm('Are you sure you want to delete this investor mandate?')) {
-                investors = investors.filter(inv => inv.id !== id);
-                saveInvestorsToStorage();
-                updateDashboard();
-                updateSettlementLedger();
-            }
+        function deleteInvestor(id) {
+            investors = investors.filter(inv => inv.id !== id);
+            saveInvestorsToStorage();
+            updateDashboard();
+            updateSettlementLedger();
         }
 
         function saveInvestor() {
@@ -846,7 +782,6 @@
             const goldEl = document.getElementById('live-gold-price');
             const inrEl = document.getElementById('live-usdinr-price');
             
-            // Add pulse blink animation class
             goldEl.classList.add('animate-price-blink');
             inrEl.classList.add('animate-price-blink');
             setTimeout(() => {
@@ -911,6 +846,8 @@
             document.getElementById('home-calc-profit-inr').innerText = `INR ${Math.round(calcProfit).toLocaleString('en-IN')}`;
 
             const listContainer = document.getElementById('investors-list-container');
+            if(!listContainer) return;
+
             if(filteredInvestors.length === 0) {
                 listContainer.innerHTML = `<div class="card-box p-8 text-center"><p class="text-xs text-softWhite font-bold">No investors found</p></div>`;
             } else {
@@ -919,31 +856,105 @@
                     let cardClass = rank === 1 ? "card-box tier-gold-card" : rank === 2 ? "card-box tier-silver-card" : rank === 3 ? "card-box tier-bronze-card" : "card-box tier-normal-card";
 
                     return `
-                        <div onclick="toggleCardActions(${inv.id})" class="${cardClass} p-4 space-y-3 cursor-pointer transition hover:border-goldAccent/40">
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>
-                                    <div onclick="openAddInvestorModal(${inv.id}, event)" title="Click to Edit">
-                                        <h4 class="font-bold text-softWhite text-sm capitalize hover:text-goldAccent transition">${inv.name}</h4>
-                                        <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">INR ${inv.capital.toLocaleString('en-IN')}</span></p>
+                        <div class="relative overflow-hidden rounded-[1.25rem] mb-3.5 shadow-lg">
+                            <div class="absolute inset-0 bg-red-950 flex items-center justify-end pr-6 text-red-400 font-bold text-xs">
+                                <span>🗑️ Delete</span>
+                            </div>
+                            <div id="card-${inv.id}" 
+                                 ontouchstart="handleTouchStart(event, ${inv.id})" 
+                                 ontouchmove="handleTouchMove(event, ${inv.id})" 
+                                 ontouchend="handleTouchEnd(event, ${inv.id})"
+                                 onmousedown="handleMouseDown(event, ${inv.id})"
+                                 class="${cardClass} p-4 space-y-3 relative z-10 select-none">
+                                <div class="flex justify-between items-center">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>
+                                        <div>
+                                            <h4 class="font-bold text-softWhite text-sm capitalize">${inv.name}</h4>
+                                            <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">INR ${inv.capital.toLocaleString('en-IN')}</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold flex items-center">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> Active
+                                        </span>
                                     </div>
                                 </div>
-                                <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold flex items-center">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> Active
-                                </span>
-                            </div>
-                            <div id="actions-${inv.id}" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-gray-900/80 text-xs">
-                                <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-emerald-950/80 text-emeraldLive border border-emerald-800/50 rounded-xl font-semibold hover:bg-emerald-900 transition flex items-center justify-center space-x-1.5 active:scale-95">
-                                    <span>📋 Copy Payout</span>
-                                </button>
-                                <button onclick="deleteInvestor(${inv.id}, event)" class="py-2 bg-red-950/80 text-red-400 border border-red-900/50 rounded-xl font-semibold hover:bg-red-900 transition flex items-center justify-center space-x-1.5 active:scale-95">
-                                    <span>🗑️ Delete</span>
-                                </button>
                             </div>
                         </div>
                     `;
                 }).join('');
             }
+        }
+
+        let startX = 0;
+        let currentX = 0;
+        let activeCardId = null;
+
+        function handleTouchStart(e, id) {
+            startX = e.touches[0].clientX;
+            activeCardId = id;
+        }
+
+        function handleTouchMove(e, id) {
+            if (activeCardId !== id) return;
+            currentX = e.touches[0].clientX;
+            const diff = currentX - startX;
+            const card = document.getElementById(`card-${id}`);
+            if (card && diff < 0) {
+                card.style.transform = `translateX(${diff}px)`;
+            }
+        }
+
+        function handleTouchEnd(e, id) {
+            if (activeCardId !== id) return;
+            const card = document.getElementById(`card-${id}`);
+            const diff = currentX - startX;
+            if (card) {
+                if (diff < -120) {
+                    card.style.transform = `translateX(-100%)`;
+                    setTimeout(() => deleteInvestor(id), 250);
+                } else {
+                    card.style.transform = `translateX(0px)`;
+                }
+            }
+            activeCardId = null;
+            startX = 0;
+            currentX = 0;
+        }
+
+        function handleMouseDown(e, id) {
+            startX = e.clientX;
+            activeCardId = id;
+            const onMouseMove = (moveEvent) => {
+                if (activeCardId !== id) return;
+                currentX = moveEvent.clientX;
+                const diff = currentX - startX;
+                const card = document.getElementById(`card-${id}`);
+                if (card && diff < 0) {
+                    card.style.transform = `translateX(${diff}px)`;
+                }
+            };
+            const onMouseUp = (upEvent) => {
+                if (activeCardId !== id) return;
+                const card = document.getElementById(`card-${id}`);
+                const diff = currentX - startX;
+                if (card) {
+                    if (diff < -120) {
+                        card.style.transform = `translateX(-100%)`;
+                        setTimeout(() => deleteInvestor(id), 250);
+                    } else {
+                        card.style.transform = `translateX(0px)`;
+                    }
+                }
+                activeCardId = null;
+                startX = 0;
+                currentX = 0;
+                window.removeEventListener('mousemove', onMouseMove);
+                window.removeEventListener('mouseup', onMouseUp);
+            };
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
         }
 
         function updateSettlementLedger() {

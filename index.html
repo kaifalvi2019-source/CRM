@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 11:59 PM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:05 AM</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -155,21 +155,21 @@
             <div class="card-box p-5 space-y-3.5">
                 <div class="flex justify-between items-center">
                     <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">30-Day Market Performance</p>
-                    <p class="text-[11px] text-softGrey font-semibold tabular-nums">DAY <span class="text-softWhite font-bold" id="cycle-day-count">11/30</span></p>
+                    <p class="text-[11px] text-softGrey font-semibold tabular-nums">DAY <span class="text-softWhite font-bold" id="cycle-day-count">12/30</span></p>
                 </div>
                 <div>
                     <h4 class="text-sm font-bold text-softWhite tracking-tight">Indicative Target Range 8%–12%</h4>
                 </div>
                 <div class="space-y-2 pt-1">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">3.50%</span>
+                        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">4.00%</span>
                     </div>
                     <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-gray-900 p-0.5">
-                        <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 to-emeraldLive h-full rounded-full transition-all duration-500" style="width: 36%"></div>
+                        <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 to-emeraldLive h-full rounded-full transition-all duration-500" style="width: 40%"></div>
                     </div>
                     <div class="flex justify-between text-[11px] text-softGrey pt-0.5 font-medium">
                         <span>Strategy Alpha · Active</span>
-                        <span id="cycle-days-remaining" class="text-softWhite">19 days remaining</span>
+                        <span id="cycle-days-remaining" class="text-softWhite">18 days remaining</span>
                     </div>
                 </div>
             </div>
@@ -206,7 +206,8 @@
                     <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-amber-600 transition">Master Sheet PDF</button>
+                <!-- Master Sheet PDF button with 1-second flash effect -->
+                <button id="master-btn-pdf" onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-amber-600 transition duration-300">Master Sheet PDF</button>
             </div>
 
             <!-- QUICK PRESET BUTTONS & CUSTOM CALCULATOR -->
@@ -693,7 +694,6 @@
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${index + 1}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-weight: bold; text-transform: uppercase;">${inv.name}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">INR ${inv.capital.toLocaleString('en-IN')}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #b45309; font-weight: bold;">$${profitUsd.toFixed(2)}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">INR ${Math.round(profitInr).toLocaleString('en-IN')}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #047857; font-weight: bold;">INR ${Math.round(netPayoutInr).toLocaleString('en-IN')}</td>
                     </tr>
@@ -711,7 +711,7 @@
     <style>
         :root { color-scheme: light !important; background: #ffffff !important; color: #111111 !important; }
         html, body { background: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; font-family: Arial, Helvetica, sans-serif; }
-        .invoice-box { max-width: 950px; margin: auto; padding: 25px; border: 1px solid #cccccc; border-radius: 6px; background: #ffffff !important; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .invoice-box { max-width: 900px; margin: auto; padding: 25px; border: 1px solid #cccccc; border-radius: 6px; background: #ffffff !important; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px; }
         .company { font-size: 18px; font-weight: bold; color: #C6A56A !important; letter-spacing: 1px; }
         .sub { font-size: 10px; color: #555555 !important; text-transform: uppercase; }
@@ -745,15 +745,14 @@
         </div>
 
         <div style="font-size: 12px; font-weight: bold; margin-top: 15px;">INVESTOR PORTFOLIO ALLOCATION & NET PAYOUTS</div>
-        <p style="font-size: 10px; color: #555; margin-top: 2px;">* Note: 12-point operational costs and network fees are absorbed entirely from pool trading profits. Client principal is 100% protected.</p>
+        <p style="font-size: 10px; color: #555; margin-top: 2px;">* Note: 12-point operational costs and network fees are absorbed entirely from pool trading profits. Client capital is untouched.</p>
         <table>
             <tr>
                 <th>#</th>
                 <th>Investor Entity</th>
                 <th style="text-align: right;">Principal Capital</th>
-                <th style="text-align: right;">Gross USD Profit</th>
                 <th style="text-align: right;">Gross INR Profit</th>
-                <th style="text-align: right;">Net INR Payout (After Fees)</th>
+                <th style="text-align: right;">Net INR Payout (After Pool Fees)</th>
             </tr>
             ${investorRows}
         </table>
@@ -771,6 +770,19 @@
     </div>
 </body>
 </html>`;
+        }
+
+        // 1-second flash effect for Master Sheet PDF button
+        function flashMasterButton() {
+            const btn = document.getElementById('master-btn-pdf');
+            if(btn) {
+                btn.classList.remove('bg-goldAccent', 'text-midnight');
+                btn.classList.add('bg-amber-500', 'text-white', 'scale-105', 'shadow-lg');
+                setTimeout(() => {
+                    btn.classList.remove('bg-amber-500', 'text-white', 'scale-105', 'shadow-lg');
+                    btn.classList.add('bg-goldAccent', 'text-midnight');
+                }, 1000);
+            }
         }
 
         function renderCalculatorResult(usd) {
@@ -837,6 +849,7 @@
         }
 
         function downloadMasterStatementPDF() {
+            flashMasterButton();
             const htmlContent = generateMasterSheetHtmlDocument();
 
             const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
@@ -866,8 +879,8 @@
                 `Investor: ${inv.name.toUpperCase()}`,
                 `Status: Active (Principal 100% Protected)`,
                 `Return: ${returnPct.toFixed(2)}%`,
-                `Gross Profit (USD): $${profitUSD.toFixed(2)}`,
                 `Return Payout (INR): INR ${profitINR.toLocaleString('en-IN', {maximumFractionDigits:2})}`,
+                `Return Payout (USD): $${profitUSD.toFixed(2)}`,
                 "",
                 "AUREUS CAPITAL"
             ].join("\n");

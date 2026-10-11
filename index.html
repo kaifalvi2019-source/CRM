@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:05 AM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:09 AM</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -206,7 +206,6 @@
                     <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <!-- Master Sheet PDF button with 1-second flash effect -->
                 <button id="master-btn-pdf" onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-amber-600 transition duration-300">Master Sheet PDF</button>
             </div>
 
@@ -689,12 +688,12 @@
                 totalProfitInr += profitInr;
                 totalProfitUsd += profitUsd;
 
+                // 2000/Gross profit column completely removed from master table as requested
                 return `
                     <tr>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${index + 1}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-weight: bold; text-transform: uppercase;">${inv.name}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">INR ${inv.capital.toLocaleString('en-IN')}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">INR ${Math.round(profitInr).toLocaleString('en-IN')}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #047857; font-weight: bold;">INR ${Math.round(netPayoutInr).toLocaleString('en-IN')}</td>
                     </tr>
                 `;
@@ -751,7 +750,6 @@
                 <th>#</th>
                 <th>Investor Entity</th>
                 <th style="text-align: right;">Principal Capital</th>
-                <th style="text-align: right;">Gross INR Profit</th>
                 <th style="text-align: right;">Net INR Payout (After Pool Fees)</th>
             </tr>
             ${investorRows}
@@ -772,15 +770,16 @@
 </html>`;
         }
 
-        // 1-second flash effect for Master Sheet PDF button
+        // 1-second flash effect function for Master Sheet button
         function flashMasterButton() {
             const btn = document.getElementById('master-btn-pdf');
             if(btn) {
-                btn.classList.remove('bg-goldAccent', 'text-midnight');
-                btn.classList.add('bg-amber-500', 'text-white', 'scale-105', 'shadow-lg');
+                // Instantly switch to bright orange/amber
+                btn.className = "px-3.5 py-2 bg-amber-500 text-white text-xs font-bold rounded-xl shadow-lg scale-105 transition-all duration-300";
+                
+                // Revert back to original gold theme after exactly 1 second (1000ms)
                 setTimeout(() => {
-                    btn.classList.remove('bg-amber-500', 'text-white', 'scale-105', 'shadow-lg');
-                    btn.classList.add('bg-goldAccent', 'text-midnight');
+                    btn.className = "px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-amber-600 transition duration-300";
                 }, 1000);
             }
         }

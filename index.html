@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aureus — Executive Summary</title>
+    <title>Aureus — Executive Summary & Settlement</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:33</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 19:57</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -199,13 +199,40 @@
             </div>
         </section>
 
-        <!-- TAB 3: SETTLEMENT -->
+        <!-- TAB 3: SETTLEMENT & STATEMENTS -->
         <section id="tab-settlement" class="space-y-4 hidden">
-            <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Statements</h2>
-            <p class="text-xs text-softGrey">Compute 13-factor settlement ledgers and exports.</p>
-            <div class="card-box p-6 text-center space-y-3">
-                <p class="text-xs text-softWhite font-medium">13-Factor Institutional Ledger Ready</p>
-                <button onclick="alert('Statement PDF generated successfully.')" class="px-4 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl">Issue Statement PDF</button>
+            <div class="flex justify-between items-center px-1">
+                <div>
+                    <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">LEDGER</p>
+                    <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
+                </div>
+                <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-amber-600 transition">Master Sheet PDF</button>
+            </div>
+
+            <!-- QUICK PRESET BUTTONS & CUSTOM CALCULATOR -->
+            <div class="card-box p-4 space-y-3.5">
+                <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold">Quick Preset Withdrawal ($)</p>
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition shadow"> $500 </button>
+                    <button onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition shadow"> $700 </button>
+                    <button onclick="selectPresetAmount(1200)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition shadow"> $1200 </button>
+                    <button onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition shadow"> $1500 </button>
+                </div>
+                <div class="pt-2">
+                    <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
+                    <div class="flex space-x-2">
+                        <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="e.g. 850" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-emeraldLive text-midnight text-xs font-bold rounded-xl hover:bg-emerald-600 transition shadow">White PDF</button>
+                    </div>
+                </div>
+                <div id="calculator-result-box" class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900 text-xs space-y-1.5 tabular-nums">
+                    <!-- Live calculated summary -->
+                </div>
+            </div>
+
+            <!-- Settlement Ledger List -->
+            <div class="space-y-3 pt-1" id="settlement-list-container">
+                <!-- Dynamically populated settlement cards -->
             </div>
         </section>
 
@@ -301,15 +328,15 @@
     <!-- APPLICATION LOGIC -->
     <script>
         let investors = JSON.parse(localStorage.getItem('aureus_investors')) || [
-            { id: 101, name: "Zaif", capital: 50000, active: true }
+            { id: 101, name: "Zaif", capital: 50000, active: true, settled: false }
         ];
         
         let promoterHolding = 50000;
         let leadManagerName = "Kaif Alvi";
         let activeGeminiApiKey = "";
         let currentUsdInrRate = 96.77;
+        let activeSelectedWithdrawalUsd = 500;
 
-        // PROFESSIONAL CYCLE & PRORATED CALCULATION LOGIC
         const CYCLE_LENGTH_DAYS = 30;
         const CYCLE_TARGET_RETURN_PCT = 10;
         const CYCLE_START_DATE = '2026-10-01';
@@ -344,6 +371,10 @@
                 }
             });
             window.scrollTo(0,0);
+            if(tabId === 'settlement') {
+                updateSettlementLedger();
+                selectPresetAmount(500);
+            }
         }
 
         function openSettings() { 
@@ -402,64 +433,164 @@
             }
         }
 
-        // CLEAN & CONCISE PAYOUT TEMPLATE (SHOWS ONLY PURE PROFIT / RETURN)
+        function toggleSettled(id, event) {
+            if(event) event.stopPropagation();
+            const inv = investors.find(i => i.id === id);
+            if(inv) {
+                inv.settled = !inv.settled;
+                saveInvestorsToStorage();
+                updateSettlementLedger();
+            }
+        }
+
+        function calculate12PointCost(usdAmount) {
+            const grossInr = usdAmount * currentUsdInrRate;
+            const buyFee = grossInr * 0.015;
+            const gstBuy = buyFee * 0.18;
+            const transferOut = 500.0;
+            const gas1 = 500.0;
+            const xm360Fee = 500.0;
+            const gas2 = 400.0;
+            const sellFee = grossInr * 0.015;
+            const gstSell = sellFee * 0.18;
+            const tds = grossInr * 0.01;
+            const bankPayout = grossInr * 0.005;
+
+            const totalDeductions = buyFee + gstBuy + transferOut + gas1 + xm360Fee + gas2 + sellFee + gstSell + tds + bankPayout;
+            const netInr = grossInr - totalDeductions;
+            const deductionPct = (totalDeductions / grossInr) * 100;
+
+            return { grossInr, totalDeductions, netInr, deductionPct };
+        }
+
+        function selectPresetAmount(usd) {
+            activeSelectedWithdrawalUsd = usd;
+            document.getElementById('custom-withdrawal-input').value = usd;
+            renderCalculatorResult(usd);
+        }
+
+        function calculateCustomPayout() {
+            const val = parseFloat(document.getElementById('custom-withdrawal-input').value);
+            if(!isNaN(val) && val > 0) {
+                activeSelectedWithdrawalUsd = val;
+                renderCalculatorResult(val);
+            }
+        }
+
+        function renderCalculatorResult(usd) {
+            const res = calculate12PointCost(usd);
+            const box = document.getElementById('calculator-result-box');
+            if(!box) return;
+
+            box.innerHTML = `
+                <div class="flex justify-between text-softGrey"><span>Withdrawal Amount:</span><span class="text-softWhite font-bold">$${usd.toLocaleString('en-US')} (₹${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})})</span></div>
+                <div class="flex justify-between text-softGrey"><span>Total 12-Point Deductions (~10%):</span><span class="text-amber-400 font-bold">₹${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</span></div>
+                <div class="flex justify-between text-softGrey pt-1 border-t border-gray-800"><span>Net Amount Received:</span><span class="text-emeraldLive font-extrabold text-sm">₹${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
+            `;
+        }
+
+        // DOWNLOAD WHITE TEMPLATE STATEMENT PDF
+        function downloadWhiteTemplatePDF() {
+            const usd = activeSelectedWithdrawalUsd;
+            const res = calculate12PointCost(usd);
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+            const content = `
+╔══════════════════════════════════════════════════════════╗
+║               AUREUS CAPITAL INSTITUTIONAL               ║
+║         TRANSACTION COST & NET PAYOUT STATEMENT          ║
+╚══════════════════════════════════════════════════════════╝
+Generated Date: ${dateStr}
+Rate Source: Live Market Reference (${currentUsdInrRate})
+
+• Withdrawal Amount : $${usd.toLocaleString()}
+• Equivalent INR    : ₹${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}
+• Total Deductions  : ₹${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)
+• Net Amount Received: ₹${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}
+
+--- 12-POINT COST BREAKDOWN ---
+1. Bank → CoinDCX Deposit: ₹0.00
+2. CoinDCX USDT Buy Fee (1.5%): ₹${(res.grossInr * 0.015).toFixed(2)}
+3. GST on Buy Fee (18%): ₹${(res.grossInr * 0.015 * 0.18).toFixed(2)}
+4. CoinDCX → Trust Transfer: ₹500.00
+5. Trust → XM360 Gas: ₹500.00
+6. XM360 → Trust Withdrawal: ₹500.00
+7. Trust → CoinDCX Return Gas: ₹400.00
+8. CoinDCX USDT Sell Fee (1.5%): ₹${(res.grossInr * 0.015).toFixed(2)}
+9. GST on Sell Fee (18%): ₹${(res.grossInr * 0.015 * 0.18).toFixed(2)}
+10. TDS (1.0% Mandate): ₹${(res.grossInr * 0.01).toFixed(2)}
+11. UPI / P2M Merchant Fee: ₹0.00 (Personal Account Payout)
+12. CoinDCX → Bank Handling: ₹${(res.grossInr * 0.005).toFixed(2)}
+
+------------------------------------------------------------
+Authorized Signatory: Kaif Alvi (Lead Portfolio Manager)
+Aureus Capital Private Pool
+            `;
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Aureus_Statement_$${usd}.txt`;
+            link.click();
+            alert(`✅ White Template Statement for $${usd} generated & downloaded successfully!`);
+        }
+
+        // DOWNLOAD MASTER SETTLEMENT SHEET PDF
+        function downloadMasterStatementPDF() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-GB');
+            const returnPct = getProratedReturnPct();
+
+            let totalCap = 0;
+            let totalProfit = 0;
+
+            let reportLines = [
+                "==================================================",
+                "       AUREUS CAPITAL - MASTER SETTLEMENT SHEET   ",
+                "==================================================",
+                `Date: ${dateStr} | Cycle Day: ${getCurrentCycleDay()}/30`,
+                `Active Return Rate: ${returnPct.toFixed(2)}%`,
+                ""
+            ];
+
+            investors.forEach((inv, index) => {
+                const profit = inv.capital * (returnPct / 100);
+                const netPayout = profit * 0.90; // after 10% model deduction
+                totalCap += inv.capital;
+                totalProfit += profit;
+
+                reportLines.push(`${index + 1}. Investor: ${inv.name.toUpperCase()}`);
+                reportLines.push(`   - Capital: ₹${inv.capital.toLocaleString('en-IN')}`);
+                reportLines.push(`   - Cycle Profit: ₹${Math.round(profit).toLocaleString('en-IN')}`);
+                reportLines.push(`   - Net Payout (10% Buffer): ₹${Math.round(netPayout).toLocaleString('en-IN')}`);
+                reportLines.push(`   - Status: ${inv.settled ? 'SETTLED / PAID' : 'PENDING'}`);
+                reportLines.push("--------------------------------------------------");
+            });
+
+            reportLines.push(`TOTAL POOL CAPITAL: ₹${totalCap.toLocaleString('en-IN')}`);
+            reportLines.push(`TOTAL CYCLE PROFIT: ₹${Math.round(totalProfit).toLocaleString('en-IN')}`);
+            reportLines.push("==================================================");
+            reportLines.push("Authorized Signatory: Kaif Alvi (Lead Manager)");
+
+            const blob = new Blob([reportLines.join('\n')], { type: 'text/plain;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Aureus_Master_Settlement_Sheet_${dateStr.replace(/\//g, '-')}.txt`;
+            link.click();
+            alert("✅ Master Investor Settlement Sheet downloaded successfully!");
+        }
+
         function copyPayoutMessage(id, event) {
             if (event) event.stopPropagation();
-
-            const inv = investors.find(
-                investor => String(investor.id) === String(id)
-            );
-
-            if (!inv) {
-                alert("Investor not found.");
-                return;
-            }
+            const inv = investors.find(i => String(i.id) === String(id));
+            if (!inv) return;
 
             const capital = Number(inv.capital);
             const rate = Number(currentUsdInrRate);
-            const cycleDay = getCurrentCycleDay();
-
-            if (!Number.isFinite(capital) || capital <= 0) {
-                alert("Invalid investor capital.");
-                return;
-            }
-
-            if (!Number.isFinite(rate) || rate <= 0) {
-                alert("Invalid USD/INR rate.");
-                return;
-            }
-
             const returnPct = getProratedReturnPct();
-
-            // PURE PROFIT / RETURN CALCULATION (WITHOUT PRINCIPAL CAPITAL)
             const profitINR = capital * (returnPct / 100);
             const profitUSD = profitINR / rate;
-
-            const inr = value =>
-                value.toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-
-            const usd = value =>
-                value.toLocaleString("en-US", {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-
-            const now = new Date();
-
-            const date = [
-                String(now.getDate()).padStart(2, "0"),
-                String(now.getMonth() + 1).padStart(2, "0"),
-                now.getFullYear()
-            ].join("-");
-
-            const time = now.toLocaleTimeString("en-IN", {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true
-            });
 
             const msg = [
                 "╔══════════════════════════════════╗",
@@ -476,45 +607,17 @@
                 `    └─ ${returnPct.toFixed(2)}%`,
                 "",
                 "🇮🇳 Return Payout (INR)",
-                `    └─ ₹${inr(profitINR)}`,
+                `    └─ ₹${profitINR.toLocaleString('en-IN', {maximumFractionDigits:2})}`,
                 "",
                 "💵 Return Payout (USD)",
-                `    └─ $${usd(profitUSD)}`,
+                `    └─ $${profitUSD.toLocaleString('en-US', {maximumFractionDigits:2})}`,
                 "",
-                "📅 Date & Time",
-                `    └─ 🕒 ${date} | ${time}`,
-                "",
-                "💬 Message",
-                "    └─ 🎉 Congratulations! Funds successfully transferred.",
-                "",
-                "━━━━━━━━━━━━━━━━━━━━━━━━━",
-                "🏆 AUREUS CAPITAL 🏆",
-                "━━━━━━━━━━━━━━━━━━━━━━━━━"
+                "🏆 AUREUS CAPITAL 🏆"
             ].join("\n");
 
-            if (navigator.clipboard?.writeText) {
-                navigator.clipboard.writeText(msg)
-                    .then(() => alert(`✅ Professional Payout confirmation copied for ${inv.name}!`))
-                    .catch(() => fallbackCopyText(msg, inv.name));
-            } else {
-                fallbackCopyText(msg, inv.name);
-            }
-        }
-
-        function fallbackCopyText(text, name) {
-            const textarea = document.createElement("textarea");
-            textarea.value = text;
-            textarea.style.position = "fixed";
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
-            try {
-                document.execCommand('copy');
-                alert(`✅ Professional Payout confirmation copied for ${name}!`);
-            } catch (err) {
-                alert(`❌ Failed to copy automatically.`);
-            }
-            document.body.removeChild(textarea);
+            navigator.clipboard.writeText(msg).then(() => {
+                alert(`✅ Professional Payout confirmation copied for ${inv.name}!`);
+            });
         }
 
         function deleteInvestor(id, event) {
@@ -543,7 +646,7 @@
                     inv.capital = capital;
                 }
             } else {
-                investors.push({ id: Date.now(), name, capital, active: true });
+                investors.push({ id: Date.now(), name, capital, active: true, settled: false });
             }
 
             saveInvestorsToStorage();
@@ -623,7 +726,6 @@
             });
 
             const totalCount = investors.length;
-            const activeCount = investors.filter(i => i.active).length;
             const investorsCap = investors.reduce((acc, curr) => acc + curr.capital, 0);
             
             const totalPoolCap = promoterHolding + investorsCap;
@@ -644,7 +746,7 @@
             const listContainer = document.getElementById('investors-list-container');
 
             if(filteredInvestors.length === 0) {
-                listContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No investors found</p><p class="text-[11px] text-softGrey">Try searching by name or rank number.</p></div>`;
+                listContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No investors found</p></div>`;
             } else {
                 listContainer.innerHTML = filteredInvestors.map((inv) => {
                     const rank = investors.findIndex(i => i.id === inv.id) + 1;
@@ -669,7 +771,6 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> Active
                                 </span>
                             </div>
-                            <!-- Hidden by default, toggled on card click -->
                             <div id="actions-${inv.id}" class="hidden grid grid-cols-2 gap-2 pt-2 border-t border-gray-900/80 text-xs">
                                 <button onclick="copyPayoutMessage(${inv.id}, event)" class="py-2 bg-emerald-950/80 text-emeraldLive border border-emerald-800/50 rounded-xl font-semibold hover:bg-emerald-900 transition flex items-center justify-center space-x-1.5">
                                     <span>📋 Copy Payout</span>
@@ -682,6 +783,53 @@
                     `;
                 }).join('');
             }
+        }
+
+        function updateSettlementLedger() {
+            const settlementContainer = document.getElementById('settlement-list-container');
+            if(!settlementContainer) return;
+
+            const returnPct = getProratedReturnPct();
+
+            if(investors.length === 0) {
+                settlementContainer.innerHTML = `<div class="card-box p-8 text-center space-y-2"><p class="text-xs text-softWhite font-bold">No settlement records found</p></div>`;
+                return;
+            }
+
+            settlementContainer.innerHTML = investors.map((inv) => {
+                const profitINR = inv.capital * (returnPct / 100);
+                const isSettled = inv.settled || false;
+
+                const statusBadge = isSettled 
+                    ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-emerald-800/40">Settled / Paid</span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>`;
+
+                const btnText = isSettled ? "↺ Mark Pending" : "✓ Settle / Mark Paid";
+                const btnClass = isSettled 
+                    ? "px-3 py-1.5 bg-midnight text-softGrey border border-gray-800 hover:text-softWhite text-[11px] font-semibold rounded-xl transition"
+                    : "px-3 py-1.5 bg-goldAccent text-midnight hover:bg-amber-600 text-[11px] font-bold rounded-xl transition shadow-md";
+
+                return `
+                    <div class="card-box p-4 space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-bold text-softWhite text-sm capitalize">${inv.name}</h4>
+                                <p class="text-[11px] text-softGrey mt-0.5">Capital: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>
+                            </div>
+                            <div>${statusBadge}</div>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-900/80 text-xs">
+                            <div>
+                                <p class="text-[9px] text-softGrey uppercase">Cycle Profit</p>
+                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">₹${Math.round(profitINR).toLocaleString('en-IN')}</p>
+                            </div>
+                            <button onclick="toggleSettled(${inv.id}, event)" class="${btnClass}">
+                                ${btnText}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         window.onload = function() {

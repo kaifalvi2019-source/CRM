@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:30</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 17:33</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -402,7 +402,7 @@
             }
         }
 
-        // CLEAN & CONCISE PROFESSIONAL PAYOUT TEMPLATE
+        // CLEAN & CONCISE PAYOUT TEMPLATE (SHOWS ONLY PURE PROFIT / RETURN)
         function copyPayoutMessage(id, event) {
             if (event) event.stopPropagation();
 
@@ -431,9 +431,9 @@
 
             const returnPct = getProratedReturnPct();
 
-            const profit = capital * returnPct / 100;
-            const totalPayout = capital + profit;
-            const payoutUSD = totalPayout / rate;
+            // PURE PROFIT / RETURN CALCULATION (WITHOUT PRINCIPAL CAPITAL)
+            const profitINR = capital * (returnPct / 100);
+            const profitUSD = profitINR / rate;
 
             const inr = value =>
                 value.toLocaleString("en-IN", {
@@ -475,11 +475,11 @@
                 "📈 Return",
                 `    └─ ${returnPct.toFixed(2)}%`,
                 "",
-                "🇮🇳 Total Payout (INR)",
-                `    └─ ₹${inr(totalPayout)}`,
+                "🇮🇳 Return Payout (INR)",
+                `    └─ ₹${inr(profitINR)}`,
                 "",
-                "💵 Payout (USD)",
-                `    └─ $${usd(payoutUSD)}`,
+                "💵 Return Payout (USD)",
+                `    └─ $${usd(profitUSD)}`,
                 "",
                 "📅 Date & Time",
                 `    └─ 🕒 ${date} | ${time}`,

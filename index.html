@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 11:24 PM</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 11:30 PM</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -675,21 +675,26 @@
             const returnPct = getProratedReturnPct();
 
             let totalCap = 0;
-            let totalProfit = 0;
+            let totalProfitInr = 0;
+            let totalProfitUsd = 0;
 
             let investorRows = investors.map((inv, index) => {
-                const profit = inv.capital * (returnPct / 100);
-                const netPayout = profit * 0.90; // Net payout after 10% pool buffer
+                const profitInr = inv.capital * (returnPct / 100);
+                const profitUsd = profitInr / currentUsdInrRate;
+                const netPayoutInr = profitInr * 0.90; // Net payout after proportional fee adjustment
+                
                 totalCap += inv.capital;
-                totalProfit += profit;
+                totalProfitInr += profitInr;
+                totalProfitUsd += profitUsd;
 
                 return `
                     <tr>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${index + 1}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; font-weight: bold; text-transform: uppercase;">${inv.name}</td>
                         <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">INR ${inv.capital.toLocaleString('en-IN')}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">INR ${Math.round(profit).toLocaleString('en-IN')}</td>
-                        <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #047857; font-weight: bold;">INR ${Math.round(netPayout).toLocaleString('en-IN')}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #b45309; font-weight: bold;">$${profitUsd.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right;">INR ${Math.round(profitInr).toLocaleString('en-IN')}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #047857; font-weight: bold;">INR ${Math.round(netPayoutInr).toLocaleString('en-IN')}</td>
                     </tr>
                 `;
             }).join('');
@@ -705,7 +710,7 @@
     <style>
         :root { color-scheme: light !important; background: #ffffff !important; color: #111111 !important; }
         html, body { background: #ffffff !important; color: #111111 !important; padding: 30px; margin: 0; font-family: Arial, Helvetica, sans-serif; }
-        .invoice-box { max-width: 900px; margin: auto; padding: 25px; border: 1px solid #cccccc; border-radius: 6px; background: #ffffff !important; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .invoice-box { max-width: 950px; margin: auto; padding: 25px; border: 1px solid #cccccc; border-radius: 6px; background: #ffffff !important; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header { display: flex; justify-content: space-between; border-bottom: 2px solid #C6A56A; padding-bottom: 12px; margin-bottom: 15px; }
         .company { font-size: 18px; font-weight: bold; color: #C6A56A !important; letter-spacing: 1px; }
         .sub { font-size: 10px; color: #555555 !important; text-transform: uppercase; }
@@ -733,19 +738,20 @@
         <div class="grid">
             <div>Active Return Rate: <b style="color: #047857;">${returnPct.toFixed(2)}%</b></div>
             <div>Total Pool Capital (Principal Protected): <b style="color: #111;">INR ${totalCap.toLocaleString('en-IN')}</b></div>
-            <div>Total Gross Cycle Profit: <b style="color: #b45309;">INR ${Math.round(totalProfit).toLocaleString('en-IN')}</b></div>
+            <div>Total Gross Cycle Profit: <b style="color: #b45309;">$${totalProfitUsd.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} (INR ${Math.round(totalProfitInr).toLocaleString('en-IN')})</b></div>
             <div>Active Mandates: <b>${investors.length} Investor(s)</b></div>
         </div>
 
-        <div style="font-size: 12px; font-weight: bold; margin-top: 15px;">INVESTOR PORTFOLIO ALLOCATION & NET PAYOUTS</div>
+        <div style="font-size: 12px; font-weight: bold; margin-top: 15px;">INVESTOR PORTFOLIO ALLOCATION & USD/INR BREAKDOWN</div>
         <p style="font-size: 10px; color: #555; margin-top: 2px;">* Note: 12-point operational costs and network fees are absorbed entirely from pool trading profits. Client capital is untouched.</p>
         <table>
             <tr>
                 <th>#</th>
                 <th>Investor Entity</th>
                 <th style="text-align: right;">Principal Capital</th>
-                <th style="text-align: right;">Gross Cycle Profit</th>
-                <th style="text-align: right;">Net Payout (After 10% Buffer)</th>
+                <th style="text-align: right;">Gross USD Profit ($)</th>
+                <th style="text-align: right;">Gross INR Profit</th>
+                <th style="text-align: right;">Net INR Payout (After Fees)</th>
             </tr>
             ${investorRows}
         </table>
@@ -858,8 +864,8 @@
                 `Investor: ${inv.name.toUpperCase()}`,
                 `Status: Active (Principal 100% Protected)`,
                 `Return: ${returnPct.toFixed(2)}%`,
+                `Cycle Profit (USD): $${profitUSD.toLocaleString('en-US', {maximumFractionDigits:2})}`,
                 `Return Payout (INR): INR ${profitINR.toLocaleString('en-IN', {maximumFractionDigits:2})}`,
-                `Return Payout (USD): $${profitUSD.toLocaleString('en-US', {maximumFractionDigits:2})}`,
                 "",
                 "AUREUS CAPITAL"
             ].join("\n");
@@ -1053,6 +1059,7 @@
 
             settlementContainer.innerHTML = investors.map((inv) => {
                 const profitINR = inv.capital * (returnPct / 100);
+                const profitUSD = profitINR / currentUsdInrRate;
                 const isSettled = inv.settled || false;
 
                 const statusBadge = isSettled 
@@ -1075,8 +1082,8 @@
                         </div>
                         <div class="flex justify-between items-center pt-2 border-t border-gray-900/80 text-xs">
                             <div>
-                                <p class="text-[9px] text-softGrey uppercase">Cycle Profit</p>
-                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">INR ${Math.round(profitINR).toLocaleString('en-IN')}</p>
+                                <p class="text-[9px] text-softGrey uppercase">Gross Profit ($ / INR)</p>
+                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</p>
                             </div>
                             <button onclick="toggleSettled(${inv.id}, event)" class="${btnClass}">
                                 ${btnText}

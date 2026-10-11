@@ -15,6 +15,7 @@
                         graphite: '#111816',
                         goldAccent: '#C6A56A',
                         emeraldLive: '#00B982',
+                        royalBlue: '#3B82F6',
                         softGrey: '#8D9A93',
                         softWhite: '#F3F4F6'
                     }
@@ -69,8 +70,8 @@
             </div>
         </div>
         <div class="flex items-center space-x-2.5">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emeraldLive border border-emerald-800/40">
-                <span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1.5 animate-pulse"></span> LIVE
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-950/80 text-royalBlue border border-blue-800/40">
+                <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-pulse"></span> LIVE API
             </span>
             <button onclick="openSettings()" class="p-2.5 rounded-xl card-box text-softGrey hover:text-softWhite transition active:scale-95" title="Settings">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -81,8 +82,8 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:23 AM</p>
-            <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 12:31 AM</p>
+            <span class="text-[10px] text-royalBlue bg-royalBlue/10 px-2 py-0.5 rounded-md font-medium border border-royalBlue/20">Institutional Grade</span>
         </div>
 
         <!-- TAB 1: HOME DASHBOARD -->
@@ -106,17 +107,17 @@
                     </div>
                     <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
                         <div class="flex justify-between items-center">
-                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Live Market</p>
-                            <span class="flex items-center text-[9px] text-emeraldLive font-bold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-pulse"></span> <span id="market-status-text">ONLINE</span></span>
+                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Market Feed</p>
+                            <span class="flex items-center text-[9px] text-royalBlue font-bold"><span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1 animate-pulse"></span> <span id="market-status-text">ONLINE</span></span>
                         </div>
                         <div class="flex justify-between items-center mt-1">
                             <div>
                                 <p class="text-[8px] text-softGrey">GOLD (XAU)</p>
-                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-gold-price">$4,194.50</h3>
+                                <h3 class="text-xs font-bold text-royalBlue tabular-nums" id="live-gold-price">$4,194.50</h3>
                             </div>
                             <div>
                                 <p class="text-[8px] text-softGrey">USD / INR</p>
-                                <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-usdinr-price">INR 96.77</h3>
+                                <h3 class="text-xs font-bold text-royalBlue tabular-nums" id="live-usdinr-price">INR 96.77</h3>
                             </div>
                         </div>
                     </div>
@@ -132,7 +133,7 @@
                 <div>
                     <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
                     <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">INR 1,00,000</h3>
-                    <p class="text-xs text-emeraldLive mt-0.5 font-semibold tabular-nums" id="home-usd-indicative">≈ $1,033.38 indicative</p>
+                    <p class="text-xs text-royalBlue mt-0.5 font-semibold tabular-nums" id="home-usd-indicative">≈ $1,033.38 indicative</p>
                 </div>
                 <div class="grid grid-cols-3 gap-2 pt-3 border-t border-gray-900 text-xs">
                     <div>
@@ -206,7 +207,7 @@
                     <p class="text-[9px] text-softGrey uppercase tracking-widest font-bold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <!-- 100% Fixed Button without persistent orange bug -->
+                <!-- 100% Fixed Button -->
                 <button 
                     onclick="downloadMasterStatementPDF()" 
                     class="px-3.5 py-2 bg-goldAccent text-midnight text-xs font-bold rounded-xl shadow-md hover:bg-goldAccent focus:bg-goldAccent focus:hover:bg-goldAccent active:bg-goldAccent active:scale-95 transition"
@@ -229,7 +230,7 @@
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
                         <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount (e.g. 500)" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
-                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-emeraldLive text-midnight text-xs font-bold rounded-xl hover:bg-emerald-600 transition shadow">Download White HTML</button>
+                        <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-royalBlue text-white text-xs font-bold rounded-xl hover:bg-blue-600 transition shadow">Download White HTML</button>
                     </div>
                 </div>
                 <div id="calculator-result-box" class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900 text-xs space-y-1.5 tabular-nums">
@@ -738,7 +739,7 @@
             <div>
                 <div class="title">MASTER SETTLEMENT SHEET</div>
                 <div class="sub" style="text-align: right;">Date: ${dateStr} | Cycle: ${getCurrentCycleDay()}/30 Days</div>
-                <div class="sub" style="text-align: right; color: #047857 !important; font-family: monospace;">Ref: ${auditId}</div>
+                <div class="sub" style="text-align: right; color: #3B82F6 !important; font-family: monospace;">Ref: ${auditId}</div>
             </div>
         </div>
 
@@ -764,7 +765,7 @@
         <div class="footer">
             <div>
                 <p style="margin:0;"><strong>Strategy:</strong> Alpha Private Pool Payout Ledger</p>
-                <p class="sub" style="font-size: 9px; margin: 2px 0 0 0;">Cryptographically Verified Master Document.</p>
+                <p class="sub" style="font-size: 9px; margin: 2px 0 0 0; color: #3B82F6 !important;">Cryptographically Verified Master Document.</p>
             </div>
             <div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;">
                 <p style="margin: 0; font-weight: bold; color: #C6A56A !important;">${leadManagerName}</p>
@@ -1088,7 +1089,7 @@
                         <div class="flex justify-between items-center pt-2 border-t border-gray-900/80 text-xs">
                             <div>
                                 <p class="text-[9px] text-softGrey uppercase">Gross Profit ($ / INR)</p>
-                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</p>
+                                <p class="font-bold text-royalBlue tabular-nums mt-0.5">$${profitUSD.toFixed(2)} (INR ${Math.round(profitINR).toLocaleString('en-IN')})</p>
                             </div>
                             <button onclick="toggleSettled(${inv.id}, event)" class="${btnClass}">
                                 ${btnText}

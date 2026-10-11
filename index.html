@@ -82,7 +82,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 06:50</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 07:05</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -543,7 +543,9 @@
         }
 
         function updateDashboard() {
-            const searchQuery = document.getElementById('investor-search'].value.toLowerCase().trim();
+            const searchInput = document.getElementById('investor-search');
+            const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            
             investors.sort((a, b) => b.capital - a.capital);
 
             let filteredInvestors = investors.filter((inv, index) => {

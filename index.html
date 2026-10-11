@@ -81,7 +81,7 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         <div class="flex justify-between items-center px-1">
-            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 19:57</p>
+            <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">SUN, OCT 11 · 20:05</p>
             <span class="text-[10px] text-goldAccent bg-goldAccent/10 px-2 py-0.5 rounded-md font-medium">Institutional Grade</span>
         </div>
 
@@ -102,7 +102,7 @@
                 <div class="grid grid-cols-2 gap-3 pt-1">
                     <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
                         <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>
-                        <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">₹50,000</h3>
+                        <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">INR 50,000</h3>
                     </div>
                     <div class="bg-midnight/60 p-3.5 rounded-xl border border-gray-900/60">
                         <div class="flex justify-between items-center">
@@ -116,7 +116,7 @@
                             </div>
                             <div>
                                 <p class="text-[8px] text-softGrey">USD / INR</p>
-                                <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-usdinr-price">₹96.77</h3>
+                                <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-usdinr-price">INR 96.77</h3>
                             </div>
                         </div>
                     </div>
@@ -131,7 +131,7 @@
                 </div>
                 <div>
                     <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
-                    <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">₹1,00,000</h3>
+                    <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">INR 1,00,000</h3>
                     <p class="text-xs text-emeraldLive mt-0.5 font-semibold tabular-nums" id="home-usd-indicative">≈ $1,033.38 indicative</p>
                 </div>
                 <div class="grid grid-cols-3 gap-2 pt-3 border-t border-gray-900 text-xs">
@@ -141,12 +141,12 @@
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Capital</p>
-                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">₹50,000</p>
+                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">INR 50,000</p>
                     </div>
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
                         <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$36.17</p>
-                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">₹3,500</p>
+                        <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">INR 3,500</p>
                     </div>
                 </div>
             </div>
@@ -221,12 +221,18 @@
                 <div class="pt-2">
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
-                        <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="e.g. 850" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+                        <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" value="500" placeholder="e.g. 500" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
                         <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-emeraldLive text-midnight text-xs font-bold rounded-xl hover:bg-emerald-600 transition shadow">White PDF</button>
                     </div>
                 </div>
                 <div id="calculator-result-box" class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900 text-xs space-y-1.5 tabular-nums">
                     <!-- Live calculated summary -->
+                </div>
+
+                <!-- LIVE STATEMENT TEXT PREVIEW BOX -->
+                <div class="pt-2">
+                    <p class="text-[10px] text-softGrey uppercase tracking-widest font-bold mb-1.5">Live Generated Statement Preview</p>
+                    <pre id="statement-preview-box" class="bg-midnight p-3 rounded-xl border border-gray-800 text-[10px] text-emerald-400 font-mono overflow-x-auto whitespace-pre-wrap">Generating statement preview...</pre>
                 </div>
             </div>
 
@@ -398,7 +404,7 @@
             }
 
             document.getElementById('display-manager-name').innerText = leadManagerName;
-            document.getElementById('display-promoter-holding').innerText = `₹${promoterHolding.toLocaleString('en-IN')}`;
+            document.getElementById('display-promoter-holding').innerText = `INR ${promoterHolding.toLocaleString('en-IN')}`;
             
             closeSettings();
             updateDashboard();
@@ -460,83 +466,89 @@
             const netInr = grossInr - totalDeductions;
             const deductionPct = (totalDeductions / grossInr) * 100;
 
-            return { grossInr, totalDeductions, netInr, deductionPct };
+            return { grossInr, totalDeductions, netInr, deductionPct, buyFee, gstBuy, transferOut, gas1, xm360Fee, gas2, sellFee, gstSell, tds, bankPayout };
         }
 
         function selectPresetAmount(usd) {
             activeSelectedWithdrawalUsd = usd;
-            document.getElementById('custom-withdrawal-input').value = usd;
+            const inputField = document.getElementById('custom-withdrawal-input');
+            if(inputField) inputField.value = usd;
             renderCalculatorResult(usd);
         }
 
         function calculateCustomPayout() {
-            const val = parseFloat(document.getElementById('custom-withdrawal-input').value);
+            const inputField = document.getElementById('custom-withdrawal-input');
+            if(!inputField) return;
+            const val = parseFloat(inputField.value);
             if(!isNaN(val) && val > 0) {
                 activeSelectedWithdrawalUsd = val;
                 renderCalculatorResult(val);
             }
         }
 
-        function renderCalculatorResult(usd) {
-            const res = calculate12PointCost(usd);
-            const box = document.getElementById('calculator-result-box');
-            if(!box) return;
-
-            box.innerHTML = `
-                <div class="flex justify-between text-softGrey"><span>Withdrawal Amount:</span><span class="text-softWhite font-bold">$${usd.toLocaleString('en-US')} (₹${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})})</span></div>
-                <div class="flex justify-between text-softGrey"><span>Total 12-Point Deductions (~10%):</span><span class="text-amber-400 font-bold">₹${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</span></div>
-                <div class="flex justify-between text-softGrey pt-1 border-t border-gray-800"><span>Net Amount Received:</span><span class="text-emeraldLive font-extrabold text-sm">₹${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
-            `;
-        }
-
-        // DOWNLOAD WHITE TEMPLATE STATEMENT PDF
-        function downloadWhiteTemplatePDF() {
-            const usd = activeSelectedWithdrawalUsd;
+        function generateStatementText(usd) {
             const res = calculate12PointCost(usd);
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
-            const content = `
-╔══════════════════════════════════════════════════════════╗
-║               AUREUS CAPITAL INSTITUTIONAL               ║
-║         TRANSACTION COST & NET PAYOUT STATEMENT          ║
-╚══════════════════════════════════════════════════════════╝
-Generated Date: ${dateStr}
-Rate Source: Live Market Reference (${currentUsdInrRate})
+            return `==================================================
+       AUREUS CAPITAL - INSTITUTIONAL STATEMENT   
+==================================================
+Date: ${dateStr} | Rate: USD/INR ${currentUsdInrRate}
 
-• Withdrawal Amount : $${usd.toLocaleString()}
-• Equivalent INR    : ₹${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}
-• Total Deductions  : ₹${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)
-• Net Amount Received: ₹${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}
+• Withdrawal Amount   : $${usd.toLocaleString()}
+• Equivalent INR      : INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}
+• Total Deductions    : INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)
+• Net Amount Received : INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}
 
 --- 12-POINT COST BREAKDOWN ---
-1. Bank → CoinDCX Deposit: ₹0.00
-2. CoinDCX USDT Buy Fee (1.5%): ₹${(res.grossInr * 0.015).toFixed(2)}
-3. GST on Buy Fee (18%): ₹${(res.grossInr * 0.015 * 0.18).toFixed(2)}
-4. CoinDCX → Trust Transfer: ₹500.00
-5. Trust → XM360 Gas: ₹500.00
-6. XM360 → Trust Withdrawal: ₹500.00
-7. Trust → CoinDCX Return Gas: ₹400.00
-8. CoinDCX USDT Sell Fee (1.5%): ₹${(res.grossInr * 0.015).toFixed(2)}
-9. GST on Sell Fee (18%): ₹${(res.grossInr * 0.015 * 0.18).toFixed(2)}
-10. TDS (1.0% Mandate): ₹${(res.grossInr * 0.01).toFixed(2)}
-11. UPI / P2M Merchant Fee: ₹0.00 (Personal Account Payout)
-12. CoinDCX → Bank Handling: ₹${(res.grossInr * 0.005).toFixed(2)}
+1. Bank -> CoinDCX Deposit: INR 0.00
+2. CoinDCX USDT Buy Fee (1.5%): INR ${res.buyFee.toFixed(2)}
+3. GST on Buy Fee (18%): INR ${res.gstBuy.toFixed(2)}
+4. CoinDCX -> Trust Transfer: INR ${res.transferOut.toFixed(2)}
+5. Trust -> XM360 Gas: INR ${res.gas1.toFixed(2)}
+6. XM360 -> Trust Withdrawal: INR ${res.xm360Fee.toFixed(2)}
+7. Trust -> CoinDCX Return Gas: INR ${res.gas2.toFixed(2)}
+8. CoinDCX USDT Sell Fee (1.5%): INR ${res.sellFee.toFixed(2)}
+9. GST on Sell Fee (18%): INR ${res.gstSell.toFixed(2)}
+10. TDS (1.0% Mandate): INR ${res.tds.toFixed(2)}
+11. UPI / P2M Merchant Fee: INR 0.00 (Personal Account Payout)
+12. CoinDCX -> Bank Handling: INR ${res.bankPayout.toFixed(2)}
 
-------------------------------------------------------------
-Authorized Signatory: Kaif Alvi (Lead Portfolio Manager)
-Aureus Capital Private Pool
+--------------------------------------------------
+Authorized Signatory: ${leadManagerName} (Lead Manager)
+Aureus Capital Private Pool`;
+        }
+
+        function renderCalculatorResult(usd) {
+            const res = calculate12PointCost(usd);
+            const box = document.getElementById('calculator-result-box');
+            const previewBox = document.getElementById('statement-preview-box');
+            if(!box) return;
+
+            box.innerHTML = `
+                <div class="flex justify-between text-softGrey"><span>Withdrawal Amount:</span><span class="text-softWhite font-bold">$${usd.toLocaleString('en-US')} (INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})})</span></div>
+                <div class="flex justify-between text-softGrey"><span>Total 12-Point Deductions (~10%):</span><span class="text-amber-400 font-bold">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</span></div>
+                <div class="flex justify-between text-softGrey pt-1 border-t border-gray-800"><span>Net Amount Received:</span><span class="text-emeraldLive font-extrabold text-sm">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>
             `;
 
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
+            if(previewBox) {
+                previewBox.innerText = generateStatementText(usd);
+            }
+        }
+
+        function downloadWhiteTemplatePDF() {
+            const usd = activeSelectedWithdrawalUsd;
+            const textContent = generateStatementText(usd);
+
+            const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `Aureus_Statement_$${usd}.txt`;
             link.click();
-            alert(`✅ White Template Statement for $${usd} generated & downloaded successfully!`);
+            alert(`✅ White Statement for $${usd} downloaded successfully!`);
         }
 
-        // DOWNLOAD MASTER SETTLEMENT SHEET PDF
         function downloadMasterStatementPDF() {
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-GB');
@@ -556,27 +568,27 @@ Aureus Capital Private Pool
 
             investors.forEach((inv, index) => {
                 const profit = inv.capital * (returnPct / 100);
-                const netPayout = profit * 0.90; // after 10% model deduction
+                const netPayout = profit * 0.90;
                 totalCap += inv.capital;
                 totalProfit += profit;
 
                 reportLines.push(`${index + 1}. Investor: ${inv.name.toUpperCase()}`);
-                reportLines.push(`   - Capital: ₹${inv.capital.toLocaleString('en-IN')}`);
-                reportLines.push(`   - Cycle Profit: ₹${Math.round(profit).toLocaleString('en-IN')}`);
-                reportLines.push(`   - Net Payout (10% Buffer): ₹${Math.round(netPayout).toLocaleString('en-IN')}`);
+                reportLines.push(`   - Capital: INR ${inv.capital.toLocaleString('en-IN')}`);
+                reportLines.push(`   - Cycle Profit: INR ${Math.round(profit).toLocaleString('en-IN')}`);
+                reportLines.push(`   - Net Payout (10% Buffer): INR ${Math.round(netPayout).toLocaleString('en-IN')}`);
                 reportLines.push(`   - Status: ${inv.settled ? 'SETTLED / PAID' : 'PENDING'}`);
                 reportLines.push("--------------------------------------------------");
             });
 
-            reportLines.push(`TOTAL POOL CAPITAL: ₹${totalCap.toLocaleString('en-IN')}`);
-            reportLines.push(`TOTAL CYCLE PROFIT: ₹${Math.round(totalProfit).toLocaleString('en-IN')}`);
+            reportLines.push(`TOTAL POOL CAPITAL: INR ${totalCap.toLocaleString('en-IN')}`);
+            reportLines.push(`TOTAL CYCLE PROFIT: INR ${Math.round(totalProfit).toLocaleString('en-IN')}`);
             reportLines.push("==================================================");
-            reportLines.push("Authorized Signatory: Kaif Alvi (Lead Manager)");
+            reportLines.push(`Authorized Signatory: ${leadManagerName} (Lead Manager)`);
 
             const blob = new Blob([reportLines.join('\n')], { type: 'text/plain;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `Aureus_Master_Settlement_Sheet_${dateStr.replace(/\//g, '-')}.txt`;
+            link.download = `Aureus_Master_Settlement_Sheet.txt`;
             link.click();
             alert("✅ Master Investor Settlement Sheet downloaded successfully!");
         }
@@ -593,26 +605,17 @@ Aureus Capital Private Pool
             const profitUSD = profitINR / rate;
 
             const msg = [
-                "╔══════════════════════════════════╗",
-                "       ✨ 𝐏𝐀𝐘𝐎𝐔𝐓 𝐂𝐎𝐍𝐅𝐈𝐑𝐌𝐀𝐓𝐈𝐎𝐍 ✨",
-                "╚══════════════════════════════════╝",
+                "==================================",
+                "       PAYOUT CONFIRMATION        ",
+                "==================================",
                 "",
-                "👤 Investor",
-                `    └─ ${inv.name.toUpperCase()}`,
+                `Investor: ${inv.name.toUpperCase()}`,
+                `Status: Active`,
+                `Return: ${returnPct.toFixed(2)}%`,
+                `Return Payout (INR): INR ${profitINR.toLocaleString('en-IN', {maximumFractionDigits:2})}`,
+                `Return Payout (USD): $${profitUSD.toLocaleString('en-US', {maximumFractionDigits:2})}`,
                 "",
-                "🔥 Status",
-                "    └─ 🟢 Active",
-                "",
-                "📈 Return",
-                `    └─ ${returnPct.toFixed(2)}%`,
-                "",
-                "🇮🇳 Return Payout (INR)",
-                `    └─ ₹${profitINR.toLocaleString('en-IN', {maximumFractionDigits:2})}`,
-                "",
-                "💵 Return Payout (USD)",
-                `    └─ $${profitUSD.toLocaleString('en-US', {maximumFractionDigits:2})}`,
-                "",
-                "🏆 AUREUS CAPITAL 🏆"
+                "AUREUS CAPITAL"
             ].join("\n");
 
             navigator.clipboard.writeText(msg).then(() => {
@@ -626,6 +629,7 @@ Aureus Capital Private Pool
                 investors = investors.filter(inv => inv.id !== id);
                 saveInvestorsToStorage();
                 updateDashboard();
+                updateSettlementLedger();
             }
         }
 
@@ -652,6 +656,7 @@ Aureus Capital Private Pool
             saveInvestorsToStorage();
             closeAddInvestorModal();
             updateDashboard();
+            updateSettlementLedger();
         }
 
         function initSystemMetrics() {
@@ -672,9 +677,10 @@ Aureus Capital Private Pool
         async function fetchLiveMarketPrices() {
             if (!activeGeminiApiKey) {
                 document.getElementById('live-gold-price').innerText = "$4,194.50";
-                document.getElementById('live-usdinr-price').innerText = `₹${currentUsdInrRate}`;
+                document.getElementById('live-usdinr-price').innerText = `INR ${currentUsdInrRate}`;
                 document.getElementById('market-status-text').innerText = "ONLINE";
                 updateDashboard();
+                updateSettlementLedger();
                 return;
             }
 
@@ -699,15 +705,17 @@ Aureus Capital Private Pool
                     if(marketValues.inr) {
                         currentUsdInrRate = marketValues.inr;
                     }
-                    document.getElementById('live-usdinr-price').innerText = `₹${currentUsdInrRate.toFixed(2)}`;
+                    document.getElementById('live-usdinr-price').innerText = `INR ${currentUsdInrRate.toFixed(2)}`;
                     document.getElementById('market-status-text').innerText = "ONLINE";
                     updateDashboard();
+                    updateSettlementLedger();
                 }
             } catch (e) {
                 console.warn("Gemini Live Fetch Error:", e);
-                document.getElementById('live-usdinr-price').innerText = `₹${currentUsdInrRate}`;
+                document.getElementById('live-usdinr-price').innerText = `INR ${currentUsdInrRate}`;
                 document.getElementById('market-status-text').innerText = "ONLINE";
                 updateDashboard();
+                updateSettlementLedger();
             }
         }
 
@@ -735,13 +743,13 @@ Aureus Capital Private Pool
             const usdProfit = calcProfit / currentUsdInrRate;
             const usdIndicative = totalPoolCap / currentUsdInrRate;
 
-            document.getElementById('home-total-capital').innerText = `₹${totalPoolCap.toLocaleString('en-IN')}`;
+            document.getElementById('home-total-capital').innerText = `INR ${totalPoolCap.toLocaleString('en-IN')}`;
             document.getElementById('home-usd-indicative').innerText = `≈ $${usdIndicative.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})} indicative`;
             document.getElementById('home-active-count').innerText = totalCount;
-            document.getElementById('home-active-capital').innerText = `₹${investorsCap.toLocaleString('en-IN')}`;
+            document.getElementById('home-active-capital').innerText = `INR ${investorsCap.toLocaleString('en-IN')}`;
             
             document.getElementById('home-calc-profit-usd').innerText = `$${usdProfit.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-            document.getElementById('home-calc-profit-inr').innerText = `₹${Math.round(calcProfit).toLocaleString('en-IN')}`;
+            document.getElementById('home-calc-profit-inr').innerText = `INR ${Math.round(calcProfit).toLocaleString('en-IN')}`;
 
             const listContainer = document.getElementById('investors-list-container');
 
@@ -764,7 +772,7 @@ Aureus Capital Private Pool
                                     ${rankBadge}
                                     <div onclick="openAddInvestorModal(${inv.id}, event)" title="Click to Edit">
                                         <h4 class="font-bold text-softWhite text-sm capitalize hover:text-goldAccent transition">${inv.name}</h4>
-                                        <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>
+                                        <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">INR ${inv.capital.toLocaleString('en-IN')}</span></p>
                                     </div>
                                 </div>
                                 <span class="text-[10px] bg-emerald-950 text-emeraldLive px-2.5 py-1 rounded-full border border-emerald-800/40 font-bold flex items-center">
@@ -814,14 +822,14 @@ Aureus Capital Private Pool
                         <div class="flex justify-between items-start">
                             <div>
                                 <h4 class="font-bold text-softWhite text-sm capitalize">${inv.name}</h4>
-                                <p class="text-[11px] text-softGrey mt-0.5">Capital: <span class="text-goldAccent font-semibold tabular-nums">₹${inv.capital.toLocaleString('en-IN')}</span></p>
+                                <p class="text-[11px] text-softGrey mt-0.5">Capital: <span class="text-goldAccent font-semibold tabular-nums">INR ${inv.capital.toLocaleString('en-IN')}</span></p>
                             </div>
                             <div>${statusBadge}</div>
                         </div>
                         <div class="flex justify-between items-center pt-2 border-t border-gray-900/80 text-xs">
                             <div>
                                 <p class="text-[9px] text-softGrey uppercase">Cycle Profit</p>
-                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">₹${Math.round(profitINR).toLocaleString('en-IN')}</p>
+                                <p class="font-bold text-emeraldLive tabular-nums mt-0.5">INR ${Math.round(profitINR).toLocaleString('en-IN')}</p>
                             </div>
                             <button onclick="toggleSettled(${inv.id}, event)" class="${btnClass}">
                                 ${btnText}
@@ -836,6 +844,8 @@ Aureus Capital Private Pool
             initSystemMetrics();
             fetchLiveMarketPrices();
             updateDashboard();
+            updateSettlementLedger();
+            selectPresetAmount(500);
         };
     </script>
 </body>

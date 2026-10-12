@@ -41,7 +41,13 @@
             50% { transform: scale(1.05); opacity: 1; filter: blur(0px); }
             100% { transform: scale(1); opacity: 1; }
         }
-        .animate-splash { animation: splashZoom 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-splash { animation: splashZoom 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        .animate-progress { animation: loadProgress 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     </style>
 </head>
 <body class="pb-24">
@@ -54,8 +60,8 @@
             <p class="text-xs text-goldAccent uppercase tracking-[0.3em] font-extrabold">AUREUS CAPITAL</p>
             <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>
         </div>
-        <div class="w-32 h-1 bg-gray-800 rounded-full overflow-hidden mt-4">
-            <div class="bg-goldAccent h-full rounded-full animate-[pulse_1s_infinite]" style="width: 70%"></div>
+        <div class="w-40 h-1 bg-gray-800 rounded-full overflow-hidden mt-4 border border-gray-900">
+            <div id="splash-bar" class="bg-goldAccent h-full rounded-full animate-progress"></div>
         </div>
     </div>
 </div>
@@ -280,7 +286,8 @@
             <span class="text-[10px] font-semibold uppercase tracking-wider">INVESTORS</span>    
         </button>    
         <button onclick="switchTab('settlement')" id="nav-settlement" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-softGrey hover:text-softWhite transition">    
-            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>    
+            <!-- UPDATED PROFESSIONAL LEDGER ICON -->
+            <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>    
             <span class="text-[10px] font-semibold uppercase tracking-wider">SETTLEMENT</span>    
         </button>    
         <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-softGrey hover:text-softWhite transition">    
@@ -347,12 +354,12 @@
 <script>    
     let investors = [];
     try {
-        const storedInvestors = localStorage.getItem('aureus_investors_v6');
+        const storedInvestors = localStorage.getItem('aureus_investors_v7');
         if (storedInvestors !== null) {
             investors = JSON.parse(storedInvestors);
         } else {
-            investors = []; // डिफ़ॉल्ट रूप से खाली ताकि डिलीट होने पर वापस न आए
-            localStorage.setItem('aureus_investors_v6', JSON.stringify(investors));
+            investors = [];
+            localStorage.setItem('aureus_investors_v7', JSON.stringify(investors));
         }
     } catch(e) {
         investors = [];
@@ -383,7 +390,7 @@
     }    
   
     function saveInvestorsToStorage() {    
-        localStorage.setItem('aureus_investors_v6', JSON.stringify(investors));    
+        localStorage.setItem('aureus_investors_v7', JSON.stringify(investors));    
     }    
   
     function switchTab(tabId) {    
@@ -885,14 +892,14 @@
         activeSelectedWithdrawalUsd = 0;    
         renderCalculatorResult(0);    
 
-        // Splash screen fade out after 1.5 seconds
+        // Splash screen fade out after loading bar completes (1.8s)
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             if (splash) {
                 splash.style.opacity = '0';
                 setTimeout(() => splash.remove(), 700);
             }
-        }, 1500);
+        }, 1800);
     };    
 </script>    
 </body>

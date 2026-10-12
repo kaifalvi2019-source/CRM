@@ -325,7 +325,7 @@
 <script>    
     let investors = [];
     try {
-        const storedInvestors = localStorage.getItem('aureus_investors_v2');
+        const storedInvestors = localStorage.getItem('aureus_investors_v3');
         if (storedInvestors) {
             investors = JSON.parse(storedInvestors);
         }
@@ -335,13 +335,9 @@
 
     if (!investors || investors.length === 0) {
         investors = [
-            { id: 1, name: "Huzaif Khan", capital: 70000, active: true, settled: false },
-            { id: 2, name: "Harsh Gupta", capital: 50000, active: true, settled: false },
-            { id: 3, name: "Jatin Bansal", capital: 50000, active: true, settled: false },
-            { id: 4, name: "Rohan F", capital: 40000, active: true, settled: false },
-            { id: 5, name: "Manish F", capital: 35000, active: true, settled: false }
+            { id: 1, name: "Zaif", capital: 250000, active: true, settled: false }
         ];
-        localStorage.setItem('aureus_investors_v2', JSON.stringify(investors));
+        localStorage.setItem('aureus_investors_v3', JSON.stringify(investors));
     }
         
     let promoterHolding = 50000;    
@@ -369,7 +365,7 @@
     }    
   
     function saveInvestorsToStorage() {    
-        localStorage.setItem('aureus_investors_v2', JSON.stringify(investors));    
+        localStorage.setItem('aureus_investors_v3', JSON.stringify(investors));    
     }    
   
     function switchTab(tabId) {    

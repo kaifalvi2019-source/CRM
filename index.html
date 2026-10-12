@@ -57,6 +57,14 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">
         
+        <!-- TAB 1: HOME -->
+        <section id="tab-home" class="space-y-4 hidden">
+            <div class="card-box p-5 space-y-3">
+                <h2 class="text-lg font-bold text-softWhite">Dashboard Overview</h2>
+                <p class="text-xs text-softGrey">Welcome back, Kaif Alvi.</p>
+            </div>
+        </section>
+
         <!-- TAB 2: INVESTOR PORTFOLIO -->
         <section id="tab-investors" class="space-y-4">
             <div class="flex justify-between items-center px-1">
@@ -68,18 +76,34 @@
             </div>
 
             <div class="space-y-3.5 pt-1" id="investors-list-container">
-                <!-- Dynamically populated tiered cards -->
+                <!-- Dynamically populated cards -->
+            </div>
+        </section>
+
+        <!-- TAB 3: SETTLEMENT -->
+        <section id="tab-settlement" class="space-y-4 hidden">
+            <div class="card-box p-5 space-y-3">
+                <h2 class="text-lg font-bold text-softWhite">Settlement & Calculator</h2>
+                <p class="text-xs text-softGrey">Manage payouts and statements here.</p>
+            </div>
+        </section>
+
+        <!-- TAB 4: MORE -->
+        <section id="tab-more" class="space-y-4 hidden">
+            <div class="card-box p-5 space-y-3">
+                <h2 class="text-lg font-bold text-softWhite">Settings & Info</h2>
+                <p class="text-xs text-softGrey">Lead Manager: Kaif Alvi</p>
             </div>
         </section>
     </main>
 
     <!-- FIXED 4-TAB BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-midnight/95 backdrop-blur-xl border-t border-gray-900/80 py-2.5 px-4 z-40">
-        <div class="max-w-md mx-auto grid grid-cols-4 gap-2 text-center text-softGrey">
-            <button onclick="switchTab('home')" class="py-1.5 rounded-xl">HOME</button>
-            <button onclick="switchTab('investors')" class="py-1.5 rounded-xl text-goldAccent bg-goldAccent/10">INVESTORS</button>
-            <button onclick="switchTab('settlement')" class="py-1.5 rounded-xl">SETTLEMENT</button>
-            <button onclick="switchTab('more')" class="py-1.5 rounded-xl">MORE</button>
+        <div class="max-w-md mx-auto grid grid-cols-4 gap-2 text-center text-xs font-bold">
+            <button onclick="switchTab('home')" id="nav-home" class="py-2 rounded-xl text-softGrey">HOME</button>
+            <button onclick="switchTab('investors')" id="nav-investors" class="py-2 rounded-xl text-goldAccent bg-goldAccent/10">INVESTORS</button>
+            <button onclick="switchTab('settlement')" id="nav-settlement" class="py-2 rounded-xl text-softGrey">SETTLEMENT</button>
+            <button onclick="switchTab('more')" id="nav-more" class="py-2 rounded-xl text-softGrey">MORE</button>
         </div>
     </nav>
 
@@ -111,12 +135,25 @@
     <!-- APPLICATION LOGIC -->
     <script>
         let investors = JSON.parse(localStorage.getItem('aureus_investors')) || [
-            { id: 101, name: "Zaif", capital: 50000, active: true, settled: false }
+            { id: 101, name: "Zaif", capital: 250000, active: true, settled: false }
         ];
 
         function saveInvestorsToStorage() {
             localStorage.setItem('aureus_investors', JSON.stringify(investors));
         }
+
+        function switchTab(tabId) {
+            ['home', 'investors', 'settlement', 'more'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${t}`);
+                btn.className = "py-2 rounded-xl text-softGrey";
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabId}`).className = "py-2 rounded-xl text-goldAccent bg-goldAccent/10";
+            window.scrollTo(0,0);
+        }
+
+        function openSettings() { alert("Settings Panel"); }
 
         function openAddInvestorModal(editId = null, event = null) {
             if(event) event.stopPropagation();

@@ -34,9 +34,31 @@
         .animate-pulse-glow { animation: pulseGlow 4s infinite ease-in-out; }
         @keyframes priceBlink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         .animate-price-blink { animation: priceBlink 0.6s ease-in-out; }
+        
+        /* Splash Screen Animations */
+        @keyframes splashZoom {
+            0% { transform: scale(0.8); opacity: 0; filter: blur(10px); }
+            50% { transform: scale(1.05); opacity: 1; filter: blur(0px); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-splash { animation: splashZoom 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body class="pb-24">
+
+<!-- SPLASH SCREEN / INTRO ANIMATION -->
+<div id="splash-screen" class="fixed inset-0 bg-midnight z-50 flex flex-col items-center justify-center transition-opacity duration-700">
+    <div class="flex flex-col items-center space-y-4 animate-splash">
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-800 to-midnight border-2 border-goldAccent/50 flex items-center justify-center text-goldAccent font-extrabold text-3xl shadow-2xl shadow-goldAccent/20">A</div>
+        <div class="text-center space-y-1">
+            <p class="text-xs text-goldAccent uppercase tracking-[0.3em] font-extrabold">AUREUS CAPITAL</p>
+            <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>
+        </div>
+        <div class="w-32 h-1 bg-gray-800 rounded-full overflow-hidden mt-4">
+            <div class="bg-goldAccent h-full rounded-full animate-[pulse_1s_infinite]" style="width: 70%"></div>
+        </div>
+    </div>
+</div>
 
 <!-- TOP HEADER -->    
 <header class="sticky top-0 z-40 bg-midnight/95 backdrop-blur-md border-b border-gray-900/80 px-4 py-3.5 flex items-center justify-between">    
@@ -325,7 +347,7 @@
 <script>    
     let investors = [];
     try {
-        const storedInvestors = localStorage.getItem('aureus_investors_v3');
+        const storedInvestors = localStorage.getItem('aureus_investors_v5');
         if (storedInvestors) {
             investors = JSON.parse(storedInvestors);
         }
@@ -337,7 +359,7 @@
         investors = [
             { id: 1, name: "Zaif", capital: 250000, active: true, settled: false }
         ];
-        localStorage.setItem('aureus_investors_v3', JSON.stringify(investors));
+        localStorage.setItem('aureus_investors_v5', JSON.stringify(investors));
     }
         
     let promoterHolding = 50000;    
@@ -365,7 +387,7 @@
     }    
   
     function saveInvestorsToStorage() {    
-        localStorage.setItem('aureus_investors_v3', JSON.stringify(investors));    
+        localStorage.setItem('aureus_investors_v5', JSON.stringify(investors));    
     }    
   
     function switchTab(tabId) {    
@@ -718,7 +740,7 @@
                                 <div class="flex items-center space-x-3">    
                                     <div class="w-10 h-10 rounded-xl bg-midnight border border-gray-800 flex items-center justify-center text-softWhite font-bold text-sm shadow-inner">${rank}</div>    
                                     <div>    
-                                        <h4 onclick="openAddInvestorModal(${inv.id}, event)" class="font-bold text-softWhite text-sm capitalize cursor-pointer hover:text-goldAccent transition inline-block" title="Click to edit">${inv.name}</h4>    
+                                        <h4 onclick="openAddInvestorModal(${inv.id}, event)" class="font-bold text-softWhite text-sm capitalize cursor-pointer hover:text-goldAccent transition inline-block underline decoration-dotted decoration-gray-600 underline-offset-4" title="Click to edit">${inv.name}</h4>    
                                         <p class="text-[11px] text-softGrey mt-0.5">Investment: <span class="text-goldAccent font-semibold tabular-nums">INR ${inv.capital.toLocaleString('en-IN')}</span></p>    
                                     </div>    
                                 </div>    
@@ -740,7 +762,10 @@
     let activeCardId = null;    
   
     function handleTouchStart(e, id) {    
+        // अगर क्लिक नाम (h4) पर है, तो स्वाइप इनिशिएट न करें
+        if (e.target.tagName === 'H4' || e.target.closest('h4')) return;
         startX = e.touches[0].clientX;    
+        currentX = startX;  
         activeCardId = id;    
     }    
   
@@ -759,7 +784,7 @@
         const card = document.getElementById(`card-${id}`);    
         const diff = currentX - startX;    
         if (card) {    
-            if (diff < -120) {    
+            if (diff < -100) {    
                 card.style.transform = `translateX(-100%)`;    
                 setTimeout(() => deleteInvestor(id), 250);    
             } else {    
@@ -772,8 +797,13 @@
     }    
   
     function handleMouseDown(e, id) {    
+        // अगर क्लिक नाम (h4) पर हुआ है, तो बिल्कुल भी स्वाइप/डिलीट न चलाएं ताकि एडिट विंडो खुल सके
+        if (e.target.tagName === 'H4' || e.target.closest('h4')) return;
+
         startX = e.clientX;    
+        currentX = startX;
         activeCardId = id;    
+
         const onMouseMove = (moveEvent) => {    
             if (activeCardId !== id) return;    
             currentX = moveEvent.clientX;    
@@ -783,12 +813,13 @@
                 card.style.transform = `translateX(${diff}px)`;    
             }    
         };    
+
         const onMouseUp = (upEvent) => {    
             if (activeCardId !== id) return;    
             const card = document.getElementById(`card-${id}`);    
             const diff = currentX - startX;    
             if (card) {    
-                if (diff < -120) {    
+                if (diff < -100) {    
                     card.style.transform = `translateX(-100%)`;    
                     setTimeout(() => deleteInvestor(id), 250);    
                 } else {    
@@ -801,6 +832,7 @@
             window.removeEventListener('mousemove', onMouseMove);    
             window.removeEventListener('mouseup', onMouseUp);    
         };    
+
         window.addEventListener('mousemove', onMouseMove);    
         window.addEventListener('mouseup', onMouseUp);    
     }    
@@ -821,12 +853,12 @@
             const isSettled = inv.settled || false;    
   
             const statusBadge = isSettled     
-                ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-emerald-800/40">Settled / Paid</span>`    
-                : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-amber-800/40">Pending</span>`;    
+                ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-gray-800">Settled / Paid</span>`    
+                : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-gray-800">Pending</span>`;    
   
             const btnClass = isSettled     
                 ? "px-3 py-1.5 bg-midnight text-softGrey border border-gray-800 hover:text-softWhite text-[11px] font-semibold rounded-xl transition active:scale-95"    
-                : "px-3 py-1.5 bg-royalBlue text-white hover:bg-blue-600 text-[11px] font-bold rounded-xl transition shadow-md shadow-blue-500/20 active:scale-95";    
+                : "px-3 py-1.5 bg-royalBlue text-white hover:bg-blue-600 text-[11px] font-bold rounded-xl transition shadow-md active:scale-95";    
   
             return `    
                 <div class="card-box p-4 space-y-3">    
@@ -858,6 +890,15 @@
         updateSettlementLedger();    
         activeSelectedWithdrawalUsd = 0;    
         renderCalculatorResult(0);    
+
+        // Splash screen fade out after 1.5 seconds
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.remove(), 700);
+            }
+        }, 1500);
     };    
 </script>    
 </body>

@@ -49,7 +49,7 @@
 <!-- SPLASH SCREEN / INTRO ANIMATION -->
 <div id="splash-screen" class="fixed inset-0 bg-midnight z-50 flex flex-col items-center justify-center transition-opacity duration-700">
     <div class="flex flex-col items-center space-y-4 animate-splash">
-        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-800 to-midnight border-2 border-goldAccent/50 flex items-center justify-center text-goldAccent font-extrabold text-3xl shadow-2xl shadow-goldAccent/20">A</div>
+        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-extrabold text-2xl shadow-2xl shadow-goldAccent/30 tracking-wider">AC</div>
         <div class="text-center space-y-1">
             <p class="text-xs text-goldAccent uppercase tracking-[0.3em] font-extrabold">AUREUS CAPITAL</p>
             <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>
@@ -63,7 +63,7 @@
 <!-- TOP HEADER -->    
 <header class="sticky top-0 z-40 bg-midnight/95 backdrop-blur-md border-b border-gray-900/80 px-4 py-3.5 flex items-center justify-between">    
     <div class="flex items-center space-x-3">    
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-800 to-midnight border border-goldAccent/30 flex items-center justify-center text-goldAccent font-extrabold text-sm shadow-md">A</div>    
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-900 to-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-serif font-bold text-xs shadow-md tracking-wider">AC</div>    
         <div>    
             <p class="text-[9px] text-goldAccent uppercase tracking-widest font-bold">AUREUS CAPITAL</p>    
             <h1 class="text-sm font-bold text-softWhite tracking-tight">Executive Summary</h1>    
@@ -137,16 +137,16 @@
             <div class="grid grid-cols-3 gap-2 pt-3 border-t border-gray-900 text-xs">    
                 <div>    
                     <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Investors</p>    
-                    <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">1</p>    
+                    <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">0</p>    
                 </div>    
                 <div>    
                     <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Capital</p>    
-                    <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">INR 50,000</p>    
+                    <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">INR 0</p>    
                 </div>    
                 <div>    
                     <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>    
-                    <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$36.17</p>    
-                    <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">INR 3,500</p>    
+                    <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$0.00</p>    
+                    <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">INR 0</p>    
                 </div>    
             </div>    
         </div>    
@@ -347,19 +347,15 @@
 <script>    
     let investors = [];
     try {
-        const storedInvestors = localStorage.getItem('aureus_investors_v5');
-        if (storedInvestors) {
+        const storedInvestors = localStorage.getItem('aureus_investors_v6');
+        if (storedInvestors !== null) {
             investors = JSON.parse(storedInvestors);
+        } else {
+            investors = []; // डिफ़ॉल्ट रूप से खाली ताकि डिलीट होने पर वापस न आए
+            localStorage.setItem('aureus_investors_v6', JSON.stringify(investors));
         }
     } catch(e) {
         investors = [];
-    }
-
-    if (!investors || investors.length === 0) {
-        investors = [
-            { id: 1, name: "Zaif", capital: 250000, active: true, settled: false }
-        ];
-        localStorage.setItem('aureus_investors_v5', JSON.stringify(investors));
     }
         
     let promoterHolding = 50000;    
@@ -387,7 +383,7 @@
     }    
   
     function saveInvestorsToStorage() {    
-        localStorage.setItem('aureus_investors_v5', JSON.stringify(investors));    
+        localStorage.setItem('aureus_investors_v6', JSON.stringify(investors));    
     }    
   
     function switchTab(tabId) {    
@@ -762,7 +758,6 @@
     let activeCardId = null;    
   
     function handleTouchStart(e, id) {    
-        // अगर क्लिक नाम (h4) पर है, तो स्वाइप इनिशिएट न करें
         if (e.target.tagName === 'H4' || e.target.closest('h4')) return;
         startX = e.touches[0].clientX;    
         currentX = startX;  
@@ -797,7 +792,6 @@
     }    
   
     function handleMouseDown(e, id) {    
-        // अगर क्लिक नाम (h4) पर हुआ है, तो बिल्कुल भी स्वाइप/डिलीट न चलाएं ताकि एडिट विंडो खुल सके
         if (e.target.tagName === 'H4' || e.target.closest('h4')) return;
 
         startX = e.clientX;    

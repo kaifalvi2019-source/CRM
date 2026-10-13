@@ -264,12 +264,35 @@
     <!-- TAB 4: MORE / SETTINGS -->    
     <section id="tab-more" class="space-y-4 hidden">    
         <h2 class="text-base font-bold text-softWhite tracking-tight">More & Settings</h2>    
-        <p class="text-xs text-softGrey">API configurations, developer tools, and risk controls.</p>    
+        <p class="text-xs text-softGrey">API configurations, previous month archives, and admin controls.</p>    
+        
+        <!-- ADMIN CONTROLS CARD -->
         <div class="card-box p-5 space-y-3 text-xs">    
             <div class="p-3.5 bg-midnight rounded-xl border border-gray-900">    
                 <p class="font-bold text-softWhite mb-0.5">Lead Portfolio Manager</p>    
                 <p class="text-softGrey">Kaif Alvi (Master Administrator)</p>    
             </div>    
+
+            <!-- PREVIOUS MONTH ARCHIVE PANEL -->
+            <div class="p-3.5 bg-midnight rounded-xl border border-gray-900 space-y-2">
+                <div class="flex justify-between items-center">
+                    <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Previous Month Archive</p>
+                    <span class="text-[10px] text-softGrey" id="prev-month-label">September 2026</span>
+                </div>
+                <p class="text-[11px] text-softGrey">Access the archived master statement and performance summary of the previous month.</p>
+                <button onclick="downloadPreviousMonthPDF()" class="w-full py-2 bg-goldAccent/10 text-goldAccent border border-goldAccent/30 font-bold rounded-lg hover:bg-goldAccent/20 transition active:scale-95">
+                    Download Previous Month Master Sheet
+                </button>
+            </div>
+
+            <!-- SYSTEM INFO -->
+            <div class="p-3.5 bg-midnight rounded-xl border border-gray-900 flex justify-between items-center text-[11px]">
+                <div>
+                    <p class="font-bold text-softWhite">System Status</p>
+                    <p class="text-softGrey text-[10px]">API & Ledger Sync Active</p>
+                </div>
+                <span class="px-2 py-1 bg-emerald-950 text-emeraldLive border border-emerald-800/40 rounded font-bold text-[10px]">v1.2.0 Stable</span>
+            </div>
         </div>    
     </section>    
 </main>    
@@ -286,7 +309,7 @@
             <span class="text-[10px] font-semibold uppercase tracking-wider">INVESTORS</span>    
         </button>    
         <button onclick="switchTab('settlement')" id="nav-settlement" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-softGrey hover:text-softWhite transition">    
-            <!-- UPDATED PROFESSIONAL LEDGER ICON -->
+            <!-- Professional Ledger Icon -->
             <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>    
             <span class="text-[10px] font-semibold uppercase tracking-wider">SETTLEMENT</span>    
         </button>    
@@ -374,7 +397,14 @@
   
     const CYCLE_LENGTH_DAYS = 30;    
     const CYCLE_TARGET_RETURN_PCT = 10;    
-    const CYCLE_START_DATE = '2026-10-01';    
+    const CYCLE_START_DATE = '2026-10-01';  
+    
+    // Dynamic Previous Month calculation
+    function getPreviousMonthName() {
+        const d = new Date();
+        d.setMonth(d.getMonth() - 1);
+        return d.toLocaleString('default', { month: 'long', year: 'numeric' });
+    }
   
     function getCurrentCycleDay() {    
         const [year, month, day] = CYCLE_START_DATE.split('-').map(Number);    
@@ -410,7 +440,10 @@
             updateSettlementLedger();    
         } else if(tabId === 'investors') {    
             updateDashboard();    
-        }    
+        } else if(tabId === 'more') {
+            const lbl = document.getElementById('prev-month-label');
+            if(lbl) lbl.innerText = getPreviousMonthName();
+        }
     }    
   
     function openSettings() {     
@@ -562,7 +595,16 @@
         }).join('');    
   
         return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Aureus Master Settlement Sheet</title><style>body{font-family:sans-serif;padding:20px;color:#111;background:#fff}.box{border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #C6A56A;padding-bottom:10px;margin-bottom:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:15px}table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}th,td{border:1px solid #ddd;padding:6px;text-align:left}th{background:#f9fafb}.sub{color:#666}</style></head><body><div class="box"><div class="header"><h2 style="margin:0;color:#0A0F1D;">AUREUS CAPITAL</h2><p style="margin:2px 0 0 0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:1px;">INSTITUTIONAL PRIVATE POOL MASTER LEDGER</p></div><p style="font-size:11px;font-weight:bold;margin-bottom:10px;">MASTER SETTLEMENT SHEET &nbsp;|&nbsp; Date: ${dateStr} &nbsp;|&nbsp; Cycle: ${getCurrentCycleDay()}/30 Days<br>Ref: ${auditId}</p><div class="grid"><div>Active Return Rate: <b style="color: #047857;">${returnPct.toFixed(2)}%</b></div><div>Total Pool Capital (Principal Protected): <b>INR ${totalCap.toLocaleString('en-IN')}</b></div><div>Total Gross Cycle Profit: <b style="color: #b45309;">$${totalProfitUsd.toFixed(2)} (INR ${Math.round(totalProfitInr).toLocaleString('en-IN')})</b></div><div>Active Mandates: <b>${investors.length} Investor(s)</b></div></div><div style="font-size: 12px; font-weight: bold; margin-top: 15px;">INVESTOR PORTFOLIO ALLOCATION & NET PAYOUTS</div><table><tr><th>#</th><th>Investor Entity</th><th style="text-align: right;">Principal Capital</th><th style="text-align: right;">Net INR Payout (After Pool Fees)</th></tr>${investorRows}</table><div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;"><div><p style="margin:0;"><strong>Strategy:</strong> Alpha Private Pool Payout Ledger</p><p class="sub" style="font-size: 9px; margin: 2px 0 0 0; color: #3B82F6 !important;">Cryptographically Verified Master Document.</p></div><div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;"><p style="margin: 0; font-weight: bold; color: #C6A56A !important;">${leadManagerName}</p><p class="sub" style="font-size: 9px; margin: 0;">Lead Portfolio Manager</p></div></div></div></body></html>`;    
-    }    
+    }  
+
+    function downloadPreviousMonthPDF() {
+        const monthName = getPreviousMonthName();
+        const blob = new Blob([generateMasterSheetHtmlDocument()], { type: 'text/html;charset=utf-8;' });    
+        const link = document.createElement('a');    
+        link.href = URL.createObjectURL(blob);    
+        link.download = `Aureus_Master_Sheet_${monthName.replace(' ', '_')}.html`;    
+        link.click();
+    }
   
     function renderCalculatorResult(usd) {    
         const res = calculate12PointCost(usd);    

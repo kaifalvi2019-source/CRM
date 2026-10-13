@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aureus Capital - Executive Summary</title>
+    <title id="page-title">Aureus Capital - Executive Summary</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -55,9 +55,11 @@
 <!-- SPLASH SCREEN / INTRO ANIMATION -->
 <div id="splash-screen" class="fixed inset-0 bg-midnight z-50 flex flex-col items-center justify-center transition-opacity duration-700">
     <div class="flex flex-col items-center space-y-4 animate-splash">
-        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-extrabold text-2xl shadow-2xl shadow-goldAccent/30 tracking-wider">AC</div>
+        <div id="splash-logo-container" class="w-20 h-20 rounded-2xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-extrabold text-2xl shadow-2xl shadow-goldAccent/30 tracking-wider overflow-hidden">
+            <span id="splash-logo-text">AC</span>
+        </div>
         <div class="text-center space-y-1">
-            <p class="text-xs text-goldAccent uppercase tracking-[0.3em] font-extrabold">AUREUS CAPITAL</p>
+            <p id="splash-company-sub" class="text-xs text-goldAccent uppercase tracking-[0.3em] font-extrabold">AUREUS CAPITAL</p>
             <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>
         </div>
         <div class="w-40 h-1 bg-gray-800 rounded-full overflow-hidden mt-4 border border-gray-900">
@@ -69,9 +71,11 @@
 <!-- TOP HEADER -->    
 <header class="sticky top-0 z-40 bg-midnight/95 backdrop-blur-md border-b border-gray-900/80 px-4 py-3.5 flex items-center justify-between">    
     <div class="flex items-center space-x-3">    
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-900 to-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-serif font-bold text-xs shadow-md tracking-wider">AC</div>    
+        <div id="header-logo-container" class="w-9 h-9 rounded-xl bg-gradient-to-br from-gray-900 to-midnight border border-goldAccent/40 flex items-center justify-center text-goldAccent font-serif font-bold text-xs shadow-md tracking-wider overflow-hidden">
+            <span id="header-logo-text">AC</span>
+        </div>    
         <div>    
-            <p class="text-[9px] text-goldAccent uppercase tracking-widest font-bold">AUREUS CAPITAL</p>    
+            <p id="header-company-name" class="text-[9px] text-goldAccent uppercase tracking-widest font-bold">AUREUS CAPITAL</p>    
             <h1 class="text-sm font-bold text-softWhite tracking-tight">Executive Summary</h1>    
         </div>    
     </div>    
@@ -164,7 +168,7 @@
                 <p class="text-[11px] text-softGrey font-semibold tabular-nums">DAY <span class="text-softWhite font-bold" id="cycle-day-count">12/30</span></p>    
             </div>    
             <div>    
-                <h4 class="text-sm font-bold text-softWhite tracking-tight">Indicative Target Range 8%–12%</h4>    
+                <h4 class="text-sm font-bold text-softWhite tracking-tight" id="display-target-range-text">Indicative Target Range 8%–12%</h4>    
             </div>    
             <div class="space-y-2 pt-1">    
                 <div class="flex justify-between items-center text-xs">    
@@ -273,7 +277,7 @@
                 <p class="text-softGrey">Kaif Alvi (Master Administrator)</p>    
             </div>    
 
-            <!-- PREVIOUS MONTH ARCHIVE (NOW PLACED AT THE TOP) -->
+            <!-- PREVIOUS MONTH ARCHIVE (PLACED AT THE TOP) -->
             <div class="p-3.5 bg-midnight rounded-xl border border-gray-900 space-y-2">
                 <div class="flex justify-between items-center">
                     <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Previous Month Archive</p>
@@ -285,57 +289,47 @@
                 </button>
             </div>
 
-            <!-- HIDDEN ALGORITHM & TAX CONFIGURATION PANEL (NOW PLACED AT THE BOTTOM) -->
+            <!-- ADVANCED 12-POINT & CUSTOM TAX SETTINGS -->
             <div class="p-3.5 bg-midnight rounded-xl border border-goldAccent/30 space-y-3">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleAlgorSettings()">
                     <div>
-                        <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Advanced Algorithm & Tax Settings</p>
-                        <p class="text-[10px] text-softGrey">Configure target returns, fees, and 12-point deductions</p>
+                        <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">12-Point Tax & Custom Fee Manager</p>
+                        <p class="text-[10px] text-softGrey">Adjust target range, all breakdown items & custom charges</p>
                     </div>
                     <span id="algo-toggle-icon" class="text-goldAccent font-bold text-sm">▼</span>
                 </div>
                 
-                <div id="algo-settings-body" class="space-y-2.5 pt-2 border-t border-gray-900 hidden">
-                    <div>
-                        <label class="block text-[10px] text-softGrey mb-1 font-semibold">Cycle Target Return (%)</label>
-                        <input type="number" id="setting-target-return" value="10" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
-                    </div>
+                <div id="algo-settings-body" class="space-y-3 pt-2 border-t border-gray-900 hidden">
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-[9px] text-softGrey mb-1">Buy Fee % (CoinDCX)</label>
-                            <input type="number" id="setting-buy-fee" value="1.5" step="0.1" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                            <label class="block text-[10px] text-softGrey mb-1 font-semibold">Cycle Target Return (%)</label>
+                            <input type="number" id="setting-target-return" value="10" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
                         </div>
                         <div>
-                            <label class="block text-[9px] text-softGrey mb-1">Sell Fee % (CoinDCX)</label>
-                            <input type="number" id="setting-sell-fee" value="1.5" step="0.1" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                            <label class="block text-[10px] text-softGrey mb-1 font-semibold">Indicative Range Text</label>
+                            <input type="text" id="setting-target-range-text" value="Indicative Target Range 8%–12%" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite text-xs">
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[9px] text-softGrey mb-1">TDS % (Legal Mandate)</label>
-                            <input type="number" id="setting-tds-pct" value="1.0" step="0.1" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
-                        </div>
-                        <div>
-                            <label class="block text-[9px] text-softGrey mb-1">GST on Fees %</label>
-                            <input type="number" id="setting-gst-pct" value="18" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
-                        </div>
+
+                    <p class="text-[10px] text-goldAccent font-bold uppercase tracking-wider pt-1">12-Point Cost Components Breakdown</p>
+                    
+                    <div class="space-y-2" id="twelve-points-container">
+                        <!-- Populated dynamically via JS -->
                     </div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <div>
-                            <label class="block text-[8px] text-softGrey mb-1">Transfer Out (₹)</label>
-                            <input type="number" id="setting-transfer-out" value="500" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1 text-softWhite tabular-nums text-xs">
+
+                    <div class="pt-2 border-t border-gray-800 space-y-2">
+                        <p class="text-[10px] text-goldAccent font-bold uppercase tracking-wider">Add Custom Tax / Fee Component</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="new-custom-title" placeholder="Charge Name" class="bg-midnight border border-gray-800 rounded-lg px-2.5 py-1.5 text-softWhite text-xs">
+                            <input type="number" step="0.1" id="new-custom-val" placeholder="Value (e.g. 500)" class="bg-midnight border border-gray-800 rounded-lg px-2.5 py-1.5 text-softWhite text-xs font-mono">
                         </div>
-                        <div>
-                            <label class="block text-[8px] text-softGrey mb-1">Gas Fees 1 (₹)</label>
-                            <input type="number" id="setting-gas1" value="500" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1 text-softWhite tabular-nums text-xs">
-                        </div>
-                        <div>
-                            <label class="block text-[8px] text-softGrey mb-1">XM360 Fee (₹)</label>
-                            <input type="number" id="setting-xm360" value="500" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1 text-softWhite tabular-nums text-xs">
-                        </div>
+                        <button onclick="addCustomFeeItem()" class="w-full py-1.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 font-bold rounded-lg text-xs active:scale-95">
+                            + Add Custom Fee
+                        </button>
                     </div>
+
                     <button onclick="saveAlgorithmSettings()" class="w-full mt-2 py-2 bg-goldAccent text-midnight font-bold rounded-lg shadow-md active:scale-95 text-xs">
-                        Save Algorithm & Tax Rules
+                        Save All Tax & Fee Rules
                     </button>
                 </div>
             </div>
@@ -377,12 +371,24 @@
   
 <!-- SETTINGS MODAL -->    
 <div id="settings-modal" class="fixed inset-0 bg-midnight/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">    
-    <div class="card-box rounded-2xl max-w-md w-full p-6 space-y-4 border border-gray-800 shadow-2xl">    
+    <div class="card-box rounded-2xl max-w-md w-full p-6 space-y-4 border border-gray-800 shadow-2xl max-h-[90vh] overflow-y-auto">    
         <div class="flex items-center justify-between border-b border-gray-900 pb-3">    
             <h3 class="text-sm font-bold text-softWhite">Aureus Settings</h3>    
             <button onclick="closeSettings()" class="text-softGrey hover:text-softWhite text-sm font-bold p-1">✕</button>    
         </div>    
         <div class="space-y-3 text-xs">    
+            <div>    
+                <label class="block text-softGrey mb-1 font-medium">App / Company Name</label>    
+                <input type="text" id="setting-company-name" value="Aureus Capital" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">    
+            </div>
+            <div>    
+                <label class="block text-softGrey mb-1 font-medium">Logo Initials (e.g. AC)</label>    
+                <input type="text" id="setting-logo-text" value="AC" maxlength="4" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent uppercase font-bold">    
+            </div>
+            <div>
+                <label class="block text-softGrey mb-1 font-medium">Upload HD Logo / Icon Image</label>
+                <input type="file" id="setting-logo-file" accept="image/*" onchange="handleLogoUpload(event)" class="w-full bg-midnight border border-gray-800 rounded-xl px-3 py-2 text-softGrey text-[11px] file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-goldAccent file:text-midnight hover:file:bg-amber-600">
+            </div>
             <div>    
                 <label class="block text-softGrey mb-1 font-medium">Lead Portfolio Manager Name</label>    
                 <input type="text" id="setting-manager-name" value="Kaif Alvi" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">    
@@ -445,6 +451,10 @@
         
     let promoterHolding = 50000;    
     let leadManagerName = "Kaif Alvi";    
+    let companyName = "Aureus Capital";
+    let logoText = "AC";
+    let uploadedLogoBase64 = "";
+
     let activeGeminiApiKey = "";    
     let currentUsdInrRate = 96.77;    
     let activeSelectedWithdrawalUsd = 0;    
@@ -452,29 +462,72 @@
   
     const CYCLE_LENGTH_DAYS = 30;    
     let CYCLE_TARGET_RETURN_PCT = 10;    
+    let TARGET_RANGE_TEXT = "Indicative Target Range 8%–12%";
     const CYCLE_START_DATE = '2026-10-01';  
 
-    let configFees = {
-        buyFeePct: 1.5,
-        sellFeePct: 1.5,
-        gstPct: 18,
-        tdsPct: 1.0,
-        transferOut: 500.0,
-        gas1: 500.0,
-        xm360Fee: 500.0,
-        gas2: 400.0,
-        bankPayoutPct: 0.5
-    };
+    let twelvePointsConfig = [
+        { id: 1, title: "Bank to CoinDCX Deposit", type: "fixed", val: 0 },
+        { id: 2, title: "CoinDCX USDT Buy Fee (%)", type: "pct", val: 1.5 },
+        { id: 3, title: "GST on Buy Fee (%)", type: "pct", val: 18 },
+        { id: 4, title: "CoinDCX to Trust Wallet Transfer", type: "fixed", val: 500 },
+        { id: 5, title: "Trust Wallet to XM360 Gas", type: "fixed", val: 500 },
+        { id: 6, title: "XM360 to Trust Wallet Withdrawal", type: "fixed", val: 500 },
+        { id: 7, title: "Trust Wallet to CoinDCX Return Gas", type: "fixed", val: 400 },
+        { id: 8, title: "CoinDCX USDT Sell Fee (%)", type: "pct", val: 1.5 },
+        { id: 9, title: "GST on Sell Fee (%)", type: "pct", val: 18 },
+        { id: 10, title: "TDS (Legal Mandate %)", type: "pct", val: 1.0 },
+        { id: 11, title: "UPI / P2M Merchant Fee", type: "fixed", val: 0 },
+        { id: 12, title: "CoinDCX to Bank Payout & Handling", type: "pct", val: 0.5 }
+    ];
+
+    let customFeesList = [];
 
     try {
-        const savedCfg = localStorage.getItem('aureus_algo_config_v1');
+        const savedBranding = localStorage.getItem('aureus_branding_config_v1');
+        if(savedBranding) {
+            const b = JSON.parse(savedBranding);
+            if(b.companyName) companyName = b.companyName;
+            if(b.logoText) logoText = b.logoText;
+            if(b.logoBase64) uploadedLogoBase64 = b.logoBase64;
+        }
+
+        const savedCfg = localStorage.getItem('aureus_full_12point_config_v2');
         if(savedCfg) {
             const parsed = JSON.parse(savedCfg);
             if(parsed.targetReturn !== undefined) CYCLE_TARGET_RETURN_PCT = parsed.targetReturn;
-            if(parsed.fees) configFees = parsed.fees;
+            if(parsed.rangeText !== undefined) TARGET_RANGE_TEXT = parsed.rangeText;
+            if(parsed.points) twelvePointsConfig = parsed.points;
+            if(parsed.customFees) customFeesList = parsed.customFees;
         }
     } catch(e) {}
     
+    function applyBrandingUI() {
+        document.getElementById('page-title').innerText = `${companyName} - Executive Summary`;
+        document.getElementById('header-company-name').innerText = companyName.toUpperCase();
+        document.getElementById('splash-company-sub').innerText = companyName.toUpperCase();
+
+        const hLogo = document.getElementById('header-logo-container');
+        const sLogo = document.getElementById('splash-logo-container');
+
+        if(uploadedLogoBase64) {
+            hLogo.innerHTML = `<img src="${uploadedLogoBase64}" class="w-full h-full object-cover">`;
+            sLogo.innerHTML = `<img src="${uploadedLogoBase64}" class="w-full h-full object-cover">`;
+        } else {
+            hLogo.innerHTML = `<span id="header-logo-text">${logoText}</span>`;
+            sLogo.innerHTML = `<span id="splash-logo-text">${logoText}</span>`;
+        }
+    }
+
+    function handleLogoUpload(event) {
+        const file = event.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            uploadedLogoBase64 = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
     function getPreviousMonthName() {
         const d = new Date();
         d.setMonth(d.getMonth() - 1);
@@ -505,43 +558,131 @@
             body.classList.remove('hidden');
             icon.innerText = '▲';
             document.getElementById('setting-target-return').value = CYCLE_TARGET_RETURN_PCT;
-            document.getElementById('setting-buy-fee').value = configFees.buyFeePct;
-            document.getElementById('setting-sell-fee').value = configFees.sellFeePct;
-            document.getElementById('setting-tds-pct').value = configFees.tdsPct;
-            document.getElementById('setting-gst-pct').value = configFees.gstPct;
-            document.getElementById('setting-transfer-out').value = configFees.transferOut;
-            document.getElementById('setting-gas1').value = configFees.gas1;
-            document.getElementById('setting-xm360').value = configFees.xm360Fee;
+            document.getElementById('setting-target-range-text').value = TARGET_RANGE_TEXT;
+            renderTwelvePointsInputs();
         } else {
             body.classList.add('hidden');
             icon.innerText = '▼';
         }
     }
 
+    function renderTwelvePointsInputs() {
+        const container = document.getElementById('twelve-points-container');
+        if(!container) return;
+
+        let html = twelvePointsConfig.map((item, idx) => `
+            <div class="bg-midnight/70 p-2.5 rounded-lg border border-gray-900 space-y-1.5 text-xs">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] text-softWhite font-bold">${idx + 1}. ${item.title}</span>
+                    <span class="text-[9px] text-goldAccent font-mono">${item.type.toUpperCase()}</span>
+                </div>
+                <div class="flex space-x-2">
+                    <input type="text" id="tp-title-${idx}" value="${item.title}" class="w-2/3 bg-midnight border border-gray-800 rounded px-2 py-1 text-[11px] text-softWhite">
+                    <input type="number" step="0.1" id="tp-val-${idx}" value="${item.val}" class="w-1/3 bg-midnight border border-gray-800 rounded px-2 py-1 text-[11px] text-softWhite tabular-nums">
+                </div>
+            </div>
+        `).join('');
+
+        if(customFeesList.length > 0) {
+            html += `<p class="text-[10px] text-goldAccent font-bold uppercase tracking-wider pt-2">Custom Added Fees</p>`;
+            html += customFeesList.map((cf, cIdx) => `
+                <div class="bg-midnight/70 p-2.5 rounded-lg border border-amber-900/40 space-y-1.5 text-xs">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] text-amber-400 font-bold">Custom: ${cf.title}</span>
+                        <button onclick="removeCustomFee(${cIdx})" class="text-[9px] text-red-400 hover:text-red-300 font-bold">Delete ✕</button>
+                    </div>
+                    <div class="flex space-x-2">
+                        <input type="text" id="cf-title-${cIdx}" value="${cf.title}" class="w-2/3 bg-midnight border border-gray-800 rounded px-2 py-1 text-[11px] text-softWhite">
+                        <input type="number" step="0.1" id="cf-val-${cIdx}" value="${cf.val}" class="w-1/3 bg-midnight border border-gray-800 rounded px-2 py-1 text-[11px] text-softWhite tabular-nums">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        container.innerHTML = html;
+    }
+
+    function addCustomFeeItem() {
+        const titleInput = document.getElementById('new-custom-title');
+        const valInput = document.getElementById('new-custom-val');
+        const title = titleInput ? titleInput.value.trim() : '';
+        const val = valInput ? parseFloat(valInput.value) : 0;
+
+        if(!title || isNaN(val)) {
+            alert('Please enter a valid title and numeric value for the custom fee.');
+            return;
+        }
+
+        customFeesList.push({ title, val });
+        if(titleInput) titleInput.value = '';
+        if(valInput) valInput.value = '';
+        renderTwelvePointsInputs();
+    }
+
+    function removeCustomFee(cIdx) {
+        customFeesList.splice(cIdx, 1);
+        renderTwelvePointsInputs();
+    }
+
     function saveAlgorithmSettings() {
         const tr = parseFloat(document.getElementById('setting-target-return').value);
-        const bf = parseFloat(document.getElementById('setting-buy-fee').value);
-        const sf = parseFloat(document.getElementById('setting-sell-fee').value);
-        const tds = parseFloat(document.getElementById('setting-tds-pct').value);
-        const gst = parseFloat(document.getElementById('setting-gst-pct').value);
-        const trOut = parseFloat(document.getElementById('setting-transfer-out').value);
-        const g1 = parseFloat(document.getElementById('setting-gas1').value);
-        const xm = parseFloat(document.getElementById('setting-xm360').value);
-
+        const rt = document.getElementById('setting-target-range-text').value.trim();
         if(!isNaN(tr)) CYCLE_TARGET_RETURN_PCT = tr;
-        if(!isNaN(bf)) configFees.buyFeePct = bf;
-        if(!isNaN(sf)) configFees.sellFeePct = sf;
-        if(!isNaN(tds)) configFees.tdsPct = tds;
-        if(!isNaN(gst)) configFees.gstPct = gst;
-        if(!isNaN(trOut)) configFees.transferOut = trOut;
-        if(!isNaN(g1)) configFees.gas1 = g1;
-        if(!isNaN(xm)) configFees.xm360Fee = xm;
+        if(rt) TARGET_RANGE_TEXT = rt;
 
-        localStorage.setItem('aureus_algo_config_v1', JSON.stringify({ targetReturn: CYCLE_TARGET_RETURN_PCT, fees: configFees }));
-        alert('Algorithm & Tax settings updated successfully!');
+        twelvePointsConfig.forEach((item, idx) => {
+            const tEl = document.getElementById(`tp-title-${idx}`);
+            const vEl = document.getElementById(`tp-val-${idx}`);
+            if(tEl) item.title = tEl.value.trim();
+            if(vEl) item.val = parseFloat(vEl.value) || 0;
+        });
+
+        customFeesList.forEach((cf, cIdx) => {
+            const tEl = document.getElementById(`cf-title-${cIdx}`);
+            const vEl = document.getElementById(`cf-val-${cIdx}`);
+            if(tEl) cf.title = tEl.value.trim();
+            if(vEl) cf.val = parseFloat(vEl.value) || 0;
+        });
+
+        localStorage.setItem('aureus_full_12point_config_v2', JSON.stringify({
+            targetReturn: CYCLE_TARGET_RETURN_PCT,
+            rangeText: TARGET_RANGE_TEXT,
+            points: twelvePointsConfig,
+            customFees: customFeesList
+        }));
+
+        alert('All settings and target range updated successfully!');
         initSystemMetrics();
         updateDashboard();
         updateSettlementLedger();
+    }
+
+    function calculate12PointCost(usdAmount) {
+        const grossInr = usdAmount * currentUsdInrRate;
+        let totalDeductions = 0;
+        let breakdown = [];
+
+        twelvePointsConfig.forEach(pt => {
+            let amt = 0;
+            if(pt.type === 'pct') {
+                amt = grossInr * (pt.val / 100);
+            } else {
+                amt = pt.val;
+            }
+            totalDeductions += amt;
+            breakdown.push({ title: pt.title, amount: amt });
+        });
+
+        customFeesList.forEach(cf => {
+            let amt = cf.val;
+            totalDeductions += amt;
+            breakdown.push({ title: cf.title, amount: amt });
+        });
+
+        const netInr = grossInr - totalDeductions;
+        const deductionPct = grossInr > 0 ? (totalDeductions / grossInr) * 100 : 0;
+
+        return { grossInr, totalDeductions, netInr, deductionPct, breakdown };
     }
   
     function switchTab(tabId) {    
@@ -568,6 +709,8 @@
     }    
   
     function openSettings() {     
+        document.getElementById('setting-company-name').value = companyName;
+        document.getElementById('setting-logo-text').value = logoText;
         document.getElementById('setting-manager-name').value = leadManagerName;    
         document.getElementById('setting-promoter-capital').value = promoterHolding;    
         document.getElementById('setting-gemini-apikey').value = activeGeminiApiKey;    
@@ -576,20 +719,31 @@
     function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }    
   
     function saveSettings() {    
+        const newCompany = document.getElementById('setting-company-name').value.trim();
+        const newLogoTxt = document.getElementById('setting-logo-text').value.trim();
         const newName = document.getElementById('setting-manager-name').value.trim();    
         const newCapital = parseFloat(document.getElementById('setting-promoter-capital').value);    
         const newApiKey = document.getElementById('setting-gemini-apikey').value.trim();    
   
+        if(newCompany) companyName = newCompany;
+        if(newLogoTxt) logoText = newLogoTxt;
         if(newName) leadManagerName = newName;    
         if(!isNaN(newCapital) && newCapital >= 0) promoterHolding = newCapital;    
         if(newApiKey) {    
             activeGeminiApiKey = newApiKey;    
             fetchLiveMarketPrices();    
         }    
+
+        localStorage.setItem('aureus_branding_config_v1', JSON.stringify({
+            companyName,
+            logoText,
+            logoBase64: uploadedLogoBase64
+        }));
   
         document.getElementById('display-manager-name').innerText = leadManagerName;    
         document.getElementById('display-promoter-holding').innerText = `INR ${promoterHolding.toLocaleString('en-IN')}`;    
             
+        applyBrandingUI();
         closeSettings();    
         updateDashboard();    
     }    
@@ -624,26 +778,6 @@
             saveInvestorsToStorage();    
             updateSettlementLedger();    
         }    
-    }    
-  
-    function calculate12PointCost(usdAmount) {    
-        const grossInr = usdAmount * currentUsdInrRate;    
-        const buyFee = grossInr * (configFees.buyFeePct / 100);    
-        const gstBuy = buyFee * (configFees.gstPct / 100);    
-        const transferOut = configFees.transferOut;    
-        const gas1 = configFees.gas1;    
-        const xm360Fee = configFees.xm360Fee;    
-        const gas2 = configFees.gas2;    
-        const sellFee = grossInr * (configFees.sellFeePct / 100);    
-        const gstSell = sellFee * (configFees.gstPct / 100);    
-        const tds = grossInr * (configFees.tdsPct / 100);    
-        const bankPayout = grossInr * (configFees.bankPayoutPct / 100);    
-  
-        const totalDeductions = buyFee + gstBuy + transferOut + gas1 + xm360Fee + gas2 + sellFee + gstSell + tds + bankPayout;    
-        const netInr = grossInr - totalDeductions;    
-        const deductionPct = grossInr > 0 ? (totalDeductions / grossInr) * 100 : 0;    
-  
-        return { grossInr, totalDeductions, netInr, deductionPct, buyFee, gstBuy, transferOut, gas1, xm360Fee, gas2, sellFee, gstSell, tds, bankPayout };    
     }    
   
     function selectPresetAmount(usd) {    
@@ -691,7 +825,7 @@
         const dateStr = now.toLocaleDateString('en-GB', {day: '2-digit', month: 'long', year: 'numeric'});
         const timeStr = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true}) + ' IST';
 
-        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Aureus Capital Payout Confirmation</title><style>body{font-family:sans-serif;padding:25px;background:#0A0F1D;color:#F3F4F6}.box{border:1px solid rgba(198,165,106,0.3);background:linear-gradient(135deg,#131B2E 0%,#0A0F1D 100%);padding:25px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.5)}.header{text-align:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:15px;margin-bottom:20px}.grid{font-size:13px;line-height:1.8;margin-bottom:20px}.net-amount{color:#10B981;font-weight:bold}</style></head><body><div class="box"><div class="header"><p style="margin:0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:2px;">AUREUS CAPITAL</p><h2 style="margin:5px 0 0 0;color:#F3F4F6;font-size:16px;">🎉 FINAL PAYOUT CONFIRMATION</h2><p style="margin:5px 0 0 0;font-size:10px;color:#10B981;font-weight:bold;">✔ CONFIRMED</p></div><div class="grid"><div>👤 <b>Investor:</b> ${inv.name.toUpperCase()}</div><div>💵 <b>Payout Amount:</b> $${profitUSD.toFixed(2)} USD</div><div>🇮🇳 <b>Indian Value:</b> ₹${Math.round(netInr).toLocaleString('en-IN')} INR</div><div>📅 <b>Date:</b> ${dateStr}</div><div>🕒 <b>Time:</b> ${timeStr}</div><div>🟢 <b>Account Status:</b> ACTIVE</div></div><div style="font-size:12px;border-top:1px solid rgba(255,255,255,0.1);padding-top:15px;line-height:1.6;color:#D1D5DB;"><p>✉️ <b>Dear ${inv.name},</b></p><p>Your payout has been successfully confirmed in the Aureus Capital system. ✅</p><p>🤝 Thank you for your trust and association with Aureus Capital.</p><p style="text-align:center;margin-top:25px;color:#C6A56A;font-weight:bold;letter-spacing:1px;font-size:11px;">✦ TRUST ∙ TRANSPARENCY ∙ EXCELLENCE ✦</p></div><div style="margin-top:25px;text-align:right;font-size:11px;border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;"><p style="margin:0;font-weight:bold;color:#C6A56A;">${leadManagerName}</p><p style="margin:2px 0 0 0;font-size:9px;color:#9CA3AF;">Lead Portfolio Manager</p></div></div></body></html>`;
+        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${companyName} Payout Confirmation</title><style>body{font-family:sans-serif;padding:25px;background:#0A0F1D;color:#F3F4F6}.box{border:1px solid rgba(198,165,106,0.3);background:linear-gradient(135deg,#131B2E 0%,#0A0F1D 100%);padding:25px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.5)}.header{text-align:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:15px;margin-bottom:20px}.grid{font-size:13px;line-height:1.8;margin-bottom:20px}.net-amount{color:#10B981;font-weight:bold}</style></head><body><div class="box"><div class="header"><p style="margin:0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:2px;">${companyName.toUpperCase()}</p><h2 style="margin:5px 0 0 0;color:#F3F4F6;font-size:16px;">🎉 FINAL PAYOUT CONFIRMATION</h2><p style="margin:5px 0 0 0;font-size:10px;color:#10B981;font-weight:bold;">✔ CONFIRMED</p></div><div class="grid"><div>👤 <b>Investor:</b> ${inv.name.toUpperCase()}</div><div>💵 <b>Payout Amount:</b> $${profitUSD.toFixed(2)} USD</div><div>🇮🇳 <b>Indian Value:</b> ₹${Math.round(netInr).toLocaleString('en-IN')} INR</div><div>📅 <b>Date:</b> ${dateStr}</div><div>🕒 <b>Time:</b> ${timeStr}</div><div>🟢 <b>Account Status:</b> ACTIVE</div></div><div style="font-size:12px;border-top:1px solid rgba(255,255,255,0.1);padding-top:15px;line-height:1.6;color:#D1D5DB;"><p>✉️ <b>Dear ${inv.name},</b></p><p>Your payout has been successfully confirmed in the ${companyName} system. ✅</p><p>🤝 Thank you for your trust and association with ${companyName}.</p><p style="text-align:center;margin-top:25px;color:#C6A56A;font-weight:bold;letter-spacing:1px;font-size:11px;">✦ TRUST ∙ TRANSPARENCY ∙ EXCELLENCE ✦</p></div><div style="margin-top:25px;text-align:right;font-size:11px;border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;"><p style="margin:0;font-weight:bold;color:#C6A56A;">${leadManagerName}</p><p style="margin:2px 0 0 0;font-size:9px;color:#9CA3AF;">Lead Portfolio Manager</p></div></div></body></html>`;
     }
 
     function downloadClientConfirmationPDF(id, event) {
@@ -701,7 +835,7 @@
         const blob = new Blob([generateClientConfirmationHtml(id)], { type: 'text/html;charset=utf-8;' });    
         const link = document.createElement('a');    
         link.href = URL.createObjectURL(blob);    
-        link.download = `Aureus_Confirmation_${inv.name.replace(/\s+/g, '_')}.html`;    
+        link.download = `${companyName.replace(/\s+/g, '_')}_Confirmation_${inv.name.replace(/\s+/g, '_')}.html`;    
         link.click();
     }
 
@@ -710,7 +844,15 @@
         const now = new Date();    
         const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:true});    
   
-        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Aureus Capital Statement</title><style>body{font-family:sans-serif;padding:20px;color:#111;background:#fff}.box{border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #C6A56A;padding-bottom:10px;margin-bottom:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:15px}table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}th,td{border:1px solid #ddd;padding:6px;text-align:left}th{background:#f9fafb}.sub{color:#666}.net-amount{color:#047857;font-weight:bold}</style></head><body><div class="box"><div class="header"><h2 style="margin:0;color:#0A0F1D;">AUREUS CAPITAL</h2><p style="margin:2px 0 0 0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:1px;">INSTITUTIONAL PRIVATE POOL SETTLEMENT</p></div><p style="font-size:11px;font-weight:bold;margin-bottom:10px;">PAYOUT STATEMENT &nbsp;|&nbsp; Date: ${dateStr}</p><div class="grid"><div>Withdrawal Amount: <b>$${usd.toLocaleString()}</b></div><div>Equivalent Gross INR: <b>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div><div>Total 12-Point Deductions: <b style="color: #b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div><div>Net Amount Received: <b class="net-amount" style="font-size: 13px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div></div><div style="font-size: 12px; font-weight: bold; margin-top: 15px;">12-POINT TRANSACTION COST BREAKDOWN (Deducted from Pool Trading Profit)</div><table><tr><th>#</th><th>Cost Component / Description</th><th>Amount (INR)</th></tr><tr><td>1</td><td>Bank to CoinDCX Deposit</td><td>INR 0.00</td></tr><tr><td>2</td><td>CoinDCX USDT Buy Fee (${configFees.buyFeePct}%)</td><td>INR ${res.buyFee.toFixed(2)}</td></tr><tr><td>3</td><td>GST on Buy Fee (${configFees.gstPct}%)</td><td>INR ${res.gstBuy.toFixed(2)}</td></tr><tr><td>4</td><td>CoinDCX to Trust Wallet Transfer</td><td>INR ${res.transferOut.toFixed(2)}</td></tr><tr><td>5</td><td>Trust Wallet to XM360 Gas</td><td>INR ${res.gas1.toFixed(2)}</td></tr><tr><td>6</td><td>XM360 to Trust Wallet Withdrawal</td><td>INR ${res.xm360Fee.toFixed(2)}</td></tr><tr><td>7</td><td>Trust Wallet to CoinDCX Return Gas</td><td>INR ${res.gas2.toFixed(2)}</td></tr><tr><td>8</td><td>CoinDCX USDT Sell Fee (${configFees.sellFeePct}%)</td><td>INR ${res.sellFee.toFixed(2)}</td></tr><tr><td>9</td><td>GST on Sell Fee (${configFees.gstPct}%)</td><td>INR ${res.gstSell.toFixed(2)}</td></tr><tr><td>10</td><td>TDS (${configFees.tdsPct}% Legal Mandate)</td><td>INR ${res.tds.toFixed(2)}</td></tr><tr><td>11</td><td>UPI / P2M Merchant Fee (Personal Account)</td><td>INR 0.00</td></tr><tr><td>12</td><td>CoinDCX to Bank Payout & Handling</td><td>INR ${res.bankPayout.toFixed(2)}</td></tr><tr style="font-weight: bold;"><td colspan="2">TOTAL DEDUCTIONS</td><td>INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr></table><div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;"><div><p style="margin:0;"><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p><p class="sub" style="font-size: 9px; margin: 2px 0 0 0;">Note: All 12-point operational costs are absorbed entirely from pool trading profits. Client principal is 100% protected.</p></div><div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;"><p style="margin: 0; font-weight: bold; color: #C6A56A !important;">${leadManagerName}</p><p class="sub" style="font-size: 9px; margin: 0;">Lead Portfolio Manager</p></div></div></div></body></html>`;    
+        let breakdownRows = res.breakdown.map((item, idx) => `
+            <tr>
+                <td>${idx + 1}</td>
+                <td>${item.title}</td>
+                <td>INR ${item.amount.toFixed(2)}</td>
+            </tr>
+        `).join('');
+
+        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${companyName} Statement</title><style>body{font-family:sans-serif;padding:20px;color:#111;background:#fff}.box{border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #C6A56A;padding-bottom:10px;margin-bottom:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:15px}table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}th,td{border:1px solid #ddd;padding:6px;text-align:left}th{background:#f9fafb}.sub{color:#666}.net-amount{color:#047857;font-weight:bold}</style></head><body><div class="box"><div class="header"><h2 style="margin:0;color:#0A0F1D;">${companyName.toUpperCase()}</h2><p style="margin:2px 0 0 0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:1px;">INSTITUTIONAL PRIVATE POOL SETTLEMENT</p></div><p style="font-size:11px;font-weight:bold;margin-bottom:10px;">PAYOUT STATEMENT &nbsp;|&nbsp; Date: ${dateStr}</p><div class="grid"><div>Withdrawal Amount: <b>$${usd.toLocaleString()}</b></div><div>Equivalent Gross INR: <b>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div><div>Total Dynamic Deductions: <b style="color: #b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div><div>Net Amount Received: <b class="net-amount" style="font-size: 13px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div></div><div style="font-size: 12px; font-weight: bold; margin-top: 15px;">DYNAMIC TRANSACTION COST BREAKDOWN (Deducted from Pool Trading Profit)</div><table><tr><th>#</th><th>Cost Component / Description</th><th>Amount (INR)</th></tr>${breakdownRows}<tr style="font-weight: bold;"><td colspan="2">TOTAL DEDUCTIONS</td><td>INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr></table><div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;"><div><p style="margin:0;"><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p><p class="sub" style="font-size: 9px; margin: 2px 0 0 0;">Note: All operational costs are absorbed entirely from pool trading profits. Client principal is 100% protected.</p></div><div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;"><p style="margin: 0; font-weight: bold; color: #C6A56A !important;">${leadManagerName}</p><p class="sub" style="font-size: 9px; margin: 0;">Lead Portfolio Manager</p></div></div></div></body></html>`;    
     }    
   
     function generateMasterSheetHtmlDocument() {    
@@ -740,7 +882,7 @@
             `;    
         }).join('');    
   
-        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Aureus Master Settlement Sheet</title><style>body{font-family:sans-serif;padding:20px;color:#111;background:#fff}.box{border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #C6A56A;padding-bottom:10px;margin-bottom:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:15px}table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}th,td{border:1px solid #ddd;padding:6px;text-align:left}th{background:#f9fafb}.sub{color:#666}</style></head><body><div class="box"><div class="header"><h2 style="margin:0;color:#0A0F1D;">AUREUS CAPITAL</h2><p style="margin:2px 0 0 0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:1px;">INSTITUTIONAL PRIVATE POOL MASTER LEDGER</p></div><p style="font-size:11px;font-weight:bold;margin-bottom:10px;">MASTER SETTLEMENT SHEET &nbsp;|&nbsp; Date: ${dateStr} &nbsp;|&nbsp; Cycle: ${getCurrentCycleDay()}/30 Days<br>Ref: ${auditId}</p><div class="grid"><div>Active Return Rate: <b style="color: #047857;">${returnPct.toFixed(2)}%</b></div><div>Total Pool Capital (Principal Protected): <b>INR ${totalCap.toLocaleString('en-IN')}</b></div><div>Total Gross Cycle Profit: <b style="color: #b45309;">$${totalProfitUsd.toFixed(2)} (INR ${Math.round(totalProfitInr).toLocaleString('en-IN')})</b></div><div>Active Mandates: <b>${investors.length} Investor(s)</b></div></div><div style="font-size: 12px; font-weight: bold; margin-top: 15px;">INVESTOR PORTFOLIO ALLOCATION & NET PAYOUTS</div><table><tr><th>#</th><th>Investor Entity</th><th style="text-align: right;">Principal Capital</th><th style="text-align: right;">Net INR Payout (After Pool Fees)</th></tr>${investorRows}</table><div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;"><div><p style="margin:0;"><strong>Strategy:</strong> Alpha Private Pool Payout Ledger</p><p class="sub" style="font-size: 9px; margin: 2px 0 0 0; color: #3B82F6 !important;">Cryptographically Verified Master Document.</p></div><div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;"><p style="margin: 0; font-weight: bold; color: #C6A56A !important;">${leadManagerName}</p><p class="sub" style="font-size: 9px; margin: 0;">Lead Portfolio Manager</p></div></div></div></body></html>`;    
+        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${companyName} Master Settlement Sheet</title><style>body{font-family:sans-serif;padding:20px;color:#111;background:#fff}.box{border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #C6A56A;padding-bottom:10px;margin-bottom:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:15px}table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}th,td{border:1px solid #ddd;padding:6px;text-align:left}th{background:#f9fafb}.sub{color:#666}</style></head><body><div class="box"><div class="header"><h2 style="margin:0;color:#0A0F1D;">${companyName.toUpperCase()}</h2><p style="margin:2px 0 0 0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:1px;">INSTITUTIONAL PRIVATE POOL MASTER LEDGER</p></div><p style="font-size:11px;font-weight:bold;margin-bottom:10px;">MASTER SETTLEMENT SHEET &nbsp;|&nbsp; Date: ${dateStr} &nbsp;|&nbsp; Cycle: ${getCurrentCycleDay()}/30 Days<br>Ref: ${auditId}</p><div class="grid"><div>Active Return Rate: <b style="color: #047857;">${returnPct.toFixed(2)}%</b></div><div>Total Pool Capital (Principal Protected): <b>INR ${totalCap.toLocaleString('en-IN')}</b></div><div>Total Gross Cycle Profit: <b style="color: #b45309;">$${totalProfitUsd.toFixed(2)} (INR ${Math.round(totalProfitInr).toLocaleString('en-IN')})</b></div><div>Active Mandates: <b>${investors.length} Investor(s)</b></div></div><div style="font-size: 12px; font-weight: bold; margin-top: 15px;">INVESTOR PORTFOLIO ALLOCATION & NET PAYOUTS</div><table><tr><th>#</th><th>Investor Entity</th><th style="text-align: right;">Principal Capital</th><th style="text-align: right;">Net INR Payout (After Pool Fees)</th></tr>${investorRows}</table><div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;"><div><p style="margin:0;"><strong>Strategy:</strong> Alpha Private Pool Payout Ledger</p><p class="sub" style="font-size: 9px; margin: 2px 0 0 0; color: #3B82F6 !important;">Cryptographically Verified Master Document.</p></div><div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;"><p style="margin: 0; font-weight: bold; color: #C6A56A !important;">${leadManagerName}</p><p class="sub" style="font-size: 9px; margin: 0;">Lead Portfolio Manager</p></div></div></div></body></html>`;    
     }  
 
     function downloadPreviousMonthPDF() {
@@ -748,7 +890,7 @@
         const blob = new Blob([generateMasterSheetHtmlDocument()], { type: 'text/html;charset=utf-8;' });    
         const link = document.createElement('a');    
         link.href = URL.createObjectURL(blob);    
-        link.download = `Aureus_Master_Sheet_${monthName.replace(' ', '_')}.html`;    
+        link.download = `${companyName.replace(/\s+/g, '_')}_Master_Sheet_${monthName.replace(' ', '_')}.html`;    
         link.click();
     }
   
@@ -759,20 +901,20 @@
         if(!box) return;    
   
         if (usd <= 0) {    
-            box.innerHTML = `<div class="text-center text-softGrey py-2">Enter a dollar amount above or click a preset to calculate 12-point costs.</div>`;    
+            box.innerHTML = `<div class="text-center text-softGrey py-2">Enter a dollar amount above or click a preset to calculate costs.</div>`;    
             if(previewContainer) previewContainer.innerHTML = '';    
             return;    
         }    
   
         box.innerHTML = `    
             <div class="flex justify-between text-softGrey"><span>Withdrawal Amount:</span><span class="text-softWhite font-bold">$${usd.toLocaleString('en-US')} (INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})})</span></div>    
-            <div class="flex justify-between text-softGrey"><span>Total 12-Point Deductions (~10% from Profit):</span><span class="text-amber-400 font-bold">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</span></div>    
+            <div class="flex justify-between text-softGrey"><span>Total Dynamic Deductions:</span><span class="text-amber-400 font-bold">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</span></div>    
             <div class="flex justify-between text-softGrey pt-1 border-t border-gray-800"><span>Net Amount Received:</span><span class="text-emeraldLive font-extrabold text-sm">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</span></div>    
         `;    
   
         if(previewContainer && isStatementPreviewVisible) {    
             const iframe = document.createElement('iframe');    
-            iframe.title = 'Aureus Capital White Payout Statement';    
+            iframe.title = `${companyName} White Payout Statement`;    
             iframe.style.cssText = 'display: block; width: 100%; height: 520px; border: 0; border-radius: 6px; background: #ffffff;';    
             iframe.srcdoc = generateWhiteHtmlDocument(usd);    
             previewContainer.replaceChildren(iframe);    
@@ -785,7 +927,7 @@
         const blob = new Blob([generateWhiteHtmlDocument(usd)], { type: 'text/html;charset=utf-8;' });    
         const link = document.createElement('a');    
         link.href = URL.createObjectURL(blob);    
-        link.download = `Aureus_Statement_$${usd}.html`;    
+        link.download = `${companyName.replace(/\s+/g, '_')}_Statement_$${usd}.html`;    
         link.click();    
     }    
   
@@ -793,7 +935,7 @@
         const blob = new Blob([generateMasterSheetHtmlDocument()], { type: 'text/html;charset=utf-8;' });    
         const link = document.createElement('a');    
         link.href = URL.createObjectURL(blob);    
-        link.download = `Aureus_Master_Settlement_Sheet.html`;    
+        link.download = `${companyName.replace(/\s+/g, '_')}_Master_Settlement_Sheet.html`;    
         link.click();    
     }    
   
@@ -834,6 +976,9 @@
         document.getElementById('cycle-return-pct').innerText = `${calculatedReturn}%`;    
         document.getElementById('cycle-progress-bar').style.width = `${(currentCycleDay / CYCLE_LENGTH_DAYS) * 100}%`;    
         document.getElementById('cycle-days-remaining').innerText = `${remainingDays} days remaining`;    
+        
+        const rangeTextEl = document.getElementById('display-target-range-text');
+        if(rangeTextEl) rangeTextEl.innerText = TARGET_RANGE_TEXT;
   
         const options = { weekday: 'short', month: 'short', day: 'numeric' };    
         document.getElementById('current-date-display').innerText = `${now.toLocaleDateString('en-US', options).toUpperCase()} · ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}`;    
@@ -1079,6 +1224,7 @@
     }    
   
     window.onload = function() {    
+        applyBrandingUI();
         initSystemMetrics();    
         fetchLiveMarketPrices();    
         updateDashboard();    

@@ -273,7 +273,7 @@
                 <p class="text-softGrey">Kaif Alvi (Master Administrator)</p>    
             </div>    
 
-            <!-- PREVIOUS MONTH ARCHIVE PANEL -->
+            <!-- PREVIOUS MONTH ARCHIVE (NOW PLACED AT THE TOP) -->
             <div class="p-3.5 bg-midnight rounded-xl border border-gray-900 space-y-2">
                 <div class="flex justify-between items-center">
                     <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Previous Month Archive</p>
@@ -283,6 +283,61 @@
                 <button onclick="downloadPreviousMonthPDF()" class="w-full py-2 bg-goldAccent/10 text-goldAccent border border-goldAccent/30 font-bold rounded-lg hover:bg-goldAccent/20 transition active:scale-95">
                     Download Previous Month Master Sheet
                 </button>
+            </div>
+
+            <!-- HIDDEN ALGORITHM & TAX CONFIGURATION PANEL (NOW PLACED AT THE BOTTOM) -->
+            <div class="p-3.5 bg-midnight rounded-xl border border-goldAccent/30 space-y-3">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleAlgorSettings()">
+                    <div>
+                        <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Advanced Algorithm & Tax Settings</p>
+                        <p class="text-[10px] text-softGrey">Configure target returns, fees, and 12-point deductions</p>
+                    </div>
+                    <span id="algo-toggle-icon" class="text-goldAccent font-bold text-sm">▼</span>
+                </div>
+                
+                <div id="algo-settings-body" class="space-y-2.5 pt-2 border-t border-gray-900 hidden">
+                    <div>
+                        <label class="block text-[10px] text-softGrey mb-1 font-semibold">Cycle Target Return (%)</label>
+                        <input type="number" id="setting-target-return" value="10" class="w-full bg-midnight border border-gray-800 rounded-lg px-3 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[9px] text-softGrey mb-1">Buy Fee % (CoinDCX)</label>
+                            <input type="number" id="setting-buy-fee" value="1.5" step="0.1" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] text-softGrey mb-1">Sell Fee % (CoinDCX)</label>
+                            <input type="number" id="setting-sell-fee" value="1.5" step="0.1" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[9px] text-softGrey mb-1">TDS % (Legal Mandate)</label>
+                            <input type="number" id="setting-tds-pct" value="1.0" step="0.1" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[9px] text-softGrey mb-1">GST on Fees %</label>
+                            <input type="number" id="setting-gst-pct" value="18" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <div>
+                            <label class="block text-[8px] text-softGrey mb-1">Transfer Out (₹)</label>
+                            <input type="number" id="setting-transfer-out" value="500" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1 text-softWhite tabular-nums text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[8px] text-softGrey mb-1">Gas Fees 1 (₹)</label>
+                            <input type="number" id="setting-gas1" value="500" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1 text-softWhite tabular-nums text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[8px] text-softGrey mb-1">XM360 Fee (₹)</label>
+                            <input type="number" id="setting-xm360" value="500" class="w-full bg-midnight border border-gray-800 rounded-lg px-2 py-1 text-softWhite tabular-nums text-xs">
+                        </div>
+                    </div>
+                    <button onclick="saveAlgorithmSettings()" class="w-full mt-2 py-2 bg-goldAccent text-midnight font-bold rounded-lg shadow-md active:scale-95 text-xs">
+                        Save Algorithm & Tax Rules
+                    </button>
+                </div>
             </div>
 
             <!-- SYSTEM INFO -->
@@ -396,8 +451,29 @@
     let isStatementPreviewVisible = false;    
   
     const CYCLE_LENGTH_DAYS = 30;    
-    const CYCLE_TARGET_RETURN_PCT = 10;    
+    let CYCLE_TARGET_RETURN_PCT = 10;    
     const CYCLE_START_DATE = '2026-10-01';  
+
+    let configFees = {
+        buyFeePct: 1.5,
+        sellFeePct: 1.5,
+        gstPct: 18,
+        tdsPct: 1.0,
+        transferOut: 500.0,
+        gas1: 500.0,
+        xm360Fee: 500.0,
+        gas2: 400.0,
+        bankPayoutPct: 0.5
+    };
+
+    try {
+        const savedCfg = localStorage.getItem('aureus_algo_config_v1');
+        if(savedCfg) {
+            const parsed = JSON.parse(savedCfg);
+            if(parsed.targetReturn !== undefined) CYCLE_TARGET_RETURN_PCT = parsed.targetReturn;
+            if(parsed.fees) configFees = parsed.fees;
+        }
+    } catch(e) {}
     
     function getPreviousMonthName() {
         const d = new Date();
@@ -421,6 +497,52 @@
     function saveInvestorsToStorage() {    
         localStorage.setItem('aureus_investors_v7', JSON.stringify(investors));    
     }    
+
+    function toggleAlgorSettings() {
+        const body = document.getElementById('algo-settings-body');
+        const icon = document.getElementById('algo-toggle-icon');
+        if(body.classList.contains('hidden')) {
+            body.classList.remove('hidden');
+            icon.innerText = '▲';
+            document.getElementById('setting-target-return').value = CYCLE_TARGET_RETURN_PCT;
+            document.getElementById('setting-buy-fee').value = configFees.buyFeePct;
+            document.getElementById('setting-sell-fee').value = configFees.sellFeePct;
+            document.getElementById('setting-tds-pct').value = configFees.tdsPct;
+            document.getElementById('setting-gst-pct').value = configFees.gstPct;
+            document.getElementById('setting-transfer-out').value = configFees.transferOut;
+            document.getElementById('setting-gas1').value = configFees.gas1;
+            document.getElementById('setting-xm360').value = configFees.xm360Fee;
+        } else {
+            body.classList.add('hidden');
+            icon.innerText = '▼';
+        }
+    }
+
+    function saveAlgorithmSettings() {
+        const tr = parseFloat(document.getElementById('setting-target-return').value);
+        const bf = parseFloat(document.getElementById('setting-buy-fee').value);
+        const sf = parseFloat(document.getElementById('setting-sell-fee').value);
+        const tds = parseFloat(document.getElementById('setting-tds-pct').value);
+        const gst = parseFloat(document.getElementById('setting-gst-pct').value);
+        const trOut = parseFloat(document.getElementById('setting-transfer-out').value);
+        const g1 = parseFloat(document.getElementById('setting-gas1').value);
+        const xm = parseFloat(document.getElementById('setting-xm360').value);
+
+        if(!isNaN(tr)) CYCLE_TARGET_RETURN_PCT = tr;
+        if(!isNaN(bf)) configFees.buyFeePct = bf;
+        if(!isNaN(sf)) configFees.sellFeePct = sf;
+        if(!isNaN(tds)) configFees.tdsPct = tds;
+        if(!isNaN(gst)) configFees.gstPct = gst;
+        if(!isNaN(trOut)) configFees.transferOut = trOut;
+        if(!isNaN(g1)) configFees.gas1 = g1;
+        if(!isNaN(xm)) configFees.xm360Fee = xm;
+
+        localStorage.setItem('aureus_algo_config_v1', JSON.stringify({ targetReturn: CYCLE_TARGET_RETURN_PCT, fees: configFees }));
+        alert('Algorithm & Tax settings updated successfully!');
+        initSystemMetrics();
+        updateDashboard();
+        updateSettlementLedger();
+    }
   
     function switchTab(tabId) {    
         document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));    
@@ -506,16 +628,16 @@
   
     function calculate12PointCost(usdAmount) {    
         const grossInr = usdAmount * currentUsdInrRate;    
-        const buyFee = grossInr * 0.015;    
-        const gstBuy = buyFee * 0.18;    
-        const transferOut = 500.0;    
-        const gas1 = 500.0;    
-        const xm360Fee = 500.0;    
-        const gas2 = 400.0;    
-        const sellFee = grossInr * 0.015;    
-        const gstSell = sellFee * 0.18;    
-        const tds = grossInr * 0.01;    
-        const bankPayout = grossInr * 0.005;    
+        const buyFee = grossInr * (configFees.buyFeePct / 100);    
+        const gstBuy = buyFee * (configFees.gstPct / 100);    
+        const transferOut = configFees.transferOut;    
+        const gas1 = configFees.gas1;    
+        const xm360Fee = configFees.xm360Fee;    
+        const gas2 = configFees.gas2;    
+        const sellFee = grossInr * (configFees.sellFeePct / 100);    
+        const gstSell = sellFee * (configFees.gstPct / 100);    
+        const tds = grossInr * (configFees.tdsPct / 100);    
+        const bankPayout = grossInr * (configFees.bankPayoutPct / 100);    
   
         const totalDeductions = buyFee + gstBuy + transferOut + gas1 + xm360Fee + gas2 + sellFee + gstSell + tds + bankPayout;    
         const netInr = grossInr - totalDeductions;    
@@ -588,7 +710,7 @@
         const now = new Date();    
         const dateStr = now.toLocaleDateString('en-GB') + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', hour12:true});    
   
-        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Aureus Capital Statement</title><style>body{font-family:sans-serif;padding:20px;color:#111;background:#fff}.box{border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #C6A56A;padding-bottom:10px;margin-bottom:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:15px}table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}th,td{border:1px solid #ddd;padding:6px;text-align:left}th{background:#f9fafb}.sub{color:#666}.net-amount{color:#047857;font-weight:bold}</style></head><body><div class="box"><div class="header"><h2 style="margin:0;color:#0A0F1D;">AUREUS CAPITAL</h2><p style="margin:2px 0 0 0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:1px;">INSTITUTIONAL PRIVATE POOL SETTLEMENT</p></div><p style="font-size:11px;font-weight:bold;margin-bottom:10px;">PAYOUT STATEMENT &nbsp;|&nbsp; Date: ${dateStr}</p><div class="grid"><div>Withdrawal Amount: <b>$${usd.toLocaleString()}</b></div><div>Equivalent Gross INR: <b>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div><div>Total 12-Point Deductions: <b style="color: #b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div><div>Net Amount Received: <b class="net-amount" style="font-size: 13px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div></div><div style="font-size: 12px; font-weight: bold; margin-top: 15px;">12-POINT TRANSACTION COST BREAKDOWN (Deducted from Pool Trading Profit)</div><table><tr><th>#</th><th>Cost Component / Description</th><th>Amount (INR)</th></tr><tr><td>1</td><td>Bank to CoinDCX Deposit</td><td>INR 0.00</td></tr><tr><td>2</td><td>CoinDCX USDT Buy Fee (1.5%)</td><td>INR ${res.buyFee.toFixed(2)}</td></tr><tr><td>3</td><td>GST on Buy Fee (18%)</td><td>INR ${res.gstBuy.toFixed(2)}</td></tr><tr><td>4</td><td>CoinDCX to Trust Wallet Transfer</td><td>INR ${res.transferOut.toFixed(2)}</td></tr><tr><td>5</td><td>Trust Wallet to XM360 Gas</td><td>INR ${res.gas1.toFixed(2)}</td></tr><tr><td>6</td><td>XM360 to Trust Wallet Withdrawal</td><td>INR ${res.xm360Fee.toFixed(2)}</td></tr><tr><td>7</td><td>Trust Wallet to CoinDCX Return Gas</td><td>INR ${res.gas2.toFixed(2)}</td></tr><tr><td>8</td><td>CoinDCX USDT Sell Fee (1.5%)</td><td>INR ${res.sellFee.toFixed(2)}</td></tr><tr><td>9</td><td>GST on Sell Fee (18%)</td><td>INR ${res.gstSell.toFixed(2)}</td></tr><tr><td>10</td><td>TDS (1.0% Legal Mandate)</td><td>INR ${res.tds.toFixed(2)}</td></tr><tr><td>11</td><td>UPI / P2M Merchant Fee (Personal Account)</td><td>INR 0.00</td></tr><tr><td>12</td><td>CoinDCX to Bank Payout & Handling</td><td>INR ${res.bankPayout.toFixed(2)}</td></tr><tr style="font-weight: bold;"><td colspan="2">TOTAL DEDUCTIONS</td><td>INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr></table><div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;"><div><p style="margin:0;"><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p><p class="sub" style="font-size: 9px; margin: 2px 0 0 0;">Note: All 12-point operational costs are absorbed entirely from pool trading profits. Client principal is 100% protected.</p></div><div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;"><p style="margin: 0; font-weight: bold; color: #C6A56A !important;">${leadManagerName}</p><p class="sub" style="font-size: 9px; margin: 0;">Lead Portfolio Manager</p></div></div></div></body></html>`;    
+        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Aureus Capital Statement</title><style>body{font-family:sans-serif;padding:20px;color:#111;background:#fff}.box{border:1px solid #ddd;padding:20px;border-radius:8px}.header{text-align:center;border-bottom:2px solid #C6A56A;padding-bottom:10px;margin-bottom:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:15px}table{width:100%;border-collapse:collapse;font-size:11px;margin-top:10px}th,td{border:1px solid #ddd;padding:6px;text-align:left}th{background:#f9fafb}.sub{color:#666}.net-amount{color:#047857;font-weight:bold}</style></head><body><div class="box"><div class="header"><h2 style="margin:0;color:#0A0F1D;">AUREUS CAPITAL</h2><p style="margin:2px 0 0 0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:1px;">INSTITUTIONAL PRIVATE POOL SETTLEMENT</p></div><p style="font-size:11px;font-weight:bold;margin-bottom:10px;">PAYOUT STATEMENT &nbsp;|&nbsp; Date: ${dateStr}</p><div class="grid"><div>Withdrawal Amount: <b>$${usd.toLocaleString()}</b></div><div>Equivalent Gross INR: <b>INR ${res.grossInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div><div>Total 12-Point Deductions: <b style="color: #b45309;">INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})} (${res.deductionPct.toFixed(2)}%)</b></div><div>Net Amount Received: <b class="net-amount" style="font-size: 13px;">INR ${res.netInr.toLocaleString('en-IN', {maximumFractionDigits:2})}</b></div></div><div style="font-size: 12px; font-weight: bold; margin-top: 15px;">12-POINT TRANSACTION COST BREAKDOWN (Deducted from Pool Trading Profit)</div><table><tr><th>#</th><th>Cost Component / Description</th><th>Amount (INR)</th></tr><tr><td>1</td><td>Bank to CoinDCX Deposit</td><td>INR 0.00</td></tr><tr><td>2</td><td>CoinDCX USDT Buy Fee (${configFees.buyFeePct}%)</td><td>INR ${res.buyFee.toFixed(2)}</td></tr><tr><td>3</td><td>GST on Buy Fee (${configFees.gstPct}%)</td><td>INR ${res.gstBuy.toFixed(2)}</td></tr><tr><td>4</td><td>CoinDCX to Trust Wallet Transfer</td><td>INR ${res.transferOut.toFixed(2)}</td></tr><tr><td>5</td><td>Trust Wallet to XM360 Gas</td><td>INR ${res.gas1.toFixed(2)}</td></tr><tr><td>6</td><td>XM360 to Trust Wallet Withdrawal</td><td>INR ${res.xm360Fee.toFixed(2)}</td></tr><tr><td>7</td><td>Trust Wallet to CoinDCX Return Gas</td><td>INR ${res.gas2.toFixed(2)}</td></tr><tr><td>8</td><td>CoinDCX USDT Sell Fee (${configFees.sellFeePct}%)</td><td>INR ${res.sellFee.toFixed(2)}</td></tr><tr><td>9</td><td>GST on Sell Fee (${configFees.gstPct}%)</td><td>INR ${res.gstSell.toFixed(2)}</td></tr><tr><td>10</td><td>TDS (${configFees.tdsPct}% Legal Mandate)</td><td>INR ${res.tds.toFixed(2)}</td></tr><tr><td>11</td><td>UPI / P2M Merchant Fee (Personal Account)</td><td>INR 0.00</td></tr><tr><td>12</td><td>CoinDCX to Bank Payout & Handling</td><td>INR ${res.bankPayout.toFixed(2)}</td></tr><tr style="font-weight: bold;"><td colspan="2">TOTAL DEDUCTIONS</td><td>INR ${res.totalDeductions.toLocaleString('en-IN', {maximumFractionDigits:2})}</td></tr></table><div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px;"><div><p style="margin:0;"><strong>Rate Source:</strong> Live Market Reference (USD/INR = ${currentUsdInrRate})</p><p class="sub" style="font-size: 9px; margin: 2px 0 0 0;">Note: All 12-point operational costs are absorbed entirely from pool trading profits. Client principal is 100% protected.</p></div><div style="border-top: 1px solid #333333; padding-top: 4px; text-align: center; width: 180px;"><p style="margin: 0; font-weight: bold; color: #C6A56A !important;">${leadManagerName}</p><p class="sub" style="font-size: 9px; margin: 0;">Lead Portfolio Manager</p></div></div></div></body></html>`;    
     }    
   
     function generateMasterSheetHtmlDocument() {    
@@ -921,10 +1043,11 @@
   
             const statusBadge = isSettled     
                 ? `<div class="flex items-center space-x-2">
-                       <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-gray-800">Settled / Paid</span>
-                       <button onclick="downloadClientConfirmationPDF(${inv.id}, event)" title="Download Payout Confirmation PDF" class="p-1.5 bg-emerald-950 hover:bg-emerald-900 text-emeraldLive border border-emerald-800/60 rounded-lg transition active:scale-95 shadow">
-                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                       <button onclick="downloadClientConfirmationPDF(${inv.id}, event)" title="Download Payout Confirmation PDF" class="p-1.5 bg-emerald-950 hover:bg-emerald-900 text-emeraldLive border border-emerald-800/60 rounded-lg transition active:scale-95 shadow flex items-center space-x-1 px-2.5 text-[10px] font-bold">
+                           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                           <span>PDF</span>
                        </button>
+                       <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-gray-800">Settled / Paid</span>
                    </div>`    
                 : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-gray-800">Pending</span>`;    
   

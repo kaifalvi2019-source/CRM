@@ -399,7 +399,6 @@
     const CYCLE_TARGET_RETURN_PCT = 10;    
     const CYCLE_START_DATE = '2026-10-01';  
     
-    // Dynamic Previous Month calculation
     function getPreviousMonthName() {
         const d = new Date();
         d.setMonth(d.getMonth() - 1);
@@ -559,6 +558,31 @@
         }    
     }    
   
+    function generateClientConfirmationHtml(invId) {
+        const inv = investors.find(i => i.id === invId);
+        if(!inv) return '';
+        const returnPct = getProratedReturnPct();
+        const profitINR = inv.capital * (returnPct / 100);
+        const profitUSD = profitINR / currentUsdInrRate;
+        const netInr = profitINR * 0.90;
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('en-GB', {day: '2-digit', month: 'long', year: 'numeric'});
+        const timeStr = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true}) + ' IST';
+
+        return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Aureus Capital Payout Confirmation</title><style>body{font-family:sans-serif;padding:25px;background:#0A0F1D;color:#F3F4F6}.box{border:1px solid rgba(198,165,106,0.3);background:linear-gradient(135deg,#131B2E 0%,#0A0F1D 100%);padding:25px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.5)}.header{text-align:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:15px;margin-bottom:20px}.grid{font-size:13px;line-height:1.8;margin-bottom:20px}.net-amount{color:#10B981;font-weight:bold}</style></head><body><div class="box"><div class="header"><p style="margin:0;font-size:10px;color:#C6A56A;font-weight:bold;letter-spacing:2px;">AUREUS CAPITAL</p><h2 style="margin:5px 0 0 0;color:#F3F4F6;font-size:16px;">🎉 FINAL PAYOUT CONFIRMATION</h2><p style="margin:5px 0 0 0;font-size:10px;color:#10B981;font-weight:bold;">✔ CONFIRMED</p></div><div class="grid"><div>👤 <b>Investor:</b> ${inv.name.toUpperCase()}</div><div>💵 <b>Payout Amount:</b> $${profitUSD.toFixed(2)} USD</div><div>🇮🇳 <b>Indian Value:</b> ₹${Math.round(netInr).toLocaleString('en-IN')} INR</div><div>📅 <b>Date:</b> ${dateStr}</div><div>🕒 <b>Time:</b> ${timeStr}</div><div>🟢 <b>Account Status:</b> ACTIVE</div></div><div style="font-size:12px;border-top:1px solid rgba(255,255,255,0.1);padding-top:15px;line-height:1.6;color:#D1D5DB;"><p>✉️ <b>Dear ${inv.name},</b></p><p>Your payout has been successfully confirmed in the Aureus Capital system. ✅</p><p>🤝 Thank you for your trust and association with Aureus Capital.</p><p style="text-align:center;margin-top:25px;color:#C6A56A;font-weight:bold;letter-spacing:1px;font-size:11px;">✦ TRUST ∙ TRANSPARENCY ∙ EXCELLENCE ✦</p></div><div style="margin-top:25px;text-align:right;font-size:11px;border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;"><p style="margin:0;font-weight:bold;color:#C6A56A;">${leadManagerName}</p><p style="margin:2px 0 0 0;font-size:9px;color:#9CA3AF;">Lead Portfolio Manager</p></div></div></body></html>`;
+    }
+
+    function downloadClientConfirmationPDF(id, event) {
+        if(event) event.stopPropagation();
+        const inv = investors.find(i => i.id === id);
+        if(!inv) return;
+        const blob = new Blob([generateClientConfirmationHtml(id)], { type: 'text/html;charset=utf-8;' });    
+        const link = document.createElement('a');    
+        link.href = URL.createObjectURL(blob);    
+        link.download = `Aureus_Confirmation_${inv.name.replace(/\s+/g, '_')}.html`;    
+        link.click();
+    }
+
     function generateWhiteHtmlDocument(usd) {    
         const res = calculate12PointCost(usd);    
         const now = new Date();    
@@ -896,7 +920,12 @@
             const isSettled = inv.settled || false;    
   
             const statusBadge = isSettled     
-                ? `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-gray-800">Settled / Paid</span>`    
+                ? `<div class="flex items-center space-x-2">
+                       <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emeraldLive border border-gray-800">Settled / Paid</span>
+                       <button onclick="downloadClientConfirmationPDF(${inv.id}, event)" title="Download Payout Confirmation PDF" class="p-1.5 bg-emerald-950 hover:bg-emerald-900 text-emeraldLive border border-emerald-800/60 rounded-lg transition active:scale-95 shadow">
+                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                       </button>
+                   </div>`    
                 : `<span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-950 text-amber-400 border border-gray-800">Pending</span>`;    
   
             const btnClass = isSettled     

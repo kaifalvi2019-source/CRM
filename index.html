@@ -238,7 +238,7 @@
                 <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>    
                 <div class="flex space-x-2">    
                     <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount (e.g. 500)" class="w-full bg-midnight border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">    
-                    <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-royalBlue text-white text-xs font-bold rounded-xl hover:bg-blue-600 transition active:scale-95 shadow">Download White HTML</button>    
+                    <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-royalBlue text-white text-xs font-bold rounded-xl hover:bg-blue-600 transition active:scale-95 shadow">Download Statement PDF</button>    
                 </div>    
             </div>    
             <div id="calculator-result-box" class="bg-midnight/70 p-3.5 rounded-xl border border-gray-900 text-xs space-y-1.5 tabular-nums">    
@@ -835,7 +835,7 @@
         const blob = new Blob([generateClientConfirmationHtml(id)], { type: 'text/html;charset=utf-8;' });    
         const link = document.createElement('a');    
         link.href = URL.createObjectURL(blob);    
-        link.download = `${companyName.replace(/\s+/g, '_')}_Confirmation_${inv.name.replace(/\s+/g, '_')}.html`;    
+        link.download = `Investor_Payout_Receipt_${inv.name.replace(/\s+/g, '_')}.html`;    
         link.click();
     }
 
@@ -890,7 +890,7 @@
         const blob = new Blob([generateMasterSheetHtmlDocument()], { type: 'text/html;charset=utf-8;' });    
         const link = document.createElement('a');    
         link.href = URL.createObjectURL(blob);    
-        link.download = `${companyName.replace(/\s+/g, '_')}_Master_Sheet_${monthName.replace(' ', '_')}.html`;    
+        link.download = `Investor_Master_Ledger_List.html`;    
         link.click();
     }
   
@@ -927,7 +927,7 @@
         const blob = new Blob([generateWhiteHtmlDocument(usd)], { type: 'text/html;charset=utf-8;' });    
         const link = document.createElement('a');    
         link.href = URL.createObjectURL(blob);    
-        link.download = `${companyName.replace(/\s+/g, '_')}_Statement_$${usd}.html`;    
+        link.download = `Payout_Calculation_Report.html`;    
         link.click();    
     }    
   
@@ -935,7 +935,7 @@
         const blob = new Blob([generateMasterSheetHtmlDocument()], { type: 'text/html;charset=utf-8;' });    
         const link = document.createElement('a');    
         link.href = URL.createObjectURL(blob);    
-        link.download = `${companyName.replace(/\s+/g, '_')}_Master_Settlement_Sheet.html`;    
+        link.download = `Investor_Master_Ledger_List.html`;    
         link.click();    
     }    
   

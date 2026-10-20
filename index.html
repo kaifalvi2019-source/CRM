@@ -1,103 +1,346 @@
+
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#070B14">
-<title>Aureus Capital — Executive Summary</title>
+<title>Aureus Capital - Executive Summary</title>
 <style>
-:root{--midnight:#070B14;--graphite:#10172A;--gold:#DFB373;--blue:#3B82F6;--green:#10B981;--white:#F9FAFB;--grey:#9CA3AF;--danger:#EF4444;--line:rgba(223,179,115,.25);--card:linear-gradient(135deg,rgba(19,27,46,.92),rgba(10,15,29,.97)}
+:root{color-scheme:dark;--bg:#070B14;--panel:#10172A;--gold:#DFB373;--blue:#3B82F6;--green:#10B981;--white:#F9FAFB;--grey:#9CA3AF;--line:#dfb37340;--red:#ef4444}
 *{box-sizing:border-box}
-body{margin:0;background:var(--midnight);color:var(--white);font-family:system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:90px;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--white);font:14px system-ui,-apple-system,sans-serif;padding-bottom:85px}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;background:#070b14f2;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:42px;height:42px;border:1px solid var(--gold);border-radius:12px;display:grid;place-items:center;color:var(--gold);font-family:Georgia,serif;font-weight:bold;font-size:18px;overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover}
+.brand small{display:block;color:var(--gold);font-size:10px;font-weight:900;letter-spacing:2px}
+.brand strong{font-size:13px}
+.wrap{max-width:1050px;margin:auto;padding:16px}
+.card{background:linear-gradient(135deg,#131b2ee8,#0a0f1df5);border:1px solid var(--line);border-radius:16px;padding:17px;margin-bottom:14px;box-shadow:0 8px 25px #0003}
+h2{font-size:17px;margin:0 0 14px}
+h3{font-size:14px;margin:0 0 10px}
 .muted{color:var(--grey)}
 .gold{color:var(--gold)}
 .green{color:var(--green)}
-.blue{color:var(--blue)}
-.danger{color:var(--danger)}
-.tiny{font-size:10px}
-.small{font-size:12px}
-.uppercase{text-transform:uppercase;letter-spacing:.12em}
-.wrap{max-width:1050px;margin:auto;padding:16px}
-.topbar{position:sticky;top:0;z-index:10;background:rgba(7,11,20,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
-.logo{width:42px;height:42px;border:1px solid var(--gold);border-radius:12px;display:grid;place-items:center;color:var(--gold);font-weight:900;font-family:Georgia,serif;background:linear-gradient(135deg,#1b2439,#070b14);overflow:hidden;flex-shrink:0}
-.logo img{width:100%;height:100%;object-fit:cover}
-.brandname{font-size:10px;letter-spacing:.16em;font-weight:900;color:var(--gold);text-transform:uppercase}
-.top-actions{display:flex;gap:8px;align-items:center}
-.pill{font-size:10px;border:1px solid rgba(59,130,246,.4);background:rgba(30,58,138,.25);color:#93c5fd;border-radius:99px;padding:6px 9px;white-space:nowrap}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:0 8px 32px #0005;backdrop-filter:blur(8px)}
-.card+.card{margin-top:14px}
-.grid{display:grid;gap:12px}
-.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
-.stat{background:#070b14cc;border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}
-.label{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--grey);font-weight:700}
-.value{font-size:clamp(16px,3vw,27px);font-weight:850;letter-spacing:-.03em;overflow-wrap:anywhere;margin-top:6px}
-.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-.sectionhead h2{font-size:17px;margin:2px 0}
-.sectionhead p{margin:0}
-.tabs{position:fixed;z-index:20;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px max(8px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom));background:rgba(7,11,20,.97);border-top:1px solid var(--line);backdrop-filter:blur(12px)}
-.tab{border:0;background:transparent;color:var(--grey);border-radius:12px;padding:9px 2px;font-size:11px}
-.tab span{display:block;font-size:18px;margin-bottom:3px}
-.tab.active{background:rgba(223,179,115,.12);color:var(--gold);font-weight:800}
-.btn{border:1px solid var(--line);background:#0a1020;color:var(--gold);border-radius:10px;padding:10px 13px;font-weight:750;font-size:12px}
+.small{font-size:11px}
+.upper{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:800}
+.grid{display:grid;gap:10px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.stat{background:#070b14aa;border:1px solid var(--line);border-radius:12px;padding:12px;min-width:0}
+.stat label{display:block;color:var(--grey);font-size:10px;text-transform:uppercase}
+.stat strong{display:block;font-size:clamp(15px,3vw,23px);margin-top:6px;overflow-wrap:anywhere}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);border-radius:10px;background:#0b1120;color:var(--gold);padding:10px 13px;font-size:12px;font-weight:750}
 .btn.primary{background:linear-gradient(135deg,#dfb373,#c6a56a);color:#070b14;border:0}
-.btn.bluebtn{background:#2563eb;color:white;border:0}
-.btn.redbtn{border-color:#7f1d1d;color:#fca5a5}
-.btn.ghost{background:transparent}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.field{display:flex;flex-direction:column;gap:6px;min-width:0}
-.field label{font-size:11px;color:var(--grey);font-weight:700}
-.input,select,textarea{width:100%;min-width:0;background:#070b14;color:var(--white);border:1px solid rgba(223,179,115,.3);border-radius:10px;padding:11px 12px;font-size:13px}
-.input::placeholder,textarea::placeholder{color:#6b7280}
-.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.formgrid .wide{grid-column:1/-1}
+.btn.blue{background:#2563eb;color:white;border:0}
+.btn.red{border-color:#7f1d1d;color:#fca5a5}
+.btn:disabled{opacity:.5}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:11px;color:var(--grey)}
+input,select,textarea{width:100%;min-width:0;background:#070b14;color:var(--white);border:1px solid #dfb37355;border-radius:9px;padding:11px}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.wide{grid-column:1/-1}
 .hidden{display:none!important}
+.tabs{position:fixed;z-index:10;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,1fr);padding:8px 6px max(8px,env(safe-area-inset-bottom));background:#070b14f7;border-top:1px solid var(--line)}
+.tabs button{border:0;background:transparent;color:var(--grey);border-radius:9px;padding:8px 2px;font-size:11px}
+.tabs button.active{color:var(--gold);background:#dfb37319}
+.tabs span{display:block;font-size:18px;margin-bottom:3px}
 .list{display:grid;gap:10px}
-.person{border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:14px;padding:13px;background:#0b1120}
-.person.goldtier{border-left-color:var(--gold)}
-.person.silvertier{border-left-color:#94a3b8}
-.person.bronzetier{border-left-color:#b45309}
-.personhead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-.person h3{margin:0 0 4px;font-size:14px;overflow-wrap:anywhere}
-.person p{margin:3px 0;font-size:11px}
+.item{background:#070b14a8;border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:12px;padding:13px}
+.item h3{overflow-wrap:anywhere}
+.item p{font-size:11px;color:var(--grey);margin:5px 0}
 .amount{font-weight:850;color:var(--gold);font-size:16px}
-.notice{border:1px solid rgba(59,130,246,.35);background:rgba(30,58,138,.16);color:#bfdbfe;padding:11px;border-radius:11px;font-size:12px;line-height:1.5}
-.notice.warn{border-color:#92400e;background:#451a0344;color:#fcd34d}
-.notice.error{border-color:#991b1b;background:#450a0a55;color:#fecaca}
-.notice.ok{border-color:#065f46;background:#064e3b44;color:#a7f3d0}
-.progress{height:9px;border-radius:99px;background:#030712;border:1px solid var(--line);overflow:hidden;padding:1px}
-.progress div{height:100%;border-radius:99px;background:linear-gradient(90deg,#059669,#10b981);width:0}
-.divider{height:1px;background:var(--line);margin:14px 0}
-.empty{text-align:center;color:var(--grey);padding:24px 12px;border:1px dashed #374151;border-radius:12px;font-size:12px}
-.toast{position:fixed;z-index:50;top:75px;left:50%;transform:translateX(-50%);max-width:90vw;background:#111827;border:1px solid var(--gold);border-radius:12px;padding:11px 15px;font-size:12px;box-shadow:0 10px 35px #0009}
-.modalback{position:fixed;inset:0;background:#000b;z-index:40;display:grid;place-items:center;padding:16px}
-.modal{width:min(600px,100%);max-height:90vh;overflow:auto;background:#0b1120;border:1px solid var(--line);border-radius:18px;padding:18px}
-.modal h2{margin:0 0 16px;font-size:18px}
-.footer-note{font-size:10px;color:var(--grey);line-height:1.5}
-.logo-preview{width:54px;height:54px;object-fit:cover;border:1px solid var(--gold);border-radius:12px}
-@media(max-width:620px){
-.wrap{padding:12px}
-.card{padding:14px}
-.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}
-.topbar{padding:10px 12px}
-.pill{display:none}
-.formgrid{grid-template-columns:1fr}
-.formgrid .wide{grid-column:auto}
-.sectionhead{align-items:flex-start}
-.value{font-size:18px}
-.grid3 .label{font-size:9px}
-.grid3 .value{font-size:14px}
-}
-@media(prefers-reduced-motion:no-preference){
-.glow{animation:glow 4s ease-in-out infinite}
-@keyframes glow{0%,100%{box-shadow:0 0 20px #dfb37318}50%{box-shadow:0 0 32px #dfb37335}}
-}
+.actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.notice{border:1px solid #3b82f655;background:#1e3a8a22;color:#bfdbfe;padding:11px;border-radius:10px;font-size:12px;line-height:1.5}
+.notice.warn{border-color:#92400e;color:#fcd34d;background:#451a032e}
+.empty{border:1px dashed #374151;color:var(--grey);border-radius:12px;padding:22px;text-align:center;font-size:12px}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.toast{position:fixed;z-index:20;top:75px;left:50%;transform:translateX(-50%);max-width:90%;background:#111827;border:1px solid var(--gold);padding:12px 16px;border-radius:10px;box-shadow:0 8px 30px #0008}
+footer{font-size:10px;color:var(--grey);line-height:1.6;padding:10px}
+@media(max-width:600px){.wrap{padding:11px}.card{padding:13px}.form{grid-template-columns:1fr}.wide{grid-column:auto}.g3 .stat{padding:9px}.g3 .stat strong{font-size:14px}.header-extra{display:none}}
+@media print{header,.tabs,.no-print,button{display:none!important}body{background:white;color:black;padding:0}.card,.stat,.item{background:white;color:black;box-shadow:none;border-color:#bbb}.muted,.stat label{color:#444}}
 </style>
 </head>
+<body>
+<header>
+ <div class="brand">
+  <div class="logo" id="headerLogo">AC</div>
+  <div><small id="companyHeading">AUREUS CAPITAL</small><strong>Executive Summary</strong></div>
+ </div>
+ <div class="row">
+  <span id="apiBadge" class="small muted header-extra">LOCAL DATA</span>
+  <button class="btn" onclick="showTab('more')">☰</button>
+ </div>
+</header>
+
+<main class="wrap">
+ <div class="row" style="margin:3px 2px 14px">
+  <span class="small muted" id="today"></span>
+  <span class="small gold">INTERNAL DASHBOARD</span>
+ </div>
+
+ <section id="tab-home">
+  <div class="card">
+   <div class="upper">Lead Portfolio Manager</div>
+   <div class="row" style="margin-top:7px">
+    <div><h2 id="managerHeading" style="margin:0 0 4px">Portfolio Manager</h2><div class="muted small">Private Pool · Internal Access</div></div>
+    <span class="gold small">LEAD</span>
+   </div>
+   <div class="grid g2" style="margin-top:16px">
+    <div class="stat"><label>Promoter Holding</label><strong id="promoterValue" class="gold">₹50,000.00</strong></div>
+    <div class="stat"><label>Market Feed</label><strong id="marketStatus" style="font-size:13px">Not configured</strong><hr style="margin:9px 0"><div class="small muted">GOLD (XAU): <span id="goldValue">—</span></div><div class="small muted" style="margin-top:5px">USD / INR: <span id="fxValue">—</span></div></div>
+   </div>
+  </div>
+  <div class="card">
+   <div class="row"><h2>Portfolio Overview</h2><span class="small green">LOCAL DATA</span></div>
+   <div class="upper">Total Pool Capital (Promoter + Investors)</div>
+   <div id="totalCapital" class="gold" style="font-size:29px;font-weight:850;margin:8px 0">₹50,000.00</div>
+   <p id="usdEquivalent" class="muted small">USD equivalent unavailable until a valid FX rate is configured.</p>
+   <div class="grid g3" style="margin-top:14px">
+    <div class="stat"><label>Active Investors</label><strong id="activeCount">0</strong></div>
+    <div class="stat"><label>Investor Capital</label><strong id="investorCapital">₹0.00</strong></div>
+    <div class="stat"><label>Recorded Profit</label><strong id="recordedProfit" class="green">₹0.00</strong></div>
+   </div>
+  </div>
+  <div class="card">
+   <h2>30-Day Performance</h2>
+   <div class="muted small">Day <span id="cycleDay">—</span></div>
+   <h3 id="targetText" style="margin-top:12px">Indicative target range: not configured</h3>
+   <div id="performanceText" class="gold">Not calculated</div>
+   <p class="muted small">Record a verified performance figure before showing a return. No assumed or guaranteed return is displayed.</p>
+  </div>
+  <div class="notice warn">Financial dashboard only: market data and returns are not guaranteed. Verify all inputs and payout rules before making financial decisions.</div>
+ </section>
+
+ <section id="tab-investors" class="hidden">
+  <div class="row" style="margin-bottom:14px"><div><div class="upper">Directory</div><h2 style="margin:4px 0">Investors</h2></div><button class="btn primary" onclick="openInvestor()">＋ Add Investor</button></div>
+  <input id="searchInvestor" placeholder="Search investors by name, phone or ID" oninput="renderInvestors()" style="margin-bottom:12px">
+  <div id="investorsList" class="list"></div>
+ </section>
+
+ <section id="tab-settlement" class="hidden">
+  <div class="row"><div><div class="upper">Ledger</div><h2 style="margin:4px 0 14px">Settlement & Statements</h2></div><button class="btn" onclick="masterStatement()">Master Sheet</button></div>
+  <div class="card">
+   <h3>Quick preset withdrawal (USD)</h3>
+   <div class="grid g2">
+    <button class="btn" onclick="setWithdrawal(500)">$500</button><button class="btn" onclick="setWithdrawal(700)">$700</button>
+    <button class="btn" onclick="setWithdrawal(1200)">$1,200</button><button class="btn" onclick="setWithdrawal(1500)">$1,500</button>
+   </div>
+   <hr>
+   <div class="form">
+    <div class="field wide"><label>Custom amount (USD)</label><input id="withdrawUSD" type="number" min="0.01" step="0.01" placeholder="Enter amount" oninput="calculatePayout()"></div>
+    <div class="field"><label>USD/INR rate for this calculation</label><input id="withdrawFX" type="number" min="0.0001" step="0.0001" placeholder="Enter verified rate" oninput="calculatePayout()"></div>
+    <div class="field"><label>Investor</label><select id="settlementInvestor" onchange="calculatePayout()"><option value="">Select investor</option></select></div>
+    <div class="field wide"><label>Note / reference</label><input id="settlementNote" placeholder="Optional reference"></div>
+   </div>
+   <div id="payoutPreview" class="notice" style="margin-top:12px">Enter an amount and verified FX rate to preview conversion.</div>
+   <div class="actions"><button class="btn primary" onclick="recordSettlement()">Record Settlement</button><button class="btn" onclick="investorStatement()">Investor Statement PDF</button></div>
+   <p class="muted small">This calculator converts a user-entered USD amount using the rate entered above. It does not invent a profit-sharing formula or automatically authorize payouts.</p>
+  </div>
+  <div class="card">
+   <div class="row"><h2>Settlement Ledger</h2><button class="btn" onclick="exportSettlements()">Export CSV</button></div>
+   <div id="settlementList" class="list"></div>
+  </div>
+ </section>
+
+ <section id="tab-more" class="hidden">
+  <div class="upper">Configuration</div><h2 style="margin-top:5px">More & Settings</h2>
+  <div class="card">
+   <h3>Branding</h3>
+   <div class="form">
+    <div class="field"><label>Company name</label><input id="companyInput" value="AUREUS CAPITAL"></div>
+    <div class="field"><label>Manager name</label><input id="managerInput" value="Portfolio Manager"></div>
+    <div class="field"><label>Promoter capital (INR)</label><input id="promoterInput" type="number" min="0" value="50000"></div>
+    <div class="field"><label>Target range text</label><input id="targetInput" placeholder="e.g. Verified monthly target range"></div>
+    <div class="field wide"><label>Logo image URL or data URL (optional)</label><input id="logoInput" placeholder="https://… or data:image/…"></div>
+   </div>
+   <div class="actions"><button class="btn primary" onclick="saveBranding()">Save Branding</button><button class="btn" onclick="resetBranding()">Reset Branding</button></div>
+  </div>
+
+  <div class="card">
+   <h3>Market API Settings</h3>
+   <div id="apiStatus" class="muted small" style="margin-bottom:12px">Not configured</div>
+   <div class="notice">This single-file app can call compatible public APIs. APIs requiring secret keys, restricted CORS, or private credentials should be connected through a secure backend proxy. Never put production secrets in this HTML file.</div>
+   <div class="form" style="margin-top:12px">
+    <div class="field"><label>Provider label</label><input id="apiProvider" placeholder="e.g. My Market API"></div>
+    <div class="field"><label>Refresh interval</label><select id="apiInterval"><option value="0">Manual only</option><option value="1">Every minute</option><option value="5">Every 5 minutes</option><option value="15">Every 15 minutes</option></select></div>
+    <div class="field wide"><label>API endpoint URL</label><input id="apiEndpoint" type="url" placeholder="https://api.example.com/market"></div>
+    <div class="field"><label>Gold price field path</label><input id="goldPath" value="data.gold.price"></div>
+    <div class="field"><label>USD/INR field path</label><input id="fxPath" value="data.usdinr"></div>
+    <div class="field wide"><label>Additional headers (JSON, no secrets)</label><textarea id="apiHeaders" rows="2">{"Accept":"application/json"}</textarea></div>
+   </div>
+   <div class="actions"><button class="btn primary" onclick="saveAPI()">Save API Settings</button><button class="btn" onclick="fetchMarket()">Test / Fetch Now</button><button class="btn red" onclick="clearAPI()">Clear API</button></div>
+   <p class="muted small" id="lastFetch">No successful market-data fetch yet.</p>
+  </div>
+
+  <div class="card">
+   <h3>Data & Backup</h3>
+   <p class="muted small">Local records are saved in this browser. Clearing browser data or uninstalling the app can erase them. Cloud sync is not active in this single-file version.</p>
+   <div class="actions">
+    <button class="btn primary" onclick="backupJSON()">Download JSON Backup</button>
+    <button class="btn" onclick="document.getElementById('restoreFile').click()">Restore JSON</button>
+    <input id="restoreFile" type="file" accept=".json,application/json" class="hidden" onchange="restoreJSON(event)">
+    <button class="btn" onclick="exportInvestors()">Export Investors CSV</button>
+   </div>
+   <div id="storageInfo" class="muted small" style="margin-top:12px"></div>
+   <hr>
+   <button class="btn red" onclick="clearAll()">Clear All App Data</button>
+  </div>
+
+  <div class="card">
+   <div class="row"><h3>Monthly Archive</h3><button class="btn" onclick="saveSnapshot()">Save Snapshot</button></div>
+   <p class="muted small">Creates a point-in-time snapshot of investors and settlements. Does not replace live records.</p>
+   <div id="archiveList" class="list"></div>
+  </div>
+
+  <div class="card">
+   <h3>Cloud Sync Connection</h3>
+   <p class="muted small">Not connected. Multi-device sync requires a secure backend, authentication, server-side access rules and conflict handling. Saving a URL alone does not enable sync.</p>
+   <div class="field"><label>Backend base URL</label><input id="backendURL" placeholder="https://your-backend.example"></div>
+   <div class="actions"><button class="btn" onclick="saveBackendURL()">Save Backend URL</button></div>
+   <div class="muted small" id="backendStatus" style="margin-top:8px">Not connected</div>
+  </div>
+  <footer>Aureus Capital · Single-file application. Local persistence is implemented. Cloud synchronization and protected API authentication require a separately implemented backend. Financial outputs use entered records and configured data sources only.</footer>
+ </section>
+</main>
+
+<nav class="tabs no-print">
+ <button class="active" data-tab="home" onclick="showTab('home')"><span>⌂</span>Home</button>
+ <button data-tab="investors" onclick="showTab('investors')"><span>♙</span>Investors</button>
+ <button data-tab="settlement" onclick="showTab('settlement')"><span>▤</span>Settlement</button>
+ <button data-tab="more" onclick="showTab('more')"><span>☷</span>More</button>
+</nav>
+
+<div id="modal" class="hidden" style="position:fixed;inset:0;background:#000b;z-index:15;overflow:auto;padding:18px">
+ <div class="card" style="max-width:540px;margin:35px auto;background:#10172A">
+  <div class="row"><h2 id="modalTitle">Add Investor</h2><button class="btn" onclick="closeModal()">✕</button></div>
+  <form id="investorForm" class="form">
+   <input id="editId" type="hidden">
+   <div class="field wide"><label>Full name *</label><input id="invName" required maxlength="120"></div>
+   <div class="field"><label>Phone</label><input id="invPhone" maxlength="40"></div>
+   <div class="field"><label>Investor ID (optional)</label><input id="invCode" maxlength="60"></div>
+   <div class="field"><label>Capital (INR) *</label><input id="invCapital" type="number" min="0" step="0.01" required></div>
+   <div class="field"><label>Recorded profit (INR)</label><input id="invProfit" type="number" step="0.01" value="0"></div>
+   <div class="field"><label>Status</label><select id="invStatus"><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
+   <div class="field wide"><label>Notes</label><textarea id="invNotes" rows="2"></textarea></div>
+   <div class="wide actions"><button class="btn primary" type="submit">Save Investor</button><button class="btn" type="button" onclick="closeModal()">Cancel</button></div>
+  </form>
+ </div>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script>
+"use strict";
+const KEY="aureus_capital_data_v3";
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2}).format(Number(n)||0);
+const usd=n=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(n)||0);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+function blank(){return {version:3,branding:{company:"AUREUS CAPITAL",manager:"Portfolio Manager",promoter:50000,target:""},investors:[],settlements:[],archives:[],api:{provider:"",endpoint:"",interval:0,goldPath:"data.gold.price",fxPath:"data.usdinr",headers:'{"Accept":"application/json"}'},market:{gold:null,fx:null,lastFetch:null},backendURL:""}}
+function loadData(){
+ try{
+  const raw=localStorage.getItem(KEY);
+  if(raw){const x=JSON.parse(raw);return {...blank(),...x,branding:{...blank().branding,...x.branding},api:{...blank().api,...x.api},market:{...blank().market,...x.market},investors:Array.isArray(x.investors)?x.investors:[],settlements:Array.isArray(x.settlements)?x.settlements:[],archives:Array.isArray(x.archives)?x.archives:[]}}
+  for(const old of ["aureus_capital_data_v2","aureusCapitalData","aureus-capital-data"]){try{const x=JSON.parse(localStorage.getItem(old));if(x&&Array.isArray(x.investors))return {...blank(),...x,branding:{...blank().branding,...x.branding},api:{...blank().api,...x.api},market:{...blank().market,...x.market},settlements:x.settlements||[],archives:x.archives||[]}}catch{}}
+ }catch(e){console.error("Data read error",e)}
+ return blank()
+}
+let data=loadData(),refreshTimer=null;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));$("storageInfo").textContent="Local save active · "+(new Blob([JSON.stringify(data)]).size/1024).toFixed(1)+" KB approximate data. Last change: "+new Date().toLocaleString();return true}catch(e){toast("Save failed: browser storage may be full.");console.error(e);return false}}
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.remove("hidden");clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.add("hidden"),3200)}
+function showTab(tab){["home","investors","settlement","more"].forEach(x=>$("tab-"+x).classList.toggle("hidden",x!==tab));document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));if(tab==="investors")renderInvestors();if(tab==="settlement"){renderSettlements();fillInvestorSelect()}if(tab==="more")renderArchives();window.scrollTo({top:0,behavior:"smooth"})}
+function applyBranding(){
+ $("companyHeading").textContent=data.branding.company||"AUREUS CAPITAL";$("managerHeading").textContent=data.branding.manager||"Portfolio Manager";document.title=(data.branding.company||"AUREUS CAPITAL")+" - Executive Summary";$("promoterValue").textContent=money(data.branding.promoter);$("companyInput").value=data.branding.company;$("managerInput").value=data.branding.manager;$("promoterInput").value=data.branding.promoter;$("targetInput").value=data.branding.target;
+ const url=$("logoInput").value;const logo=data.branding.logo||"";$("headerLogo").innerHTML=logo?'<img alt="Company logo" src="'+esc(logo)+'">':esc((data.branding.company||"AC").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase());
+ $("targetText").textContent=data.branding.target||"Indicative target range: not configured"
+}
+function saveBranding(){const p=Number($("promoterInput").value);if(!Number.isFinite(p)||p<0)return toast("Enter a valid promoter capital.");data.branding={company:$("companyInput").value.trim()||"AUREUS CAPITAL",manager:$("managerInput").value.trim()||"Portfolio Manager",promoter:p,target:$("targetInput").value.trim(),logo:$("logoInput").value.trim()};save();applyBranding();renderDashboard();toast("Branding saved.")}
+function resetBranding(){data.branding=blank().branding;save();applyBranding();renderDashboard();toast("Branding reset.")}
+function renderDashboard(){
+ const active=data.investors.filter(x=>x.status==="Active"),capital=active.reduce((s,x)=>s+Number(x.capital||0),0),profit=data.investors.reduce((s,x)=>s+Number(x.profit||0),0);
+ $("totalCapital").textContent=money(Number(data.branding.promoter||0)+capital);$("activeCount").textContent=active.length;$("investorCapital").textContent=money(capital);$("recordedProfit").textContent=money(profit);
+ $("usdEquivalent").textContent=Number(data.market.fx)>0?"≈ "+usd((Number(data.branding.promoter||0)+capital)/data.market.fx)+" indicative":"USD equivalent unavailable until a valid FX rate is configured.";
+ $("goldValue").textContent=data.market.gold!=null?String(data.market.gold):"—";$("fxValue").textContent=Number(data.market.fx)>0?Number(data.market.fx).toFixed(4):"—";
+ $("marketStatus").textContent=data.api.endpoint?(data.market.lastFetch?"Last fetch "+new Date(data.market.lastFetch).toLocaleTimeString():"Configured; not yet fetched"):"Not configured";
+ $("apiBadge").textContent=data.api.endpoint?"API CONFIGURED":"LOCAL DATA";
+ $("performanceText").textContent="Not calculated";$("cycleDay").textContent="—";
+}
+function openInvestor(record=null){$("investorForm").reset();$("editId").value=record?.id||"";$("modalTitle").textContent=record?"Edit Investor":"Add Investor";$("invName").value=record?.name||"";$("invPhone").value=record?.phone||"";$("invCode").value=record?.code||"";$("invCapital").value=record?.capital??"";$("invProfit").value=record?.profit??0;$("invStatus").value=record?.status||"Active";$("invNotes").value=record?.notes||"";$("modal").classList.remove("hidden")}
+function closeModal(){$("modal").classList.add("hidden")}
+$("investorForm").addEventListener("submit",e=>{e.preventDefault();const edit=$("editId").value;const record={id:edit||id(),name:$("invName").value.trim(),phone:$("invPhone").value.trim(),code:$("invCode").value.trim(),capital:Number($("invCapital").value),profit:Number($("invProfit").value||0),status:$("invStatus").value,notes:$("invNotes").value.trim(),updatedAt:new Date().toISOString()};if(!record.name||!Number.isFinite(record.capital)||record.capital<0||!Number.isFinite(record.profit))return toast("Please check the investor details.");if(edit){const i=data.investors.findIndex(x=>x.id===edit);if(i>=0)data.investors[i]=record}else{record.createdAt=new Date().toISOString();data.investors.push(record)}save();closeModal();renderDashboard();renderInvestors();fillInvestorSelect();toast(edit?"Investor updated.":"Investor saved.")});
+function renderInvestors(){
+ const q=$("searchInvestor").value.toLowerCase().trim(),list=data.investors.filter(x=>[x.name,x.phone,x.code].some(v=>String(v||"").toLowerCase().includes(q)));
+ $("investorsList").innerHTML=list.length?list.map(x=>`<article class="item"><div class="row"><div><h3>${esc(x.name)}</h3><p>${esc(x.code||"No investor ID")} · ${esc(x.phone||"No phone")}</p><p>Status: ${esc(x.status)}</p></div><div class="amount">${money(x.capital)}</div></div><p>Recorded profit: ${money(x.profit)}</p>${x.notes?`<p>${esc(x.notes)}</p>`:""}<div class="actions"><button class="btn" onclick="editInvestor('${x.id}')">Edit</button><button class="btn" onclick="statementFor('${x.id}')">Statement</button><button class="btn red" onclick="deleteInvestor('${x.id}')">Delete</button></div></article>`).join(""):'<div class="empty">No investors saved yet. Select “Add Investor” to create the first record.</div>';
+}
+function editInvestor(id){const x=data.investors.find(x=>x.id===id);if(x)openInvestor(x)}
+function deleteInvestor(id){const x=data.investors.find(x=>x.id===id);if(!x)return;if(!confirm("Delete investor "+x.name+"? This does not delete settlement history."))return;data.investors=data.investors.filter(x=>x.id!==id);save();renderDashboard();renderInvestors();fillInvestorSelect();toast("Investor deleted.")}
+function fillInvestorSelect(){const s=$("settlementInvestor"),old=s.value;s.innerHTML='<option value="">Select investor</option>'+data.investors.map(x=>`<option value="${esc(x.id)}">${esc(x.name)} — ${money(x.capital)}</option>`).join("");if(data.investors.some(x=>x.id===old))s.value=old}
+function setWithdrawal(n){$("withdrawUSD").value=n;calculatePayout()}
+function calculatePayout(){const amount=Number($("withdrawUSD").value),fx=Number($("withdrawFX").value);$("payoutPreview").textContent=amount>0&&fx>0&&Number.isFinite(amount*fx)?usd(amount)+" × "+fx.toFixed(4)+" = "+money(amount*fx):"Enter an amount and verified FX rate to preview conversion."}
+function recordSettlement(){
+ const amount=Number($("withdrawUSD").value),fx=Number($("withdrawFX").value),investorId=$("settlementInvestor").value;
+ if(!(amount>0)||!(fx>0)||!Number.isFinite(amount*fx))return toast("Enter a valid amount and verified USD/INR rate.");
+ if(!investorId)return toast("Select an investor first.");
+ const inv=data.investors.find(x=>x.id===investorId);if(!inv)return toast("Investor not found.");
+ data.settlements.unshift({id:id(),investorId,name:inv.name,amountUSD:amount,fx,amountINR:amount*fx,note:$("settlementNote").value.trim(),date:new Date().toISOString()});
+ save();renderSettlements();renderDashboard();toast("Settlement recorded locally.")
+}
+function renderSettlements(){
+ $("settlementList").innerHTML=data.settlements.length?data.settlements.map(x=>`<div class="item"><div class="row"><h3>${esc(x.name)}</h3><span class="amount">${money(x.amountINR)}</span></div><p>${new Date(x.date).toLocaleString()} · ${usd(x.amountUSD)} at FX ${Number(x.fx).toFixed(4)}</p><p>${esc(x.note||"No reference")}</p><div class="actions"><button class="btn red" onclick="deleteSettlement('${x.id}')">Delete record</button></div></div>`).join(""):'<div class="empty">No settlement records yet.</div>'
+}
+function deleteSettlement(id){if(!confirm("Delete this settlement record?"))return;data.settlements=data.settlements.filter(x=>x.id!==id);save();renderSettlements();toast("Settlement deleted.")}
+function statementHTML(title,rows){return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>body{font:14px Arial;margin:35px;color:#111}h1{font-size:22px}table{border-collapse:collapse;width:100%;margin-top:20px}td,th{border:1px solid #aaa;padding:9px;text-align:left}th{background:#eee}.note{margin-top:20px;font-size:11px;color:#555}</style></head><body><h1>'+esc(data.branding.company)+'</h1><h2>'+esc(title)+'</h2><p>Generated: '+new Date().toLocaleString()+'</p><table><thead><tr><th>Investor / Detail</th><th>Capital / Amount</th><th>Profit / FX</th><th>Status / Date</th></tr></thead><tbody>'+rows+'</tbody></table><p class="note">Financial record based on locally entered data. Verify all entries before relying on this statement.</p><script>window.onload=()=>window.print()<\/script></body></html>'}
+function openPrint(title,rows){const w=window.open("","_blank");if(!w){toast("Allow pop-ups to print the statement.");return}w.document.open();w.document.write(statementHTML(title,rows));w.document.close()}
+function statementFor(id){const x=data.investors.find(x=>x.id===id);if(!x)return;const settlements=data.settlements.filter(s=>s.investorId===id);let rows=`<tr><td>${esc(x.name)} (${esc(x.code||"No ID")})</td><td>${money(x.capital)}</td><td>${money(x.profit)}</td><td>${esc(x.status)}</td></tr>`;settlements.forEach(s=>rows+=`<tr><td>Settlement: ${esc(s.name)}</td><td>${money(s.amountINR)} / ${usd(s.amountUSD)}</td><td>FX ${Number(s.fx).toFixed(4)}</td><td>${new Date(s.date).toLocaleDateString()}</td></tr>`);openPrint("Investor Statement — "+x.name,rows)}
+function investorStatement(){const id=$("settlementInvestor").value;if(!id)return toast("Select an investor first.");statementFor(id)}
+function masterStatement(){const rows=data.investors.map(x=>`<tr><td>${esc(x.name)}</td><td>${money(x.capital)}</td><td>${money(x.profit)}</td><td>${esc(x.status)}</td></tr>`).join("")+data.settlements.map(s=>`<tr><td>Settlement — ${esc(s.name)}</td><td>${money(s.amountINR)}</td><td>${usd(s.amountUSD)} / FX ${Number(s.fx).toFixed(4)}</td><td>${new Date(s.date).toLocaleDateString()}</td></tr>`).join("");openPrint("Master Statement",rows||'<tr><td colspan="4">No records</td></tr>')}
+function csvDownload(filename,rows){const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});downloadBlob(filename,blob)}
+function downloadBlob(name,blob){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function exportInvestors(){csvDownload("aureus-investors.csv",[["ID","Name","Phone","Investor Code","Capital INR","Profit INR","Status","Notes"],...data.investors.map(x=>[x.id,x.name,x.phone,x.code,x.capital,x.profit,x.status,x.notes])])}
+function exportSettlements(){csvDownload("aureus-settlements.csv",[["ID","Investor","USD","FX","INR","Note","Date"],...data.settlements.map(x=>[x.id,x.name,x.amountUSD,x.fx,x.amountINR,x.note,x.date])])}
+function backupJSON(){downloadBlob("aureus-backup-"+new Date().toISOString().slice(0,10)+".json",new Blob([JSON.stringify(data,null,2)],{type:"application/json"}))}
+function restoreJSON(e){const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x||!Array.isArray(x.investors)||!Array.isArray(x.settlements))throw Error("Invalid backup");if(!confirm("Replace current local records with this backup? Download a backup first if needed."))return;data={...blank(),...x,branding:{...blank().branding,...x.branding},api:{...blank().api,...x.api},market:{...blank().market,...x.market},archives:Array.isArray(x.archives)?x.archives:[]};save();initUI();toast("Backup restored.")}catch(err){toast("Invalid or unsupported backup file.");console.error(err)}finally{e.target.value=""}};r.readAsText(f)}
+function clearAll(){if(!confirm("Permanently clear all Aureus local data from this browser? Download a backup first."))return;localStorage.removeItem(KEY);data=blank();save();initUI();toast("Local app data cleared.")}
+function saveSnapshot(){data.archives.unshift({id:id(),date:new Date().toISOString(),investors:JSON.parse(JSON.stringify(data.investors)),settlements:JSON.parse(JSON.stringify(data.settlements)),branding:JSON.parse(JSON.stringify(data.branding))});save();renderArchives();toast("Archive snapshot saved.")}
+function renderArchives(){$("archiveList").innerHTML=data.archives.length?data.archives.map(x=>`<div class="item"><h3>${new Date(x.date).toLocaleString()}</h3><p>${x.investors.length} investors · ${x.settlements.length} settlements</p><div class="actions"><button class="btn" onclick="downloadArchive('${x.id}')">Download snapshot</button><button class="btn red" onclick="deleteArchive('${x.id}')">Delete</button></div></div>`).join(""):'<div class="empty">No archive snapshots saved.</div>'}
+function downloadArchive(id){const x=data.archives.find(x=>x.id===id);if(x)downloadBlob("aureus-archive.json",new Blob([JSON.stringify(x,null,2)],{type:"application/json"}))}
+function deleteArchive(id){if(!confirm("Delete this archive snapshot?"))return;data.archives=data.archives.filter(x=>x.id!==id);save();renderArchives()}
+function saveAPI(){
+ let headers;try{headers=JSON.parse($("apiHeaders").value||"{}");if(!headers||Array.isArray(headers)||typeof headers!=="object")throw Error()}catch{return toast("Additional headers must be a JSON object.")}
+ const endpoint=$("apiEndpoint").value.trim();if(endpoint){try{const u=new URL(endpoint);if(!["https:","http:"].includes(u.protocol))throw Error()}catch{return toast("Enter a valid HTTP/HTTPS API URL.")}}
+ data.api={provider:$("apiProvider").value.trim(),endpoint,interval:Number($("apiInterval").value)||0,goldPath:$("goldPath").value.trim(),fxPath:$("fxPath").value.trim(),headers:JSON.stringify(headers)};save();setupRefresh();renderDashboard();$("apiStatus").textContent=endpoint?"Configured; fetch to verify":"Not configured";toast("API settings saved.")
+}
+function clearAPI(){data.api=blank().api;data.market=blank().market;save();setupRefresh();initUI();toast("API settings cleared.")}
+function getPath(obj,path){return String(path||"").split(".").filter(Boolean).reduce((v,k)=>v==null?undefined:v[k],obj)}
+async function fetchMarket(){
+ if(!data.api.endpoint)return toast("Configure an API endpoint first.");
+ let headers;try{headers=JSON.parse(data.api.headers||"{}")}catch{return toast("Invalid headers JSON.")}
+ try{
+  const res=await fetch(data.api.endpoint,{method:"GET",headers,cache:"no-store"});if(!res.ok)throw Error("HTTP "+res.status);
+  const obj=await res.json(),g=getPath(obj,data.api.goldPath),f=getPath(obj,data.api.fxPath);
+  const gold=Number(g),fx=Number(f);if(g!==undefined&&g!==null&&g!==""&&Number.isFinite(g))data.market.gold=gold;
+  if(f!==undefined&&f!==null&&f!==""&&Number.isFinite(f)&&f>0)data.market.fx=fx;
+  if(data.market.gold==null&&data.market.fx==null)throw Error("Configured JSON paths did not match numeric response fields.");
+  data.market.lastFetch=new Date().toISOString();save();renderDashboard();$("lastFetch").textContent="Last successful fetch: "+new Date(data.market.lastFetch).toLocaleString();$("apiStatus").textContent="Fetch succeeded";toast("Market data fetched.");return true
+ }catch(e){$("apiStatus").textContent="Fetch failed: "+e.message;toast("API fetch failed. Check endpoint, field paths and CORS.");console.error(e);return false}
+}
+function setupRefresh(){if(refreshTimer)clearInterval(refreshTimer);refreshTimer=null;if(data.api.interval>0&&data.api.endpoint)refreshTimer=setInterval(()=>fetchMarket(),data.api.interval*60000)}
+function saveBackendURL(){const v=$("backendURL").value.trim();if(v){try{const u=new URL(v);if(!["https:","http:"].includes(u.protocol))throw Error()}catch{return toast("Enter a valid backend URL.")}}data.backendURL=v;save();$("backendStatus").textContent=v?"URL saved only — sync is NOT connected":"Not connected";toast("Backend URL saved. This does not enable cloud sync.")}
+function initUI(){
+ applyBranding();$("logoInput").value=data.branding.logo||"";$("apiProvider").value=data.api.provider;$("apiEndpoint").value=data.api.endpoint;$("apiInterval").value=String(data.api.interval||0);$("goldPath").value=data.api.goldPath;$("fxPath").value=data.api.fxPath;$("apiHeaders").value=data.api.headers;$("backendURL").value=data.backendURL||"";$("apiStatus").textContent=data.api.endpoint?"Configured; not yet verified":"Not configured";
+ $("lastFetch").textContent=data.market.lastFetch?"Last successful fetch: "+new Date(data.market.lastFetch).toLocaleString():"No successful market-data fetch yet.";
+ $("today").textContent=new Date().toLocaleDateString("en-US",{weekday:"short",month:"short",day:"2-digit",year:"numeric"}).toUpperCase();
+ renderDashboard();renderInvestors();renderSettlements();fillInvestorSelect();renderArchives();save();setupRefresh()
+}
+window.addEventListener("error",e=>{console.error("Aureus runtime error:",e.message,e.filename,e.lineno)});
+window.addEventListener("storage",e=>{if(e.key===KEY){data=loadData();initUI();toast("Data updated in another tab.")}});
+initUI();
+</script>
+</body>
+</html>

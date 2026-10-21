@@ -1,291 +1,273 @@
-<!DOCTYPE html>  <html lang="en" class="dark">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title id="page-title">Aureus Capital - Executive Summary</title>  
-    <!-- Web App Manifest Link Added for PWA & APK Generation -->  
-    <link rel="manifest" href="/manifest.json">  
-    <script src="https://cdn.tailwindcss.com"></script>  
-    <script>  
-        tailwind.config = {  
-            darkMode: 'class',  
-            theme: {  
-                extend: {  
-                    colors: {  
-                        midnight: '#070B14',  
-                        graphite: '#10172A',  
-                        goldAccent: '#DFB373',  
-                        royalBlue: '#3B82F6',  
-                        emeraldLive: '#10B981',  
-                        softWhite: '#F9FAFB',  
-                        softGrey: '#9CA3AF'  
-                    }  
-                }  
-            }  
-        }  
-    </script>  
-    <style>  
-        body { background-color: #070B14; color: #F9FAFB; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }  /* HD Bright Glassmorphism Cards with Glowing Gold Borders */  
-    .card-box {   
-        background: linear-gradient(135deg, rgba(19, 27, 46, 0.85) 0%, rgba(10, 15, 29, 0.95) 100%);   
-        border: 1px solid rgba(223, 179, 115, 0.25);  
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);  
-        backdrop-filter: blur(8px);  
-        transition: all 0.3s ease;  
-    }  
-    .card-box:hover {  
-        border-color: rgba(223, 179, 115, 0.5);  
-        box-shadow: 0 10px 40px -10px rgba(223, 179, 115, 0.2);  
-    }  
-
-    .tier-gold-card { border-left: 4px solid #DFB373; }  
-    .tier-silver-card { border-left: 4px solid #94A3B8; }  
-    .tier-bronze-card { border-left: 4px solid #B45309; }  
-    .tier-normal-card { border-left: 4px solid #3B82F6; }  
-
-    @keyframes pulseGlow {   
-        0%, 100% { box-shadow: 0 0 20px rgba(223, 179, 115, 0.15), inset 0 0 15px rgba(223, 179, 115, 0.05); }   
-        50% { box-shadow: 0 0 35px rgba(223, 179, 115, 0.35), inset 0 0 25px rgba(223, 179, 115, 0.1); }   
-    }  
-    .animate-pulse-glow { animation: pulseGlow 4s infinite ease-in-out; }  
-
-    @keyframes priceBlink { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } }  
-    .animate-price-blink { animation: priceBlink 0.6s ease-in-out; }  
-      
-    /* HD Splash Screen Animations */  
-    @keyframes splashZoom {  
-        0% { transform: scale(0.75); opacity: 0; filter: blur(12px); }  
-        50% { transform: scale(1.03); opacity: 1; filter: blur(0px); }  
-        100% { transform: scale(1); opacity: 1; }  
-    }  
-    .animate-splash { animation: splashZoom 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }  
-
-    @keyframes loadProgress {  
-        0% { width: 0%; }  
-        100% { width: 100%; }  
-    }  
-    .animate-progress { animation: loadProgress 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }  
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#070B14">
+<title id="page-title">Aureus Capital - Executive Summary</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: { extend: { colors: {
+    midnight:'#070B14', graphite:'#10172A', goldAccent:'#DFB373',
+    royalBlue:'#3B82F6', emeraldLive:'#10B981', softWhite:'#F9FAFB', softGrey:'#9CA3AF'
+  } } }
+}
+</script>
+<style>
+body{background:#070B14;color:#F9FAFB;font-family:system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent}
+.card-box{background:linear-gradient(135deg,rgba(19,27,46,.85) 0%,rgba(10,15,29,.95) 100%);border:1px solid rgba(223,179,115,.25);box-shadow:0 8px 32px rgba(0,0,0,.37);backdrop-filter:blur(8px);transition:all .3s ease}
+.card-box:hover{border-color:rgba(223,179,115,.5);box-shadow:0 10px 40px -10px rgba(223,179,115,.2)}
+.tier-gold-card{border-left:4px solid #DFB373}
+.tier-silver-card{border-left:4px solid #94A3B8}
+.tier-bronze-card{border-left:4px solid #B45309}
+.tier-normal-card{border-left:4px solid #3B82F6}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(223,179,115,.15),inset 0 0 15px rgba(223,179,115,.05)}50%{box-shadow:0 0 35px rgba(223,179,115,.35),inset 0 0 25px rgba(223,179,115,.1)}}
+.animate-pulse-glow{animation:pulseGlow 4s infinite ease-in-out}
+@keyframes priceBlink{0%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.98)}100%{opacity:1;transform:scale(1)}}
+.animate-price-blink{animation:priceBlink .6s ease-in-out}
+@keyframes splashZoom{0%{transform:scale(.75);opacity:0;filter:blur(12px)}50%{transform:scale(1.03);opacity:1;filter:blur(0)}100%{transform:scale(1);opacity:1}}
+.animate-splash{animation:splashZoom 1.2s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes loadProgress{0%{width:0}100%{width:100%}}
+.animate-progress{animation:loadProgress 1.8s cubic-bezier(.4,0,.2,1) forwards}
+.swipe-card{touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:transform .2s ease}
+.swipe-card.dragging{transition:none}
+.nav-btn{color:#9CA3AF}
+.nav-btn.active{color:#DFB373}
+input,textarea{font-size:16px}
+@media(min-width:640px){input,textarea{font-size:13px}}
 </style>
+</head>
+<body class="pb-28">
 
-</head>  
-<body class="pb-24">  <!-- SPLASH SCREEN / INTRO ANIMATION -->  <div id="splash-screen" class="fixed inset-0 bg-midnight z-50 flex flex-col items-center justify-center transition-opacity duration-700">  
-    <div class="flex flex-col items-center space-y-4 animate-splash">  
-        <div id="splash-logo-container" class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent/80 flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">  
-            <span id="splash-logo-text">AC</span>  
-        </div>  
-        <div class="text-center space-y-1">  
-            <p id="splash-company-sub" class="text-xs text-goldAccent uppercase tracking-[0.35em] font-extrabold">AUREUS CAPITAL</p>  
-            <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>  
-        </div>  
-        <div class="w-44 h-1.5 bg-gray-900 rounded-full overflow-hidden mt-4 border border-gray-800 shadow-inner">  
-            <div id="splash-bar" class="bg-gradient-to-r from-amber-600 via-goldAccent to-amber-300 h-full rounded-full animate-progress shadow-lg shadow-goldAccent/50"></div>  
-        </div>  
-    </div>  
-</div>  <!-- TOP HEADER -->      <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 py-3.5 flex items-center justify-between shadow-lg">      
-    <div class="flex items-center space-x-3">      
-        <div id="header-logo-container" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/20 tracking-wider overflow-hidden">  
-            <span id="header-logo-text">AC</span>  
-        </div>      
-        <div>      
-            <p id="header-company-name" class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">AUREUS CAPITAL</p>      
-            <h1 class="text-sm font-bold text-softWhite tracking-tight">Executive Summary</h1>      
-        </div>      
-    </div>      
-    <div class="flex items-center space-x-2.5">      
-        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-950/90 text-royalBlue border border-blue-700/50 shadow-sm">      
-            <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-ping"></span> GEMINI API      
-        </span>      
-        <button onclick="openSettings()" class="p-2.5 rounded-xl card-box text-goldAccent hover:text-softWhite transition active:scale-95 shadow-md" title="Settings">      
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>      
-        </button>      
-    </div>      
-</header>      <!-- MAIN CONTAINER -->      <main class="max-w-7xl mx-auto px-4 py-5 space-y-4">      
-    <div class="flex justify-between items-center px-1">      
-        <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display">MON, OCT 12 · 2:16 AM</p>      
-        <span class="text-[10px] text-royalBlue bg-royalBlue/15 px-2.5 py-0.5 rounded-md font-bold border border-royalBlue/30">Institutional Grade</span>      
-    </div>      <!-- TAB 1: HOME DASHBOARD -->      
-<section id="tab-home" class="space-y-4">      
-    <!-- Lead Portfolio Manager Card -->      
-    <div class="card-box p-5 space-y-4 animate-pulse-glow rounded-2xl">      
-        <div class="flex justify-between items-start">      
-            <div>      
-                <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Lead Portfolio Manager</p>      
-                <h2 class="text-xl font-extrabold text-softWhite mt-0.5 tracking-tight" id="display-manager-name">Kaif Alvi</h2>      
-                <p class="text-xs text-softGrey mt-0.5 font-medium">Private Pool · Internal Access</p>      
-            </div>      
-            <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/50 tracking-widest shadow-lg shadow-goldAccent/10">LEAD</span>      
-        </div>      
+<!-- SPLASH -->
+<div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-700">
+  <div class="flex flex-col items-center space-y-4 animate-splash">
+    <div id="splash-logo-container" class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent/80 flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden"></div>
+    <div class="text-center space-y-1">
+      <p id="splash-company-sub" class="text-xs text-goldAccent uppercase tracking-[0.35em] font-extrabold">AUREUS CAPITAL</p>
+      <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>
+    </div>
+    <div class="w-44 h-1.5 bg-gray-900 rounded-full overflow-hidden mt-4 border border-gray-800">
+      <div class="bg-gradient-to-r from-amber-600 via-goldAccent to-amber-300 h-full rounded-full animate-progress"></div>
+    </div>
+  </div>
+</div>
 
-        <div class="grid grid-cols-2 gap-3 pt-1">      
-            <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20 shadow-inner">      
-                <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>      
-                <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">INR 50,000</h3>      
-            </div>      
-            <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20 shadow-inner">      
-                <div class="flex justify-between items-center">      
-                    <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Gemini Feed</p>      
-                    <span class="flex items-center text-[9px] text-emeraldLive font-extrabold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-ping"></span> <span id="market-status-text">SYNCING</span></span>      
-                </div>      
-                <div class="flex justify-between items-center mt-1">      
-                    <div>      
-                        <p class="text-[8px] text-softGrey">GOLD (XAU)</p>      
-                        <h3 class="text-xs font-bold text-goldAccent tabular-nums transition-all duration-300" id="live-gold-price">Loading...</h3>      
-                    </div>      
-                    <div>      
-                        <p class="text-[8px] text-softGrey">USD / INR</p>      
-                        <h3 class="text-xs font-bold text-emeraldLive tabular-nums transition-all duration-300" id="live-usdinr-price">Loading...</h3>      
-                    </div>      
-                </div>      
-            </div>      
-        </div>      
-    </div>      
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 py-3.5 flex items-center justify-between shadow-lg">
+  <div class="flex items-center space-x-3">
+    <div id="header-logo-container" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/20 tracking-wider overflow-hidden"></div>
+    <div>
+      <p id="header-company-name" class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">AUREUS CAPITAL</p>
+      <h1 class="text-sm font-bold text-softWhite tracking-tight">Executive Summary</h1>
+    </div>
+  </div>
+  <div class="flex items-center space-x-2.5">
+    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-950/90 text-royalBlue border border-blue-700/50">
+      <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-ping"></span> GEMINI API
+    </span>
+    <button onclick="openSettings()" class="p-2.5 rounded-xl card-box text-goldAccent hover:text-softWhite transition active:scale-95" title="Settings" aria-label="Settings">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</header>
 
-    <!-- Portfolio Overview Card -->      
-    <div class="card-box p-5 space-y-3.5 rounded-2xl">      
-        <div class="flex justify-between items-center">      
-            <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Portfolio Overview</p>      
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-goldAccent/15 text-goldAccent border border-goldAccent/30">Active</span>      
-        </div>      
-        <div>      
-            <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>      
-            <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">INR 1,00,000</h3>      
-            <p class="text-xs text-royalBlue mt-0.5 font-semibold tabular-nums" id="home-usd-indicative">≈ $1,033.38 indicative</p>      
-        </div>      
-        <div class="grid grid-cols-3 gap-2 pt-3 border-t border-goldAccent/20 text-xs">      
-            <div>      
-                <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Investors</p>      
-                <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">0</p>      
-            </div>      
-            <div>      
-                <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Capital</p>      
-                <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">INR 0</p>      
-            </div>      
-            <div>      
-                <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>      
-                <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$0.00</p>      
-                <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">INR 0</p>      
-            </div>      
-        </div>      
-    </div>      
+<main class="max-w-3xl mx-auto px-4 py-5 space-y-4">
+  <div class="flex justify-between items-center px-1">
+    <p class="text-[11px] text-softGrey font-semibold tracking-wider" id="current-date-display"></p>
+    <span class="text-[10px] text-royalBlue bg-royalBlue/15 px-2.5 py-0.5 rounded-md font-bold border border-royalBlue/30">Institutional Grade</span>
+  </div>
 
-    <!-- 30-Day Performance Card -->      
-    <div class="card-box p-5 space-y-3.5 rounded-2xl">      
-        <div class="flex justify-between items-center">      
-            <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">30-Day Market Performance</p>      
-            <p class="text-[11px] text-softGrey font-semibold tabular-nums">DAY <span class="text-softWhite font-bold" id="cycle-day-count">12/30</span></p>      
-        </div>      
-        <div>      
-            <h4 class="text-sm font-extrabold text-softWhite tracking-tight" id="display-target-range-text">Indicative Target Range 8%–12%</h4>      
-        </div>      
-        <div class="space-y-2 pt-1">      
-            <div class="flex justify-between items-center text-xs">      
-                <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">4.00%</span>      
-            </div>      
-            <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-goldAccent/30 p-0.5 shadow-inner">      
-                <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 via-emeraldLive to-teal-400 h-full rounded-full transition-all duration-700 ease-out shadow-md shadow-emerald-500/30" style="width: 40%"></div>      
-            </div>      
-            <div class="flex justify-between text-[11px] text-softGrey pt-0.5 font-medium">      
-                <span>Strategy Alpha · Active</span>      
-                <span id="cycle-days-remaining" class="text-softWhite">18 days remaining</span>      
-            </div>      
-        </div>      
-    </div>      
-</section>      
+  <!-- TAB 1: HOME -->
+  <section id="tab-home" class="space-y-4">
+    <div class="card-box p-5 space-y-4 animate-pulse-glow rounded-2xl">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Lead Portfolio Manager</p>
+          <h2 class="text-xl font-extrabold text-softWhite mt-0.5 tracking-tight" id="display-manager-name">Kaif Alvi</h2>
+          <p class="text-xs text-softGrey mt-0.5 font-medium">Private Pool · USDT Standard · Internal Access</p>
+        </div>
+        <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/50 tracking-widest">LEAD</span>
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-1">
+        <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20">
+          <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>
+          <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">INR 50,000</h3>
+        </div>
+        <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20">
+          <div class="flex justify-between items-center">
+            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Gemini Feed</p>
+            <button onclick="refreshMarket(true)" class="flex items-center text-[9px] font-extrabold" id="market-status-btn" title="Refresh">
+              <span class="w-1.5 h-1.5 rounded-full bg-softGrey mr-1" id="market-dot"></span><span id="market-status-text" class="text-softGrey">SYNCING</span>
+            </button>
+          </div>
+          <div class="flex justify-between items-center mt-1">
+            <div>
+              <p class="text-[8px] text-softGrey">GOLD (XAU)</p>
+              <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-gold-price">--</h3>
+            </div>
+            <div>
+              <p class="text-[8px] text-softGrey">USD / INR</p>
+              <h3 class="text-xs font-bold text-emeraldLive tabular-nums" id="live-usdinr-price">--</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- TAB 2: INVESTOR PORTFOLIO -->      
-<section id="tab-investors" class="space-y-4 hidden">      
-    <div class="flex justify-between items-center px-1">      
-        <div>      
-            <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">DIRECTORY</p>      
-            <h2 class="text-base font-bold text-softWhite tracking-tight">Investors</h2>      
-        </div>      
-        <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition-all duration-300 shadow-lg shadow-goldAccent/25 flex items-center active:scale-95">      
-            + Add      
-        </button>      
-    </div>      
+    <div class="card-box p-5 space-y-3.5 rounded-2xl">
+      <div class="flex justify-between items-center">
+        <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Portfolio Overview</p>
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-goldAccent/15 text-goldAccent border border-goldAccent/30">Active</span>
+      </div>
+      <div>
+        <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
+        <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">INR 0</h3>
+        <p class="text-xs text-royalBlue mt-0.5 font-semibold tabular-nums" id="home-usd-indicative">≈ $0.00 indicative</p>
+      </div>
+      <div class="grid grid-cols-3 gap-2 pt-3 border-t border-goldAccent/20 text-xs">
+        <div>
+          <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Investors</p>
+          <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">0</p>
+        </div>
+        <div>
+          <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Capital</p>
+          <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">INR 0</p>
+        </div>
+        <div>
+          <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
+          <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$0.00</p>
+          <p class="text-[11px] text-softGrey tabular-nums" id="home-calc-profit-inr">INR 0</p>
+        </div>
+      </div>
+    </div>
 
-    <div class="relative">      
-        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">      
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>      
-        </span>      
-        <input type="text" id="investor-search" oninput="updateDashboard()" placeholder="Search by name or number" class="w-full card-box border border-goldAccent/30 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">      
-    </div>      
+    <div class="card-box p-5 space-y-3.5 rounded-2xl">
+      <div class="flex justify-between items-center">
+        <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">30-Day Market Performance</p>
+        <p class="text-[11px] text-softGrey font-semibold tabular-nums">DAY <span class="text-softWhite font-bold" id="cycle-day-count">1/30</span></p>
+      </div>
+      <h4 class="text-sm font-extrabold text-softWhite tracking-tight" id="display-target-range-text">Indicative Target Range 8%–12%</h4>
+      <div class="space-y-2 pt-1">
+        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">0.00%</span>
+        <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-goldAccent/30 p-0.5">
+          <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 via-emeraldLive to-teal-400 h-full rounded-full transition-all duration-700 ease-out" style="width:0%"></div>
+        </div>
+        <div class="flex justify-between text-[11px] text-softGrey pt-0.5 font-medium">
+          <span>Strategy Alpha · Active</span>
+          <span id="cycle-days-remaining" class="text-softWhite">30 days remaining</span>
+        </div>
+      </div>
+      <p class="text-[10px] text-softGrey leading-relaxed">Returns are indicative and not guaranteed. Past performance does not assure future results.</p>
+    </div>
+  </section>
 
-    <div class="space-y-3.5 pt-1" id="investors-list-container">      
-        <!-- Dynamically populated tiered cards with Swipe-to-Delete -->      
-    </div>      
-</section>      
+  <!-- TAB 2: INVESTORS -->
+  <section id="tab-investors" class="space-y-4 hidden">
+    <div class="flex justify-between items-center px-1">
+      <div>
+        <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">DIRECTORY</p>
+        <h2 class="text-base font-bold text-softWhite tracking-tight">Investors</h2>
+      </div>
+      <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight text-xs font-extrabold rounded-xl shadow-lg shadow-goldAccent/25 active:scale-95 transition">+ Add</button>
+    </div>
+    <div class="relative">
+      <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </span>
+      <input type="text" id="investor-search" oninput="updateDashboard()" placeholder="Search by name or number" class="w-full card-box rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent">
+    </div>
+    <p class="text-[10px] text-softGrey px-1">Tap a card to edit · Swipe left to delete</p>
+    <div class="space-y-3.5" id="investors-list-container"></div>
+  </section>
 
-<!-- TAB 3: SETTLEMENT & STATEMENTS -->      
-<section id="tab-settlement" class="space-y-4 hidden">      
-    <div class="flex justify-between items-center px-1">      
-        <div>      
-            <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">LEDGER</p>      
-            <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>      
-        </div>      
-        <button       
-            onclick="downloadMasterStatementPDF()"       
-            class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg transition-all duration-300 active:scale-95 shadow-goldAccent/20"      
-            style="background: linear-gradient(135deg, #DFB373 0%, #C6A56A 100%);"      
-        >      
-            Master Sheet PDF      
-        </button>      
-    </div>      
+  <!-- TAB 3: SETTLEMENT -->
+  <section id="tab-settlement" class="space-y-4 hidden">
+    <div class="flex justify-between items-center px-1 gap-2">
+      <div>
+        <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">LEDGER</p>
+        <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
+      </div>
+      <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0" style="background:linear-gradient(135deg,#DFB373 0%,#C6A56A 100%)">Master Sheet PDF</button>
+    </div>
 
-    <!-- QUICK PRESET BUTTONS & CUSTOM CALCULATOR -->      
-    <div class="card-box p-4 space-y-3.5 rounded-2xl">      
-        <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Quick Preset Withdrawal ($)</p>      
-        <div class="grid grid-cols-4 gap-2">      
-            <button onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition active:scale-95 shadow"> $500 </button>      
-            <button onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition active:scale-95 shadow"> $700 </button>      
-            <button onclick="selectPresetAmount(1200)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition active:scale-95 shadow"> $1200 </button>      
-            <button onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight hover:bg-graphite text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums transition active:scale-95 shadow"> $1500 </button>      
-        </div>      
-        <div class="pt-2">      
-            <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>      
-            <div class="flex space-x-2">      
-                <input type="number" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount (e.g. 500)" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">      
-                <button onclick="downloadWhiteTemplatePDF()" class="px-4 py-2 bg-royalBlue text-white text-xs font-extrabold rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg shadow-royalBlue/30">Download Statement PDF</button>      
-            </div>      
-        </div>      
-        <div id="calculator-result-box" class="bg-midnight/90 p-3.5 rounded-xl border border-goldAccent/30 text-xs space-y-1.5 tabular-nums">      
-            <!-- Live calculated summary -->      
-        </div>      
+    <div class="card-box p-4 space-y-3.5 rounded-2xl">
+      <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Quick Preset Withdrawal ($)</p>
+      <div class="grid grid-cols-4 gap-2">
+        <button onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$500</button>
+        <button onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$700</button>
+        <button onclick="selectPresetAmount(1200)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$1200</button>
+        <button onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$1500</button>
+      </div>
+      <div class="pt-2">
+        <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold" for="custom-withdrawal-input">Or Enter Custom Dollar Amount ($)</label>
+        <div class="flex space-x-2">
+          <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount (e.g. 500)" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+          <button onclick="downloadWhiteTemplatePDF()" class="px-3 py-2 bg-royalBlue text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shadow-royalBlue/30 shrink-0">Statement PDF</button>
+        </div>
+      </div>
+      <div id="calculator-result-box" class="bg-midnight/90 p-3.5 rounded-xl border border-goldAccent/30 text-xs space-y-1.5 tabular-nums"></div>
 
-        <!-- COLLAPSIBLE LIVE WHITE STATEMENT PREVIEW -->      
-        <div class="pt-3">      
-            <div class="flex justify-between items-center mb-2">      
-                <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Live White Statement Preview</p>      
-                <button onclick="toggleStatementPreview()" id="preview-toggle-btn" class="px-3 py-1 bg-midnight border border-goldAccent/40 text-goldAccent text-[10px] font-extrabold rounded-lg hover:bg-graphite transition flex items-center space-x-1 active:scale-95">      
-                    <span>▼ Expand Preview</span>      
-                </button>      
-            </div>      
-            <div id="white-preview-container" class="rounded-xl border border-goldAccent/30 shadow-2xl overflow-hidden hidden">      
-                <!-- Populated dynamically with isolated iframe -->      
-            </div>      
-        </div>      
-    </div>      
+      <div class="pt-3">
+        <div class="flex justify-between items-center mb-2">
+          <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Live White Statement Preview</p>
+          <button onclick="toggleStatementPreview()" id="preview-toggle-btn" class="px-3 py-1 bg-midnight border border-goldAccent/40 text-goldAccent text-[10px] font-extrabold rounded-lg active:scale-95 transition"><span>▼ Expand Preview</span></button>
+        </div>
+        <div id="white-preview-container" class="rounded-xl border border-goldAccent/30 shadow-2xl overflow-hidden hidden"></div>
+      </div>
+    </div>
 
-    <!-- Settlement Ledger List -->      
-    <div class="space-y-3 pt-1" id="settlement-list-container">      
-        <!-- Dynamically populated settlement cards -->      
-    </div>      
-</section>      
+    <div class="space-y-3 pt-1" id="settlement-list-container"></div>
+  </section>
 
-<!-- TAB 4: MORE / SETTINGS -->      
-<section id="tab-more" class="space-y-4 hidden">      
-    <h2 class="text-base font-bold text-softWhite tracking-tight">More & Settings</h2>      
-    <p class="text-xs text-softGrey">API configurations, previous month archives, and admin controls.</p>      
-      
-    <!-- ADMIN CONTROLS CARD -->  
-    <div class="card-box p-5 space-y-3 text-xs rounded-2xl">      
-        <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/20">      
-            <p class="font-bold text-goldAccent mb-0.5">Lead Portfolio Manager</p>      
-            <p class="text-softGrey">Kaif Alvi (Master Administrator)</p>      
-        </div>      
+  <!-- TAB 4: MORE -->
+  <section id="tab-more" class="space-y-4 hidden">
+    <h2 class="text-base font-bold text-softWhite tracking-tight">More & Settings</h2>
+    <p class="text-xs text-softGrey">API configuration, previous month archive, backup and admin controls.</p>
 
-        <!-- PREVIOUS MONTH ARCHIVE (PLACED AT THE TOP) -->  
-        <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-2">  
-            <div class="flex justify-between items-center">  
-                <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Previous Month Archive</p>  
-                <span class="text-[10px] text-softGrey" id="prev-month-label">September
+    <div class="card-box p-5 space-y-3 text-xs rounded-2xl">
+      <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/20">
+        <p class="font-bold text-goldAccent mb-0.5">Lead Portfolio Manager</p>
+        <p class="text-softGrey" id="more-manager-line">Kaif Alvi (Master Administrator)</p>
+      </div>
+
+      <!-- Previous Month Archive -->
+      <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-2.5">
+        <div class="flex justify-between items-center">
+          <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Previous Month Archive</p>
+          <span class="text-[10px] text-softGrey" id="prev-month-label">No records</span>
+        </div>
+        <div id="archive-list" class="space-y-2"></div>
+        <div class="grid grid-cols-3 gap-2 pt-1">
+          <input id="arc-label" type="text" placeholder="Month (Sep 2026)" class="col-span-3 bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
+          <input id="arc-capital" type="number" inputmode="decimal" placeholder="Capital INR" class="col-span-2 bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
+          <input id="arc-roi" type="number" inputmode="decimal" step="0.01" placeholder="ROI %" class="bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="addArchiveRecord()" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-lg font-extrabold active:scale-95 transition">+ Add Record</button>
+          <button onclick="archiveCurrentCycle()" class="py-2.5 bg-goldAccent/15 text-goldAccent border border-goldAccent/40 rounded-lg font-extrabold active:scale-95 transition">Archive Current Cycle</button>
+        </div>
+      </div>
+
+      <!-- Cycle & Profile Settings -->
+      <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-2.5">
+        <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Pool & Cycle Settings</p>
+        <div class="grid grid-cols-2 gap-2">
+          <label class="col-span-2 text-[10px] text-softGrey">Manager Name
+            <input id="set-manager" type="text" class="mt-1 w-full bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent"></label>
+          <label class="col-span-2 text-[10px] text-softGrey">Company Name
+            <input id="set-company" type="text" class="mt-1 w-full bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent"></label>
+          <label class="text-[10px] text-softGrey">Promoter Holding (INR)
+            <input id="set-promoter" type="number" inputmode="decimal" class="mt-1 w-full bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent"></label>
+          <label class="text-[10px] text-softGrey">Current Return (%)
+            <input id="set-return" type="number" inputmode="decimal" step="0.01" class="mt-1 w-full bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent"></label>
+          <label class="text-[10px] text-softGrey">Target Min (%)
+            <input id="set-tmin" type="number" inputmode="decimal" class="mt-1 w-full bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent"></label>
+          <label class="text-[10px] text-softGrey">Target Max (%)
+            <input id="set-tmax" type="number" inputmode="decimal" class="mt-1 w-full bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite focus:outline-none focus:border-goldAccent"></label>
+          <label class="col-span-2 text-[10px] text-softGrey">Cycle Start Date
+            <input id="set-cycle" type="date" class="mt-1 w-full bg-midnight border border-goldAccent/30 rounded-lg px-3 py-2 text-softWhite foc

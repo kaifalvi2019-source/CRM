@@ -18,7 +18,7 @@ tailwind.config = {
 }
 </script>
 <style>
-body{background:#070B14;color:#F9FAFB;font-family:system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#070B14;color:#F9FAFB;font-family:system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 .card-box{background:linear-gradient(135deg,rgba(19,27,46,.85) 0%,rgba(10,15,29,.95) 100%);border:1px solid rgba(223,179,115,.25);box-shadow:0 8px 32px rgba(0,0,0,.37);backdrop-filter:blur(8px);transition:all .3s ease}
 .card-box:hover{border-color:rgba(223,179,115,.5);box-shadow:0 10px 40px -10px rgba(223,179,115,.2)}
 .tier-gold-card{border-left:4px solid #DFB373}
@@ -31,8 +31,7 @@ body{background:#070B14;color:#F9FAFB;font-family:system-ui,-apple-system,sans-s
 .animate-splash{animation:splashZoom 1.2s cubic-bezier(.16,1,.3,1) forwards}
 @keyframes loadProgress{0%{width:0}100%{width:100%}}
 .animate-progress{animation:loadProgress 1.8s cubic-bezier(.4,0,.2,1) forwards}
-.nav-btn{color:#9CA3AF}
-.nav-btn.active{color:#DFB373}
+.swipe-card{position:relative;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 input,textarea{font-size:16px}
 @media(min-width:640px){input,textarea{font-size:13px}}
 </style>
@@ -64,7 +63,7 @@ input,textarea{font-size:16px}
   </div>
   <div class="flex items-center space-x-2.5">
     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-950/90 text-royalBlue border border-blue-700/50">
-      <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-ping"></span> USDT STANDARD
+      <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-ping"></span> INR STANDARD
     </span>
     <button onclick="switchTab('more')" class="p-2.5 rounded-xl card-box text-goldAccent hover:text-softWhite transition active:scale-95" title="Settings" aria-label="Settings">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -80,23 +79,23 @@ input,textarea{font-size:16px}
         <div>
           <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Lead Portfolio Manager</p>
           <h2 class="text-xl font-extrabold text-softWhite mt-0.5 tracking-tight" id="display-manager-name">Kaif Alvi</h2>
-          <p class="text-xs text-softGrey mt-0.5 font-medium">Private Pool · USDT Standard</p>
+          <p class="text-xs text-softGrey mt-0.5 font-medium">Private Pool · INR Standard</p>
         </div>
         <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/50 tracking-widest">LEAD</span>
       </div>
       <div class="grid grid-cols-2 gap-3 pt-1">
         <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20">
           <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>
-          <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">$500.00</h3>
+          <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">₹50,000</h3>
         </div>
         <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20">
           <div class="flex justify-between items-center">
-            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">USDT Feed</p>
+            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">USDT / INR Feed</p>
             <span class="flex items-center text-[9px] text-emeraldLive font-extrabold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-ping"></span> LIVE</span>
           </div>
           <div class="mt-1">
-            <p class="text-[8px] text-softGrey">USDT / USD</p>
-            <h3 class="text-xs font-bold text-emeraldLive tabular-nums">$1.00</h3>
+            <p class="text-[8px] text-softGrey">Exchange Rate</p>
+            <h3 class="text-xs font-bold text-emeraldLive tabular-nums">₹88.50</h3>
           </div>
         </div>
       </div>
@@ -109,7 +108,7 @@ input,textarea{font-size:16px}
       </div>
       <div>
         <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
-        <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">$500.00</h3>
+        <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">₹50,000</h3>
       </div>
       <div class="grid grid-cols-3 gap-2 pt-3 border-t border-goldAccent/20 text-xs">
         <div>
@@ -118,11 +117,11 @@ input,textarea{font-size:16px}
         </div>
         <div>
           <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Capital</p>
-          <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">$0.00</p>
+          <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">₹0</p>
         </div>
         <div>
           <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
-          <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit">$0.00</p>
+          <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit">₹0</p>
         </div>
       </div>
     </div>
@@ -130,13 +129,13 @@ input,textarea{font-size:16px}
     <div class="card-box p-5 space-y-3.5 rounded-2xl">
       <div class="flex justify-between items-center">
         <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">30-Day Market Performance</p>
-        <p class="text-[11px] text-softGrey font-semibold tabular-nums">DAY <span class="text-softWhite font-bold" id="cycle-day-count">12/30</span></p>
+        <p class="text-[11px] text-softGrey font-semibold tabular-nums">DAY <span class="text-softWhite font-bold">12/30</span></p>
       </div>
       <h4 class="text-sm font-extrabold text-softWhite tracking-tight">Indicative Target Range 8%–12%</h4>
       <div class="space-y-2 pt-1">
-        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="cycle-return-pct">4.00%</span>
+        <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight">4.00%</span>
         <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-goldAccent/30 p-0.5">
-          <div id="cycle-progress-bar" class="bg-gradient-to-r from-emerald-600 via-emeraldLive to-teal-400 h-full rounded-full transition-all duration-700 ease-out" style="width:40%"></div>
+          <div class="bg-gradient-to-r from-emerald-600 via-emeraldLive to-teal-400 h-full rounded-full transition-all duration-700 ease-out" style="width:40%"></div>
         </div>
         <div class="flex justify-between text-[11px] text-softGrey pt-0.5 font-medium">
           <span>Strategy Alpha · Active</span>
@@ -161,7 +160,7 @@ input,textarea{font-size:16px}
       </span>
       <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name or number" class="w-full card-box rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent">
     </div>
-    <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left/right to delete</p>
+    <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left/right on card to delete</p>
     <div class="space-y-3.5" id="investors-list-container"></div>
   </section>
 
@@ -176,17 +175,17 @@ input,textarea{font-size:16px}
     </div>
 
     <div class="card-box p-4 space-y-3.5 rounded-2xl">
-      <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Quick Preset Withdrawal ($)</p>
+      <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Quick Preset Withdrawal (₹)</p>
       <div class="grid grid-cols-4 gap-2">
-        <button onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$500</button>
-        <button onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$700</button>
-        <button onclick="selectPresetAmount(1200)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$1200</button>
-        <button onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$1500</button>
+        <button onclick="selectPresetAmount(25000)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">₹25K</button>
+        <button onclick="selectPresetAmount(50000)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">₹50K</button>
+        <button onclick="selectPresetAmount(100000)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">₹1L</button>
+        <button onclick="selectPresetAmount(150000)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">₹1.5L</button>
       </div>
       <div class="pt-2">
-        <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold" for="custom-withdrawal-input">Or Enter Custom Dollar Amount ($)</label>
+        <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold" for="custom-withdrawal-input">Or Enter Custom Amount (₹)</label>
         <div class="flex space-x-2">
-          <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount (e.g. 500)" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+          <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount e.g. 50000" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
           <button onclick="downloadWhiteTemplatePDF()" class="px-3 py-2 bg-royalBlue text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shrink-0">Statement PDF</button>
         </div>
       </div>
@@ -260,8 +259,8 @@ input,textarea{font-size:16px}
         <input type="text" id="modal-phone" placeholder="Enter phone" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
       </div>
       <div>
-        <label class="block text-softGrey mb-1 font-semibold" for="modal-amount">Investment Amount (USDT) *</label>
-        <input type="number" id="modal-amount" placeholder="Enter amount e.g. 1000" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+        <label class="block text-softGrey mb-1 font-semibold" for="modal-amount">Investment Amount (INR ₹) *</label>
+        <input type="number" id="modal-amount" placeholder="Enter amount e.g. 50000" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
       </div>
       <div>
         <label class="block text-softGrey mb-1 font-semibold" for="modal-date">Joining Date</label>
@@ -287,7 +286,7 @@ window.addEventListener('load', () => {
 });
 
 let investors = JSON.parse(localStorage.getItem('aureus_investors')) || [];
-let promoterHolding = 500;
+let promoterHolding = 50000;
 let cycleReturnPct = 4.00;
 
 function switchTab(tabName) {
@@ -317,10 +316,10 @@ function updateDashboard() {
   let hap = document.getElementById('home-active-capital');
   let hcp = document.getElementById('home-calc-profit');
 
-  if(hc) hc.innerText = '$' + totalCapital.toLocaleString('en-US', {minimumFractionDigits: 2});
+  if(hc) hc.innerText = '₹' + totalCapital.toLocaleString('en-IN');
   if(hac) hac.innerText = investors.length;
-  if(hap) hap.innerText = '$' + activeCapital.toLocaleString('en-US', {minimumFractionDigits: 2});
-  if(hcp) hcp.innerText = '$' + calcProfit.toLocaleString('en-US', {minimumFractionDigits: 2});
+  if(hap) hap.innerText = '₹' + activeCapital.toLocaleString('en-IN');
+  if(hcp) hcp.innerText = '₹' + calcProfit.toLocaleString('en-IN');
 }
 
 function renderInvestors() {
@@ -345,8 +344,17 @@ function renderInvestors() {
     else if(index === 2 && investors.length > 2) { tierClass = 'tier-bronze-card'; tierName = 'BRONZE'; }
 
     let cardDiv = document.createElement('div');
-    cardDiv.className = `card-box p-4 rounded-2xl ${tierClass} flex justify-between items-center cursor-pointer transition active:scale-[0.98]`;
+    cardDiv.className = `card-box p-4 rounded-2xl ${tierClass} swipe-card flex justify-between items-center cursor-pointer transition`;
     cardDiv.onclick = () => openEditInvestorModal(inv.id);
+
+    let startX = 0;
+    cardDiv.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+    cardDiv.addEventListener('touchend', (e) => {
+      let diff = e.changedTouches[0].clientX - startX;
+      if(Math.abs(diff) > 100) {
+        deleteInvestor(inv.id);
+      }
+    });
 
     cardDiv.innerHTML = `
       <div>
@@ -358,7 +366,7 @@ function renderInvestors() {
       </div>
       <div class="text-right flex items-center space-x-3">
         <div>
-          <p class="text-sm font-extrabold text-goldAccent tabular-nums">$${Number(inv.amount).toLocaleString('en-US', {minimumFractionDigits: 2})}</p>
+          <p class="text-sm font-extrabold text-goldAccent tabular-nums">₹${Number(inv.amount).toLocaleString('en-IN')}</p>
         </div>
         <button onclick="event.stopPropagation(); deleteInvestor(${inv.id})" class="p-1.5 bg-red-950/40 text-red-400 rounded-lg hover:bg-red-900/60 transition text-xs">Delete</button>
       </div>
@@ -457,9 +465,9 @@ function calculateCustomPayout() {
     return;
   }
   box.innerHTML = `
-    <div class="flex justify-between"><span>Requested Payout:</span><span class="font-bold text-softWhite">$${amt.toFixed(2)}</span></div>
-    <div class="flex justify-between"><span>Network / Gas Fee (Est.):</span><span class="font-bold text-softWhite">$5.00</span></div>
-    <div class="flex justify-between pt-2 border-t border-goldAccent/20 text-goldAccent font-extrabold text-sm"><span>Net Payout:</span><span>$${(amt - 5).toFixed(2)}</span></div>
+    <div class="flex justify-between"><span>Requested Payout:</span><span class="font-bold text-softWhite">₹${amt.toLocaleString('en-IN')}</span></div>
+    <div class="flex justify-between"><span>Network / Gas Fee (Est.):</span><span class="font-bold text-softWhite">₹450</span></div>
+    <div class="flex justify-between pt-2 border-t border-goldAccent/20 text-goldAccent font-extrabold text-sm"><span>Net Payout:</span><span>₹${(amt - 450).toLocaleString('en-IN')}</span></div>
   `;
 }
 
@@ -483,7 +491,7 @@ function renderSettlementLedger() {
       <div class="flex justify-between items-start">
         <div>
           <h4 class="text-sm font-bold text-softWhite">${inv.name}</h4>
-          <p class="text-[11px] text-softGrey mt-0.5">Capital: $${inv.amount.toLocaleString()} · Profit: $${profit.toFixed(2)}</p>
+          <p class="text-[11px] text-softGrey mt-0.5">Capital: ₹${inv.amount.toLocaleString('en-IN')} · Profit: ₹${profit.toLocaleString('en-IN', {maximumFractionDigits: 2})}</p>
         </div>
         <button onclick="togglePayoutStatus(${inv.id})" class="px-2.5 py-1 rounded-lg text-[10px] font-black border ${statusClass}">
           ${inv.status || 'Pending'}
@@ -511,30 +519,39 @@ function togglePayoutStatus(id) {
 function downloadInvestorStatementPDF(name, capital, profit) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
+  
+  // Professional Header Styling
+  doc.setFillColor(7, 11, 20);
+  doc.rect(0, 0, 210, 30, 'F');
+  
+  doc.setTextColor(223, 179, 115);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("AUREUS CAPITAL", 14, 20);
-  doc.setFontSize(10);
+  doc.setFontSize(16);
+  doc.text("AUREUS CAPITAL", 14, 15);
+  
+  doc.setTextColor(249, 250, 251);
+  doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
-  doc.text("Institutional Private Pool · Withdrawal Statement", 14, 26);
+  doc.text("Institutional Private Pool · Withdrawal & Tax Statement", 14, 22);
 
   doc.autoTable({
-    startY: 35,
-    head: [['Particulars', 'Amount / Details']],
+    startY: 38,
+    head: [['Particulars', 'Amount / Details (INR)']],
     body: [
       ['Investor Name', name],
-      ['Total Pool Capital', '$' + capital.toLocaleString()],
-      ['Estimated Profit (' + cycleReturnPct + '%)', '$' + profit.toFixed(2)],
-      ['Blockchain Network / Gas Fee', '$5.00 (Est.)'],
-      ['Test Transaction Cost', '$1.00 (Est.)'],
-      ['CoinDCX Trading & GST (18%)', 'As Applicable'],
-      ['Government TDS (194S)', '1% (Refundable via ITR)'],
-      ['VDA Profit Tax', '30% + 4% Cess'],
-      ['Net Credited Payout', '$' + (capital + profit - 6).toFixed(2)],
+      ['Total Pool Capital', '₹' + capital.toLocaleString('en-IN')],
+      ['Estimated Profit (' + cycleReturnPct + '%)', '₹' + profit.toLocaleString('en-IN', {maximumFractionDigits: 2})],
+      ['Blockchain Network / Gas Fee', '₹340 – ₹500 (Est.)'],
+      ['Test Transaction Cost', '₹80 – ₹170 (Est.)'],
+      ['CoinDCX Trading & GST (18%)', '₹50 – ₹100'],
+      ['Government TDS (Section 194S)', '1% (Refundable via ITR)'],
+      ['VDA Profit Tax (Section 115BBH)', '30% + 4% Cess'],
+      ['Net Credited Payout', '₹' + (capital + profit - 500).toLocaleString('en-IN', {maximumFractionDigits: 2})],
       ['Payout Status', 'Processed / Completed']
     ],
     theme: 'grid',
-    headStyles: { fillColor: [7, 11, 20] }
+    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115] },
+    bodyStyles: { textColor: [20, 20, 20] }
   });
 
   doc.save(`Aureus_Capital_Statement_${name.replace(/\s+/g, '_')}.pdf`);
@@ -543,26 +560,33 @@ function downloadInvestorStatementPDF(name, capital, profit) {
 function downloadMasterStatementPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
+  
+  doc.setFillColor(7, 11, 20);
+  doc.rect(0, 0, 210, 30, 'F');
+  
+  doc.setTextColor(223, 179, 115);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("AUREUS CAPITAL - MASTER SHEET", 14, 20);
-  doc.setFontSize(10);
+  doc.setFontSize(16);
+  doc.text("AUREUS CAPITAL - MASTER SHEET", 14, 15);
+  
+  doc.setTextColor(249, 250, 251);
+  doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
-  doc.text("Manager: Kaif Alvi | Date: " + new Date().toLocaleDateString(), 14, 26);
+  doc.text("Manager: Kaif Alvi | Date: " + new Date().toLocaleDateString(), 14, 22);
 
-  let rows = investors.map(inv => [inv.name, inv.phone || 'N/A', '$' + inv.amount.toLocaleString(), inv.status || 'Pending']);
+  let rows = investors.map(inv => [inv.name, inv.phone || 'N/A', '₹' + inv.amount.toLocaleString('en-IN'), inv.status || 'Pending']);
   doc.autoTable({
-    startY: 35,
-    head: [['Investor Name', 'Phone', 'Capital (USDT)', 'Status']],
+    startY: 38,
+    head: [['Investor Name', 'Phone', 'Capital (INR)', 'Status']],
     body: rows,
     theme: 'grid',
-    headStyles: { fillColor: [7, 11, 20] }
+    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115] }
   });
   doc.save('Aureus_Capital_Master_Sheet.pdf');
 }
 
 function downloadWhiteTemplatePDF() {
-  downloadInvestorStatementPDF('General Investor', 1000, 40);
+  downloadInvestorStatementPDF('General Investor', 50000, 2000);
 }
 
 function saveSettingsAPI() {

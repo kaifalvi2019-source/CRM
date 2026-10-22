@@ -850,8 +850,6 @@ function downloadInvestorPayoutPDF(investorId) {
   const capUSD = capINR / exchangeRate;
   const profitINR = capINR * (returnPct / 100);
   const profitUSD = capUSD * (returnPct / 100);
-  const totalPayoutINR = capINR + profitINR;
-  const totalPayoutUSD = capUSD + profitUSD;
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();

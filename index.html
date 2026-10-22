@@ -706,7 +706,7 @@ function togglePayoutStatus(id) {
   }
 }
 
-// 1. STATEMENT PDF
+// 1. STATEMENT PDF (Clean White Theme with Golden/Blue Accents)
 function downloadCustomStatementPDF() {
   const withdrawalUSD = parseFloat(document.getElementById('custom-withdrawal-input').value) || 500;
   const exchangeRate = 88.50;
@@ -731,8 +731,8 @@ function downloadCustomStatementPDF() {
   doc.setTextColor(100, 116, 139);
   doc.text("Official Withdrawal Statement & Fee Breakdown", 14, 27);
 
-  doc.setDrawColor(203, 213, 225);
-  doc.setLineWidth(0.75);
+  doc.setDrawColor(223, 179, 115); // Golden accent line
+  doc.setLineWidth(0.8);
   doc.line(14, 33, 196, 33);
 
   doc.setFontSize(10);
@@ -750,7 +750,7 @@ function downloadCustomStatementPDF() {
       ['Final Net Payout', `$${netUSD.toFixed(2)}`, `Rs. ${netINR.toFixed(2)}`]
     ],
     theme: 'grid',
-    headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold', halign: 'left' },
+    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115], fontStyle: 'bold', halign: 'left' },
     bodyStyles: { fillColor: [255, 255, 255], textColor: [15, 23, 42] },
     alternateRowStyles: { fillColor: [248, 250, 252] },
     styles: { fontSize: 10, cellPadding: 7 }
@@ -766,7 +766,7 @@ function downloadCustomStatementPDF() {
   doc.save(`Aureus_Capital_Withdrawal_${withdrawalUSD}USD.pdf`);
 }
 
-// 2. MASTER SHEET PDF
+// 2. MASTER SHEET PDF (Clean White Theme with Golden Accents)
 function downloadMasterStatementPDF() {
   const investorsList = investors || [];
   const exchangeRate = 88.50;
@@ -787,8 +787,8 @@ function downloadMasterStatementPDF() {
   doc.setTextColor(100, 116, 139);
   doc.text("Master Investor Portfolio & Return Summary Ledger", 14, 27);
 
-  doc.setDrawColor(203, 213, 225);
-  doc.setLineWidth(0.75);
+  doc.setDrawColor(223, 179, 115);
+  doc.setLineWidth(0.8);
   doc.line(14, 33, 283, 33);
 
   doc.setFontSize(10);
@@ -820,7 +820,7 @@ function downloadMasterStatementPDF() {
     head: [['#', 'Investor Name', 'Investment (INR)', 'Investment (USD)', 'Return %', 'Generated Profit', 'Total Value']],
     body: tableRows,
     theme: 'grid',
-    headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
+    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115], fontStyle: 'bold' },
     bodyStyles: { fillColor: [255, 255, 255], textColor: [15, 23, 42] },
     alternateRowStyles: { fillColor: [248, 250, 252] },
     styles: { fontSize: 9, cellPadding: 6 }
@@ -834,7 +834,7 @@ function downloadMasterStatementPDF() {
   doc.save(`Aureus_Capital_Master_Portfolio_Summary.pdf`);
 }
 
-// 3. PAYOUT CONFIRMATION PDF (Matching Image 59505.png Dark Gold Style)
+// 3. PAYOUT CONFIRMATION PDF (Matching Image 59508.jpg AMOLED Dark Gold Style)
 function downloadInvestorPayoutPDF(investorId) {
   const investorsList = investors || [];
   const inv = investorsList.find(item => item.id == investorId);
@@ -854,12 +854,12 @@ function downloadInvestorPayoutPDF(investorId) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  // Premium Dark Gold Background matching image style
+  // Premium Dark AMOLED/Midnight Background matching image 59508.jpg
   doc.setFillColor(7, 11, 20);
   doc.rect(0, 0, 210, 297, 'F');
 
   // Top Header Branding
-  doc.setTextColor(223, 179, 115); // Gold Accent
+  doc.setTextColor(223, 179, 115); // Rich Golden Accent
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.text("AUREUS CAPITAL", 105, 20, { align: 'center' });
@@ -914,7 +914,7 @@ function downloadInvestorPayoutPDF(investorId) {
     doc.text(f.value, 86, y);
   });
 
-  // Success Banner Box at bottom
+  // Success Banner Box at bottom (Matching 59508.jpg tone)
   doc.setFillColor(217, 119, 6);
   doc.roundedRect(25, 168, 160, 24, 3, 3, 'F');
   

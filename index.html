@@ -706,7 +706,7 @@ function togglePayoutStatus(id) {
   }
 }
 
-// 1. STATEMENT PDF (White Background, Clean Banking Layout & Spacing)
+// 1. STATEMENT PDF
 function downloadCustomStatementPDF() {
   const withdrawalUSD = parseFloat(document.getElementById('custom-withdrawal-input').value) || 500;
   const exchangeRate = 88.50;
@@ -766,7 +766,7 @@ function downloadCustomStatementPDF() {
   doc.save(`Aureus_Capital_Withdrawal_${withdrawalUSD}USD.pdf`);
 }
 
-// 2. MASTER SHEET PDF (White Background, Clean Table Layout)
+// 2. MASTER SHEET PDF
 function downloadMasterStatementPDF() {
   const investorsList = investors || [];
   const exchangeRate = 88.50;
@@ -834,7 +834,7 @@ function downloadMasterStatementPDF() {
   doc.save(`Aureus_Capital_Master_Portfolio_Summary.pdf`);
 }
 
-// 3. PAYOUT CONFIRMATION PDF (White Background, Corporate Styling)
+// 3. PAYOUT CONFIRMATION PDF
 function downloadInvestorPayoutPDF(investorId) {
   const investorsList = investors || [];
   const inv = investorsList.find(item => item.id == investorId);

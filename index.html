@@ -25,12 +25,22 @@ body{background:#070B14;color:#F9FAFB;font-family:system-ui,-apple-system,sans-s
 .tier-silver-card{border-left:4px solid #94A3B8}
 .tier-bronze-card{border-left:4px solid #B45309}
 .tier-normal-card{border-left:4px solid #3B82F6}
+
 @keyframes pulseGlow{0%,100%{box-shadow:0 0 20px rgba(223,179,115,.15),inset 0 0 15px rgba(223,179,115,.05)}50%{box-shadow:0 0 35px rgba(223,179,115,.35),inset 0 0 25px rgba(223,179,115,.1)}}
 .animate-pulse-glow{animation:pulseGlow 4s infinite ease-in-out}
+
 @keyframes splashZoom{0%{transform:scale(.75);opacity:0;filter:blur(12px)}50%{transform:scale(1.03);opacity:1;filter:blur(0)}100%{transform:scale(1);opacity:1}}
 .animate-splash{animation:splashZoom 1.2s cubic-bezier(.16,1,.3,1) forwards}
+
 @keyframes loadProgress{0%{width:0}100%{width:100%}}
 .animate-progress{animation:loadProgress 1.8s cubic-bezier(.4,0,.2,1) forwards}
+
+@keyframes fadeInScale{0%{opacity:0;transform:translateY(8px) scale(0.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.tab-fade-in{animation:fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards}
+
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.live-number-pulse{animation:livePulse 2s infinite ease-in-out}
+
 .swipe-card{position:relative;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:transform 0.2s ease;}
 input,textarea{font-size:16px}
 @media(min-width:640px){input,textarea{font-size:13px}}
@@ -73,7 +83,7 @@ input,textarea{font-size:16px}
 
 <main class="max-w-3xl mx-auto px-4 py-5 space-y-4">
   <!-- TAB 1: HOME -->
-  <section id="tab-home" class="space-y-4">
+  <section id="tab-home" class="space-y-4 tab-fade-in">
     <div class="card-box p-5 space-y-4 animate-pulse-glow rounded-2xl">
       <div class="flex justify-between items-start">
         <div>
@@ -95,7 +105,7 @@ input,textarea{font-size:16px}
           </div>
           <div class="mt-1">
             <p class="text-[8px] text-softGrey">Exchange Rate</p>
-            <h3 class="text-xs font-bold text-emeraldLive tabular-nums">INR 88.50</h3>
+            <h3 class="text-xs font-bold text-emeraldLive tabular-nums live-number-pulse">INR 88.50</h3>
           </div>
         </div>
       </div>
@@ -147,7 +157,7 @@ input,textarea{font-size:16px}
   </section>
 
   <!-- TAB 2: INVESTORS -->
-  <section id="tab-investors" class="space-y-4 hidden">
+  <section id="tab-investors" class="space-y-4 hidden tab-fade-in">
     <div class="flex justify-between items-center px-1">
       <div>
         <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">DIRECTORY</p>
@@ -159,14 +169,14 @@ input,textarea{font-size:16px}
       <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       </span>
-      <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name or number" class="w-full card-box rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent">
+      <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name" class="w-full card-box rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent">
     </div>
     <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete</p>
     <div class="space-y-3.5" id="investors-list-container"></div>
   </section>
 
   <!-- TAB 3: SETTLEMENT -->
-  <section id="tab-settlement" class="space-y-4 hidden">
+  <section id="tab-settlement" class="space-y-4 hidden tab-fade-in">
     <div class="flex justify-between items-center px-1 gap-2">
       <div>
         <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">LEDGER</p>
@@ -199,7 +209,7 @@ input,textarea{font-size:16px}
         </button>
       </div>
 
-      <div id="statement-preview-panel" class="hidden bg-midnight p-4 rounded-xl border border-goldAccent/40 space-y-2 text-xs tabular-nums text-softWhite">
+      <div id="statement-preview-panel" class="hidden bg-midnight p-4 rounded-xl border border-goldAccent/40 space-y-2 text-xs tabular-nums text-softWhite transition-all duration-300">
         <div class="border-b border-goldAccent/20 pb-2 mb-2 flex justify-between items-center">
           <span class="font-extrabold text-goldAccent uppercase tracking-wider text-[10px]">Detailed Fee & Tax Breakdown</span>
           <span class="text-[9px] text-emeraldLive font-bold">CA-Compliant</span>
@@ -215,7 +225,7 @@ input,textarea{font-size:16px}
   </section>
 
   <!-- TAB 4: MORE & SETTINGS -->
-  <section id="tab-more" class="space-y-4 hidden">
+  <section id="tab-more" class="space-y-4 hidden tab-fade-in">
     <h2 class="text-base font-bold text-softWhite tracking-tight">More & Settings</h2>
     <p class="text-xs text-softGrey">Admin controls, branding & backups.</p>
 
@@ -679,7 +689,7 @@ function renderSettlementLedger() {
           <button onclick="togglePayoutStatus(${inv.id})" class="px-2.5 py-1 rounded-lg text-[10px] font-black border ${statusClass}">
             ${inv.status || 'Pending'}
           </button>
-          ${isCompleted ? `<button onclick="downloadInvestorStatementPDF('${inv.name}', ${inv.amount}, ${profitINR})" class="px-2.5 py-1 bg-royalBlue text-white text-[10px] font-extrabold rounded-lg active:scale-95 transition shadow-md">Download PDF</button>` : ''}
+          ${isCompleted ? `<button onclick="downloadSpecificInvestorPayoutPDF('${inv.name}', ${inv.amount}, ${profitINR})" class="px-2.5 py-1 bg-royalBlue text-white text-[10px] font-extrabold rounded-lg active:scale-95 transition shadow-md">Download PDF</button>` : ''}
         </div>
       </div>
     `;
@@ -698,10 +708,80 @@ function togglePayoutStatus(id) {
 
 function downloadCustomStatementPDF() {
   let amtUSD = Number(document.getElementById('custom-withdrawal-input')?.value) || 500;
-  downloadInvestorStatementPDF('Custom Client', amtUSD * usdtRate, amtUSD * usdtRate * (cycleReturnPct / 100));
+  let amtINR = amtUSD * usdtRate;
+  let profitINR = amtINR * (cycleReturnPct / 100);
+  downloadInvestorStatementPDF('Custom Client', amtINR, profitINR);
 }
 
+// 1. STATEMENT PDF (Withdrawal Settlement Statement & Fee Breakdown)
 function downloadInvestorStatementPDF(name, capital, profit) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFillColor(7, 11, 20);
+  doc.rect(0, 0, 210, 30, 'F');
+  
+  doc.setTextColor(223, 179, 115);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.text(appName.toUpperCase(), 14, 15);
+  
+  doc.setTextColor(249, 250, 251);
+  doc.setFontSize(8);
+  doc.text("INVEST  •  GROW  •  PROSPER", 14, 22);
+
+  doc.setTextColor(7, 11, 20);
+  doc.setFontSize(13);
+  doc.text("CAPITAL GROWTH - WITHDRAWAL SETTLEMENT STATEMENT", 14, 42);
+  
+  let profitUSD = profit / usdtRate;
+  let amtUSD = capital / usdtRate;
+  let vps = 350, power = 250, gas = 400, testTxn = 100, coindcx = 75, tds = profit * 0.01, vda = profit * 0.312, algo = 150;
+  let totalDeductionsINR = vps + power + gas + testTxn + coindcx + tds + vda + algo;
+  let netINR = profit - totalDeductionsINR;
+  let netUSD = netINR / usdtRate;
+
+  doc.autoTable({
+    startY: 48,
+    head: [['Particulars', 'Detailed Tax & Fee Breakdown']],
+    body: [
+      ['Client Name', name],
+      ['Total Investment (Capital)', 'INR ' + capital.toLocaleString('en-IN') + ' (~$' + amtUSD.toFixed(2) + ')'],
+      ['Monthly Return % (Gold Linked)', cycleReturnPct.toFixed(2) + '%'],
+      ['Request Date', new Date().toLocaleDateString()],
+      ['USD/INR Exchange Rate', 'INR ' + usdtRate.toFixed(2)],
+      ['1. VPS / Cloud Server', '- INR ' + vps.toFixed(2)],
+      ['2. Power & Fiber Net', '- INR ' + power.toFixed(2)],
+      ['3. Blockchain Gas Fee', '- INR ' + gas.toFixed(2)],
+      ['4. Test Transaction Cost', '- INR ' + testTxn.toFixed(2)],
+      ['5. CoinDCX Trading + 18% GST', '- INR ' + coindcx.toFixed(2)],
+      ['6. Government TDS (Sec 194S - 1%)', '- INR ' + tds.toFixed(2)],
+      ['7. VDA Profit Tax (Sec 115BBH - 31.2%)', '- INR ' + vda.toFixed(2)],
+      ['8. Algo Bot Maintenance', '- INR ' + algo.toFixed(2)],
+      ['TOTAL DEDUCTIONS & FEES', '- INR ' + totalDeductionsINR.toFixed(2)],
+      ['FINAL NET PAYOUT (INR)', 'INR ' + netINR.toLocaleString('en-IN', {maximumFractionDigits: 2}) + ' (Credited to Bank)'],
+      ['FINAL NET PAYOUT (USD)', '$' + netUSD.toFixed(2)],
+      ['Transaction ID / Reference', 'TXN-AUREUS-' + Math.floor(100000 + Math.random() * 900000)],
+      ['Payout Status', 'Completed / Verified']
+    ],
+    theme: 'grid',
+    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115] },
+    bodyStyles: { textColor: [20, 20, 20] },
+    didParseCell: function (data) {
+      if (data.row.index >= 5 && data.row.index <= 13) {
+        data.cell.styles.textColor = [185, 28, 28]; // Red
+      } else if (data.row.index >= 14 && data.row.index <= 15) {
+        data.cell.styles.textColor = [16, 185, 129]; // Green
+        data.cell.styles.fontStyle = 'bold';
+      }
+    }
+  });
+
+  doc.save(`${appName.replace(/\s+/g, '_')}_Statement_${name.replace(/\s+/g, '_')}.pdf`);
+}
+
+// 2. PAYOUT CONFIRMATION PDF (Individual Investor Download from Ledger)
+function downloadSpecificInvestorPayoutPDF(name, capital, profit) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
@@ -718,16 +798,8 @@ function downloadInvestorStatementPDF(name, capital, profit) {
   doc.text("LEDGER SUCCESS STATEMENT  |  AUREUS CAPITAL", 14, 25);
 
   let profitUSD = profit / usdtRate;
-  let vpsHostingINR = 350;
-  let powerNetINR = 250;
-  let gasFeeINR = 400;
-  let testTxnINR = 100;
-  let coindcxGstINR = 75;
-  let tds194sINR = profit * 0.01;
-  let vdaTaxINR = profit * 0.312;
-  let algoMaintINR = 150;
-  
-  let totalDeductionsINR = vpsHostingINR + powerNetINR + gasFeeINR + testTxnINR + coindcxGstINR + tds194sINR + vdaTaxINR + algoMaintINR;
+  let vps = 350, power = 250, gas = 400, testTxn = 100, coindcx = 75, tds = profit * 0.01, vda = profit * 0.312, algo = 150;
+  let totalDeductionsINR = vps + power + gas + testTxn + coindcx + tds + vda + algo;
   let netINR = profit - totalDeductionsINR;
   let netUSD = netINR / usdtRate;
 
@@ -741,19 +813,19 @@ function downloadInvestorStatementPDF(name, capital, profit) {
       ['Monthly Return % (Gold Linked)', cycleReturnPct.toFixed(2) + '%'],
       ['Gross Profit Earned ($)', '$' + profitUSD.toFixed(2)],
       ['Gross Profit Value (INR)', 'INR ' + profit.toLocaleString('en-IN', {maximumFractionDigits: 2})],
-      ['1. VPS / Cloud Server', '- INR ' + vpsHostingINR.toFixed(2)],
-      ['2. Power & Fiber Net', '- INR ' + powerNetINR.toFixed(2)],
-      ['3. Blockchain Gas Fee', '- INR ' + gasFeeINR.toFixed(2)],
-      ['4. Test Transaction Cost', '- INR ' + testTxnINR.toFixed(2)],
-      ['5. CoinDCX Trading + 18% GST', '- INR ' + coindcxGstINR.toFixed(2)],
-      ['6. Government TDS (Sec 194S - 1%)', '- INR ' + tds194sINR.toFixed(2)],
-      ['7. VDA Profit Tax (Sec 115BBH - 31.2%)', '- INR ' + vdaTaxINR.toFixed(2)],
-      ['8. Algo Bot Maintenance', '- INR ' + algoMaintINR.toFixed(2)],
-      ['TOTAL DEDUCTIONS & FEES', '- INR ' + totalDeductionsINR.toFixed(2) + ' (-$' + (totalDeductionsINR/usdtRate).toFixed(2) + ')'],
+      ['1. VPS / Cloud Server', '- INR ' + vps.toFixed(2)],
+      ['2. Power & Fiber Net', '- INR ' + power.toFixed(2)],
+      ['3. Blockchain Gas Fee', '- INR ' + gas.toFixed(2)],
+      ['4. Test Transaction Cost', '- INR ' + testTxn.toFixed(2)],
+      ['5. CoinDCX Trading + 18% GST', '- INR ' + coindcx.toFixed(2)],
+      ['6. Government TDS (Sec 194S - 1%)', '- INR ' + tds.toFixed(2)],
+      ['7. VDA Profit Tax (Sec 115BBH - 31.2%)', '- INR ' + vda.toFixed(2)],
+      ['8. Algo Bot Maintenance', '- INR ' + algo.toFixed(2)],
+      ['TOTAL DEDUCTIONS & FEES', '- INR ' + totalDeductionsINR.toFixed(2)],
       ['Net Transferred Amount ($)', '$' + netUSD.toFixed(2)],
       ['Net Transferred Amount (INR)', 'INR ' + netINR.toLocaleString('en-IN', {maximumFractionDigits: 2}) + ' (Sent to Bank)'],
       ['Transfer Date', new Date().toLocaleDateString()],
-      ['Transaction ID / Reference', 'TXN-SMARTAPI-' + Math.floor(100000 + Math.random() * 900000)],
+      ['Transaction ID / Reference', 'TXN-AUREUS-' + Math.floor(100000 + Math.random() * 900000)],
       ['USD/INR Exchange Rate', 'INR ' + usdtRate.toFixed(2)],
       ['Payout Status', 'Completed / Verified']
     ],
@@ -761,24 +833,19 @@ function downloadInvestorStatementPDF(name, capital, profit) {
     headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115] },
     bodyStyles: { textColor: [20, 20, 20] },
     didParseCell: function (data) {
-      if (data.row.index >= 6 && data.row.index <= 14) {
-        data.cell.styles.textColor = [185, 28, 28]; // Red for deductions
-      } else if (data.row.index >= 15 && data.row.index <= 17) {
-        data.cell.styles.textColor = [16, 185, 129]; // Green for net payout
+      if (data.row.index >= 6 && data.row.index <= 13) {
+        data.cell.styles.textColor = [185, 28, 28]; // Red
+      } else if (data.row.index >= 14 && data.row.index <= 15) {
+        data.cell.styles.textColor = [16, 185, 129]; // Green
         data.cell.styles.fontStyle = 'bold';
       }
     }
   });
 
-  let finalY = doc.lastAutoTable.finalY + 10;
-  doc.setFontSize(8);
-  doc.setTextColor(100, 100, 100);
-  doc.text("We appreciate your trust and continued partnership. Payout reflects this month's profit only.", 14, finalY);
-  doc.text("Total investment is shown for reference and is not included in the payout amount.", 14, finalY + 5);
-
   doc.save(`${appName.replace(/\s+/g, '_')}_Payout_Confirmation_${name.replace(/\s+/g, '_')}.pdf`);
 }
 
+// 3. MASTER SHEET PDF (Consolidated List without Phone Number column)
 function downloadMasterStatementPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -797,14 +864,13 @@ function downloadMasterStatementPDF() {
 
   let promoterProfitINR = promoterHolding * (cycleReturnPct / 100);
   let rows = [
-    [managerName + ' (Promoter / Leader)', 'N/A', 'INR ' + promoterHolding.toLocaleString('en-IN'), 'INR ' + promoterProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 2}), 'Active Lead', new Date().toLocaleDateString()]
+    [managerName + ' (Promoter / Leader)', 'INR ' + promoterHolding.toLocaleString('en-IN'), 'INR ' + promoterProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 2}), 'Active Lead', new Date().toLocaleDateString()]
   ];
 
   investors.forEach((inv) => {
     let profitINR = inv.amount * (cycleReturnPct / 100);
     rows.push([
       inv.name,
-      inv.phone || 'N/A',
       'INR ' + inv.amount.toLocaleString('en-IN'),
       'INR ' + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2}),
       inv.status || 'Pending',
@@ -814,17 +880,17 @@ function downloadMasterStatementPDF() {
 
   doc.autoTable({
     startY: 42,
-    head: [['Investor / Member Name', 'Phone Number', 'Capital (INR)', 'Est. Profit (INR)', 'Status', 'Join Date']],
+    head: [['Investor / Member Name', 'Capital (INR)', 'Est. Profit (INR)', 'Status', 'Join Date']],
     body: rows,
     theme: 'grid',
     headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115] },
     didParseCell: function (data) {
-      if (data.column.index === 4) {
+      if (data.column.index === 3) {
         if (data.cell.raw === 'Completed' || data.cell.raw === 'Active Lead') {
-          data.cell.styles.textColor = [16, 185, 129]; // Green
+          data.cell.styles.textColor = [16, 185, 129];
           data.cell.styles.fontStyle = 'bold';
         } else {
-          data.cell.styles.textColor = [217, 119, 6]; // Amber
+          data.cell.styles.textColor = [217, 119, 6];
         }
       }
     },

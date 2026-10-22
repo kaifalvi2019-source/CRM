@@ -63,7 +63,7 @@ input,textarea{font-size:16px}
   </div>
   <div class="flex items-center space-x-2.5">
     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-950/90 text-royalBlue border border-blue-700/50">
-      <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-ping"></span> INR STANDARD
+      <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-ping"></span> ALGO STANDARD
     </span>
     <button onclick="switchTab('more')" class="p-2.5 rounded-xl card-box text-goldAccent hover:text-softWhite transition active:scale-95" title="Settings" aria-label="Settings">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -79,7 +79,7 @@ input,textarea{font-size:16px}
         <div>
           <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Lead Portfolio Manager</p>
           <h2 class="text-xl font-extrabold text-softWhite mt-0.5 tracking-tight" id="display-manager-name">Kaif Alvi</h2>
-          <p class="text-xs text-softGrey mt-0.5 font-medium">Private Pool · INR Standard</p>
+          <p class="text-xs text-softGrey mt-0.5 font-medium">Algo Private Pool · INR Standard</p>
         </div>
         <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/50 tracking-widest">LEAD</span>
       </div>
@@ -554,10 +554,12 @@ function calculateCustomPayout() {
   }
   let amtINR = amtUSD * usdtRate;
   let gasFeeINR = 450;
+  let algoServerINR = 150; // Algo hosting & electricity overhead
+  let totalDeductionINR = gasFeeINR + algoServerINR;
   box.innerHTML = `
     <div class="flex justify-between"><span>Requested Payout:</span><span class="font-bold text-softWhite">$${amtUSD.toLocaleString()} (₹${amtINR.toLocaleString('en-IN', {maximumFractionDigits: 2})})</span></div>
-    <div class="flex justify-between"><span>Network / Gas Fee (Est.):</span><span class="font-bold text-softWhite">₹${gasFeeINR}</span></div>
-    <div class="flex justify-between pt-2 border-t border-goldAccent/20 text-goldAccent font-extrabold text-sm"><span>Net Payout:</span><span>₹${(amtINR - gasFeeINR).toLocaleString('en-IN', {maximumFractionDigits: 2})}</span></div>
+    <div class="flex justify-between"><span>Network Gas & Algo Infra Fee:</span><span class="font-bold text-softWhite">₹${totalDeductionINR}</span></div>
+    <div class="flex justify-between pt-2 border-t border-goldAccent/20 text-goldAccent font-extrabold text-sm"><span>Net Payout:</span><span>₹${(amtINR - totalDeductionINR).toLocaleString('en-IN', {maximumFractionDigits: 2})}</span></div>
   `;
 }
 
@@ -610,7 +612,6 @@ function downloadInvestorStatementPDF(name, capital, profit) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
-  // Professional Header Banner
   doc.setFillColor(7, 11, 20);
   doc.rect(0, 0, 210, 35, 'F');
   
@@ -622,23 +623,29 @@ function downloadInvestorStatementPDF(name, capital, profit) {
   doc.setTextColor(249, 250, 251);
   doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
-  doc.text(appName.toUpperCase() + " | Institutional Private Pool", 14, 24);
+  doc.text(appName.toUpperCase() + " | Algo Institutional Private Pool", 14, 24);
 
   let profitUSD = profit / usdtRate;
+  let algoInfraDeductionINR = 600; // Gas fee + Server electricity & fiber internet overhead
 
   doc.autoTable({
     startY: 42,
-    head: [['Particulars', 'Payout Details']],
+    head: [['Particulars', 'Payout & Infra Details']],
     body: [
       ['Client Name', name],
       ['Total Investment (Capital)', '₹' + capital.toLocaleString('en-IN') + ' (~$' + (capital/usdtRate).toFixed(2) + ')'],
-      ['Monthly Return %', cycleReturnPct.toFixed(2) + '%'],
+      ['Monthly Return % (Algo Strategy)', cycleReturnPct.toFixed(2) + '%'],
       ['Profit Earned ($)', '$' + profitUSD.toFixed(2)],
       ['Profit Value (INR)', '₹' + profit.toLocaleString('en-IN', {maximumFractionDigits: 2})],
-      ['Amount Transferred ($)', '$' + profitUSD.toFixed(2)],
-      ['Amount Transferred (INR)', '₹' + profit.toLocaleString('en-IN', {maximumFractionDigits: 2})],
+      ['Algo Infrastructure & Server Cost', '₹350 (VPS / Cloud Hosting)'],
+      ['Power Backup & High-Speed Internet', '₹250 (Electricity & Fiber Net)'],
+      ['Blockchain Network & Gas Fee', '₹340 – ₹500 (Est.)'],
+      ['Government TDS (Sec 194S)', '1% (Refundable via ITR)'],
+      ['VDA Profit Tax (Sec 115BBH)', '30% + 4% Cess'],
+      ['Amount Transferred ($)', '$' + (profitUSD - (algoInfraDeductionINR/usdtRate)).toFixed(2)],
+      ['Amount Transferred (INR)', '₹' + (profit - algoInfraDeductionINR).toLocaleString('en-IN', {maximumFractionDigits: 2})],
       ['Transfer Date', new Date().toLocaleDateString()],
-      ['Transaction ID / Reference', 'TXN-' + Math.floor(100000 + Math.random() * 900000)],
+      ['Transaction ID / Reference', 'TXN-ALGO-' + Math.floor(100000 + Math.random() * 900000)],
       ['USD/INR Exchange Rate', '₹' + usdtRate.toFixed(2)],
       ['Payout Status', 'Completed / Verified']
     ],

@@ -705,7 +705,6 @@ function downloadInvestorStatementPDF(name, capital, profit) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
-  // Professional Payout Confirmation Template (Matching 59426_2.png)
   doc.setFillColor(7, 11, 20);
   doc.rect(0, 0, 210, 35, 'F');
   
@@ -719,13 +718,22 @@ function downloadInvestorStatementPDF(name, capital, profit) {
   doc.text("LEDGER SUCCESS STATEMENT  |  AUREUS CAPITAL", 14, 25);
 
   let profitUSD = profit / usdtRate;
-  let totalDeductionsINR = 350 + 250 + 400 + 100 + 75 + (profit * 0.01) + (profit * 0.312) + 150;
+  let vpsHostingINR = 350;
+  let powerNetINR = 250;
+  let gasFeeINR = 400;
+  let testTxnINR = 100;
+  let coindcxGstINR = 75;
+  let tds194sINR = profit * 0.01;
+  let vdaTaxINR = profit * 0.312;
+  let algoMaintINR = 150;
+  
+  let totalDeductionsINR = vpsHostingINR + powerNetINR + gasFeeINR + testTxnINR + coindcxGstINR + tds194sINR + vdaTaxINR + algoMaintINR;
   let netINR = profit - totalDeductionsINR;
   let netUSD = netINR / usdtRate;
 
   doc.autoTable({
     startY: 42,
-    head: [['Particulars', 'Ledger & Payout Confirmation Details']],
+    head: [['Particulars', 'Detailed Breakdown & Ledger Details']],
     body: [
       ['Status Message', 'CONGRATULATIONS! Payout successfully verified & processed.'],
       ['Client Name', name],
@@ -733,7 +741,15 @@ function downloadInvestorStatementPDF(name, capital, profit) {
       ['Monthly Return % (Gold Linked)', cycleReturnPct.toFixed(2) + '%'],
       ['Gross Profit Earned ($)', '$' + profitUSD.toFixed(2)],
       ['Gross Profit Value (INR)', 'INR ' + profit.toLocaleString('en-IN', {maximumFractionDigits: 2})],
-      ['Fee Deductions Applied (INR)', 'INR ' + totalDeductionsINR.toFixed(2) + ' (Infra, Gas, TDS & VDA Tax)'],
+      ['1. VPS / Cloud Server', '- INR ' + vpsHostingINR.toFixed(2)],
+      ['2. Power & Fiber Net', '- INR ' + powerNetINR.toFixed(2)],
+      ['3. Blockchain Gas Fee', '- INR ' + gasFeeINR.toFixed(2)],
+      ['4. Test Transaction Cost', '- INR ' + testTxnINR.toFixed(2)],
+      ['5. CoinDCX Trading + 18% GST', '- INR ' + coindcxGstINR.toFixed(2)],
+      ['6. Government TDS (Sec 194S - 1%)', '- INR ' + tds194sINR.toFixed(2)],
+      ['7. VDA Profit Tax (Sec 115BBH - 31.2%)', '- INR ' + vdaTaxINR.toFixed(2)],
+      ['8. Algo Bot Maintenance', '- INR ' + algoMaintINR.toFixed(2)],
+      ['TOTAL DEDUCTIONS & FEES', '- INR ' + totalDeductionsINR.toFixed(2) + ' (-$' + (totalDeductionsINR/usdtRate).toFixed(2) + ')'],
       ['Net Transferred Amount ($)', '$' + netUSD.toFixed(2)],
       ['Net Transferred Amount (INR)', 'INR ' + netINR.toLocaleString('en-IN', {maximumFractionDigits: 2}) + ' (Sent to Bank)'],
       ['Transfer Date', new Date().toLocaleDateString()],
@@ -743,7 +759,15 @@ function downloadInvestorStatementPDF(name, capital, profit) {
     ],
     theme: 'grid',
     headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115] },
-    bodyStyles: { textColor: [20, 20, 20] }
+    bodyStyles: { textColor: [20, 20, 20] },
+    didParseCell: function (data) {
+      if (data.row.index >= 6 && data.row.index <= 14) {
+        data.cell.styles.textColor = [185, 28, 28]; // Red for deductions
+      } else if (data.row.index >= 15 && data.row.index <= 17) {
+        data.cell.styles.textColor = [16, 185, 129]; // Green for net payout
+        data.cell.styles.fontStyle = 'bold';
+      }
+    }
   });
 
   let finalY = doc.lastAutoTable.finalY + 10;
@@ -794,6 +818,16 @@ function downloadMasterStatementPDF() {
     body: rows,
     theme: 'grid',
     headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115] },
+    didParseCell: function (data) {
+      if (data.column.index === 4) {
+        if (data.cell.raw === 'Completed' || data.cell.raw === 'Active Lead') {
+          data.cell.styles.textColor = [16, 185, 129]; // Green
+          data.cell.styles.fontStyle = 'bold';
+        } else {
+          data.cell.styles.textColor = [217, 119, 6]; // Amber
+        }
+      }
+    },
     didDrawPage: function (data) {
       let str = "Page " + doc.internal.getNumberOfPages();
       doc.setFontSize(8);

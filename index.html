@@ -706,7 +706,7 @@ function togglePayoutStatus(id) {
   }
 }
 
-// 1. STATEMENT PDF (1st Function Integrated from your custom code)
+// 1. STATEMENT PDF (White Background, Clean Banking Layout & Spacing)
 function downloadCustomStatementPDF() {
   const withdrawalUSD = parseFloat(document.getElementById('custom-withdrawal-input').value) || 500;
   const exchangeRate = 88.50;
@@ -719,29 +719,32 @@ function downloadCustomStatementPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  doc.setFillColor(7, 11, 20);
+  // White Background
+  doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, 210, 297, 'F');
 
-  doc.setTextColor(223, 179, 115);
+  // Header Styling
+  doc.setTextColor(7, 11, 20);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.text("AUREUS CAPITAL", 14, 20);
 
-  doc.setTextColor(249, 250, 251);
-  doc.setFontSize(12);
-  doc.text("Official Withdrawal Statement", 14, 28);
+  doc.setTextColor(100, 100, 100);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.text("Official Withdrawal Statement & Fee Breakdown", 14, 27);
 
-  doc.setDrawColor(223, 179, 115);
-  doc.setLineWidth(0.5);
-  doc.line(14, 34, 196, 34);
+  doc.setDrawColor(59, 130, 246);
+  doc.setLineWidth(0.8);
+  doc.line(14, 33, 196, 33);
 
   doc.setFontSize(10);
-  doc.setTextColor(156, 163, 175);
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 44);
-  doc.text(`Status: Approved & Verified`, 14, 50);
+  doc.setTextColor(70, 70, 70);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 43);
+  doc.text(`Status: Approved & Verified`, 14, 49);
 
   doc.autoTable({
-    startY: 60,
+    startY: 56,
     head: [['Financial Description', 'Amount (USD)', 'Amount (INR ₹)']],
     body: [
       ['Requested Withdrawal Amount', `$${withdrawalUSD.toFixed(2)}`, `₹${(withdrawalUSD * exchangeRate).toFixed(2)}`],
@@ -750,22 +753,31 @@ function downloadCustomStatementPDF() {
       ['Final Net Payout', `$${netUSD.toFixed(2)}`, `₹${netINR.toFixed(2)}`]
     ],
     theme: 'grid',
-    headStyles: { fillColor: [16, 23, 42], textColor: [223, 179, 115], fontStyle: 'bold' },
-    bodyStyles: { fillColor: [7, 11, 20], textColor: [249, 250, 251] },
-    alternateRowStyles: { fillColor: [12, 18, 32] },
-    styles: { fontSize: 10, cellPadding: 6 }
+    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115], fontStyle: 'bold', cellPadding: 8 },
+    bodyStyles: { fillColor: [255, 255, 255], textColor: [30, 30, 30], cellPadding: 8 },
+    alternateRowStyles: { fillColor: [248, 250, 252] },
+    styles: { fontSize: 10, lineColor: [220, 225, 230], lineWidth: 0.2 },
+    didParseCell: function (data) {
+      if (data.row.index >= 1 && data.row.index <= 2) {
+        data.cell.styles.textColor = [185, 28, 28]; // Red for fees
+      } else if (data.row.index === 3) {
+        data.cell.styles.textColor = [16, 185, 129]; // Green for final payout
+        data.cell.styles.fontStyle = 'bold';
+      }
+    }
   });
 
   const finalY = doc.lastAutoTable.finalY + 15;
   doc.setFontSize(9);
-  doc.setTextColor(156, 163, 175);
+  doc.setTextColor(100, 100, 100);
   doc.text("Note: All deductions, taxes, and fees have been settled as per standard CA guidelines.", 14, finalY);
   doc.text("Funds will reflect in your designated bank account within 24-48 business hours.", 14, finalY + 6);
+  doc.text("This is a computer-generated secure institutional document.", 14, finalY + 14);
 
   doc.save(`Aureus_Capital_Withdrawal_${withdrawalUSD}USD.pdf`);
 }
 
-// 2. MASTER SHEET PDF (2nd Function Integrated from your custom code)
+// 2. MASTER SHEET PDF (White Background, Clean Table Layout)
 function downloadMasterStatementPDF() {
   const investorsList = investors || [];
   const exchangeRate = 88.50;
@@ -774,26 +786,28 @@ function downloadMasterStatementPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('landscape');
 
-  doc.setFillColor(7, 11, 20);
+  // White Background
+  doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, 297, 210, 'F');
 
-  doc.setTextColor(223, 179, 115);
+  doc.setTextColor(7, 11, 20);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.text("AUREUS CAPITAL", 14, 20);
 
-  doc.setTextColor(249, 250, 251);
-  doc.setFontSize(12);
-  doc.text("Master Investor Portfolio & Return Summary", 14, 28);
+  doc.setTextColor(100, 100, 100);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.text("Master Investor Portfolio & Return Summary", 14, 27);
 
-  doc.setDrawColor(223, 179, 115);
-  doc.setLineWidth(0.5);
-  doc.line(14, 34, 283, 34);
+  doc.setDrawColor(59, 130, 246);
+  doc.setLineWidth(0.8);
+  doc.line(14, 33, 283, 33);
 
   doc.setFontSize(10);
-  doc.setTextColor(156, 163, 175);
+  doc.setTextColor(70, 70, 70);
   doc.text(`Report Date: ${new Date().toLocaleDateString()}`, 14, 42);
-  doc.text(`Active Return Rate: ${returnPct}%`, 100, 42);
+  doc.text(`Active Return Rate: ${returnPct.toFixed(2)}%`, 100, 42);
 
   const tableRows = investorsList.map((inv, index) => {
     const capINR = parseFloat(inv.amount) || 0;
@@ -808,32 +822,32 @@ function downloadMasterStatementPDF() {
       inv.name || "N/A",
       `₹${capINR.toLocaleString('en-IN')}`,
       `$${capUSD.toFixed(2)}`,
-      `${returnPct}%`,
+      `${returnPct.toFixed(2)}%`,
       `$${profitUSD.toFixed(2)} (₹${profitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})})`,
       `$${totalValUSD.toFixed(2)} (₹${totalValINR.toLocaleString('en-IN', {maximumFractionDigits: 0})})`
     ];
   });
 
   doc.autoTable({
-    startY: 50,
+    startY: 48,
     head: [['#', 'Investor Name', 'Investment (INR)', 'Investment (USD)', 'Return %', 'Generated Profit', 'Total Value']],
     body: tableRows,
     theme: 'grid',
-    headStyles: { fillColor: [16, 23, 42], textColor: [223, 179, 115], fontStyle: 'bold' },
-    bodyStyles: { fillColor: [7, 11, 20], textColor: [249, 250, 251] },
-    alternateRowStyles: { fillColor: [12, 18, 32] },
-    styles: { fontSize: 9, cellPadding: 5 }
+    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115], fontStyle: 'bold', cellPadding: 7 },
+    bodyStyles: { fillColor: [255, 255, 255], textColor: [30, 30, 30], cellPadding: 7 },
+    alternateRowStyles: { fillColor: [248, 250, 252] },
+    styles: { fontSize: 9, lineColor: [220, 225, 230], lineWidth: 0.2 }
   });
 
   const finalY = doc.lastAutoTable.finalY + 15;
   doc.setFontSize(9);
-  doc.setTextColor(156, 163, 175);
+  doc.setTextColor(100, 100, 100);
   doc.text("Confidential - For Internal Management & Institutional Compliance Use Only.", 14, finalY);
 
   doc.save(`Aureus_Capital_Master_Portfolio_Summary.pdf`);
 }
 
-// 3. PAYOUT CONFIRMATION PDF (3rd Function Integrated from your custom code)
+// 3. PAYOUT CONFIRMATION PDF (White Background, Corporate Styling)
 function downloadInvestorPayoutPDF(investorId) {
   const investorsList = investors || [];
   const inv = investorsList.find(item => item.id == investorId);
@@ -855,46 +869,51 @@ function downloadInvestorPayoutPDF(investorId) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  doc.setFillColor(7, 11, 20);
+  // White Background
+  doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, 210, 297, 'F');
 
-  doc.setTextColor(223, 179, 115);
+  doc.setTextColor(7, 11, 20);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(18);
   doc.text("AUREUS CAPITAL", 14, 20);
 
-  doc.setTextColor(249, 250, 251);
+  doc.setTextColor(100, 100, 100);
+  doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
   doc.text("Official Payout Confirmation & Statement", 14, 27);
 
-  doc.setDrawColor(223, 179, 115);
-  doc.setLineWidth(0.5);
+  doc.setDrawColor(59, 130, 246);
+  doc.setLineWidth(0.8);
   doc.line(14, 33, 196, 33);
 
-  // Congratulatory & Thank You Banner Box
-  doc.setFillColor(16, 23, 42);
-  doc.roundedRect(14, 40, 182, 22, 3, 3, 'F');
+  // Success Banner Box
+  doc.setFillColor(240, 253, 244);
+  doc.setDrawColor(187, 247, 208);
+  doc.roundedRect(14, 38, 182, 20, 3, 3, 'FD');
   doc.setTextColor(16, 185, 129);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
-  doc.text("🎉 CONGRATULATIONS! PAYOUT SUCCESSFULLY PROCESSED", 20, 48);
-  doc.setTextColor(156, 163, 175);
+  doc.text("✔ CONGRATULATIONS! PAYOUT SUCCESSFULLY PROCESSED", 20, 46);
+  doc.setTextColor(80, 120, 100);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
-  doc.text("Thank you for your continued trust and partnership with Aureus Capital.", 20, 56);
+  doc.text("Thank you for your continued trust and partnership with Aureus Capital.", 20, 53);
 
   doc.setFontSize(10);
-  doc.setTextColor(223, 179, 115);
-  doc.text("Investor Profile Details:", 14, 72);
+  doc.setTextColor(7, 11, 20);
+  doc.setFont("helvetica", "bold");
+  doc.text("Investor Profile Details:", 14, 68);
   
-  doc.setTextColor(249, 250, 251);
-  doc.text(`Investor Name: ${inv.name || "N/A"}`, 14, 80);
-  doc.text(`Tier Level: Standard`, 14, 86);
-  doc.text(`Statement Date: ${new Date().toLocaleDateString()}`, 130, 80);
-  doc.text(`Status: Verified & Approved`, 130, 86);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(60, 60, 60);
+  doc.text(`Investor Name: ${inv.name || "N/A"}`, 14, 76);
+  doc.text(`Tier Level: Standard`, 14, 82);
+  doc.text(`Statement Date: ${new Date().toLocaleDateString()}`, 130, 76);
+  doc.text(`Status: Verified & Approved`, 130, 82);
 
   doc.autoTable({
-    startY: 96,
+    startY: 90,
     head: [['Financial Metric Description', 'Amount (USD)', 'Amount (INR ₹)']],
     body: [
       ['Total Principal Capital Investment', `$${capUSD.toFixed(2)}`, `₹${capINR.toLocaleString('en-IN')}`],
@@ -903,15 +922,21 @@ function downloadInvestorPayoutPDF(investorId) {
       ['Total Value / Payout Creditable', `$${totalPayoutUSD.toFixed(2)}`, `₹${totalPayoutINR.toLocaleString('en-IN', {maximumFractionDigits: 0})}`]
     ],
     theme: 'grid',
-    headStyles: { fillColor: [16, 23, 42], textColor: [223, 179, 115], fontStyle: 'bold' },
-    bodyStyles: { fillColor: [7, 11, 20], textColor: [249, 250, 251] },
-    alternateRowStyles: { fillColor: [12, 18, 32] },
-    styles: { fontSize: 9, cellPadding: 6 }
+    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115], fontStyle: 'bold', cellPadding: 8 },
+    bodyStyles: { fillColor: [255, 255, 255], textColor: [30, 30, 30], cellPadding: 8 },
+    alternateRowStyles: { fillColor: [248, 250, 252] },
+    styles: { fontSize: 10, lineColor: [220, 225, 230], lineWidth: 0.2 },
+    didParseCell: function (data) {
+      if (data.row.index === 3) {
+        data.cell.styles.textColor = [16, 185, 129]; // Green for payout total
+        data.cell.styles.fontStyle = 'bold';
+      }
+    }
   });
 
   const finalY = doc.lastAutoTable.finalY + 15;
   doc.setFontSize(9);
-  doc.setTextColor(156, 163, 175);
+  doc.setTextColor(100, 100, 100);
   doc.text("Note: The total computed INR payout has been cleared for transfer to your designated", 14, finalY);
   doc.text("bank account. Please allow 24-48 business hours for final bank settlement.", 14, finalY + 5);
   doc.text("This is a computer-generated secure document and requires no physical signature.", 14, finalY + 14);

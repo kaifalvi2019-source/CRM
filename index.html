@@ -301,7 +301,7 @@ input,textarea{font-size:16px}
     <div class="space-y-3 text-xs">
       <div>
         <label class="block text-softGrey mb-1 font-semibold" for="modal-name">Investor Name *</label>
-        <input type="text" id="modal-name" placeholder="Enter name" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
+        <input type="text" id="modal-name" placeholder="Enter full name" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
       </div>
       <div>
         <label class="block text-softGrey mb-1 font-semibold" for="modal-phone">Phone Number</label>
@@ -456,7 +456,7 @@ function renderInvestors() {
   container.innerHTML = '';
 
   let sorted = [...investors].sort((a, b) => b.amount - a.amount);
-  let filtered = sorted.filter(inv => inv.name.toLowerCase().includes(searchQuery) || (inv.phone && inv.phone.includes(searchQuery)));
+  let filtered = sorted.filter(inv => String(inv.name).toLowerCase().includes(searchQuery) || (inv.phone && inv.phone.includes(searchQuery)));
 
   if(filtered.length === 0) {
     container.innerHTML = '<div class="card-box p-6 text-center text-xs text-softGrey rounded-2xl">No investors found. Click "+ Add" to create one.</div>';
@@ -598,6 +598,24 @@ function selectPresetAmount(amtUSD) {
   }
 }
 
+/* ---------- SHARED PAYOUT MATH (used by calculator + statement PDF) ---------- */
+function computePayout(amtUSD) {
+  const amtINR = amtUSD * usdtRate;
+  const items = [
+    { label: 'VPS / Cloud Server', inr: 350 },
+    { label: 'Power & Fiber Net', inr: 250 },
+    { label: 'Blockchain Gas Fee', inr: 400 },
+    { label: 'Test Transaction Cost', inr: 100 },
+    { label: 'CoinDCX Trading + 18% GST', inr: 75 },
+    { label: 'Government TDS (1%)', inr: amtINR * 0.01 },
+    { label: 'VDA Profit Tax (31.2%)', inr: amtINR * 0.312 },
+    { label: 'Algo Bot Maintenance', inr: 150 }
+  ];
+  const totalINR = items.reduce((s, i) => s + i.inr, 0);
+  const netINR = amtINR - totalINR;
+  return { amtUSD, amtINR, items, totalINR, netINR, netUSD: netINR / usdtRate };
+}
+
 function calculateCustomPayout() {
   let amtUSD = Number(document.getElementById('custom-withdrawal-input')?.value) || 0;
   let box = document.getElementById('calculator-result-box');
@@ -610,40 +628,20 @@ function calculateCustomPayout() {
     return;
   }
 
-  let amtINR = amtUSD * usdtRate;
-  
-  let vpsHostingINR = 350;     
-  let powerNetINR = 250;      
-  let gasFeeINR = 400;        
-  let testTxnINR = 100;       
-  let coindcxGstINR = 75;     
-  let tds194sINR = amtINR * 0.01; 
-  let vdaTaxINR = amtINR * 0.312; 
-  let algoMaintINR = 150;     
-  
-  let totalDeductionsINR = vpsHostingINR + powerNetINR + gasFeeINR + testTxnINR + coindcxGstINR + tds194sINR + vdaTaxINR + algoMaintINR;
-  let netPayoutINR = amtINR - totalDeductionsINR;
-  let netPayoutUSD = netPayoutINR / usdtRate;
+  const p = computePayout(amtUSD);
+  const f2 = {maximumFractionDigits: 2};
 
   box.innerHTML = `
-    <div class="flex justify-between"><span>Requested Payout:</span><span class="font-bold text-softWhite">$${amtUSD.toLocaleString()} (INR ${amtINR.toLocaleString('en-IN', {maximumFractionDigits: 2})})</span></div>
-    <div class="flex justify-between"><span>Total Deductions (8 Fees & Taxes):</span><span class="font-bold text-red-400">- INR ${totalDeductionsINR.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span></div>
-    <div class="flex justify-between pt-2 border-t border-goldAccent/20 text-goldAccent font-extrabold text-sm"><span>Net Payout:</span><span>$${netPayoutUSD.toFixed(2)} (INR ${netPayoutINR.toLocaleString('en-IN', {maximumFractionDigits: 2})})</span></div>
+    <div class="flex justify-between"><span>Requested Payout:</span><span class="font-bold text-softWhite">$${amtUSD.toLocaleString()} (INR ${p.amtINR.toLocaleString('en-IN', f2)})</span></div>
+    <div class="flex justify-between"><span>Total Deductions (8 Fees & Taxes):</span><span class="font-bold text-red-400">- INR ${p.totalINR.toLocaleString('en-IN', f2)}</span></div>
+    <div class="flex justify-between pt-2 border-t border-goldAccent/20 text-goldAccent font-extrabold text-sm"><span>Net Payout:</span><span>$${p.netUSD.toFixed(2)} (INR ${p.netINR.toLocaleString('en-IN', f2)})</span></div>
   `;
 
   if(panelContent) {
-    panelContent.innerHTML = `
-      <div class="flex justify-between text-softGrey"><span>Requested Amount:</span><span>$${amtUSD} (INR ${amtINR.toLocaleString('en-IN', {maximumFractionDigits: 2})})</span></div>
-      <div class="flex justify-between text-softGrey"><span>1. VPS / Cloud Server:</span><span>- INR ${vpsHostingINR}</span></div>
-      <div class="flex justify-between text-softGrey"><span>2. Power & Fiber Net:</span><span>- INR ${powerNetINR}</span></div>
-      <div class="flex justify-between text-softGrey"><span>3. Blockchain Gas Fee:</span><span>- INR ${gasFeeINR}</span></div>
-      <div class="flex justify-between text-softGrey"><span>4. Test Transaction Cost:</span><span>- INR ${testTxnINR}</span></div>
-      <div class="flex justify-between text-softGrey"><span>5. CoinDCX Trading + 18% GST:</span><span>- INR ${coindcxGstINR}</span></div>
-      <div class="flex justify-between text-softGrey"><span>6. Government TDS (1%):</span><span>- INR ${tds194sINR.toFixed(2)}</span></div>
-      <div class="flex justify-between text-softGrey"><span>7. VDA Profit Tax (31.2%):</span><span>- INR ${vdaTaxINR.toFixed(2)}</span></div>
-      <div class="flex justify-between text-softGrey"><span>8. Algo Bot Maintenance:</span><span>- INR ${algoMaintINR}</span></div>
-      <div class="flex justify-between pt-2 border-t border-goldAccent/30 font-bold text-emeraldLive"><span>Final Net Payout:</span><span>$${netPayoutUSD.toFixed(2)} &nbsp;|&nbsp; INR ${netPayoutINR.toLocaleString('en-IN', {maximumFractionDigits: 2})}</span></div>
-    `;
+    panelContent.innerHTML =
+      `<div class="flex justify-between text-softGrey"><span>Requested Amount:</span><span>$${amtUSD} (INR ${p.amtINR.toLocaleString('en-IN', f2)})</span></div>` +
+      p.items.map((it, i) => `<div class="flex justify-between text-softGrey"><span>${i + 1}. ${it.label}:</span><span>- INR ${it.inr.toLocaleString('en-IN', f2)}</span></div>`).join('') +
+      `<div class="flex justify-between pt-2 border-t border-goldAccent/30 font-bold text-emeraldLive"><span>Final Net Payout:</span><span>$${p.netUSD.toFixed(2)} &nbsp;|&nbsp; INR ${p.netINR.toLocaleString('en-IN', f2)}</span></div>`;
   }
 }
 
@@ -706,247 +704,351 @@ function togglePayoutStatus(id) {
   }
 }
 
-// 1. STATEMENT PDF (Clean White Theme with Golden/Blue Accents)
-function downloadCustomStatementPDF() {
-  const withdrawalUSD = parseFloat(document.getElementById('custom-withdrawal-input').value) || 500;
-  const exchangeRate = 88.50;
-  
-  const platformFeeUSD = withdrawalUSD * 0.015;
-  const withholdingTaxUSD = withdrawalUSD * 0.01;
-  const netUSD = withdrawalUSD - platformFeeUSD - withholdingTaxUSD;
-  const netINR = netUSD * exchangeRate;
+/* =====================================================================
+   PROFESSIONAL PDF TEMPLATES
+   Common look: white page, navy top bar, gold rule, clean tables,
+   reference number, disclaimer footer with page numbers.
+   (Uses "INR" instead of the rupee sign because jsPDF's built-in fonts
+   cannot render it.)
+   ===================================================================== */
+const PDF_NAVY = [16, 23, 42];
+const PDF_GOLD = [176, 132, 62];
+const PDF_GREY = [100, 116, 139];
+const PDF_INK  = [15, 23, 42];
+const PDF_LIGHT = [247, 249, 252];
+const PDF_LINE = [226, 232, 240];
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  doc.setFillColor(255, 255, 255);
-  doc.rect(0, 0, 210, 297, 'F');
-
-  doc.setTextColor(30, 41, 59);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
-  doc.text("AUREUS CAPITAL", 14, 20);
-
-  doc.setFontSize(11);
-  doc.setTextColor(100, 116, 139);
-  doc.text("Official Withdrawal Statement & Fee Breakdown", 14, 27);
-
-  doc.setDrawColor(223, 179, 115); // Golden accent line
-  doc.setLineWidth(0.8);
-  doc.line(14, 33, 196, 33);
-
-  doc.setFontSize(10);
-  doc.setTextColor(71, 85, 105);
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 43);
-  doc.text(`Status: Approved & Verified`, 14, 49);
-
-  doc.autoTable({
-    startY: 56,
-    head: [['Financial Description', 'Amount (USD)', 'Amount (INR)']],
-    body: [
-      ['Requested Withdrawal Amount', `$${withdrawalUSD.toFixed(2)}`, `Rs. ${(withdrawalUSD * exchangeRate).toFixed(2)}`],
-      ['Platform Processing Fee (1.5%)', `-$${platformFeeUSD.toFixed(2)}`, `-Rs. ${(platformFeeUSD * exchangeRate).toFixed(2)}`],
-      ['Withholding Tax & Compliance (1%)', `-$${withholdingTaxUSD.toFixed(2)}`, `-Rs. ${(withholdingTaxUSD * exchangeRate).toFixed(2)}`],
-      ['Final Net Payout', `$${netUSD.toFixed(2)}`, `Rs. ${netINR.toFixed(2)}`]
-    ],
-    theme: 'grid',
-    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115], fontStyle: 'bold', halign: 'left' },
-    bodyStyles: { fillColor: [255, 255, 255], textColor: [15, 23, 42] },
-    alternateRowStyles: { fillColor: [248, 250, 252] },
-    styles: { fontSize: 10, cellPadding: 7 }
-  });
-
-  const finalY = doc.lastAutoTable.finalY + 15;
-  doc.setFontSize(9);
-  doc.setTextColor(100, 116, 139);
-  doc.text("Note: All deductions, taxes, and fees have been settled as per standard CA guidelines.", 14, finalY);
-  doc.text("Funds will reflect in your designated bank account within 24-48 business hours.", 14, finalY + 6);
-  doc.text("This is a computer-generated secure institutional document.", 14, finalY + 12);
-
-  doc.save(`Aureus_Capital_Withdrawal_${withdrawalUSD}USD.pdf`);
+function pdfInr(n) {
+  return 'INR ' + Number(n || 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+function pdfUsd(n) {
+  return '$' + Number(n || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+function pdfDate(d) {
+  d = d ? new Date(d) : new Date();
+  if (isNaN(d)) d = new Date();
+  return d.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
+}
+function pdfRef(prefix) {
+  const d = new Date();
+  const ymd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  return `${prefix}-${ymd}-${String(Date.now()).slice(-4)}`;
 }
 
-// 2. MASTER SHEET PDF (Clean White Theme with Golden Accents)
+function pdfHeader(doc, W, title, ref) {
+  doc.setFillColor(...PDF_NAVY);
+  doc.rect(0, 0, W, 7, 'F');
+  doc.setFillColor(...PDF_GOLD);
+  doc.rect(0, 7, W, 1, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor(...PDF_NAVY);
+  doc.text(appName.toUpperCase(), 14, 24);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...PDF_GREY);
+  doc.text('Institutional Private Pool', 14, 30);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(...PDF_GOLD);
+  doc.text(title, W - 14, 22, {align: 'right'});
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...PDF_GREY);
+  doc.text('Ref: ' + ref, W - 14, 28, {align: 'right'});
+  doc.text('Date: ' + pdfDate(), W - 14, 33, {align: 'right'});
+
+  doc.setDrawColor(...PDF_LINE);
+  doc.setLineWidth(0.4);
+  doc.line(14, 38, W - 14, 38);
+}
+
+function pdfFooters(doc, W, H) {
+  const n = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= n; i++) {
+    doc.setPage(i);
+    doc.setDrawColor(...PDF_LINE);
+    doc.setLineWidth(0.4);
+    doc.line(14, H - 20, W - 14, H - 20);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...PDF_GREY);
+    doc.text('Returns are variable, depend on market performance and are not guaranteed. This is a computer-generated document and does not require a signature.', 14, H - 14);
+    doc.text(`${appName}  |  Confidential`, 14, H - 9);
+    doc.text(`Page ${i} of ${n}`, W - 14, H - 9, {align: 'right'});
+  }
+}
+
+function pdfSectionLabel(doc, text, x, y) {
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...PDF_GOLD);
+  doc.text(text.toUpperCase(), x, y);
+}
+
+/* 1. WITHDRAWAL STATEMENT (portrait) */
+function downloadCustomStatementPDF() {
+  const amt = parseFloat(document.getElementById('custom-withdrawal-input').value) || 0;
+  if (amt <= 0) { alert('Please enter a withdrawal amount first.'); return; }
+
+  const p = computePayout(amt);
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const W = 210, H = 297;
+  const ref = pdfRef('WS');
+
+  pdfHeader(doc, W, 'WITHDRAWAL STATEMENT', ref);
+
+  // Meta block
+  pdfSectionLabel(doc, 'Statement Details', 14, 48);
+  doc.autoTable({
+    startY: 51,
+    theme: 'plain',
+    body: [
+      ['Statement Date', pdfDate(), 'Exchange Rate (USDT/INR)', 'INR ' + usdtRate.toFixed(2)],
+      ['Reference No.', ref, 'Settlement Currency', 'USD / INR']
+    ],
+    styles: { fontSize: 9, cellPadding: {top: 2, bottom: 2, left: 0, right: 4}, textColor: PDF_INK },
+    columnStyles: {
+      0: { textColor: PDF_GREY, cellWidth: 32 },
+      1: { fontStyle: 'bold', cellWidth: 55 },
+      2: { textColor: PDF_GREY, cellWidth: 46 },
+      3: { fontStyle: 'bold' }
+    }
+  });
+
+  // Breakdown
+  let y = doc.lastAutoTable.finalY + 8;
+  pdfSectionLabel(doc, 'Fee & Tax Breakdown', 14, y);
+
+  const body = [[
+    { content: 'Requested withdrawal amount', colSpan: 2, styles: {fontStyle: 'bold'} },
+    { content: pdfUsd(p.amtUSD), styles: {fontStyle: 'bold', halign: 'right'} },
+    { content: pdfInr(p.amtINR), styles: {fontStyle: 'bold', halign: 'right'} }
+  ]];
+  p.items.forEach((it, i) => {
+    body.push([String(i + 1), it.label, { content: '- ' + pdfUsd(it.inr / usdtRate), styles: {halign: 'right'} }, { content: '- ' + pdfInr(it.inr), styles: {halign: 'right'} }]);
+  });
+
+  doc.autoTable({
+    startY: y + 3,
+    head: [['#', 'Description', 'Amount (USD)', 'Amount (INR)']],
+    body: body,
+    foot: [[
+      { content: 'Total deductions', colSpan: 2 },
+      { content: '- ' + pdfUsd(p.totalINR / usdtRate), styles: {halign: 'right'} },
+      { content: '- ' + pdfInr(p.totalINR), styles: {halign: 'right'} }
+    ]],
+    theme: 'plain',
+    headStyles: { fillColor: PDF_NAVY, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },
+    footStyles: { fillColor: PDF_LIGHT, textColor: PDF_INK, fontStyle: 'bold', fontSize: 9.5 },
+    bodyStyles: { textColor: PDF_INK, fontSize: 9.5, lineColor: PDF_LINE, lineWidth: {bottom: 0.3} },
+    styles: { cellPadding: {top: 4.5, bottom: 4.5, left: 4, right: 4} },
+    columnStyles: { 0: {cellWidth: 12}, 1: {cellWidth: 'auto'}, 2: {cellWidth: 38, halign: 'right'}, 3: {cellWidth: 44, halign: 'right'} },
+    didParseCell: (d) => { if (d.section === 'head' && d.column.index >= 2) d.cell.styles.halign = 'right'; }
+  });
+
+  // Net payout box
+  y = doc.lastAutoTable.finalY + 10;
+  doc.setFillColor(...PDF_NAVY);
+  doc.roundedRect(14, y, W - 28, 28, 2, 2, 'F');
+  doc.setFillColor(...PDF_GOLD);
+  doc.rect(14, y, 2.5, 28, 'F');
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(200, 208, 222);
+  doc.text('NET PAYOUT', 24, y + 10);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.setTextColor(255, 255, 255);
+  doc.text(pdfUsd(p.netUSD), 24, y + 21);
+  doc.setFontSize(12);
+  doc.setTextColor(232, 196, 130);
+  doc.text(pdfInr(p.netINR), W - 20, y + 21, {align: 'right'});
+
+  // Notes
+  y += 40;
+  pdfSectionLabel(doc, 'Notes', 14, y);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(...PDF_GREY);
+  const notes = [
+    '1. Deductions are calculated at the exchange rate stated above on the statement date.',
+    '2. Taxes shown (TDS and VDA tax) are indicative; final liability is as per applicable Indian tax law.',
+    '3. Funds are typically credited to the registered bank account within 24-48 business hours of processing.'
+  ];
+  notes.forEach((t, i) => doc.text(t, 14, y + 7 + i * 6));
+
+  pdfFooters(doc, W, H);
+  doc.save(`${appName.replace(/\s+/g, '_')}_Withdrawal_Statement_${amt}USD.pdf`);
+}
+
+/* 2. MASTER PORTFOLIO LEDGER (landscape) */
 function downloadMasterStatementPDF() {
-  const investorsList = investors || [];
-  const exchangeRate = 88.50;
-  const returnPct = cycleReturnPct;
+  const list = investors || [];
+  if (list.length === 0) { alert('Add at least one investor first.'); return; }
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('landscape');
+  const W = 297, H = 210;
+  const rate = usdtRate;
+  const ret = cycleReturnPct;
+  const ref = pdfRef('ML');
 
-  doc.setFillColor(255, 255, 255);
-  doc.rect(0, 0, 297, 210, 'F');
+  pdfHeader(doc, W, 'MASTER PORTFOLIO LEDGER', ref);
 
-  doc.setTextColor(30, 41, 59);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
-  doc.text("AUREUS CAPITAL", 14, 20);
+  const rows = list.map((inv, i) => {
+    const capINR = Number(inv.amount) || 0;
+    const profitINR = capINR * (ret / 100);
+    return { i: i + 1, name: String(inv.name || 'N/A'), date: pdfDate(inv.date), capINR, capUSD: capINR / rate, profitINR, profitUSD: profitINR / rate, totalINR: capINR + profitINR, status: inv.status || 'Pending' };
+  });
+  const sum = (k) => rows.reduce((s, r) => s + r[k], 0);
+  const totCap = sum('capINR'), totProfit = sum('profitINR');
 
-  doc.setFontSize(11);
-  doc.setTextColor(100, 116, 139);
-  doc.text("Master Investor Portfolio & Return Summary Ledger", 14, 27);
-
-  doc.setDrawColor(223, 179, 115);
-  doc.setLineWidth(0.8);
-  doc.line(14, 33, 283, 33);
-
-  doc.setFontSize(10);
-  doc.setTextColor(71, 85, 105);
-  doc.text(`Report Date: ${new Date().toLocaleDateString()}`, 14, 43);
-  doc.text(`Active Return Rate: ${returnPct.toFixed(2)}%`, 100, 43);
-
-  const tableRows = investorsList.map((inv, index) => {
-    const capINR = parseFloat(inv.amount) || 0;
-    const capUSD = capINR / exchangeRate;
-    const profitINR = capINR * (returnPct / 100);
-    const profitUSD = capUSD * (returnPct / 100);
-    const totalValINR = capINR + profitINR;
-    const totalValUSD = capUSD + profitUSD;
-
-    return [
-      index + 1,
-      inv.name || "N/A",
-      `Rs. ${capINR.toLocaleString('en-IN')}`,
-      `$${capUSD.toFixed(2)}`,
-      `${returnPct.toFixed(2)}%`,
-      `$${profitUSD.toFixed(2)} (Rs. ${profitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})})`,
-      `$${totalValUSD.toFixed(2)} (Rs. ${totalValINR.toLocaleString('en-IN', {maximumFractionDigits: 0})})`
-    ];
+  // Summary tiles
+  const tiles = [
+    ['Investors', String(rows.length)],
+    ['Total Capital', pdfInr(totCap)],
+    ['Cycle Return Rate', ret.toFixed(2) + '%'],
+    ['Cycle Profit', pdfInr(totProfit)]
+  ];
+  const tileW = (W - 28 - 9) / 4;
+  tiles.forEach((t, i) => {
+    const x = 14 + i * (tileW + 3);
+    doc.setFillColor(...PDF_LIGHT);
+    doc.setDrawColor(...PDF_LINE);
+    doc.roundedRect(x, 44, tileW, 18, 1.5, 1.5, 'FD');
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(...PDF_GREY);
+    doc.text(t[0].toUpperCase(), x + 4, 51);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.setTextColor(...PDF_NAVY);
+    doc.text(t[1], x + 4, 58);
   });
 
   doc.autoTable({
-    startY: 50,
-    head: [['#', 'Investor Name', 'Investment (INR)', 'Investment (USD)', 'Return %', 'Generated Profit', 'Total Value']],
-    body: tableRows,
-    theme: 'grid',
-    headStyles: { fillColor: [7, 11, 20], textColor: [223, 179, 115], fontStyle: 'bold' },
-    bodyStyles: { fillColor: [255, 255, 255], textColor: [15, 23, 42] },
-    alternateRowStyles: { fillColor: [248, 250, 252] },
-    styles: { fontSize: 9, cellPadding: 6 }
+    startY: 68,
+    head: [['#', 'Investor', 'Joined', 'Capital (INR)', 'Capital (USD)', 'Return', 'Profit (INR)', 'Profit (USD)', 'Total Value (INR)', 'Payout']],
+    body: rows.map(r => [r.i, r.name, r.date, pdfInr(r.capINR), pdfUsd(r.capUSD), ret.toFixed(2) + '%', pdfInr(r.profitINR), pdfUsd(r.profitUSD), pdfInr(r.totalINR), r.status]),
+    foot: [['', 'Total', '', pdfInr(totCap), pdfUsd(totCap / rate), '', pdfInr(totProfit), pdfUsd(totProfit / rate), pdfInr(totCap + totProfit), '']],
+    theme: 'plain',
+    headStyles: { fillColor: PDF_NAVY, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
+    footStyles: { fillColor: PDF_LIGHT, textColor: PDF_INK, fontStyle: 'bold', fontSize: 8.5 },
+    bodyStyles: { textColor: PDF_INK, fontSize: 8.5, lineColor: PDF_LINE, lineWidth: {bottom: 0.3} },
+    styles: { cellPadding: {top: 3.5, bottom: 3.5, left: 3, right: 3} },
+    columnStyles: {
+      0: {cellWidth: 9}, 3: {halign: 'right'}, 4: {halign: 'right'}, 5: {halign: 'right'},
+      6: {halign: 'right'}, 7: {halign: 'right'}, 8: {halign: 'right'}, 9: {halign: 'center'}
+    },
+    didParseCell: (d) => {
+      if ((d.section === 'head' || d.section === 'foot') && [3, 4, 5, 6, 7, 8].includes(d.column.index)) d.cell.styles.halign = 'right';
+      if (d.section === 'head' && d.column.index === 9) d.cell.styles.halign = 'center';
+      if (d.section === 'foot' && d.column.index === 9) d.cell.styles.halign = 'center';
+    },
+    margin: { left: 14, right: 14, bottom: 24 }
   });
 
-  const finalY = doc.lastAutoTable.finalY + 15;
-  doc.setFontSize(9);
-  doc.setTextColor(100, 116, 139);
-  doc.text("Confidential - For Internal Management & Institutional Compliance Use Only.", 14, finalY);
-
-  doc.save(`Aureus_Capital_Master_Portfolio_Summary.pdf`);
+  pdfFooters(doc, W, H);
+  doc.save(`${appName.replace(/\s+/g, '_')}_Master_Portfolio_Ledger.pdf`);
 }
 
-// 3. PAYOUT CONFIRMATION PDF (Matching Image 59508.jpg AMOLED Dark Gold Style)
+/* 3. INVESTOR PAYOUT ADVICE (portrait) */
 function downloadInvestorPayoutPDF(investorId) {
-  const investorsList = investors || [];
-  const inv = investorsList.find(item => item.id == investorId);
-  if (!inv) {
-    alert("Investor not found!");
-    return;
-  }
+  const inv = (investors || []).find(item => item.id == investorId);
+  if (!inv) { alert('Investor not found!'); return; }
 
-  const exchangeRate = 88.50;
-  const returnPct = cycleReturnPct;
-
+  const rate = usdtRate;
+  const ret = cycleReturnPct;
   const capINR = parseFloat(inv.amount) || 0;
-  const capUSD = capINR / exchangeRate;
-  const profitINR = capINR * (returnPct / 100);
-  const profitUSD = capUSD * (returnPct / 100);
+  const capUSD = capINR / rate;
+  const profitINR = capINR * (ret / 100);
+  const profitUSD = profitINR / rate;
+  const name = String(inv.name || 'Investor');
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
+  const W = 210, H = 297;
+  const ref = pdfRef('PA');
 
-  // Premium Dark AMOLED/Midnight Background matching image 59508.jpg
-  doc.setFillColor(7, 11, 20);
-  doc.rect(0, 0, 210, 297, 'F');
+  pdfHeader(doc, W, 'PAYOUT ADVICE', ref);
 
-  // Top Header Branding
-  doc.setTextColor(223, 179, 115); // Rich Golden Accent
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("AUREUS CAPITAL", 105, 20, { align: 'center' });
-
+  // Prepared for
+  pdfSectionLabel(doc, 'Prepared For', 14, 48);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.setTextColor(...PDF_NAVY);
+  doc.text(name, 14, 57);
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.setTextColor(249, 250, 251);
-  doc.setFont("helvetica", "normal");
-  doc.text("WEALTH  •  STRATEGY  •  GLOBAL MARKETS", 105, 26, { align: 'center' });
+  doc.setTextColor(...PDF_GREY);
+  doc.text(`Investor since ${pdfDate(inv.date)}`, 14, 63);
 
-  doc.setDrawColor(223, 179, 115);
-  doc.setLineWidth(0.5);
-  doc.line(14, 32, 196, 32);
+  // Status pill
+  doc.setFillColor(232, 245, 238);
+  doc.roundedRect(W - 14 - 34, 50, 34, 9, 4.5, 4.5, 'F');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(22, 120, 80);
+  doc.text('PROCESSED', W - 14 - 17, 56, {align: 'center'});
 
-  // Title: PAYOUT CONFIRMED
+  // Earnings highlight box
+  doc.setFillColor(...PDF_NAVY);
+  doc.roundedRect(14, 72, W - 28, 30, 2, 2, 'F');
+  doc.setFillColor(...PDF_GOLD);
+  doc.rect(14, 72, 2.5, 30, 'F');
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(200, 208, 222);
+  doc.text('EARNINGS FOR THE CYCLE', 24, 82);
+  doc.setFont('helvetica', 'bold');
   doc.setFontSize(22);
-  doc.setFont("helvetica", "bold");
   doc.setTextColor(255, 255, 255);
-  doc.text("PAYOUT CONFIRMED", 105, 45, { align: 'center' });
+  doc.text(pdfUsd(profitUSD), 24, 94);
+  doc.setFontSize(12);
+  doc.setTextColor(232, 196, 130);
+  doc.text(pdfInr(profitINR), W - 20, 94, {align: 'right'});
 
-  doc.setFontSize(10);
-  doc.setTextColor(203, 213, 225);
-  doc.text("Your Earnings Have Been Successfully Processed", 105, 53, { align: 'center' });
-
-  // Details Container Box
-  doc.setFillColor(15, 23, 42);
-  doc.setDrawColor(223, 179, 115);
-  doc.setLineWidth(0.4);
-  doc.roundedRect(14, 62, 182, 95, 3, 3, 'FD');
-
-  doc.setFontSize(11);
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-
-  let startY = 78;
-  const lineHeight = 14;
-
-  const fields = [
-    { label: "Client Name", value: inv.name || "N/A" },
-    { label: "Date", value: new Date().toLocaleDateString() },
-    { label: "Investment Amount", value: `$${capUSD.toFixed(2)} (Rs. ${capINR.toLocaleString('en-IN')})` },
-    { label: "Rate", value: `${returnPct.toFixed(2)}% (Monthly Return)` },
-    { label: "Earnings (USD)", value: `$${profitUSD.toFixed(2)}` },
-    { label: "Earnings (INR)", value: `Rs. ${profitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})} (Approx. @ Rs. ${exchangeRate.toFixed(2)} per USD)` }
-  ];
-
-  fields.forEach((f, idx) => {
-    let y = startY + (idx * lineHeight);
-    doc.setTextColor(203, 213, 225);
-    doc.text(f.label, 24, y);
-    doc.text(":", 78, y);
-    doc.setTextColor(idx >= 4 ? 74 : 255, idx >= 4 ? 222 : 255, idx >= 4 ? 128 : 255); // Green highlight for earnings
-    doc.text(f.value, 86, y);
+  // Details table
+  pdfSectionLabel(doc, 'Payout Details', 14, 114);
+  doc.autoTable({
+    startY: 117,
+    theme: 'plain',
+    body: [
+      ['Investment Amount', `${pdfUsd(capUSD)}  (${pdfInr(capINR)})`],
+      ['Cycle Return Rate', `${ret.toFixed(2)}%`],
+      ['Earnings (USD)', pdfUsd(profitUSD)],
+      ['Earnings (INR)', pdfInr(profitINR)],
+      ['Exchange Rate', `INR ${rate.toFixed(2)} per USD`],
+      ['Payout Date', pdfDate()],
+      ['Reference No.', ref],
+      ['Payout Status', 'Processed']
+    ],
+    styles: { fontSize: 10, textColor: PDF_INK, lineColor: PDF_LINE, lineWidth: {bottom: 0.3}, cellPadding: {top: 5, bottom: 5, left: 4, right: 4} },
+    columnStyles: { 0: {textColor: PDF_GREY, cellWidth: 55}, 1: {fontStyle: 'bold'} },
+    alternateRowStyles: { fillColor: PDF_LIGHT }
   });
 
-  // Success Banner Box at bottom (Matching 59508.jpg tone)
-  doc.setFillColor(217, 119, 6);
-  doc.roundedRect(25, 168, 160, 24, 3, 3, 'F');
-  
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.text("CONGRATULATIONS! PAYOUT SUCCESSFUL", 105, 178, { align: 'center' });
-  
+  // Note
+  const y = doc.lastAutoTable.finalY + 12;
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  doc.text("Your trust and support help us grow together.", 105, 186, { align: 'center' });
+  doc.setTextColor(...PDF_GREY);
+  doc.text('Thank you for your continued trust in ' + appName + '.', 14, y);
+  doc.text('For any queries regarding this payout, please contact your portfolio manager and quote the reference number above.', 14, y + 6);
 
-  // Footer Thank You Message
-  doc.setFont("helvetica", "italic");
-  doc.setFontSize(14);
-  doc.setTextColor(223, 179, 115);
-  doc.text("Thank You", 105, 206, { align: 'center' });
-  
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(203, 213, 225);
-  doc.text("for being a valued client!", 105, 213, { align: 'center' });
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...PDF_NAVY);
+  doc.text(managerName, 14, y + 22);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...PDF_GREY);
+  doc.text('Lead Portfolio Manager, ' + appName, 14, y + 28);
 
-  doc.setDrawColor(223, 179, 115);
-  doc.line(14, 224, 196, 224);
-
-  doc.setFontSize(8);
-  doc.setTextColor(156, 163, 175);
-  doc.text("AUREUS CAPITAL  |  YOUR GROWTH • OUR PRIORITY", 14, 232);
-  doc.text("TRADE SMART EARN MORE", 196, 232, { align: 'right' });
-
-  doc.save(`Aureus_Capital_Payout_${(inv.name || 'Investor').replace(/\s+/g, '_')}.pdf`);
+  pdfFooters(doc, W, H);
+  doc.save(`${appName.replace(/\s+/g, '_')}_Payout_Advice_${name.replace(/\s+/g, '_')}.pdf`);
 }
 
 function downloadWhiteTemplatePDF() {

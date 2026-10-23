@@ -142,7 +142,6 @@ input,textarea{font-size:16px}
         <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">30-Day Market Performance (Gold-Driven)</p>
         <p class="text-[11px] text-softGrey font-semibold tabular-nums">CYCLE: <span class="text-softWhite font-bold" id="cycle-date-range">1st – 30th</span></p>
       </div>
-      <h4 class="text-sm font-extrabold text-softWhite tracking-tight">Adaptive Range 6%–12% (Protected Floor)</h4>
       <div class="space-y-2 pt-1">
         <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.50%</span>
         <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-goldAccent/30 p-0.5">
@@ -254,6 +253,29 @@ input,textarea{font-size:16px}
         <button onclick="saveAdminSettings()" class="w-full py-2.5 bg-goldAccent text-midnight font-extrabold rounded-xl hover:bg-amber-500 transition shadow-lg">Save Admin Settings</button>
       </div>
 
+      <!-- RETURN RATE STRATEGY SETTINGS -->
+      <div class="p-4 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-3">
+        <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Return Rate Strategy & Settings</p>
+        <div class="space-y-2 text-xs">
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="radio" name="return_mode" value="range1" checked onchange="handleReturnModeChange()">
+            <span class="text-softWhite">Range 1: 6% – 12% (Dynamic Market-Linked)</span>
+          </label>
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="radio" name="return_mode" value="range2" onchange="handleReturnModeChange()">
+            <span class="text-softWhite">Range 2: 12% – 18% (High Yield Dynamic)</span>
+          </label>
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="radio" name="return_mode" value="custom" onchange="handleReturnModeChange()">
+            <span class="text-softWhite">Custom Return Rate (%)</span>
+          </label>
+          <div id="custom-return-box" class="hidden pt-1 pl-5">
+            <input type="number" id="admin-custom-return" step="0.01" placeholder="Enter custom % e.g. 10.5" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+          </div>
+        </div>
+        <button onclick="saveReturnSettings()" class="w-full py-2.5 bg-goldAccent text-midnight font-extrabold rounded-xl hover:bg-amber-500 transition shadow-lg">Save Return Settings</button>
+      </div>
+
       <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-2">
         <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Gemini API Configuration</p>
         <input type="password" id="settings-api-key" placeholder="Enter Gemini API Key" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
@@ -350,13 +372,45 @@ let customLogoBase64 = localStorage.getItem('aureus_custom_logo') || '';
 let usdtRate = 88.50;
 let cycleReturnPct = 10.50; 
 
+function handleReturnModeChange() {
+  let mode = document.querySelector('input[name="return_mode"]:checked')?.value;
+  let customBox = document.getElementById('custom-return-box');
+  if(customBox) {
+    if(mode === 'custom') {
+      customBox.classList.remove('hidden');
+    } else {
+      customBox.classList.add('hidden');
+    }
+  }
+}
+
+function saveReturnSettings() {
+  let mode = document.querySelector('input[name="return_mode"]:checked')?.value || 'range1';
+  localStorage.setItem('aureus_return_mode', mode);
+  if(mode === 'custom') {
+    let customVal = Number(document.getElementById('admin-custom-return').value) || 10.50;
+    localStorage.setItem('aureus_custom_return', customVal);
+  }
+  initRealCalendarCycle();
+  updateDashboard();
+  alert('Return rate settings saved successfully!');
+}
+
 function initRealCalendarCycle() {
   let now = new Date();
   let dayOfMonth = now.getDate();
   let totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
   
-  let marketStrength = 7.50 + ((dayOfMonth % 5) * 0.9); // Dynamic real-time fluctuation between 6.00% and 12.00%
-  cycleReturnPct = Math.min(12.00, Math.max(6.00, marketStrength));
+  let mode = localStorage.getItem('aureus_return_mode') || 'range1';
+  if(mode === 'range1') {
+    let marketStrength = 7.50 + ((dayOfMonth % 5) * 0.9);
+    cycleReturnPct = Math.min(12.00, Math.max(6.00, marketStrength));
+  } else if(mode === 'range2') {
+    let marketStrength = 13.50 + ((dayOfMonth % 5) * 0.9);
+    cycleReturnPct = Math.min(18.00, Math.max(12.00, marketStrength));
+  } else if(mode === 'custom') {
+    cycleReturnPct = Number(localStorage.getItem('aureus_custom_return')) || 10.50;
+  }
 
   let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   let currentMonthStr = monthNames[now.getMonth()];
@@ -369,7 +423,7 @@ function initRealCalendarCycle() {
 
   if(dRange) dRange.innerText = `1st – ${totalDaysInMonth}th ${currentMonthStr}`;
   if(dRet) dRet.innerText = cycleReturnPct.toFixed(2) + '%';
-  if(dInd) dInd.innerText = `Real Gold-Linked (Day ${dayOfMonth}/${totalDaysInMonth})`;
+  if(dInd) dInd.innerText = mode === 'custom' ? 'Custom Fixed Return' : 'Real Gold-Linked (Day ' + dayOfMonth + '/' + totalDaysInMonth + ')';
   
   let daysLeft = totalDaysInMonth - dayOfMonth;
   if(dLeft) dLeft.innerText = `${daysLeft} days remaining`;
@@ -395,6 +449,16 @@ function loadAdminSettings() {
   if(dmn) dmn.innerText = managerName;
   if(dph) dph.innerText = 'INR ' + promoterHolding.toLocaleString('en-IN');
   if(pt) pt.innerText = appName + ' - Executive Summary';
+
+  let savedMode = localStorage.getItem('aureus_return_mode') || 'range1';
+  let radio = document.querySelector(`input[name="return_mode"][value="${savedMode}"]`);
+  if(radio) { radio.checked = true; }
+  if(savedMode === 'custom') {
+    let customVal = localStorage.getItem('aureus_custom_return') || '10.50';
+    let cInput = document.getElementById('admin-custom-return');
+    if(cInput) cInput.value = customVal;
+  }
+  handleReturnModeChange();
   
   if(customLogoBase64) {
     let logoHTML = `<img src="${customLogoBase64}" class="w-full h-full object-cover">`;
@@ -999,7 +1063,7 @@ function downloadMasterStatementPDF() {
   doc.save(`${appName.replace(/\s+/g, '_')}_Master_Portfolio_Ledger.pdf`);
 }
 
-// 3. PAYOUT CONFIRMATION PDF (Consistent Clean White Institutional Theme with matching Navy/Gold banner)
+// 3. PAYOUT CONFIRMATION PDF (Consistent Clean White Institutional Theme)
 function downloadInvestorPayoutPDF(investorId) {
   const inv = (investors || []).find(item => item.id == investorId);
   if (!inv) { alert('Investor not found!'); return; }
@@ -1022,16 +1086,14 @@ function downloadInvestorPayoutPDF(investorId) {
 
   pdfHeader(doc, W, 'PAYOUT CONFIRMATION', ref);
 
-  // Success Banner Box matching the clean institutional Navy/Gold theme (No awkward orange button)
-  doc.setFillColor(...PDF_LIGHT);
-  doc.setDrawColor(...PDF_GOLD);
-  doc.setLineWidth(0.5);
+  doc.setFillColor(240, 253, 244);
+  doc.setDrawColor(187, 247, 208);
   doc.roundedRect(14, 44, W - 28, 20, 2, 2, 'FD');
-  doc.setTextColor(...PDF_NAVY);
+  doc.setTextColor(22, 101, 52);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.text("CONGRATULATIONS! PAYOUT SUCCESSFULLY PROCESSED", 20, 52);
-  doc.setTextColor(...PDF_GREY);
+  doc.setTextColor(74, 222, 128);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.text("Your trust and support help us grow together.", 20, 59);
@@ -1077,7 +1139,7 @@ function downloadWhiteTemplatePDF() {
 function saveSettingsAPI() {
   let key = document.getElementById('settings-api-key')?.value;
   if(key) {
-    localStorage.getItem('gemini_api_key', key);
+    localStorage.setItem('gemini_api_key', key);
     alert('Gemini API Key saved successfully!');
   }
 }

@@ -511,22 +511,19 @@ function renderInvestors() {
 
     const displayName = (inv.name && inv.name.toString().trim() !== '' && inv.name !== '1') ? inv.name : 'Investor';
 
-    // CLEAN CARD: Only Name, Tier Badge, and Capital Amount (No phone, no joining date)[span_11](start_span)[span_11](end_span)
+    // ULTRA CLEAN CARD: ONLY Name, Tier Badge, and Capital Amount (NO buttons, NO phone, NO date) -> Tap to edit, Swipe to delete
     html += `
       <div class="p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} cursor-pointer mb-3" 
            ontouchstart="handleTouchStart(event)" 
            ontouchend="handleTouchEnd(event, ${originalIdx})"
            onclick="editInvestor(${originalIdx})">
-        <div class="cursor-pointer">
+        <div>
           <div class="flex items-center space-x-2">
             <h4 class="font-bold text-softWhite text-sm">${displayName}</h4>
             <span class="px-2.5 py-0.5 rounded text-[9px] font-black ${badgeColor} border">${tierText}</span>
           </div>
           <p class="text-xs font-extrabold text-goldAccent mt-2 tabular-nums">INR ${cap.toLocaleString('en-IN')}</p>
         </div>
-        <button onclick="event.stopPropagation(); deleteInvestor(${originalIdx})" class="p-2 text-red-400 hover:text-red-300 transition active:scale-95" title="Delete">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-        </button>
       </div>
     `;
   });
@@ -543,6 +540,7 @@ function handleTouchEnd(e, idx) {
   touchEndY = e.changedTouches[0].screenY;
   const diffX = touchStartX - touchEndX;
   const diffY = Math.abs(touchStartY - touchEndY);
+  // Swipe left or right to delete
   if (Math.abs(diffX) > 50 && diffY < 40) {
     deleteInvestor(idx);
   }
@@ -587,7 +585,7 @@ function submitCustomModal() {
     return;
   }
 
-  const investorObj = { name, phone, capital, date };
+  const investorObj = { name, phone, capital, date, status: appData.investors[editingInvestorIndex]?.status || 'Pending' };
 
   if(editingInvestorIndex === null) {
     appData.investors.push(investorObj);
@@ -608,6 +606,15 @@ function deleteInvestor(idx) {
   }
 }
 
+function toggleInvestorStatus(idx) {
+  if(!appData.investors[idx].status) {
+    appData.investors[idx].status = 'Pending';
+  }
+  appData.investors[idx].status = (appData.investors[idx].status === 'Complete') ? 'Pending' : 'Complete';
+  saveAppData();
+  renderUI();
+}
+
 function renderSettlement() {
   const container = document.getElementById('settlement-list-container');
   if(!container) return;
@@ -616,15 +623,27 @@ function renderSettlement() {
     return;
   }
   let html = '';
-  appData.investors.forEach(inv => {
+  appData.investors.forEach((inv, originalIdx) => {
     const estProfitINR = (inv.capital || 0) * 0.102 * (30/365);
     const estProfitUSD = estProfitINR / 88.50;
     const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
+    const status = inv.status || 'Pending';
+    const statusBadgeClass = status === 'Complete' 
+      ? 'bg-emeraldLive/20 text-emeraldLive border-emeraldLive/40' 
+      : 'bg-amber-500/20 text-amber-400 border-amber-500/40';
+
     html += `
-      <div class="card-box p-4 rounded-2xl space-y-2">
+      <div class="card-box p-4 rounded-2xl space-y-3 mb-3">
         <div class="flex justify-between items-center">
           <h4 class="font-bold text-softWhite text-xs">${displayName}</h4>
-          <span class="px-2.5 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/40">Pending</span>
+          <div class="flex items-center space-x-2">
+            <button onclick="toggleInvestorStatus(${originalIdx})" class="px-2.5 py-1 rounded-full text-[9px] font-extrabold border ${statusBadgeClass} transition active:scale-95 cursor-pointer">
+              ${status}
+            </button>
+            <button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="px-3 py-1 bg-royalBlue text-white text-[10px] font-extrabold rounded-xl active:scale-95 transition shadow-lg">
+              Download Payout
+            </button>
+          </div>
         </div>
         <div class="grid grid-cols-2 gap-2 text-[11px] text-softGrey">
           <div>Capital: <span class="text-softWhite font-bold">INR ${Number(inv.capital).toLocaleString('en-IN')}</span></div>
@@ -729,7 +748,7 @@ function resetThemeSettings() {
   document.getElementById('accent-slider').value = 38;
 }
 
-// DIRECT PDF DOWNLOAD WITHOUT ALERTS
+// DIRECT PDF DOWNLOADS (NO ALERTS)
 function downloadMasterStatementPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -805,6 +824,43 @@ function downloadCustomStatementPDF() {
   });
 
   doc.save('Aureus_Capital_Custom_Statement.pdf');
+}
+
+function downloadIndividualPayoutPDF(idx) {
+  const inv = appData.investors[idx];
+  const estProfitINR = (inv.capital || 0) * 0.102 * (30/365);
+  const estProfitUSD = estProfitINR / 88.50;
+  const status = inv.status || 'Pending';
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.setTextColor(223, 179, 115);
+  doc.text(appData.appName || "Aureus Capital", 14, 20);
+
+  doc.setFontSize(11);
+  doc.setTextColor(150, 150, 150);
+  doc.text("Individual Investor Payout Statement", 14, 28);
+  doc.text(`Investor Name: ${inv.name || 'Investor'}`, 14, 34);
+  doc.text(`Status: ${status}`, 14, 40);
+
+  doc.autoTable({
+    startY: 46,
+    head: [['Parameter', 'Details']],
+    body: [
+      ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
+      ['Estimated Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
+      ['Estimated Profit (USD)', `$${estProfitUSD.toFixed(2)}`],
+      ['Payout Status', status],
+      ['Lead Manager', appData.managerName]
+    ],
+    theme: 'grid',
+    headStyles: { fillColor: [16, 23, 42] },
+    styles: { fontSize: 10 }
+  });
+
+  doc.save(`${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
 }
 
 window.addEventListener('load', () => {

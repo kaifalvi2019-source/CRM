@@ -62,7 +62,7 @@ input,textarea{font-size:16px}
   </div>
 </div>
 
-<!-- HEADER -->
+<!-- HEADER (Safe Padding from Status Bar)[span_2](start_span)[span_2](end_span) -->
 <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 pb-3.5 flex items-center justify-between shadow-lg" style="padding-top: max(2rem, env(safe-area-inset-top));">
   <div class="flex items-center space-x-3">
     <div id="header-logo-box" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/20 overflow-hidden">AC</div>
@@ -170,7 +170,7 @@ input,textarea{font-size:16px}
       </span>
       <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name" class="w-full card-box rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent">
     </div>
-    <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete</p>
+    <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete[span_3](start_span)[span_3](end_span)</p>
     <div class="space-y-3.5" id="investors-list-container"></div>
   </section>
 
@@ -299,7 +299,7 @@ input,textarea{font-size:16px}
   </section>
 </main>
 
-<!-- PROFESSIONAL CUSTOM MODAL (Add/Edit Investor) -->
+<!-- PROFESSIONAL CUSTOM MODAL (Add/Edit Investor)[span_4](start_span)[span_4](end_span) -->
 <div id="custom-investor-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
   <div class="card-box w-full max-w-sm p-5 space-y-4 rounded-2xl border border-goldAccent/40 shadow-2xl">
     <div class="flex justify-between items-center border-b border-goldAccent/20 pb-3">
@@ -309,7 +309,7 @@ input,textarea{font-size:16px}
     <div class="space-y-3 text-xs">
       <div>
         <label class="block text-softGrey mb-1 font-semibold">Investor Name *</label>
-        <input type="text" id="modal-input-name" placeholder="Enter name" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
+        <input type="text" id="modal-input-name" placeholder="Enter investor name" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
       </div>
       <div>
         <label class="block text-softGrey mb-1 font-semibold">Phone Number</label>
@@ -469,7 +469,7 @@ function renderInvestors() {
   if(!container) return;
   const query = (document.getElementById('investor-search')?.value || '').toLowerCase();
   
-  const filtered = appData.investors.filter(inv => (inv.name || '').toLowerCase().includes(query));
+  const filtered = appData.investors.filter(inv => ((inv.name || '') + '').toLowerCase().includes(query));
   if(filtered.length === 0) {
     container.innerHTML = `<div class="card-box p-6 text-center text-xs text-softGrey rounded-2xl">No investors found. Tap '+ Add' to create one.</div>`;
     return;
@@ -484,22 +484,24 @@ function renderInvestors() {
     else if(cap >= 30000) { tierClass = 'tier-silver-card'; tierText = 'SILVER'; }
     else if(cap >= 15000) { tierClass = 'tier-bronze-card'; tierText = 'BRONZE'; }
 
+    const displayName = (inv.name && inv.name.toString().trim() !== '' && inv.name !== '1') ? inv.name : ('Investor #' + (idx + 1));
+
+    // CLEAN CARD LAYOUT WITHOUT OUTSIDE BUTTONS (Tap to edit, Swipe to delete)[span_5](start_span)[span_5](end_span)
     html += `
-      <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass}" 
+      <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} cursor-pointer" 
            ontouchstart="handleTouchStart(event)" 
            ontouchend="handleTouchEnd(event, ${idx})"
            onclick="editInvestor(${idx})">
-        <div class="cursor-pointer">
+        <div>
           <div class="flex items-center space-x-2">
-            <h4 class="font-bold text-softWhite text-sm">${inv.name}</h4>
+            <h4 class="font-bold text-softWhite text-sm">${displayName}</h4>
             <span class="px-2 py-0.5 rounded text-[9px] font-black bg-midnight text-goldAccent border border-goldAccent/30">${tierText}</span>
           </div>
           <p class="text-[10px] text-softGrey mt-0.5">Phone: ${inv.phone || 'No phone'} · Joined: ${inv.date || 'N/A'}</p>
           <p class="text-[11px] text-goldAccent font-bold mt-1">INR ${cap.toLocaleString('en-IN')}</p>
         </div>
-        <div class="flex space-x-2" onclick="event.stopPropagation()">
-          <button onclick="editInvestor(${idx})" class="px-3 py-1.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-bold">Edit</button>
-          <button onclick="deleteInvestor(${idx})" class="px-3 py-1.5 bg-red-950/60 text-red-400 border border-red-800/40 rounded-xl text-xs font-bold">Delete</button>
+        <div class="text-[11px] text-goldAccent font-semibold">
+          Tap to Edit ✏️
         </div>
       </div>
     `;
@@ -533,7 +535,7 @@ function editInvestor(idx) {
   editingInvestorIndex = idx;
   const inv = appData.investors[idx];
   document.getElementById('modal-title').textContent = "Edit Investor Details";
-  document.getElementById('modal-input-name').value = inv.name || "";
+  document.getElementById('modal-input-name').value = (inv.name && inv.name !== '1') ? inv.name : "";
   document.getElementById('modal-input-phone').value = inv.phone || "";
   document.getElementById('modal-input-capital').value = inv.capital || "";
   document.getElementById('modal-input-date').value = inv.date || new Date().toISOString().split('T')[0];
@@ -545,15 +547,13 @@ function closeCustomModal() {
 }
 
 function submitCustomModal() {
-  const name = document.getElementById('modal-input-name').value.trim();
+  const nameInput = document.getElementById('modal-input-name').value.trim();
   const phone = document.getElementById('modal-input-phone').value.trim();
   const capital = Number(document.getElementById('modal-input-capital').value);
   const date = document.getElementById('modal-input-date').value;
 
-  if(!name) {
-    alert("Kripya investor ka naam daalein.");
-    return;
-  }
+  const name = nameInput !== "" ? nameInput : "Investor";
+
   if(isNaN(capital) || capital <= 0) {
     alert("Kripya valid investment capital daalein.");
     return;
@@ -591,10 +591,11 @@ function renderSettlement() {
   appData.investors.forEach(inv => {
     const estProfitINR = (inv.capital || 0) * 0.102 * (30/365);
     const estProfitUSD = estProfitINR / 88.50;
+    const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
     html += `
       <div class="card-box p-4 rounded-2xl space-y-2">
         <div class="flex justify-between items-center">
-          <h4 class="font-bold text-softWhite text-xs">${inv.name}</h4>
+          <h4 class="font-bold text-softWhite text-xs">${displayName}</h4>
           <span class="px-2.5 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/40">Pending</span>
         </div>
         <div class="grid grid-cols-2 gap-2 text-[11px] text-softGrey">
@@ -652,7 +653,6 @@ function handleLogoUpload(event) {
     appData.customLogo = e.target.result;
     saveAppData();
     renderUI();
-    alert("Logo uploaded successfully!");
   };
   reader.readAsDataURL(file);
 }
@@ -663,7 +663,6 @@ function saveAdminSettings() {
   appData.appName = document.getElementById('admin-app-name').value || "Aureus Capital";
   saveAppData();
   renderUI();
-  alert("Admin settings saved successfully!");
 }
 
 function handleReturnModeChange() {
@@ -681,13 +680,11 @@ function saveReturnSettings() {
   }
   saveAppData();
   renderUI();
-  alert("Return rate strategy saved successfully!");
 }
 
 function saveSettingsAPI() {
   appData.apiKey = document.getElementById('settings-api-key').value;
   saveAppData();
-  alert("API Key saved successfully!");
 }
 
 function applyBgShade(val) {
@@ -722,9 +719,10 @@ function downloadMasterStatementPDF() {
   let tableData = [];
   appData.investors.forEach((inv, index) => {
     const estProfit = (inv.capital || 0) * 0.102 * (30/365);
+    const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
     tableData.push([
       index + 1,
-      inv.name,
+      displayName,
       inv.phone || 'N/A',
       `INR ${Number(inv.capital).toLocaleString('en-IN')}`,
       `INR ${Math.round(estProfit).toLocaleString('en-IN')}`
@@ -746,7 +744,6 @@ function downloadMasterStatementPDF() {
 function downloadCustomStatementPDF() {
   const amt = Number(document.getElementById('custom-withdrawal-input').value) || 0;
   if(amt <= 0) {
-    alert("Kripya withdrawal amount daalein.");
     return;
   }
   const inrVal = amt * 88.50;

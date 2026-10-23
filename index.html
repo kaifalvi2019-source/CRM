@@ -62,7 +62,7 @@ input,textarea{font-size:16px}
   </div>
 </div>
 
-<!-- HEADER (Properly Padded from Status Bar / Notch)[span_3](start_span)[span_3](end_span) -->
+<!-- HEADER (Properly Padded from Status Bar / Notch)[span_5](start_span)[span_5](end_span) -->
 <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 pb-3.5 flex items-center justify-between shadow-lg" style="padding-top: max(2rem, env(safe-area-inset-top));">
   <div class="flex items-center space-x-3">
     <div id="header-logo-box" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/20 overflow-hidden">AC</div>
@@ -170,7 +170,7 @@ input,textarea{font-size:16px}
       </span>
       <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name" class="w-full card-box rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent">
     </div>
-    <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete</p>
+    <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete[span_6](start_span)[span_6](end_span)</p>
     <div class="space-y-3.5" id="investors-list-container"></div>
   </section>
 
@@ -299,7 +299,7 @@ input,textarea{font-size:16px}
   </section>
 </main>
 
-<!-- PROFESSIONAL CUSTOM MODAL (Add/Edit Investor) -->
+<!-- PROFESSIONAL CUSTOM MODAL (Add/Edit Investor)[span_7](start_span)[span_7](end_span) -->
 <div id="custom-investor-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
   <div class="card-box w-full max-w-sm p-5 space-y-4 rounded-2xl border border-goldAccent/40 shadow-2xl">
     <div class="flex justify-between items-center border-b border-goldAccent/20 pb-3">
@@ -364,6 +364,8 @@ let appData = {
 };
 
 let editingInvestorIndex = null;
+let touchStartX = 0;
+let touchEndX = 0;
 
 function loadAppData() {
   const saved = localStorage.getItem('aureus_capital_data');
@@ -483,8 +485,11 @@ function renderInvestors() {
     else if(cap >= 15000) { tierClass = 'tier-bronze-card'; tierText = 'BRONZE'; }
 
     html += `
-      <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass}">
-        <div>
+      <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass}" 
+           ontouchstart="handleTouchStart(event)" 
+           ontouchend="handleTouchEnd(event, ${idx})"
+           onclick="editInvestor(${idx})">
+        <div class="cursor-pointer">
           <div class="flex items-center space-x-2">
             <h4 class="font-bold text-softWhite text-sm">${inv.name}</h4>
             <span class="px-2 py-0.5 rounded text-[9px] font-black bg-midnight text-goldAccent border border-goldAccent/30">${tierText}</span>
@@ -492,7 +497,7 @@ function renderInvestors() {
           <p class="text-[10px] text-softGrey mt-0.5">Phone: ${inv.phone || 'No phone'} · Joined: ${inv.date || 'N/A'}</p>
           <p class="text-[11px] text-goldAccent font-bold mt-1">INR ${cap.toLocaleString('en-IN')}</p>
         </div>
-        <div class="flex space-x-2">
+        <div class="flex space-x-2" onclick="event.stopPropagation()">
           <button onclick="editInvestor(${idx})" class="px-3 py-1.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-bold">Edit</button>
           <button onclick="deleteInvestor(${idx})" class="px-3 py-1.5 bg-red-950/60 text-red-400 border border-red-800/40 rounded-xl text-xs font-bold">Delete</button>
         </div>
@@ -500,6 +505,17 @@ function renderInvestors() {
     `;
   });
   container.innerHTML = html;
+}
+
+function handleTouchStart(e) {
+  touchStartX = e.changedTouches[0].screenX;
+}
+
+function handleTouchEnd(e, idx) {
+  touchEndX = e.changedTouches[0].screenX;
+  if (touchStartX - touchEndX > 60 || touchEndX - touchStartX > 60) {
+    deleteInvestor(idx);
+  }
 }
 
 function openAddInvestorModal() {
@@ -688,12 +704,82 @@ function resetThemeSettings() {
   document.getElementById('accent-slider').value = 38;
 }
 
+// DIRECT PDF DOWNLOAD WITHOUT ALERTS
 function downloadMasterStatementPDF() {
-  alert("Master Statement PDF generated successfully!");
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFontSize(18);
+  doc.setTextColor(223, 179, 115);
+  doc.text(appData.appName || "Aureus Capital", 14, 20);
+  
+  doc.setFontSize(11);
+  doc.setTextColor(150, 150, 150);
+  doc.text("Master Statement & Investor Payout Ledger", 14, 28);
+  doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
+  doc.text(`Promoter Holding: INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}`, 14, 40);
+
+  let tableData = [];
+  appData.investors.forEach((inv, index) => {
+    const estProfit = (inv.capital || 0) * 0.102 * (30/365);
+    tableData.push([
+      index + 1,
+      inv.name,
+      inv.phone || 'N/A',
+      `INR ${Number(inv.capital).toLocaleString('en-IN')}`,
+      `INR ${Math.round(estProfit).toLocaleString('en-IN')}`
+    ]);
+  });
+
+  doc.autoTable({
+    startY: 48,
+    head: [['#', 'Investor Name', 'Phone', 'Capital', 'Est. Profit']],
+    body: tableData,
+    theme: 'grid',
+    headStyles: { fillColor: [16, 23, 42] },
+    styles: { fontSize: 9 }
+  });
+
+  doc.save('Aureus_Capital_Master_Statement.pdf');
 }
 
 function downloadCustomStatementPDF() {
-  alert("Custom Statement PDF generated successfully!");
+  const amt = Number(document.getElementById('custom-withdrawal-input').value) || 0;
+  if(amt <= 0) {
+    alert("Kripya withdrawal amount daalein.");
+    return;
+  }
+  const inrVal = amt * 88.50;
+  const netVal = inrVal * 0.98;
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.setTextColor(223, 179, 115);
+  doc.text(appData.appName || "Aureus Capital", 14, 20);
+
+  doc.setFontSize(11);
+  doc.setTextColor(150, 150, 150);
+  doc.text("Custom Withdrawal & Settlement Statement", 14, 28);
+  doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
+
+  doc.autoTable({
+    startY: 42,
+    head: [['Parameter', 'Details']],
+    body: [
+      ['Requested USD', `$${amt.toFixed(2)}`],
+      ['Exchange Rate', 'INR 88.50'],
+      ['Converted INR', `INR ${Math.round(inrVal).toLocaleString('en-IN')}`],
+      ['Net Payoutable (After Fees/Taxes)', `INR ${Math.round(netVal).toLocaleString('en-IN')}`],
+      ['Compliance', 'CA-Compliant Statement']
+    ],
+    theme: 'grid',
+    headStyles: { fillColor: [16, 23, 42] },
+    styles: { fontSize: 10 }
+  });
+
+  doc.save('Aureus_Capital_Custom_Statement.pdf');
 }
 
 window.addEventListener('load', () => {

@@ -523,10 +523,6 @@
                 usdBadge.textContent = `+${usdTrendPct}% ▲`;
             }
 
-            const statusPill = document.getElementById('market-status-pill');
-            const sparklineLine = document.getElementById('sparkline-line');
-            const sparklineArea = document.getElementById('sparkline-area');
-
             let baseRet = 8.46; // Exact match to user's monthly cycle return
             if(appData.returnMode === 'range1') {
                 baseRet = 8.46; 
@@ -538,6 +534,8 @@
 
             document.getElementById('dynamic-return-display').textContent = baseRet.toFixed(2) + '%';
 
+            const sparklineLine = document.getElementById('sparkline-line');
+            const sparklineArea = document.getElementById('sparkline-area');
             if(sparklineLine && sparklineArea) {
                 const pathD = `M0,35 Q75,15 150,25 T300,20`;
                 sparklineLine.setAttribute('d', pathD);
@@ -884,16 +882,16 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const baseRet = 8.46;
+            const companyName = appData.appName || "Aureus Capital";
             
             doc.setFontSize(18);
             doc.setTextColor(229, 193, 133);
-            doc.text(appData.appName || "Aureus Capital", 14, 20);
+            doc.text(companyName, 14, 20);
             
             doc.setFontSize(11);
             doc.setTextColor(150, 150, 150);
             doc.text("Master Statement & Investor 30-Day Payout Ledger", 14, 28);
-            doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
-            doc.text(`Promoter Holding: INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}`, 14, 40);
+            doc.text(`Promoter Holding: INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}`, 14, 34);
 
             let tableData = [];
             appData.investors.forEach((inv, index) => {
@@ -909,7 +907,7 @@
             });
 
             doc.autoTable({
-                startY: 48,
+                startY: 40,
                 head: [['#', 'Investor Name', 'Phone', 'Capital', '30-Day Profit']],
                 body: tableData,
                 theme: 'grid',
@@ -928,23 +926,24 @@
             }
             const inrVal = amt * 88.50;
             const netVal = inrVal * 0.90;
+            const companyName = appData.appName || "Aureus Capital";
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
             doc.setFontSize(18);
             doc.setTextColor(229, 193, 133);
-            doc.text(appData.appName || "Aureus Capital", 14, 20);
+            doc.text(companyName, 14, 20);
 
             doc.setFontSize(11);
             doc.setTextColor(150, 150, 150);
             doc.text("Custom Withdrawal & Settlement Statement", 14, 28);
-            doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
 
             doc.autoTable({
-                startY: 42,
+                startY: 36,
                 head: [['Parameter', 'Details']],
                 body: [
+                    ['Company Name', companyName],
                     ['Requested USD', `$${amt.toFixed(2)}`],
                     ['Exchange Rate', 'INR 88.50'],
                     ['Converted INR', `INR ${Math.round(inrVal).toLocaleString('en-IN')}`],
@@ -965,29 +964,34 @@
             const estProfitINR = (inv.capital || 0) * (baseRet / 100);
             const estProfitUSD = estProfitINR / 88.50;
             const status = inv.status || 'Pending';
+            const companyName = appData.appName || "Aureus Capital";
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
             doc.setFontSize(18);
             doc.setTextColor(229, 193, 133);
-            doc.text(appData.appName || "Aureus Capital", 14, 20);
+            doc.text(companyName, 14, 20);
 
             doc.setFontSize(11);
+            doc.setTextColor(16, 185, 129);
+            doc.text("Congratulation! Your payout has been successfully confirmed.", 14, 28);
+
+            doc.setFontSize(10);
             doc.setTextColor(150, 150, 150);
-            doc.text("Individual Investor Payout Statement", 14, 28);
-            doc.text(`Investor Name: ${inv.name || 'Investor'}`, 14, 34);
-            doc.text(`Status: ${status}`, 14, 40);
+            doc.text("Individual Investor Payout Statement", 14, 36);
+            doc.text(`Investor Name: ${inv.name || 'Investor'}`, 14, 42);
+            doc.text(`Status: ${status}`, 14, 48);
 
             doc.autoTable({
-                startY: 46,
+                startY: 54,
                 head: [['Parameter', 'Details']],
                 body: [
+                    ['Company Name', companyName],
                     ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
                     ['30-Day Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
                     ['30-Day Profit (USD)', `$${estProfitUSD.toFixed(2)}`],
-                    ['Payout Status', status],
-                    ['Lead Manager', appData.managerName]
+                    ['Payout Status', status]
                 ],
                 theme: 'grid',
                 headStyles: { fillColor: [13, 20, 36] },

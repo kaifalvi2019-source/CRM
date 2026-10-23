@@ -7,8 +7,6 @@
     <title id="page-title">Aureus Capital - Executive Summary</title>
     <link rel="manifest" href="/manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -65,6 +63,13 @@
         }
         .animate-progress { animation: loadProgress 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #printable-statement-area, #printable-statement-area * { visibility: visible; }
+            #printable-statement-area { position: absolute; inset: 0; width: 100%; background: #ffffff !important; color: #000000 !important; padding: 20px; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body class="pb-28">
@@ -214,7 +219,7 @@
                     <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0 bg-gradient-to-r from-goldAccent to-amber-600">Master Sheet PDF</button>
+                <button onclick="openMasterStatementModal()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0 bg-gradient-to-r from-goldAccent to-amber-600">Master Sheet PDF</button>
             </div>
 
             <div class="card-box p-4 space-y-3.5 rounded-2xl">
@@ -229,7 +234,7 @@
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
                         <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount e.g. 700" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
-                        <button onclick="downloadCustomStatementPDF()" class="px-3 py-2 bg-royalBlue text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shrink-0">Statement PDF</button>
+                        <button onclick="openCustomStatementModal()" class="px-3 py-2 bg-royalBlue text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shrink-0">Statement PDF</button>
                     </div>
                 </div>
                 
@@ -362,22 +367,26 @@
         </div>
     </div>
 
-    <!-- IN-APP PDF PREVIEW MODAL (SOLVES APK WEBVIEW WHITE SCREEN / SELECT ACTION BUG) -->
-    <div id="pdf-preview-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[300] hidden flex flex-col p-4">
-        <div class="flex justify-between items-center bg-graphite p-3 rounded-t-xl border-b border-goldAccent/30">
-            <h3 class="text-sm font-extrabold text-goldAccent uppercase tracking-wider">Aureus Capital - PDF Statement</h3>
-            <button onclick="closePdfModal()" class="text-softGrey hover:text-softWhite text-2xl font-bold px-2">&times;</button>
+    <!-- NATIVE IN-APP STATEMENT PREVIEW & PRINT MODAL (100% FOOLPROOF FOR APK/WEBVIEW) -->
+    <div id="statement-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[300] hidden flex flex-col p-4">
+        <div class="flex justify-between items-center bg-graphite p-3.5 rounded-t-xl border-b border-goldAccent/30 no-print">
+            <h3 id="statement-modal-title" class="text-sm font-extrabold text-goldAccent uppercase tracking-wider">Aureus Capital - Statement</h3>
+            <button onclick="closeStatementModal()" class="text-softGrey hover:text-softWhite text-2xl font-bold px-2">&times;</button>
         </div>
-        <div class="flex-1 bg-midnight rounded-b-xl overflow-hidden relative border border-goldAccent/20">
-            <iframe id="pdf-iframe" class="w-full h-full border-0"></iframe>
+        <div id="printable-statement-area" class="flex-1 bg-midnight rounded-b-xl overflow-y-auto p-5 space-y-4 border border-goldAccent/20 text-xs text-softWhite tabular-nums">
+            <!-- Dynamically populated statement receipt content -->
         </div>
-        <div class="pt-3">
-            <button onclick="closePdfModal()" class="w-full py-3 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight font-extrabold rounded-xl active:scale-95 transition shadow-lg">Close & Return to App</button>
+        <div class="pt-3 flex space-x-3 no-print">
+            <button onclick="closeStatementModal()" class="w-full py-3 bg-midnight text-softGrey border border-goldAccent/30 font-bold rounded-xl active:scale-95 transition">Close</button>
+            <button onclick="window.print()" class="w-full py-3 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight font-extrabold rounded-xl active:scale-95 transition shadow-lg flex items-center justify-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <span>Print / Save as PDF</span>
+            </button>
         </div>
     </div>
 
     <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 inset-x-0 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/20 px-4 py-2.5 flex justify-around items-center z-50 shadow-2xl">
+    <nav class="fixed bottom-0 inset-x-0 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/20 px-4 py-2.5 flex justify-around items-center z-50 shadow-2xl no-print">
         <button onclick="switchTab('home')" id="nav-btn-home" class="flex flex-col items-center space-y-1 text-goldAccent transition active:scale-95">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="text-[10px] font-bold">Home</span>
@@ -710,8 +719,8 @@
 
                 // DOWNLOAD BUTTON APPEARS *ONLY* WHEN STATUS IS 'COMPLETE'
                 const downloadBtnHtml = status === 'Complete' 
-                    ? `<button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center" title="Download Payout PDF">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    ? `<button onclick="openIndividualPayoutModal(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center" title="View & Print Payout Statement">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                        </button>` 
                     : '';
 
@@ -832,128 +841,105 @@
             document.getElementById('accent-slider').value = 38;
         }
 
-        // IN-APP MODAL PREVIEW FOR APKS (PREVENTS WHITE SCREEN & SELECT ACTION DIALOG)
-        function triggerInAppPreview(doc, filename) {
-            const dataUri = doc.output('datauristring');
-            document.getElementById('pdf-iframe').src = dataUri;
-            document.getElementById('pdf-preview-modal').classList.remove('hidden');
-        }
-
-        function closePdfModal() {
-            document.getElementById('pdf-preview-modal').classList.add('hidden');
-            document.getElementById('pdf-iframe').src = '';
-        }
-
-        function downloadMasterStatementPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            doc.setFontSize(18);
-            doc.setTextColor(223, 179, 115);
-            doc.text(appData.appName || "Aureus Capital", 14, 20);
-            
-            doc.setFontSize(11);
-            doc.setTextColor(150, 150, 150);
-            doc.text("Master Statement & Investor Payout Ledger", 14, 28);
-            doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
-            doc.text(`Promoter Holding: INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}`, 14, 40);
-
-            let tableData = [];
+        // NATIVE STATEMENT MODAL POPULATORS (Bypasses WebView download manager completely)
+        function openMasterStatementModal() {
+            document.getElementById('statement-modal-title').textContent = "Aureus Capital - Master Statement";
+            let html = `
+                <div class="space-y-4">
+                    <div class="border-b border-goldAccent/20 pb-3">
+                        <h2 class="text-base font-bold text-goldAccent">${appData.appName || "Aureus Capital"}</h2>
+                        <p class="text-[11px] text-softGrey">Master Statement & Investor Payout Ledger</p>
+                        <p class="text-[11px] text-softWhite mt-1">Lead Manager: <span class="font-bold text-goldAccent">${appData.managerName}</span></p>
+                        <p class="text-[11px] text-softWhite">Promoter Holding: <span class="font-bold text-goldAccent">INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}</span></p>
+                    </div>
+                    <table class="w-full text-left border-collapse text-[11px]">
+                        <thead>
+                            <tr class="border-b border-goldAccent/30 text-goldAccent">
+                                <th class="py-2">#</th>
+                                <th class="py-2">Investor Name</th>
+                                <th class="py-2">Capital</th>
+                                <th class="py-2">Est. Profit</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-800">
+            `;
             appData.investors.forEach((inv, index) => {
                 const estProfit = (inv.capital || 0) * 0.102 * (30/365);
                 const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
-                tableData.push([
-                    index + 1,
-                    displayName,
-                    inv.phone || 'N/A',
-                    `INR ${Number(inv.capital).toLocaleString('en-IN')}`,
-                    `INR ${Math.round(estProfit).toLocaleString('en-IN')}`
-                ]);
+                html += `
+                    <tr>
+                        <td class="py-2">${index + 1}</td>
+                        <td class="py-2 font-bold">${displayName}</td>
+                        <td class="py-2">INR ${Number(inv.capital).toLocaleString('en-IN')}</td>
+                        <td class="py-2 text-emeraldLive">INR ${Math.round(estProfit).toLocaleString('en-IN')}</td>
+                    </tr>
+                `;
             });
-
-            doc.autoTable({
-                startY: 48,
-                head: [['#', 'Investor Name', 'Phone', 'Capital', 'Est. Profit']],
-                body: tableData,
-                theme: 'grid',
-                headStyles: { fillColor: [16, 23, 42] },
-                styles: { fontSize: 9 }
-            });
-
-            triggerInAppPreview(doc, 'Aureus_Capital_Master_Statement.pdf');
+            html += `</tbody></table></div>`;
+            document.getElementById('printable-statement-area').innerHTML = html;
+            document.getElementById('statement-modal').classList.remove('hidden');
         }
 
-        function downloadCustomStatementPDF() {
+        function openCustomStatementModal() {
             const amt = Number(document.getElementById('custom-withdrawal-input').value) || 0;
-            if(amt <= 0) return;
+            if(amt <= 0) {
+                alert("Kripya pehle withdrawal amount daalein.");
+                return;
+            }
             const inrVal = amt * 88.50;
             const netVal = inrVal * 0.90;
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.setFontSize(18);
-            doc.setTextColor(223, 179, 115);
-            doc.text(appData.appName || "Aureus Capital", 14, 20);
-
-            doc.setFontSize(11);
-            doc.setTextColor(150, 150, 150);
-            doc.text("Custom Withdrawal & Settlement Statement", 14, 28);
-            doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
-
-            doc.autoTable({
-                startY: 42,
-                head: [['Parameter', 'Details']],
-                body: [
-                    ['Requested USD', `$${amt.toFixed(2)}`],
-                    ['Exchange Rate', 'INR 88.50'],
-                    ['Converted INR', `INR ${Math.round(inrVal).toLocaleString('en-IN')}`],
-                    ['Net Payoutable (After 10% Deduction)', `INR ${Math.round(netVal).toLocaleString('en-IN')}`],
-                    ['Compliance', 'CA-Compliant Statement']
-                ],
-                theme: 'grid',
-                headStyles: { fillColor: [16, 23, 42] },
-                styles: { fontSize: 10 }
-            });
-
-            triggerInAppPreview(doc, 'Aureus_Capital_Custom_Statement.pdf');
+            document.getElementById('statement-modal-title').textContent = "Aureus Capital - Custom Withdrawal Statement";
+            let html = `
+                <div class="space-y-4">
+                    <div class="border-b border-goldAccent/20 pb-3">
+                        <h2 class="text-base font-bold text-goldAccent">${appData.appName || "Aureus Capital"}</h2>
+                        <p class="text-[11px] text-softGrey">Custom Withdrawal & Settlement Statement</p>
+                        <p class="text-[11px] text-softWhite mt-1">Lead Manager: <span class="font-bold text-goldAccent">${appData.managerName}</span></p>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Requested USD:</span><span class="font-bold text-goldAccent">$${amt.toFixed(2)}</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Exchange Rate:</span><span class="font-bold">INR 88.50</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Converted INR:</span><span class="font-bold">INR ${Math.round(inrVal).toLocaleString('en-IN')}</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-gray-800 text-emeraldLive font-bold"><span>Net Payoutable (After 10% Deduction):</span><span>INR ${Math.round(netVal).toLocaleString('en-IN')}</span></div>
+                        <div class="flex justify-between py-1.5"><span>Compliance:</span><span class="font-bold">CA-Compliant Statement</span></div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('printable-statement-area').innerHTML = html;
+            document.getElementById('statement-modal').classList.remove('hidden');
         }
 
-        function downloadIndividualPayoutPDF(idx) {
+        function openIndividualPayoutModal(idx) {
             const inv = appData.investors[idx];
             const estProfitINR = (inv.capital || 0) * 0.102 * (30/365);
             const estProfitUSD = estProfitINR / 88.50;
             const status = inv.status || 'Pending';
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            document.getElementById('statement-modal-title').textContent = "Aureus Capital - Payout Statement";
+            let html = `
+                <div class="space-y-4">
+                    <div class="border-b border-goldAccent/20 pb-3">
+                        <h2 class="text-base font-bold text-goldAccent">${appData.appName || "Aureus Capital"}</h2>
+                        <p class="text-[11px] text-softGrey">Individual Investor Payout Statement</p>
+                        <p class="text-[11px] text-softWhite mt-1">Investor Name: <span class="font-bold text-goldAccent">${inv.name || 'Investor'}</span></p>
+                        <p class="text-[11px] text-softWhite">Status: <span class="font-bold text-emeraldLive">${status}</span></p>
+                    </div>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Investment Capital:</span><span class="font-bold">INR ${Number(inv.capital || 0).toLocaleString('en-IN')}</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Estimated Profit (INR):</span><span class="font-bold text-emeraldLive">INR ${Math.round(estProfitINR).toLocaleString('en-IN')}</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Estimated Profit (USD):</span><span class="font-bold text-emeraldLive">$${estProfitUSD.toFixed(2)}</span></div>
+                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Payout Status:</span><span class="font-bold">${status}</span></div>
+                        <div class="flex justify-between py-1.5"><span>Lead Manager:</span><span class="font-bold">${appData.managerName}</span></div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('printable-statement-area').innerHTML = html;
+            document.getElementById('statement-modal').classList.remove('hidden');
+        }
 
-            doc.setFontSize(18);
-            doc.setTextColor(223, 179, 115);
-            doc.text(appData.appName || "Aureus Capital", 14, 20);
-
-            doc.setFontSize(11);
-            doc.setTextColor(150, 150, 150);
-            doc.text("Individual Investor Payout Statement", 14, 28);
-            doc.text(`Investor Name: ${inv.name || 'Investor'}`, 14, 34);
-            doc.text(`Status: ${status}`, 14, 40);
-
-            doc.autoTable({
-                startY: 46,
-                head: [['Parameter', 'Details']],
-                body: [
-                    ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
-                    ['Estimated Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
-                    ['Estimated Profit (USD)', `$${estProfitUSD.toFixed(2)}`],
-                    ['Payout Status', status],
-                    ['Lead Manager', appData.managerName]
-                ],
-                theme: 'grid',
-                headStyles: { fillColor: [16, 23, 42] },
-                styles: { fontSize: 10 }
-            });
-
-            triggerInAppPreview(doc, `${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
+        function closeStatementModal() {
+            document.getElementById('statement-modal').classList.add('hidden');
         }
 
         window.addEventListener('load', () => {

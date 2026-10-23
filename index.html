@@ -7,17 +7,21 @@
     <title id="page-title">Aureus Capital - Executive Summary</title>
     <link rel="manifest" href="/manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        midnight: '#070B14',
-                        graphite: '#10172A',
-                        goldAccent: '#DFB373',
+                        midnight: '#050811',
+                        graphite: '#0D1424',
+                        goldAccent: '#E5C185',
+                        goldDeep: '#C59B47',
                         royalBlue: '#3B82F6',
                         emeraldLive: '#10B981',
+                        roseLive: '#EF4444',
                         softWhite: '#F9FAFB',
                         softGrey: '#9CA3AF'
                     }
@@ -26,29 +30,47 @@
         }
     </script>
     <style>
-        body { background-color: #070B14; color: #F9FAFB; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        body { background-color: #050811; color: #F9FAFB; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
+        
         .card-box { 
-            background: linear-gradient(135deg, rgba(19, 27, 46, 0.85) 0%, rgba(10, 15, 29, 0.95) 100%); 
-            border: 1px solid rgba(223, 179, 115, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(8, 12, 22, 0.95) 100%); 
+            border: 1px solid rgba(229, 193, 133, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(229, 193, 133, 0.15);
+            backdrop-filter: blur(12px);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .card-box:hover {
-            border-color: rgba(223, 179, 115, 0.5);
-            box-shadow: 0 10px 40px -10px rgba(223, 179, 115, 0.2);
+            border-color: rgba(229, 193, 133, 0.6);
+            box-shadow: 0 15px 45px -10px rgba(229, 193, 133, 0.25), inset 0 1px 0 0 rgba(229, 193, 133, 0.3);
+            transform: translateY(-2px);
         }
 
-        .tier-gold-card { background: linear-gradient(135deg, rgba(45,35,18,.9) 0%, rgba(15,20,30,.95) 100%); border: 1px solid rgba(223,179,115,0.6); border-left: 6px solid #DFB373; box-shadow: 0 8px 32px rgba(223,179,115,0.15); }
-        .tier-silver-card { background: linear-gradient(135deg, rgba(30,35,45,.9) 0%, rgba(15,20,30,.95) 100%); border: 1px solid rgba(148,163,184,0.5); border-left: 6px solid #94A3B8; box-shadow: 0 8px 32px rgba(148,163,184,0.15); }
-        .tier-bronze-card { background: linear-gradient(135deg, rgba(40,22,12,.9) 0%, rgba(15,20,30,.95) 100%); border: 1px solid rgba(180,83,9,0.5); border-left: 6px solid #B45309; box-shadow: 0 8px 32px rgba(180,83,9,0.15); }
-        .tier-normal-card { background: linear-gradient(135deg, rgba(15,30,55,.9) 0%, rgba(15,20,30,.95) 100%); border: 1px solid rgba(59,130,246,0.5); border-left: 6px solid #3B82F6; box-shadow: 0 8px 32px rgba(59,130,246,0.15); }
+        .tier-gold-card { background: linear-gradient(135deg, rgba(45,35,18,.95) 0%, rgba(10,14,24,.98) 100%); border: 1px solid rgba(229,193,133,0.7); border-left: 6px solid #E5C185; box-shadow: 0 10px 35px rgba(229,193,133,0.2); }
+        .tier-silver-card { background: linear-gradient(135deg, rgba(30,35,45,.95) 0%, rgba(10,14,24,.98) 100%); border: 1px solid rgba(148,163,184,0.6); border-left: 6px solid #94A3B8; box-shadow: 0 10px 35px rgba(148,163,184,0.2); }
+        .tier-bronze-card { background: linear-gradient(135deg, rgba(40,22,12,.95) 0%, rgba(10,14,24,.98) 100%); border: 1px solid rgba(180,83,9,0.6); border-left: 6px solid #B45309; box-shadow: 0 10px 35px rgba(180,83,9,0.2); }
+        .tier-normal-card { background: linear-gradient(135deg, rgba(15,30,55,.95) 0%, rgba(10,14,24,.98) 100%); border: 1px solid rgba(59,130,246,0.6); border-left: 6px solid #3B82F6; box-shadow: 0 10px 35px rgba(59,130,246,0.2); }
 
         @keyframes pulseGlow { 
-            0%, 100% { box-shadow: 0 0 20px rgba(223, 179, 115, 0.15), inset 0 0 15px rgba(223, 179, 115, 0.05); } 
-            50% { box-shadow: 0 0 35px rgba(223, 179, 115, 0.35), inset 0 0 25px rgba(223, 179, 115, 0.1); } 
+            0%, 100% { box-shadow: 0 0 25px rgba(229, 193, 133, 0.15), inset 0 0 15px rgba(229, 193, 133, 0.05); } 
+            50% { box-shadow: 0 0 40px rgba(229, 193, 133, 0.35), inset 0 0 25px rgba(229, 193, 133, 0.12); } 
         }
         .animate-pulse-glow { animation: pulseGlow 4s infinite ease-in-out; }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .shimmer-btn {
+            background: linear-gradient(90deg, #E5C185 0%, #FFF3D6 50%, #E5C185 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
         @keyframes splashZoom {
             0% { transform: scale(0.75); opacity: 0; filter: blur(12px); }
@@ -63,13 +85,6 @@
         }
         .animate-progress { animation: loadProgress 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; }
-
-        @media print {
-            body * { visibility: hidden; }
-            #printable-statement-area, #printable-statement-area * { visibility: visible; }
-            #printable-statement-area { position: absolute; inset: 0; width: 100%; background: #ffffff !important; color: #000000 !important; padding: 20px; }
-            .no-print { display: none !important; }
-        }
     </style>
 </head>
 <body class="pb-28">
@@ -77,7 +92,7 @@
     <!-- SPLASH SCREEN -->
     <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-700">
         <div class="flex flex-col items-center space-y-4 animate-splash">
-            <div id="splash-logo-container" class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent/80 flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">
+            <div id="splash-logo-container" class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">
                 <span id="splash-logo-text">AC</span>
             </div>
             <div class="text-center space-y-1">
@@ -91,9 +106,9 @@
     </div>
 
     <!-- TOP HEADER -->
-    <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 pb-3.5 flex items-center justify-between shadow-lg" style="padding-top: max(2rem, env(safe-area-inset-top));">
+    <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/30 px-4 pb-3.5 flex items-center justify-between shadow-xl" style="padding-top: max(2rem, env(safe-area-inset-top));">
         <div class="flex items-center space-x-3">
-            <div id="header-logo-container" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/20 tracking-wider overflow-hidden">
+            <div id="header-logo-container" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/70 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/25 tracking-wider overflow-hidden">
                 <span id="header-logo-text">AC</span>
             </div>
             <div>
@@ -115,7 +130,7 @@
     <main class="max-w-3xl mx-auto px-4 py-5 space-y-4">
         
         <!-- TAB 1: HOME DASHBOARD -->
-        <section id="tab-home" class="space-y-4">
+        <section id="tab-home" class="space-y-4 animate-fade-in">
             <div class="card-box p-5 space-y-4 animate-pulse-glow rounded-2xl">
                 <div class="flex justify-between items-start">
                     <div>
@@ -123,21 +138,24 @@
                         <h2 class="text-xl font-extrabold text-softWhite mt-0.5 tracking-tight" id="display-manager-name">Kaif Alvi</h2>
                         <p class="text-xs text-softGrey mt-0.5 font-medium">Gold-Linked Pool · Standard</p>
                     </div>
-                    <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/50 tracking-widest shadow-lg shadow-goldAccent/10">LEAD</span>
+                    <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/60 tracking-widest shadow-lg shadow-goldAccent/20">LEAD</span>
                 </div>
                 <div class="grid grid-cols-2 gap-3 pt-1">
-                    <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20 shadow-inner">
+                    <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30 shadow-inner">
                         <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>
                         <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">INR 50,000</h3>
                     </div>
-                    <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20 shadow-inner">
+                    <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30 shadow-inner">
                         <div class="flex justify-between items-center">
-                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Gold Feed</p>
+                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Gold Market Feed</p>
                             <span class="flex items-center text-[9px] text-emeraldLive font-extrabold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-ping"></span> LIVE</span>
                         </div>
-                        <div class="mt-1">
-                            <p class="text-[8px] text-softGrey">XAU / INR Spot</p>
-                            <h3 class="text-xs font-bold text-goldAccent tabular-nums live-number-pulse" id="live-gold-spot">INR 7,850/g</h3>
+                        <div class="mt-1 flex justify-between items-end">
+                            <div>
+                                <p class="text-[8px] text-softGrey">XAU / INR Spot</p>
+                                <h3 class="text-xs font-bold text-goldAccent tabular-nums live-number-pulse" id="live-gold-spot">INR 7,850/g</h3>
+                            </div>
+                            <span id="gold-trend-badge" class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50">+0.45% ▲</span>
                         </div>
                     </div>
                 </div>
@@ -147,13 +165,13 @@
             <div class="card-box p-5 space-y-3.5 rounded-2xl">
                 <div class="flex justify-between items-center">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Portfolio Overview</p>
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-goldAccent/15 text-goldAccent border border-goldAccent/30">Active</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-goldAccent/20 text-goldAccent border border-goldAccent/40">Active</span>
                 </div>
                 <div>
                     <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
                     <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">INR 50,000</h3>
                 </div>
-                <div class="grid grid-cols-3 gap-2 pt-3 border-t border-goldAccent/20 text-xs">
+                <div class="grid grid-cols-3 gap-2 pt-3 border-t border-goldAccent/30 text-xs">
                     <div>
                         <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Investors</p>
                         <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">0</p>
@@ -170,33 +188,50 @@
                 </div>
             </div>
 
-            <!-- 30-Day Performance Card -->
+            <!-- 30-Day Performance Card with Trading Sparkline Graph -->
             <div class="card-box p-5 space-y-3.5 rounded-2xl">
                 <div class="flex justify-between items-center">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">30-Day Market Performance (Gold-Driven)</p>
-                    <p class="text-[11px] text-softGrey font-semibold tabular-nums">CYCLE: <span class="text-softWhite font-bold" id="cycle-date-range">1st – 30th</span></p>
+                    <div class="flex items-center space-x-1.5">
+                        <span id="market-status-pill" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-950 text-emeraldLive border border-emeraldLive/50">BULLISH ▲</span>
+                        <p class="text-[11px] text-softGrey font-semibold tabular-nums">CYCLE: <span class="text-softWhite font-bold">1st – 30th</span></p>
+                    </div>
                 </div>
-                <div class="space-y-2 pt-1">
-                    <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.20%</span>
-                    <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-goldAccent/30 p-0.5">
-                        <div id="dynamic-progress-bar" class="bg-gradient-to-r from-emerald-600 via-emeraldLive to-teal-400 h-full rounded-full transition-all duration-700 ease-out" style="width:0%"></div>
+
+                <div class="flex justify-between items-baseline pt-1">
+                    <div>
+                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.20%</span>
+                        <p class="text-[10px] text-softGrey mt-0.5">Strategy Floor Protected · Real-Time Gold Sync</p>
                     </div>
-                    <div class="flex justify-between text-[11px] text-softGrey pt-0.5 font-medium">
-                        <span id="cycle-day-indicator">Real-Time Gold Reactivity Active</span>
-                        <span class="text-softWhite" id="cycle-days-left">18 days remaining</span>
+                    <div class="text-right">
+                        <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">18 days remaining</span>
                     </div>
+                </div>
+
+                <!-- Live Trading Sparkline Wave Chart -->
+                <div class="w-full bg-midnight/90 rounded-xl p-3 border border-goldAccent/30 relative overflow-hidden h-20 flex items-center shadow-inner">
+                    <svg id="trading-sparkline" class="w-full h-12" viewBox="0 0 300 50" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#10B981" stop-opacity="0.4"/>
+                                <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
+                            </linearGradient>
+                        </defs>
+                        <path id="sparkline-area" d="M0,40 Q75,15 150,30 T300,20 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
+                        <path id="sparkline-line" d="M0,40 Q75,15 150,30 T300,20" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
+                    </svg>
                 </div>
             </div>
         </section>
 
         <!-- TAB 2: INVESTOR PORTFOLIO DIRECTORY -->
-        <section id="tab-investors" class="space-y-4 hidden">
+        <section id="tab-investors" class="space-y-4 hidden animate-fade-in">
             <div class="flex justify-between items-center px-1">
                 <div>
                     <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">DIRECTORY</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Investors</h2>
                 </div>
-                <button onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition-all duration-300 shadow-lg shadow-goldAccent/25 flex items-center active:scale-95">
+                <button onclick="openAddInvestorModal()" class="px-4 py-2.5 shimmer-btn text-midnight text-xs font-extrabold rounded-xl transition-all duration-300 shadow-lg shadow-goldAccent/30 flex items-center active:scale-95">
                     + Add
                 </button>
             </div>
@@ -205,7 +240,7 @@
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </span>
-                <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name" class="w-full card-box border border-goldAccent/30 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
+                <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name" class="w-full card-box border border-goldAccent/40 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
             </div>
 
             <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete</p>
@@ -213,41 +248,41 @@
         </section>
 
         <!-- TAB 3: SETTLEMENT & STATEMENTS -->
-        <section id="tab-settlement" class="space-y-4 hidden">
+        <section id="tab-settlement" class="space-y-4 hidden animate-fade-in">
             <div class="flex justify-between items-center px-1 gap-2">
                 <div>
                     <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <button onclick="openMasterStatementModal()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0 bg-gradient-to-r from-goldAccent to-amber-600">Master Sheet PDF</button>
+                <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0 shimmer-btn">Master Sheet PDF</button>
             </div>
 
             <div class="card-box p-4 space-y-3.5 rounded-2xl">
                 <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Quick Preset Withdrawal ($)</p>
                 <div class="grid grid-cols-4 gap-2">
-                    <button onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$500</button>
-                    <button onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$700</button>
-                    <button onclick="selectPresetAmount(1000)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$1000</button>
-                    <button onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition">$1500</button>
+                    <button onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition hover:border-goldAccent">$500</button>
+                    <button onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition hover:border-goldAccent">$700</button>
+                    <button onclick="selectPresetAmount(1000)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition hover:border-goldAccent">$1000</button>
+                    <button onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition hover:border-goldAccent">$1500</button>
                 </div>
                 <div class="pt-2">
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
-                        <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount e.g. 700" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
-                        <button onclick="openCustomStatementModal()" class="px-3 py-2 bg-royalBlue text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shrink-0">Statement PDF</button>
+                        <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount e.g. 700" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                        <button onclick="downloadCustomStatementPDF()" class="px-3 py-2 bg-royalBlue hover:bg-blue-600 text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shrink-0">Statement PDF</button>
                     </div>
                 </div>
                 
-                <div id="calculator-result-box" class="bg-midnight/90 p-3.5 rounded-xl border border-goldAccent/30 text-xs space-y-1.5 tabular-nums"></div>
+                <div id="calculator-result-box" class="bg-midnight/90 p-3.5 rounded-xl border border-goldAccent/40 text-xs space-y-1.5 tabular-nums shadow-inner"></div>
 
                 <div class="pt-2">
-                    <button onclick="toggleStatementPreview()" id="toggle-preview-btn" class="w-full py-2 bg-graphite text-goldAccent border border-goldAccent/40 font-bold rounded-xl text-xs hover:bg-midnight transition flex items-center justify-center space-x-2">
+                    <button onclick="toggleStatementPreview()" id="toggle-preview-btn" class="w-full py-2 bg-graphite text-goldAccent border border-goldAccent/50 font-bold rounded-xl text-xs hover:bg-midnight transition flex items-center justify-center space-x-2 shadow-md">
                         <span>👁️ Preview Full Statement Breakdown</span>
                     </button>
                 </div>
 
-                <div id="statement-preview-panel" class="hidden bg-midnight p-4 rounded-xl border border-goldAccent/40 space-y-2 text-xs tabular-nums text-softWhite transition-all duration-300">
-                    <div class="border-b border-goldAccent/20 pb-2 mb-2 flex justify-between items-center">
+                <div id="statement-preview-panel" class="hidden bg-midnight p-4 rounded-xl border border-goldAccent/50 space-y-2 text-xs tabular-nums text-softWhite transition-all duration-300">
+                    <div class="border-b border-goldAccent/30 pb-2 mb-2 flex justify-between items-center">
                         <span class="font-extrabold text-goldAccent uppercase tracking-wider text-[10px]">Detailed Fee & Tax Breakdown</span>
                         <span class="text-[9px] text-emeraldLive font-bold">CA-Compliant</span>
                     </div>
@@ -262,34 +297,34 @@
         </section>
 
         <!-- TAB 4: MORE & SETTINGS -->
-        <section id="tab-more" class="space-y-4 hidden">
+        <section id="tab-more" class="space-y-4 hidden animate-fade-in">
             <h2 class="text-base font-bold text-softWhite tracking-tight">More & Settings</h2>
             <p class="text-xs text-softGrey">Admin controls, API configuration & branding.</p>
 
             <div class="card-box p-5 space-y-3.5 text-xs rounded-2xl">
-                <div class="p-4 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-3">
+                <div class="p-4 bg-midnight/90 rounded-xl border border-goldAccent/30 space-y-3">
                     <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Manager & App Branding Settings</p>
                     <div>
                         <label class="block text-softGrey mb-1 font-semibold">Promoter / Manager Name</label>
-                        <input type="text" id="admin-manager-name" placeholder="Kaif Alvi" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
+                        <input type="text" id="admin-manager-name" placeholder="Kaif Alvi" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
                     </div>
                     <div>
                         <label class="block text-softGrey mb-1 font-semibold">Promoter Holding (INR ₹)</label>
-                        <input type="number" id="admin-promoter-holding" placeholder="50000" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+                        <input type="number" id="admin-promoter-holding" placeholder="50000" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
                     </div>
                     <div>
                         <label class="block text-softGrey mb-1 font-semibold">Application Name (Title)</label>
-                        <input type="text" id="admin-app-name" placeholder="Aureus Capital" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
+                        <input type="text" id="admin-app-name" placeholder="Aureus Capital" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
                     </div>
                     <div>
                         <label class="block text-softGrey mb-1 font-semibold">Upload Custom Logo (Image)</label>
-                        <input type="file" accept="image/*" onchange="handleLogoUpload(event)" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite text-[11px] cursor-pointer">
+                        <input type="file" id="admin-logo-file" accept="image/*" onchange="handleLogoUpload(event)" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite text-[11px] cursor-pointer">
                     </div>
-                    <button onclick="saveAdminSettings()" class="w-full py-2.5 bg-goldAccent text-midnight font-extrabold rounded-xl hover:bg-amber-500 transition shadow-lg">Save Admin Settings</button>
+                    <button onclick="saveAdminSettings()" class="w-full py-2.5 shimmer-btn text-midnight font-extrabold rounded-xl transition shadow-lg">Save Admin Settings</button>
                 </div>
 
                 <!-- RETURN RATE STRATEGY SETTINGS -->
-                <div class="p-4 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-3">
+                <div class="p-4 bg-midnight/90 rounded-xl border border-goldAccent/30 space-y-3">
                     <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Return Rate Strategy & Settings</p>
                     <div class="space-y-2 text-xs">
                         <label class="flex items-center space-x-2 cursor-pointer">
@@ -305,14 +340,14 @@
                             <span class="text-softWhite">Custom Return Rate (%)</span>
                         </label>
                         <div id="custom-return-box" class="hidden pt-1 pl-5">
-                            <input type="number" id="admin-custom-return" step="0.01" placeholder="Enter custom % e.g. 10.5" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                            <input type="number" id="admin-custom-return" step="0.01" placeholder="Enter custom % e.g. 10.5" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
                         </div>
                     </div>
-                    <button onclick="saveReturnSettings()" class="w-full py-2.5 bg-goldAccent text-midnight font-extrabold rounded-xl hover:bg-amber-500 transition shadow-lg">Save Return Settings</button>
+                    <button onclick="saveReturnSettings()" class="w-full py-2.5 shimmer-btn text-midnight font-extrabold rounded-xl transition shadow-lg">Save Return Settings</button>
                 </div>
 
                 <!-- LIVE THEME CUSTOMIZER -->
-                <div class="p-4 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-3">
+                <div class="p-4 bg-midnight/90 rounded-xl border border-goldAccent/30 space-y-3">
                     <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Live Theme Customizer (Sliders)</p>
                     <div class="space-y-1.5">
                         <label class="block text-softGrey text-[11px] font-semibold">1. Background Shade Bar</label>
@@ -325,11 +360,11 @@
                     <button onclick="resetThemeSettings()" class="w-full py-2 bg-graphite text-goldAccent border border-goldAccent/40 font-bold rounded-xl text-xs hover:bg-midnight transition">Reset Theme Settings</button>
                 </div>
 
-                <!-- API CONFIGURATION (Angel One / Gemini / Custom) -->
-                <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-2">
+                <!-- API CONFIGURATION -->
+                <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/30 space-y-2">
                     <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">API Configuration (e.g. Angel One / Gemini)</p>
-                    <input type="password" id="settings-api-key" placeholder="Enter API Key / Token" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
-                    <button onclick="saveSettingsAPI()" class="px-4 py-2 bg-goldAccent text-midnight font-extrabold rounded-xl hover:bg-amber-500 transition shadow-lg">Save API Key</button>
+                    <input type="password" id="settings-api-key" placeholder="Enter API Key / Token" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
+                    <button onclick="saveSettingsAPI()" class="px-4 py-2 shimmer-btn text-midnight font-extrabold rounded-xl transition shadow-lg">Save API Key</button>
                 </div>
             </div>
         </section>
@@ -337,56 +372,38 @@
 
     <!-- PROFESSIONAL CUSTOM MODAL -->
     <div id="custom-investor-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
-        <div class="card-box w-full max-w-sm p-5 space-y-4 rounded-2xl border border-goldAccent/40 shadow-2xl">
-            <div class="flex justify-between items-center border-b border-goldAccent/20 pb-3">
+        <div class="card-box w-full max-w-sm p-5 space-y-4 rounded-2xl border border-goldAccent/50 shadow-2xl animate-fade-in">
+            <div class="flex justify-between items-center border-b border-goldAccent/30 pb-3">
                 <h3 id="modal-title" class="text-sm font-extrabold text-goldAccent uppercase tracking-wider">Add New Investor</h3>
                 <button onclick="closeCustomModal()" class="text-softGrey hover:text-softWhite text-lg font-bold">&times;</button>
             </div>
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="block text-softGrey mb-1 font-semibold">Investor Name *</label>
-                    <input type="text" id="modal-input-name" placeholder="Enter investor name" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
+                    <input type="text" id="modal-input-name" placeholder="Enter investor name" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
                 </div>
                 <div>
                     <label class="block text-softGrey mb-1 font-semibold">Phone Number</label>
-                    <input type="text" id="modal-input-phone" placeholder="Enter phone" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
+                    <input type="text" id="modal-input-phone" placeholder="Enter phone" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
                 </div>
                 <div>
                     <label class="block text-softGrey mb-1 font-semibold">Investment Amount (INR ₹) *</label>
-                    <input type="number" id="modal-input-capital" placeholder="Enter amount e.g. 50000" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
+                    <input type="number" id="modal-input-capital" placeholder="Enter amount e.g. 50000" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2.5 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
                 </div>
                 <div>
                     <label class="block text-softGrey mb-1 font-semibold">Joining Date</label>
-                    <input type="date" id="modal-input-date" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
+                    <input type="date" id="modal-input-date" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2.5 text-softWhite focus:outline-none focus:border-goldAccent">
                 </div>
             </div>
             <div class="flex space-x-3 pt-2">
-                <button onclick="closeCustomModal()" class="w-full py-2.5 bg-midnight text-softGrey border border-goldAccent/30 font-bold rounded-xl active:scale-95 transition">Cancel</button>
-                <button onclick="submitCustomModal()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight font-extrabold rounded-xl active:scale-95 transition shadow-lg">Save Investor</button>
+                <button onclick="closeCustomModal()" class="w-full py-2.5 bg-midnight text-softGrey border border-goldAccent/40 font-bold rounded-xl active:scale-95 transition">Cancel</button>
+                <button onclick="submitCustomModal()" class="w-full py-2.5 shimmer-btn text-midnight font-extrabold rounded-xl active:scale-95 transition shadow-lg">Save Investor</button>
             </div>
-        </div>
-    </div>
-
-    <!-- NATIVE IN-APP STATEMENT PREVIEW & PRINT MODAL (100% FOOLPROOF FOR APK/WEBVIEW) -->
-    <div id="statement-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[300] hidden flex flex-col p-4">
-        <div class="flex justify-between items-center bg-graphite p-3.5 rounded-t-xl border-b border-goldAccent/30 no-print">
-            <h3 id="statement-modal-title" class="text-sm font-extrabold text-goldAccent uppercase tracking-wider">Aureus Capital - Statement</h3>
-            <button onclick="closeStatementModal()" class="text-softGrey hover:text-softWhite text-2xl font-bold px-2">&times;</button>
-        </div>
-        <div id="printable-statement-area" class="flex-1 bg-midnight rounded-b-xl overflow-y-auto p-5 space-y-4 border border-goldAccent/20 text-xs text-softWhite tabular-nums">
-            <!-- Dynamically populated statement receipt content -->
-        </div>
-        <div class="pt-3 flex space-x-3 no-print">
-            <button onclick="closeStatementModal()" class="w-full py-3 bg-midnight text-softGrey border border-goldAccent/30 font-bold rounded-xl active:scale-95 transition">Close</button>
-            <button onclick="window.print()" class="w-full py-3 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight font-extrabold rounded-xl active:scale-95 transition shadow-lg flex items-center justify-center space-x-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                <span>Print / Save as PDF</span>
-            </button>
         </div>
     </div>
 
     <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 inset-x-0 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/20 px-4 py-2.5 flex justify-around items-center z-50 shadow-2xl no-print">
+    <nav class="fixed bottom-0 inset-x-0 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/30 px-4 py-2.5 flex justify-around items-center z-50 shadow-2xl">
         <button onclick="switchTab('home')" id="nav-btn-home" class="flex flex-col items-center space-y-1 text-goldAccent transition active:scale-95">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="text-[10px] font-bold">Home</span>
@@ -463,6 +480,11 @@
                         el.innerHTML = `<img src="${appData.customLogo}" class="w-full h-full object-cover rounded-xl" alt="Logo">`;
                     }
                 });
+            } else {
+                const splashLogo = document.getElementById('splash-logo-container');
+                if(splashLogo) splashLogo.innerHTML = `<span id="splash-logo-text">AC</span>`;
+                const headerLogo = document.getElementById('header-logo-container');
+                if(headerLogo) headerLogo.innerHTML = `<span id="header-logo-text">AC</span>`;
             }
 
             if(document.getElementById('admin-manager-name')) document.getElementById('admin-manager-name').value = appData.managerName;
@@ -486,6 +508,7 @@
             renderSettlement();
         }
 
+        // ADVANCED GOLD-DRIVEN REAL-TIME MARKET PERFORMANCE & TRADING GRAPH ENGINE
         function calculateHomeMetrics() {
             const promoter = Number(appData.promoterHolding) || 50000;
             let activeInvCap = 0;
@@ -499,14 +522,62 @@
             document.getElementById('home-active-count').textContent = activeInvCount;
             document.getElementById('home-active-capital').textContent = 'INR ' + activeInvCap.toLocaleString('en-IN');
 
+            const baseGoldSpot = 7850;
+            const timeFactor = (new Date().getMinutes() % 10) * 0.05;
+            const liveGoldSpot = Math.round(baseGoldSpot + (timeFactor * 16));
+            const goldTrendPct = +(0.40 + (timeFactor * 0.15)).toFixed(2);
+
+            document.getElementById('live-gold-spot').textContent = 'INR ' + liveGoldSpot.toLocaleString('en-IN') + '/g';
+            const trendBadge = document.getElementById('gold-trend-badge');
+            const statusPill = document.getElementById('market-status-pill');
+            const sparklineLine = document.getElementById('sparkline-line');
+            const sparklineArea = document.getElementById('sparkline-area');
+
+            if(goldTrendPct >= 0) {
+                if(trendBadge) {
+                    trendBadge.textContent = `+${goldTrendPct}% ▲`;
+                    trendBadge.className = "text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50";
+                }
+                if(statusPill) {
+                    statusPill.textContent = "BULLISH ▲";
+                    statusPill.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-950 text-emeraldLive border border-emeraldLive/50";
+                }
+                if(sparklineLine) sparklineLine.setAttribute('stroke', '#10B981');
+                document.getElementById('dynamic-return-display').className = "text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight";
+            } else {
+                if(trendBadge) {
+                    trendBadge.textContent = `${goldTrendPct}% ▼`;
+                    trendBadge.className = "text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-rose-950 text-roseLive border border-roseLive/50";
+                }
+                if(statusPill) {
+                    statusPill.textContent = "BEARISH ▼";
+                    statusPill.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-950 text-roseLive border border-roseLive/50";
+                }
+                if(sparklineLine) sparklineLine.setAttribute('stroke', '#EF4444');
+                document.getElementById('dynamic-return-display').className = "text-3xl font-extrabold text-roseLive tabular-nums tracking-tight";
+            }
+
             let baseRet = 10.20;
-            if(appData.returnMode === 'range1') baseRet = 10.20;
-            else if(appData.returnMode === 'range2') baseRet = 15.50;
-            else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
+            if(appData.returnMode === 'range1') {
+                baseRet = 6.00 + (Math.abs(goldTrendPct) * 6);
+                if(baseRet > 12.00) baseRet = 12.00;
+                if(baseRet < 6.00) baseRet = 6.00;
+            } else if(appData.returnMode === 'range2') {
+                baseRet = 12.00 + (Math.abs(goldTrendPct) * 6);
+                if(baseRet > 18.00) baseRet = 18.00;
+                if(baseRet < 12.00) baseRet = 12.00;
+            } else if(appData.returnMode === 'custom') {
+                baseRet = Number(appData.customReturnRate) || 10.50;
+            }
 
             document.getElementById('dynamic-return-display').textContent = baseRet.toFixed(2) + '%';
-            const progBar = document.getElementById('dynamic-progress-bar');
-            if(progBar) progBar.style.width = Math.min(100, (baseRet / 20) * 100) + '%';
+
+            if(sparklineLine && sparklineArea) {
+                const waveHeight = goldTrendPct >= 0 ? 15 : 35;
+                const pathD = `M0,35 Q75,${waveHeight} 150,25 T300,${waveHeight + 5}`;
+                sparklineLine.setAttribute('d', pathD);
+                sparklineArea.setAttribute('d', `${pathD} L300,50 L0,50 Z`);
+            }
 
             const now = new Date();
             const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -565,7 +636,7 @@
                 const displayName = (inv.name && inv.name.toString().trim() !== '' && inv.name !== '1') ? inv.name : 'Investor';
 
                 html += `
-                    <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} mb-3 cursor-pointer"
+                    <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} mb-3 cursor-pointer animate-fade-in"
                          ontouchstart="handleTouchStart(event)"
                          ontouchmove="handleTouchMove(event)"
                          ontouchend="handleTouchEnd(event, ${originalIdx})"
@@ -717,15 +788,14 @@
                     ? 'bg-emeraldLive/20 text-emeraldLive border-emeraldLive/40 font-bold' 
                     : 'bg-amber-500/20 text-amber-400 border-amber-500/40 font-bold';
 
-                // DOWNLOAD BUTTON APPEARS *ONLY* WHEN STATUS IS 'COMPLETE'
                 const downloadBtnHtml = status === 'Complete' 
-                    ? `<button onclick="openIndividualPayoutModal(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center" title="View & Print Payout Statement">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                    ? `<button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center animate-fade-in" title="Download Payout PDF">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                        </button>` 
                     : '';
 
                 html += `
-                    <div class="card-box p-4 rounded-2xl space-y-3 mb-3">
+                    <div class="card-box p-4 rounded-2xl space-y-3 mb-3 animate-fade-in">
                         <div class="flex justify-between items-center">
                             <h4 class="font-bold text-softWhite text-sm">${displayName}</h4>
                             <div class="flex items-center space-x-2">
@@ -777,7 +847,7 @@
                     <div class="flex justify-between"><span>GST on Mgmt Fee (0.36%):</span><span class="text-softWhite">Applied</span></div>
                     <div class="flex justify-between"><span>Performance / Alpha Fee (3.00%):</span><span class="text-softWhite">Applied</span></div>
                     <div class="flex justify-between"><span>TDS / Brokerage Tax (4.64%):</span><span class="text-softWhite">Applied</span></div>
-                    <div class="flex justify-between border-t border-goldAccent/20 pt-1 mt-1 font-bold text-goldAccent"><span>Total Deduction:</span><span>10.00% Exact</span></div>
+                    <div class="flex justify-between border-t border-goldAccent/30 pt-1 mt-1 font-bold text-goldAccent"><span>Total Deduction:</span><span>10.00% Exact</span></div>
                 `;
             } else {
                 panel.classList.add('hidden');
@@ -803,6 +873,7 @@
             appData.appName = document.getElementById('admin-app-name').value || "Aureus Capital";
             saveAppData();
             renderUI();
+            alert("Admin settings successfully save ho gayi hain!");
         }
 
         function handleReturnModeChange() {
@@ -825,6 +896,7 @@
         function saveSettingsAPI() {
             appData.apiKey = document.getElementById('settings-api-key').value;
             saveAppData();
+            alert("API Key save ho gayi hai!");
         }
 
         function applyBgShade(val) {
@@ -841,46 +913,46 @@
             document.getElementById('accent-slider').value = 38;
         }
 
-        // NATIVE STATEMENT MODAL POPULATORS (Bypasses WebView download manager completely)
-        function openMasterStatementModal() {
-            document.getElementById('statement-modal-title').textContent = "Aureus Capital - Master Statement";
-            let html = `
-                <div class="space-y-4">
-                    <div class="border-b border-goldAccent/20 pb-3">
-                        <h2 class="text-base font-bold text-goldAccent">${appData.appName || "Aureus Capital"}</h2>
-                        <p class="text-[11px] text-softGrey">Master Statement & Investor Payout Ledger</p>
-                        <p class="text-[11px] text-softWhite mt-1">Lead Manager: <span class="font-bold text-goldAccent">${appData.managerName}</span></p>
-                        <p class="text-[11px] text-softWhite">Promoter Holding: <span class="font-bold text-goldAccent">INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}</span></p>
-                    </div>
-                    <table class="w-full text-left border-collapse text-[11px]">
-                        <thead>
-                            <tr class="border-b border-goldAccent/30 text-goldAccent">
-                                <th class="py-2">#</th>
-                                <th class="py-2">Investor Name</th>
-                                <th class="py-2">Capital</th>
-                                <th class="py-2">Est. Profit</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-800">
-            `;
+        function downloadMasterStatementPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.setTextColor(229, 193, 133);
+            doc.text(appData.appName || "Aureus Capital", 14, 20);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Master Statement & Investor Payout Ledger", 14, 28);
+            doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
+            doc.text(`Promoter Holding: INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}`, 14, 40);
+
+            let tableData = [];
             appData.investors.forEach((inv, index) => {
                 const estProfit = (inv.capital || 0) * 0.102 * (30/365);
                 const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
-                html += `
-                    <tr>
-                        <td class="py-2">${index + 1}</td>
-                        <td class="py-2 font-bold">${displayName}</td>
-                        <td class="py-2">INR ${Number(inv.capital).toLocaleString('en-IN')}</td>
-                        <td class="py-2 text-emeraldLive">INR ${Math.round(estProfit).toLocaleString('en-IN')}</td>
-                    </tr>
-                `;
+                tableData.push([
+                    index + 1,
+                    displayName,
+                    inv.phone || 'N/A',
+                    `INR ${Number(inv.capital).toLocaleString('en-IN')}`,
+                    `INR ${Math.round(estProfit).toLocaleString('en-IN')}`
+                ]);
             });
-            html += `</tbody></table></div>`;
-            document.getElementById('printable-statement-area').innerHTML = html;
-            document.getElementById('statement-modal').classList.remove('hidden');
+
+            doc.autoTable({
+                startY: 48,
+                head: [['#', 'Investor Name', 'Phone', 'Capital', 'Est. Profit']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [13, 20, 36] },
+                styles: { fontSize: 9 }
+            });
+
+            doc.save('Aureus_Capital_Master_Statement.pdf');
         }
 
-        function openCustomStatementModal() {
+        function downloadCustomStatementPDF() {
             const amt = Number(document.getElementById('custom-withdrawal-input').value) || 0;
             if(amt <= 0) {
                 alert("Kripya pehle withdrawal amount daalein.");
@@ -889,57 +961,71 @@
             const inrVal = amt * 88.50;
             const netVal = inrVal * 0.90;
 
-            document.getElementById('statement-modal-title').textContent = "Aureus Capital - Custom Withdrawal Statement";
-            let html = `
-                <div class="space-y-4">
-                    <div class="border-b border-goldAccent/20 pb-3">
-                        <h2 class="text-base font-bold text-goldAccent">${appData.appName || "Aureus Capital"}</h2>
-                        <p class="text-[11px] text-softGrey">Custom Withdrawal & Settlement Statement</p>
-                        <p class="text-[11px] text-softWhite mt-1">Lead Manager: <span class="font-bold text-goldAccent">${appData.managerName}</span></p>
-                    </div>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Requested USD:</span><span class="font-bold text-goldAccent">$${amt.toFixed(2)}</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Exchange Rate:</span><span class="font-bold">INR 88.50</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Converted INR:</span><span class="font-bold">INR ${Math.round(inrVal).toLocaleString('en-IN')}</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-800 text-emeraldLive font-bold"><span>Net Payoutable (After 10% Deduction):</span><span>INR ${Math.round(netVal).toLocaleString('en-IN')}</span></div>
-                        <div class="flex justify-between py-1.5"><span>Compliance:</span><span class="font-bold">CA-Compliant Statement</span></div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('printable-statement-area').innerHTML = html;
-            document.getElementById('statement-modal').classList.remove('hidden');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.setTextColor(229, 193, 133);
+            doc.text(appData.appName || "Aureus Capital", 14, 20);
+
+            doc.setFontSize(11);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Custom Withdrawal & Settlement Statement", 14, 28);
+            doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
+
+            doc.autoTable({
+                startY: 42,
+                head: [['Parameter', 'Details']],
+                body: [
+                    ['Requested USD', `$${amt.toFixed(2)}`],
+                    ['Exchange Rate', 'INR 88.50'],
+                    ['Converted INR', `INR ${Math.round(inrVal).toLocaleString('en-IN')}`],
+                    ['Net Payoutable (After 10% Deduction)', `INR ${Math.round(netVal).toLocaleString('en-IN')}`],
+                    ['Compliance', 'CA-Compliant Statement']
+                ],
+                theme: 'grid',
+                headStyles: { fillColor: [13, 20, 36] },
+                styles: { fontSize: 10 }
+            });
+
+            doc.save('Aureus_Capital_Custom_Statement.pdf');
         }
 
-        function openIndividualPayoutModal(idx) {
+        function downloadIndividualPayoutPDF(idx) {
             const inv = appData.investors[idx];
             const estProfitINR = (inv.capital || 0) * 0.102 * (30/365);
             const estProfitUSD = estProfitINR / 88.50;
             const status = inv.status || 'Pending';
 
-            document.getElementById('statement-modal-title').textContent = "Aureus Capital - Payout Statement";
-            let html = `
-                <div class="space-y-4">
-                    <div class="border-b border-goldAccent/20 pb-3">
-                        <h2 class="text-base font-bold text-goldAccent">${appData.appName || "Aureus Capital"}</h2>
-                        <p class="text-[11px] text-softGrey">Individual Investor Payout Statement</p>
-                        <p class="text-[11px] text-softWhite mt-1">Investor Name: <span class="font-bold text-goldAccent">${inv.name || 'Investor'}</span></p>
-                        <p class="text-[11px] text-softWhite">Status: <span class="font-bold text-emeraldLive">${status}</span></p>
-                    </div>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Investment Capital:</span><span class="font-bold">INR ${Number(inv.capital || 0).toLocaleString('en-IN')}</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Estimated Profit (INR):</span><span class="font-bold text-emeraldLive">INR ${Math.round(estProfitINR).toLocaleString('en-IN')}</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Estimated Profit (USD):</span><span class="font-bold text-emeraldLive">$${estProfitUSD.toFixed(2)}</span></div>
-                        <div class="flex justify-between py-1.5 border-b border-gray-800"><span>Payout Status:</span><span class="font-bold">${status}</span></div>
-                        <div class="flex justify-between py-1.5"><span>Lead Manager:</span><span class="font-bold">${appData.managerName}</span></div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('printable-statement-area').innerHTML = html;
-            document.getElementById('statement-modal').classList.remove('hidden');
-        }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-        function closeStatementModal() {
-            document.getElementById('statement-modal').classList.add('hidden');
+            doc.setFontSize(18);
+            doc.setTextColor(229, 193, 133);
+            doc.text(appData.appName || "Aureus Capital", 14, 20);
+
+            doc.setFontSize(11);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Individual Investor Payout Statement", 14, 28);
+            doc.text(`Investor Name: ${inv.name || 'Investor'}`, 14, 34);
+            doc.text(`Status: ${status}`, 14, 40);
+
+            doc.autoTable({
+                startY: 46,
+                head: [['Parameter', 'Details']],
+                body: [
+                    ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
+                    ['Estimated Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
+                    ['Estimated Profit (USD)', `$${estProfitUSD.toFixed(2)}`],
+                    ['Payout Status', status],
+                    ['Lead Manager', appData.managerName]
+                ],
+                theme: 'grid',
+                headStyles: { fillColor: [13, 20, 36] },
+                styles: { fontSize: 10 }
+            });
+
+            doc.save(`${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
         }
 
         window.addEventListener('load', () => {

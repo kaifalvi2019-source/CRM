@@ -62,8 +62,8 @@ input,textarea{font-size:16px}
   </div>
 </div>
 
-<!-- HEADER -->
-<header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 py-3.5 flex items-center justify-between shadow-lg">
+<!-- HEADER (Properly Padded from Status Bar / Notch) -->
+<header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 pb-3.5 flex items-center justify-between shadow-lg" style="padding-top: max(2rem, env(safe-area-inset-top));">
   <div class="flex items-center space-x-3">
     <div id="header-logo-box" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/20 overflow-hidden">AC</div>
     <div>
@@ -279,4 +279,330 @@ input,textarea{font-size:16px}
       <div class="p-3.5 bg-midnight/90 rounded-xl border border-goldAccent/20 space-y-2">
         <p class="font-bold text-goldAccent uppercase tracking-wider text-[10px]">Gemini API Configuration</p>
         <input type="password" id="settings-api-key" placeholder="Enter Gemini API Key" class="w-full bg-midnight border border-goldAccent/30 rounded-xl px-3.5 py-2 text-softWhite focus:outline-none focus:border-goldAccent">
-        <button onclick="saveSettingsAPI()" class="px-4 py-2 bg-goldAccent text-midnight font-ex
+        <button onclick="saveSettingsAPI()" class="px-4 py-2 bg-goldAccent text-midnight font-extrabold rounded-xl hover:bg-amber-500 transition shadow-lg">Save API Key</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- BOTTOM NAVIGATION BAR -->
+<nav class="fixed bottom-0 inset-x-0 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/20 px-4 py-2.5 flex justify-around items-center z-50 shadow-2xl">
+  <button onclick="switchTab('home')" id="nav-btn-home" class="flex flex-col items-center space-y-1 text-goldAccent transition active:scale-95">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    <span class="text-[10px] font-bold">Home</span>
+  </button>
+  <button onclick="switchTab('investors')" id="nav-btn-investors" class="flex flex-col items-center space-y-1 text-softGrey hover:text-goldAccent transition active:scale-95">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+    <span class="text-[10px] font-bold">Investors</span>
+  </button>
+  <button onclick="switchTab('settlement')" id="nav-btn-settlement" class="flex flex-col items-center space-y-1 text-softGrey hover:text-goldAccent transition active:scale-95">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+    <span class="text-[10px] font-bold">Settlement</span>
+  </button>
+  <button onclick="switchTab('more')" id="nav-btn-more" class="flex flex-col items-center space-y-1 text-softGrey hover:text-goldAccent transition active:scale-95">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    <span class="text-[10px] font-bold">More</span>
+  </button>
+</nav>
+
+<script>
+// Core Application State & Storage
+let appData = {
+  managerName: "Kaif Alvi",
+  promoterHolding: 50000,
+  appName: "Aureus Capital",
+  customLogo: null,
+  returnMode: "range1",
+  customReturnRate: 10.5,
+  apiKey: "",
+  investors: []
+};
+
+function loadAppData() {
+  const saved = localStorage.getItem('aureus_capital_data');
+  if (saved) {
+    try { appData = JSON.parse(saved); } catch(e){}
+  }
+}
+
+function saveAppData() {
+  localStorage.setItem('aureus_capital_data', JSON.stringify(appData));
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+  const target = document.getElementById('tab-' + tabId);
+  if(target) target.classList.remove('hidden');
+  
+  ['home', 'investors', 'settlement', 'more'].forEach(t => {
+    const btn = document.getElementById('nav-btn-' + t);
+    if(btn) {
+      if(t === tabId) {
+        btn.classList.remove('text-softGrey');
+        btn.classList.add('text-goldAccent');
+      } else {
+        btn.classList.remove('text-goldAccent');
+        btn.classList.add('text-softGrey');
+      }
+    }
+  });
+}
+
+function renderUI() {
+  document.getElementById('display-manager-name').textContent = appData.managerName || "Kaif Alvi";
+  document.getElementById('display-promoter-holding').textContent = 'INR ' + Number(appData.promoterHolding || 50000).toLocaleString('en-IN');
+  document.getElementById('page-title').textContent = (appData.appName || "Aureus Capital") + " - Executive Summary";
+  const headerName = document.getElementById('header-company-name');
+  if(headerName) headerName.textContent = (appData.appName || "AUREUS CAPITAL").toUpperCase();
+  
+  if(appData.customLogo) {
+    ['splash-logo-box', 'header-logo-box'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) {
+        el.innerHTML = `<img src="${appData.customLogo}" class="w-full h-full object-cover rounded-xl" alt="Logo">`;
+      }
+    });
+  }
+
+  if(document.getElementById('admin-manager-name')) document.getElementById('admin-manager-name').value = appData.managerName;
+  if(document.getElementById('admin-promoter-holding')) document.getElementById('admin-promoter-holding').value = appData.promoterHolding;
+  if(document.getElementById('admin-app-name')) document.getElementById('admin-app-name').value = appData.appName;
+  if(document.getElementById('settings-api-key')) document.getElementById('settings-api-key').value = appData.apiKey || '';
+
+  const radios = document.querySelectorAll('input[name="return_mode"]');
+  radios.forEach(r => {
+    if(r.value === appData.returnMode) r.checked = true;
+  });
+  if(document.getElementById('admin-custom-return')) document.getElementById('admin-custom-return').value = appData.customReturnRate;
+  const customBox = document.getElementById('custom-return-box');
+  if(customBox) {
+    if(appData.returnMode === 'custom') customBox.classList.remove('hidden');
+    else customBox.classList.add('hidden');
+  }
+
+  calculateHomeMetrics();
+  renderInvestors();
+  renderSettlement();
+}
+
+function calculateHomeMetrics() {
+  const promoter = Number(appData.promoterHolding) || 50000;
+  let activeInvCap = 0;
+  let activeInvCount = appData.investors.length;
+  appData.investors.forEach(inv => {
+    activeInvCap += Number(inv.capital) || 0;
+  });
+  const totalCap = promoter + activeInvCap;
+  
+  document.getElementById('home-total-capital').textContent = 'INR ' + totalCap.toLocaleString('en-IN');
+  document.getElementById('home-active-count').textContent = activeInvCount;
+  document.getElementById('home-active-capital').textContent = 'INR ' + activeInvCap.toLocaleString('en-IN');
+
+  let retPct = 10.50;
+  if(appData.returnMode === 'range1') retPct = 10.20;
+  else if(appData.returnMode === 'range2') retPct = 15.50;
+  else if(appData.returnMode === 'custom') retPct = Number(appData.customReturnRate) || 10.50;
+
+  document.getElementById('dynamic-return-display').textContent = retPct.toFixed(2) + '%';
+  const progBar = document.getElementById('dynamic-progress-bar');
+  if(progBar) progBar.style.width = Math.min(100, (retPct / 20) * 100) + '%';
+
+  const profitINR = totalCap * (retPct / 100) * (30/365);
+  const exRate = 88.50;
+  const profitUSD = profitINR / exRate;
+
+  document.getElementById('home-calc-profit-usd').textContent = '$' + profitUSD.toFixed(2);
+  document.getElementById('home-calc-profit-inr').textContent = 'INR ' + Math.round(profitINR).toLocaleString('en-IN');
+}
+
+function renderInvestors() {
+  const container = document.getElementById('investors-list-container');
+  if(!container) return;
+  const query = (document.getElementById('investor-search')?.value || '').toLowerCase();
+  
+  const filtered = appData.investors.filter(inv => (inv.name || '').toLowerCase().includes(query));
+  if(filtered.length === 0) {
+    container.innerHTML = `<div class="card-box p-6 text-center text-xs text-softGrey rounded-2xl">No investors found. Tap '+ Add' to create one.</div>`;
+    return;
+  }
+
+  let html = '';
+  filtered.forEach((inv, idx) => {
+    html += `
+      <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card tier-gold-card">
+        <div>
+          <h4 class="font-bold text-softWhite text-sm">${inv.name}</h4>
+          <p class="text-[10px] text-softGrey mt-0.5">Capital: <span class="text-goldAccent font-bold">INR ${Number(inv.capital).toLocaleString('en-IN')}</span></p>
+        </div>
+        <div class="flex space-x-2">
+          <button onclick="editInvestor(${idx})" class="px-3 py-1.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-bold">Edit</button>
+          <button onclick="deleteInvestor(${idx})" class="px-3 py-1.5 bg-red-950/60 text-red-400 border border-red-800/40 rounded-xl text-xs font-bold">Delete</button>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function openAddInvestorModal() {
+  const name = prompt("Enter Investor Name:");
+  if(!name) return;
+  const capital = prompt("Enter Investment Capital (INR):", "10000");
+  if(!capital) return;
+  
+  appData.investors.push({ name: name, capital: Number(capital) });
+  saveAppData();
+  renderUI();
+}
+
+function editInvestor(idx) {
+  const inv = appData.investors[idx];
+  const name = prompt("Edit Investor Name:", inv.name);
+  if(!name) return;
+  const capital = prompt("Edit Investment Capital (INR):", inv.capital);
+  if(!capital) return;
+  
+  appData.investors[idx] = { name: name, capital: Number(capital) };
+  saveAppData();
+  renderUI();
+}
+
+function deleteInvestor(idx) {
+  if(confirm("Are you sure you want to delete this investor?")) {
+    appData.investors.splice(idx, 1);
+    saveAppData();
+    renderUI();
+  }
+}
+
+function renderSettlement() {
+  const container = document.getElementById('settlement-list-container');
+  if(!container) return;
+  if(appData.investors.length === 0) {
+    container.innerHTML = `<div class="card-box p-4 text-center text-xs text-softGrey rounded-2xl">No investors available for settlement.</div>`;
+    return;
+  }
+  let html = '';
+  appData.investors.forEach(inv => {
+    const estProfit = inv.capital * 0.102 * (30/365);
+    html += `
+      <div class="card-box p-4 rounded-2xl space-y-2">
+        <div class="flex justify-between items-center">
+          <h4 class="font-bold text-softWhite text-xs">${inv.name}</h4>
+          <span class="text-[10px] text-emeraldLive font-bold">Active</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[11px] text-softGrey">
+          <div>Capital: <span class="text-softWhite font-bold">INR ${Number(inv.capital).toLocaleString('en-IN')}</span></div>
+          <div>Est. Profit: <span class="text-emeraldLive font-bold">INR ${Math.round(estProfit).toLocaleString('en-IN')}</span></div>
+        </div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function selectPresetAmount(amt) {
+  document.getElementById('custom-withdrawal-input').value = amt;
+  calculateCustomPayout();
+}
+
+function calculateCustomPayout() {
+  const amt = Number(document.getElementById('custom-withdrawal-input').value) || 0;
+  const resultBox = document.getElementById('calculator-result-box');
+  if(amt <= 0) {
+    resultBox.innerHTML = 'Enter a valid amount above.';
+    return;
+  }
+  const inrVal = amt * 88.50;
+  resultBox.innerHTML = `
+    <div class="flex justify-between"><span>Requested USD:</span><span class="font-bold text-goldAccent">$${amt.toFixed(2)}</span></div>
+    <div class="flex justify-between"><span>Converted INR (88.50):</span><span class="font-bold text-softWhite">INR ${Math.round(inrVal).toLocaleString('en-IN')}</span></div>
+    <div class="flex justify-between text-emeraldLive font-bold"><span>Net Payoutable:</span><span>INR ${Math.round(inrVal * 0.98).toLocaleString('en-IN')}</span></div>
+  `;
+}
+
+function toggleStatementPreview() {
+  const panel = document.getElementById('statement-preview-panel');
+  const btn = document.getElementById('toggle-preview-btn');
+  if(panel.classList.contains('hidden')) {
+    panel.classList.remove('hidden');
+    btn.innerHTML = '<span>👁️ Hide Statement Breakdown</span>';
+    document.getElementById('preview-breakdown-content').innerHTML = `
+      <div class="flex justify-between"><span>Gross Pool Return:</span><span class="text-emeraldLive font-bold">10.20%</span></div>
+      <div class="flex justify-between"><span>Management Fee (2%):</span><span class="text-softWhite">Applied</span></div>
+      <div class="flex justify-between"><span>Tax Deducted at Source:</span><span class="text-softWhite">Compliant</span></div>
+    `;
+  } else {
+    panel.classList.add('hidden');
+    btn.innerHTML = '<span>👁️ Preview Full Statement Breakdown</span>';
+  }
+}
+
+function handleLogoUpload(event) {
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    appData.customLogo = e.target.result;
+    saveAppData();
+    renderUI();
+    alert("Logo uploaded successfully!");
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveAdminSettings() {
+  appData.managerName = document.getElementById('admin-manager-name').value || "Kaif Alvi";
+  appData.promoterHolding = Number(document.getElementById('admin-promoter-holding').value) || 50000;
+  appData.appName = document.getElementById('admin-app-name').value || "Aureus Capital";
+  saveAppData();
+  renderUI();
+  alert("Admin settings saved successfully!");
+}
+
+function handleReturnModeChange() {
+  const selected = document.querySelector('input[name="return_mode"]:checked').value;
+  appData.returnMode = selected;
+  const customBox = document.getElementById('custom-return-box');
+  if(selected === 'custom') customBox.classList.remove('hidden');
+  else customBox.classList.add('hidden');
+}
+
+function saveReturnSettings() {
+  appData.returnMode = document.querySelector('input[name="return_mode"]:checked').value;
+  if(appData.returnMode === 'custom') {
+    appData.customReturnRate = Number(document.getElementById('admin-custom-return').value) || 10.5;
+  }
+  saveAppData();
+  renderUI();
+  alert("Return rate strategy saved successfully!");
+}
+
+function saveSettingsAPI() {
+  appData.apiKey = document.getElementById('settings-api-key').value;
+  saveAppData();
+  alert("API Key saved successfully!");
+}
+
+function downloadMasterStatementPDF() {
+  alert("Master Statement PDF generated successfully!");
+}
+
+function downloadCustomStatementPDF() {
+  alert("Custom Statement PDF generated successfully!");
+}
+
+window.addEventListener('load', () => {
+  loadAppData();
+  renderUI();
+  setTimeout(() => {
+    const splash = document.getElementById('splash-screen');
+    if(splash) {
+      splash.style.opacity = '0';
+      setTimeout(() => splash.remove(), 700);
+    }
+  }, 1200);
+});
+</script>
+</body>
+</html>

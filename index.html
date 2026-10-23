@@ -65,7 +65,7 @@
             100% { width: 100%; }
         }
         .animate-progress { animation: loadProgress 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; transition: transform 0.2s ease; }
+        .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; }
     </style>
 </head>
 <body class="pb-28">
@@ -206,7 +206,7 @@
 
             <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete</p>
             <div class="space-y-3.5 pt-1" id="investors-list-container">
-                <!-- Dynamically populated clean cards -->
+                <!-- Dynamically populated clean cards with smooth touch swipe -->
             </div>
         </section>
 
@@ -398,10 +398,6 @@
         };
 
         let editingInvestorIndex = null;
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchEndX = 0;
-        let touchEndY = 0;
 
         function loadAppData() {
             const saved = localStorage.getItem('aureus_capital_data');
@@ -511,7 +507,6 @@
                 return;
             }
 
-            // Relative Tiers Sorting
             let sortedInvestors = [...appData.investors].sort((a,b) => (b.capital || 0) - (a.capital || 0));
 
             let html = '';
@@ -544,12 +539,13 @@
 
                 const displayName = (inv.name && inv.name.toString().trim() !== '' && inv.name !== '1') ? inv.name : 'Investor';
 
-                // CLEAN CARD: ONLY Name, Tier Badge, and Capital Amount (NO buttons). Tap to edit, Swipe left/right to delete.
+                // CLEAN CARD WITH TOUCH SWIPE ANIMATION (NO BUTTONS, NO POPUPS)
                 html += `
-                    <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} cursor-pointer mb-3" 
-                         ontouchstart="handleTouchStart(event)" 
+                    <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} mb-3 cursor-pointer"
+                         ontouchstart="handleTouchStart(event, ${originalIdx})"
+                         ontouchmove="handleTouchMove(event)"
                          ontouchend="handleTouchEnd(event, ${originalIdx})"
-                         onclick="editInvestor(${originalIdx})">
+                         onclick="handleCardClick(event, ${originalIdx})">
                         <div>
                             <div class="flex items-center space-x-2">
                                 <h4 class="font-bold text-softWhite text-sm">${displayName}</h4>
@@ -563,19 +559,62 @@
             container.innerHTML = html;
         }
 
-        function handleTouchStart(e) {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
+        // TOUCH SWIPE STATE VARIABLES
+        let touchStartX = 0;
+        let touchCurrentX = 0;
+        let activeTouchCard = null;
+        let isCardDragging = false;
+
+        function handleTouchStart(e, idx) {
+            activeTouchCard = e.currentTarget;
+            touchStartX = e.touches[0].clientX;
+            touchCurrentX = touchStartX;
+            isCardDragging = false;
+            activeTouchCard.style.transition = 'none';
+        }
+
+        function handleTouchMove(e) {
+            if (!activeTouchCard) return;
+            touchCurrentX = e.touches[0].clientX;
+            const diffX = touchCurrentX - touchStartX;
+            if (Math.abs(diffX) > 6) {
+                isCardDragging = true;
+            }
+            activeTouchCard.style.transform = `translateX(${diffX}px)`;
+            const opacity = Math.max(0.1, 1 - Math.abs(diffX) / 220);
+            activeTouchCard.style.opacity = opacity;
         }
 
         function handleTouchEnd(e, idx) {
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
-            const diffX = touchStartX - touchEndX;
-            const diffY = Math.abs(touchStartY - touchEndY);
-            if (Math.abs(diffX) > 50 && diffY < 40) {
-                deleteInvestor(idx);
+            if (!activeTouchCard) return;
+            const diffX = touchCurrentX - touchStartX;
+            activeTouchCard.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
+
+            if (Math.abs(diffX) > 80) {
+                // Smooth slide out and fade away to delete instantly without alerts
+                const direction = diffX > 0 ? 1 : -1;
+                activeTouchCard.style.transform = `translateX(${direction * window.innerWidth}px)`;
+                activeTouchCard.style.opacity = '0';
+                setTimeout(() => {
+                    appData.investors.splice(idx, 1);
+                    saveAppData();
+                    renderUI();
+                }, 300);
+            } else {
+                // Snap back smoothly
+                activeTouchCard.style.transform = 'translateX(0px)';
+                activeTouchCard.style.opacity = '1';
             }
+
+            setTimeout(() => {
+                isCardDragging = false;
+                activeTouchCard = null;
+            }, 350);
+        }
+
+        function handleCardClick(e, idx) {
+            if (isCardDragging) return;
+            editInvestor(idx);
         }
 
         function openAddInvestorModal() {
@@ -630,14 +669,6 @@
             closeCustomModal();
         }
 
-        function deleteInvestor(idx) {
-            if(confirm("Kya aap sach mein is investor ko delete karna chahte hain?")) {
-                appData.investors.splice(idx, 1);
-                saveAppData();
-                renderUI();
-            }
-        }
-
         function toggleInvestorStatus(idx) {
             if(!appData.investors[idx].status) {
                 appData.investors[idx].status = 'Pending';
@@ -661,7 +692,6 @@
                 const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
                 const status = inv.status || 'Pending';
                 
-                // Toggle between Amber (Pending) and Green (Complete)
                 const statusBadgeClass = status === 'Complete' 
                     ? 'bg-emeraldLive/20 text-emeraldLive border-emeraldLive/40 font-bold' 
                     : 'bg-amber-500/20 text-amber-400 border-amber-500/40 font-bold';

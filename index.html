@@ -476,7 +476,6 @@
             document.getElementById('home-active-count').textContent = activeInvCount;
             document.getElementById('home-active-capital').textContent = 'INR ' + activeInvCap.toLocaleString('en-IN');
 
-            // Dynamic Gold-driven performance reactivity calculation
             let baseRet = 10.20;
             if(appData.returnMode === 'range1') baseRet = 10.20;
             else if(appData.returnMode === 'range2') baseRet = 15.50;
@@ -486,7 +485,6 @@
             const progBar = document.getElementById('dynamic-progress-bar');
             if(progBar) progBar.style.width = Math.min(100, (baseRet / 20) * 100) + '%';
 
-            // Real dynamic days remaining in current month
             const now = new Date();
             const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
             const daysLeft = Math.max(0, totalDays - now.getDate());
@@ -696,17 +694,22 @@
                     ? 'bg-emeraldLive/20 text-emeraldLive border-emeraldLive/40 font-bold' 
                     : 'bg-amber-500/20 text-amber-400 border-amber-500/40 font-bold';
 
+                // DOWNLOAD BUTTON APPEARS *ONLY* WHEN STATUS IS 'COMPLETE'
+                const downloadBtnHtml = status === 'Complete' 
+                    ? `<button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center" title="Download Payout PDF">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                       </button>` 
+                    : '';
+
                 html += `
                     <div class="card-box p-4 rounded-2xl space-y-3 mb-3">
                         <div class="flex justify-between items-center">
-                            <h4 class="font-bold text-softWhite text-xs">${displayName}</h4>
+                            <h4 class="font-bold text-softWhite text-sm">${displayName}</h4>
                             <div class="flex items-center space-x-2">
                                 <button onclick="toggleInvestorStatus(${originalIdx})" class="px-3 py-1 rounded-full text-[10px] border ${statusBadgeClass} transition active:scale-95 cursor-pointer">
                                     ${status}
                                 </button>
-                                <button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center" title="Download Payout PDF">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                </button>
+                                ${downloadBtnHtml}
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[11px] text-softGrey">
@@ -732,10 +735,11 @@
                 return;
             }
             const inrVal = amt * 88.50;
+            const netVal = inrVal * 0.90; // Exact 10.00% Total Deduction
             resultBox.innerHTML = `
                 <div class="flex justify-between"><span>Requested USD:</span><span class="font-bold text-goldAccent">$${amt.toFixed(2)}</span></div>
                 <div class="flex justify-between"><span>Converted INR (88.50):</span><span class="font-bold text-softWhite">INR ${Math.round(inrVal).toLocaleString('en-IN')}</span></div>
-                <div class="flex justify-between text-emeraldLive font-bold"><span>Net Payoutable:</span><span>INR ${Math.round(inrVal * 0.98).toLocaleString('en-IN')}</span></div>
+                <div class="flex justify-between text-emeraldLive font-bold"><span>Net Payoutable (After 10% Deduction):</span><span>INR ${Math.round(netVal).toLocaleString('en-IN')}</span></div>
             `;
         }
 
@@ -746,12 +750,11 @@
                 panel.classList.remove('hidden');
                 btn.innerHTML = '<span>👁️ Hide Statement Breakdown</span>';
                 document.getElementById('preview-breakdown-content').innerHTML = `
-                    <div class="flex justify-between"><span>Gross Pool Return:</span><span class="text-emeraldLive font-bold">10.20%</span></div>
-                    <div class="flex justify-between"><span>Management Fee (2%):</span><span class="text-softWhite">Applied (INR 1,000)</span></div>
-                    <div class="flex justify-between"><span>Performance Fee (10%):</span><span class="text-softWhite">Applied (INR 500)</span></div>
-                    <div class="flex justify-between"><span>GST on Management Fee (18%):</span><span class="text-softWhite">INR 180</span></div>
-                    <div class="flex justify-between"><span>Tax Deducted at Source (TDS 10%):</span><span class="text-softWhite">Compliant</span></div>
-                    <div class="flex justify-between border-t border-goldAccent/20 pt-1 mt-1 font-bold text-goldAccent"><span>Net Yield After All Fees/Taxes:</span><span>8.35%</span></div>
+                    <div class="flex justify-between"><span>Management Fee (2.00%):</span><span class="text-softWhite">Applied</span></div>
+                    <div class="flex justify-between"><span>GST on Mgmt Fee (0.36%):</span><span class="text-softWhite">Applied</span></div>
+                    <div class="flex justify-between"><span>Performance / Alpha Fee (3.00%):</span><span class="text-softWhite">Applied</span></div>
+                    <div class="flex justify-between"><span>TDS / Brokerage Tax (4.64%):</span><span class="text-softWhite">Applied</span></div>
+                    <div class="flex justify-between border-t border-goldAccent/20 pt-1 mt-1 font-bold text-goldAccent"><span>Total Deduction:</span><span>10.00% Exact</span></div>
                 `;
             } else {
                 panel.classList.add('hidden');
@@ -815,16 +818,14 @@
             document.getElementById('accent-slider').value = 38;
         }
 
-        function triggerBlobDownload(doc, filename) {
-            const pdfBlob = doc.output('blob');
-            const blobUrl = URL.createObjectURL(pdfBlob);
+        function triggerDirectDownload(doc, filename) {
+            const dataUri = doc.output('datauristring');
             const link = document.createElement('a');
-            link.href = blobUrl;
+            link.href = dataUri;
             link.download = filename;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
         }
 
         function downloadMasterStatementPDF() {
@@ -863,14 +864,14 @@
                 styles: { fontSize: 9 }
             });
 
-            triggerBlobDownload(doc, 'Aureus_Capital_Master_Statement.pdf');
+            triggerDirectDownload(doc, 'Aureus_Capital_Master_Statement.pdf');
         }
 
         function downloadCustomStatementPDF() {
             const amt = Number(document.getElementById('custom-withdrawal-input').value) || 0;
             if(amt <= 0) return;
             const inrVal = amt * 88.50;
-            const netVal = inrVal * 0.98;
+            const netVal = inrVal * 0.90;
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -891,7 +892,7 @@
                     ['Requested USD', `$${amt.toFixed(2)}`],
                     ['Exchange Rate', 'INR 88.50'],
                     ['Converted INR', `INR ${Math.round(inrVal).toLocaleString('en-IN')}`],
-                    ['Net Payoutable (After Fees/Taxes)', `INR ${Math.round(netVal).toLocaleString('en-IN')}`],
+                    ['Net Payoutable (After 10% Deduction)', `INR ${Math.round(netVal).toLocaleString('en-IN')}`],
                     ['Compliance', 'CA-Compliant Statement']
                 ],
                 theme: 'grid',
@@ -899,7 +900,7 @@
                 styles: { fontSize: 10 }
             });
 
-            triggerBlobDownload(doc, 'Aureus_Capital_Custom_Statement.pdf');
+            triggerDirectDownload(doc, 'Aureus_Capital_Custom_Statement.pdf');
         }
 
         function downloadIndividualPayoutPDF(idx) {
@@ -923,7 +924,7 @@
 
             doc.autoTable({
                 startY: 46,
-                head: [['Parameter, Details']],
+                head: [['Parameter', 'Details']],
                 body: [
                     ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
                     ['Estimated Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
@@ -936,7 +937,7 @@
                 styles: { fontSize: 10 }
             });
 
-            triggerBlobDownload(doc, `${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
+            triggerDirectDownload(doc, `${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
         }
 
         window.addEventListener('load', () => {

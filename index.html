@@ -362,6 +362,20 @@
         </div>
     </div>
 
+    <!-- IN-APP PDF PREVIEW MODAL (SOLVES APK WEBVIEW WHITE SCREEN / SELECT ACTION BUG) -->
+    <div id="pdf-preview-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[300] hidden flex flex-col p-4">
+        <div class="flex justify-between items-center bg-graphite p-3 rounded-t-xl border-b border-goldAccent/30">
+            <h3 class="text-sm font-extrabold text-goldAccent uppercase tracking-wider">Aureus Capital - PDF Statement</h3>
+            <button onclick="closePdfModal()" class="text-softGrey hover:text-softWhite text-2xl font-bold px-2">&times;</button>
+        </div>
+        <div class="flex-1 bg-midnight rounded-b-xl overflow-hidden relative border border-goldAccent/20">
+            <iframe id="pdf-iframe" class="w-full h-full border-0"></iframe>
+        </div>
+        <div class="pt-3">
+            <button onclick="closePdfModal()" class="w-full py-3 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight font-extrabold rounded-xl active:scale-95 transition shadow-lg">Close & Return to App</button>
+        </div>
+    </div>
+
     <!-- BOTTOM NAVIGATION BAR -->
     <nav class="fixed bottom-0 inset-x-0 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/20 px-4 py-2.5 flex justify-around items-center z-50 shadow-2xl">
         <button onclick="switchTab('home')" id="nav-btn-home" class="flex flex-col items-center space-y-1 text-goldAccent transition active:scale-95">
@@ -818,21 +832,16 @@
             document.getElementById('accent-slider').value = 38;
         }
 
-        // OPTIMIZED BLOB WINDOW OPENER TO BYPASS APK WEBVIEW "SELECT ACTION" MODAL DIALOG
-        function triggerDirectDownload(doc, filename) {
-            const pdfBlob = doc.output('blob');
-            const blobUrl = URL.createObjectURL(pdfBlob);
-            const openedWindow = window.open(blobUrl, '_blank');
-            if (!openedWindow) {
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = filename;
-                link.target = '_blank';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+        // IN-APP MODAL PREVIEW FOR APKS (PREVENTS WHITE SCREEN & SELECT ACTION DIALOG)
+        function triggerInAppPreview(doc, filename) {
+            const dataUri = doc.output('datauristring');
+            document.getElementById('pdf-iframe').src = dataUri;
+            document.getElementById('pdf-preview-modal').classList.remove('hidden');
+        }
+
+        function closePdfModal() {
+            document.getElementById('pdf-preview-modal').classList.add('hidden');
+            document.getElementById('pdf-iframe').src = '';
         }
 
         function downloadMasterStatementPDF() {
@@ -871,7 +880,7 @@
                 styles: { fontSize: 9 }
             });
 
-            triggerDirectDownload(doc, 'Aureus_Capital_Master_Statement.pdf');
+            triggerInAppPreview(doc, 'Aureus_Capital_Master_Statement.pdf');
         }
 
         function downloadCustomStatementPDF() {
@@ -907,7 +916,7 @@
                 styles: { fontSize: 10 }
             });
 
-            triggerDirectDownload(doc, 'Aureus_Capital_Custom_Statement.pdf');
+            triggerInAppPreview(doc, 'Aureus_Capital_Custom_Statement.pdf');
         }
 
         function downloadIndividualPayoutPDF(idx) {
@@ -944,7 +953,7 @@
                 styles: { fontSize: 10 }
             });
 
-            triggerDirectDownload(doc, `${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
+            triggerInAppPreview(doc, `${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
         }
 
         window.addEventListener('load', () => {

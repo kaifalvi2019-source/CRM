@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#070B14">
+    <meta name="theme-color" content="#050811">
     <title id="page-title">Aureus Capital - Executive Summary</title>
     <link rel="manifest" href="/manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -147,15 +147,15 @@
                     </div>
                     <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30 shadow-inner">
                         <div class="flex justify-between items-center">
-                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Gold Market Feed</p>
+                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">USD / USDT Feed</p>
                             <span class="flex items-center text-[9px] text-emeraldLive font-extrabold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-ping"></span> LIVE</span>
                         </div>
                         <div class="mt-1 flex justify-between items-end">
                             <div>
-                                <p class="text-[8px] text-softGrey">XAU / INR Spot</p>
-                                <h3 class="text-xs font-bold text-goldAccent tabular-nums live-number-pulse" id="live-gold-spot">INR 7,850/g</h3>
+                                <p class="text-[8px] text-softGrey">USD / INR Spot</p>
+                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-usd-spot">INR 88.50</h3>
                             </div>
-                            <span id="gold-trend-badge" class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50">+0.45% ▲</span>
+                            <span id="usd-trend-badge" class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50">+0.12% ▲</span>
                         </div>
                     </div>
                 </div>
@@ -522,22 +522,23 @@
             document.getElementById('home-active-count').textContent = activeInvCount;
             document.getElementById('home-active-capital').textContent = 'INR ' + activeInvCap.toLocaleString('en-IN');
 
-            const baseGoldSpot = 7850;
-            const timeFactor = (new Date().getMinutes() % 10) * 0.05;
-            const liveGoldSpot = Math.round(baseGoldSpot + (timeFactor * 16));
-            const goldTrendPct = +(0.40 + (timeFactor * 0.15)).toFixed(2);
+            const baseUsdSpot = 88.50;
+            const timeFactor = (new Date().getMinutes() % 10) * 0.02;
+            const liveUsdSpot = +(baseUsdSpot + (timeFactor * 0.1)).toFixed(2);
+            const usdTrendPct = +(0.12 + (timeFactor * 0.05)).toFixed(2);
 
-            document.getElementById('live-gold-spot').textContent = 'INR ' + liveGoldSpot.toLocaleString('en-IN') + '/g';
-            const trendBadge = document.getElementById('gold-trend-badge');
+            document.getElementById('live-usd-spot').textContent = 'INR ' + liveUsdSpot.toFixed(2);
+            const usdBadge = document.getElementById('usd-trend-badge');
+            if(usdBadge) {
+                usdBadge.textContent = `+${usdTrendPct}% ▲`;
+            }
+
+            const goldTrendPct = +(0.40 + (timeFactor * 0.15)).toFixed(2);
             const statusPill = document.getElementById('market-status-pill');
             const sparklineLine = document.getElementById('sparkline-line');
             const sparklineArea = document.getElementById('sparkline-area');
 
             if(goldTrendPct >= 0) {
-                if(trendBadge) {
-                    trendBadge.textContent = `+${goldTrendPct}% ▲`;
-                    trendBadge.className = "text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50";
-                }
                 if(statusPill) {
                     statusPill.textContent = "BULLISH ▲";
                     statusPill.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-950 text-emeraldLive border border-emeraldLive/50";
@@ -545,10 +546,6 @@
                 if(sparklineLine) sparklineLine.setAttribute('stroke', '#10B981');
                 document.getElementById('dynamic-return-display').className = "text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight";
             } else {
-                if(trendBadge) {
-                    trendBadge.textContent = `${goldTrendPct}% ▼`;
-                    trendBadge.className = "text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-rose-950 text-roseLive border border-roseLive/50";
-                }
                 if(statusPill) {
                     statusPill.textContent = "BEARISH ▼";
                     statusPill.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-950 text-roseLive border border-roseLive/50";
@@ -585,7 +582,7 @@
             document.getElementById('cycle-days-left').textContent = daysLeft + ' days remaining';
 
             const profitINR = totalCap * (baseRet / 100) * (30/365);
-            const exRate = 88.50;
+            const exRate = liveUsdSpot;
             const profitUSD = profitINR / exRate;
 
             document.getElementById('home-calc-profit-usd').textContent = '$' + profitUSD.toFixed(2);

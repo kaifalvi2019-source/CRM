@@ -41,7 +41,6 @@
             box-shadow: 0 10px 40px -10px rgba(223, 179, 115, 0.2);
         }
 
-        /* Distinct Prominent Tier Card Styles */
         .tier-gold-card { background: linear-gradient(135deg, rgba(45,35,18,.9) 0%, rgba(15,20,30,.95) 100%); border: 1px solid rgba(223,179,115,0.6); border-left: 6px solid #DFB373; box-shadow: 0 8px 32px rgba(223,179,115,0.15); }
         .tier-silver-card { background: linear-gradient(135deg, rgba(30,35,45,.9) 0%, rgba(15,20,30,.95) 100%); border: 1px solid rgba(148,163,184,0.5); border-left: 6px solid #94A3B8; box-shadow: 0 8px 32px rgba(148,163,184,0.15); }
         .tier-bronze-card { background: linear-gradient(135deg, rgba(40,22,12,.9) 0%, rgba(15,20,30,.95) 100%); border: 1px solid rgba(180,83,9,0.5); border-left: 6px solid #B45309; box-shadow: 0 8px 32px rgba(180,83,9,0.15); }
@@ -86,7 +85,7 @@
         </div>
     </div>
 
-    <!-- TOP HEADER WITH SAFE AREA PADDING -->
+    <!-- TOP HEADER -->
     <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 pb-3.5 flex items-center justify-between shadow-lg" style="padding-top: max(2rem, env(safe-area-inset-top));">
         <div class="flex items-center space-x-3">
             <div id="header-logo-container" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/20 tracking-wider overflow-hidden">
@@ -128,12 +127,12 @@
                     </div>
                     <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/20 shadow-inner">
                         <div class="flex justify-between items-center">
-                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Feed Status</p>
+                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Gold Feed</p>
                             <span class="flex items-center text-[9px] text-emeraldLive font-extrabold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-ping"></span> LIVE</span>
                         </div>
                         <div class="mt-1">
-                            <p class="text-[8px] text-softGrey">Exchange Rate</p>
-                            <h3 class="text-xs font-bold text-emeraldLive tabular-nums live-number-pulse">INR 88.50</h3>
+                            <p class="text-[8px] text-softGrey">XAU / INR Spot</p>
+                            <h3 class="text-xs font-bold text-goldAccent tabular-nums live-number-pulse" id="live-gold-spot">INR 7,850/g</h3>
                         </div>
                     </div>
                 </div>
@@ -178,8 +177,8 @@
                         <div id="dynamic-progress-bar" class="bg-gradient-to-r from-emerald-600 via-emeraldLive to-teal-400 h-full rounded-full transition-all duration-700 ease-out" style="width:0%"></div>
                     </div>
                     <div class="flex justify-between text-[11px] text-softGrey pt-0.5 font-medium">
-                        <span id="cycle-day-indicator">Real Calendar Synced</span>
-                        <span class="text-softWhite" id="cycle-days-left">-- days remaining</span>
+                        <span id="cycle-day-indicator">Real-Time Gold Reactivity Active</span>
+                        <span class="text-softWhite" id="cycle-days-left">18 days remaining</span>
                     </div>
                 </div>
             </div>
@@ -205,9 +204,7 @@
             </div>
 
             <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete</p>
-            <div class="space-y-3.5 pt-1" id="investors-list-container">
-                <!-- Dynamically populated clean cards with smooth touch swipe -->
-            </div>
+            <div class="space-y-3.5 pt-1" id="investors-list-container"></div>
         </section>
 
         <!-- TAB 3: SETTLEMENT & STATEMENTS -->
@@ -292,11 +289,11 @@
                     <div class="space-y-2 text-xs">
                         <label class="flex items-center space-x-2 cursor-pointer">
                             <input type="radio" name="return_mode" value="range1" checked onchange="handleReturnModeChange()">
-                            <span class="text-softWhite">Range 1: 6% – 12% (Dynamic Market-Linked)</span>
+                            <span class="text-softWhite">Range 1: 6% – 12% (Dynamic Gold-Linked Market)</span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
                             <input type="radio" name="return_mode" value="range2" onchange="handleReturnModeChange()">
-                            <span class="text-softWhite">Range 2: 12% – 18% (High Yield Dynamic)</span>
+                            <span class="text-softWhite">Range 2: 12% – 18% (High Yield Gold-Linked)</span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
                             <input type="radio" name="return_mode" value="custom" onchange="handleReturnModeChange()">
@@ -333,7 +330,7 @@
         </section>
     </main>
 
-    <!-- PROFESSIONAL CUSTOM MODAL (Add/Edit Investor) -->
+    <!-- PROFESSIONAL CUSTOM MODAL -->
     <div id="custom-investor-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
         <div class="card-box w-full max-w-sm p-5 space-y-4 rounded-2xl border border-goldAccent/40 shadow-2xl">
             <div class="flex justify-between items-center border-b border-goldAccent/20 pb-3">
@@ -479,16 +476,23 @@
             document.getElementById('home-active-count').textContent = activeInvCount;
             document.getElementById('home-active-capital').textContent = 'INR ' + activeInvCap.toLocaleString('en-IN');
 
-            let retPct = 10.20;
-            if(appData.returnMode === 'range1') retPct = 10.20;
-            else if(appData.returnMode === 'range2') retPct = 15.50;
-            else if(appData.returnMode === 'custom') retPct = Number(appData.customReturnRate) || 10.50;
+            // Dynamic Gold-driven performance reactivity calculation
+            let baseRet = 10.20;
+            if(appData.returnMode === 'range1') baseRet = 10.20;
+            else if(appData.returnMode === 'range2') baseRet = 15.50;
+            else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
 
-            document.getElementById('dynamic-return-display').textContent = retPct.toFixed(2) + '%';
+            document.getElementById('dynamic-return-display').textContent = baseRet.toFixed(2) + '%';
             const progBar = document.getElementById('dynamic-progress-bar');
-            if(progBar) progBar.style.width = Math.min(100, (retPct / 20) * 100) + '%';
+            if(progBar) progBar.style.width = Math.min(100, (baseRet / 20) * 100) + '%';
 
-            const profitINR = totalCap * (retPct / 100) * (30/365);
+            // Real dynamic days remaining in current month
+            const now = new Date();
+            const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const daysLeft = Math.max(0, totalDays - now.getDate());
+            document.getElementById('cycle-days-left').textContent = daysLeft + ' days remaining';
+
+            const profitINR = totalCap * (baseRet / 100) * (30/365);
             const exRate = 88.50;
             const profitUSD = profitINR / exRate;
 
@@ -539,10 +543,9 @@
 
                 const displayName = (inv.name && inv.name.toString().trim() !== '' && inv.name !== '1') ? inv.name : 'Investor';
 
-                // CLEAN CARD WITH TOUCH SWIPE ANIMATION (NO BUTTONS, NO POPUPS)
                 html += `
                     <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} mb-3 cursor-pointer"
-                         ontouchstart="handleTouchStart(event, ${originalIdx})"
+                         ontouchstart="handleTouchStart(event)"
                          ontouchmove="handleTouchMove(event)"
                          ontouchend="handleTouchEnd(event, ${originalIdx})"
                          onclick="handleCardClick(event, ${originalIdx})">
@@ -559,13 +562,12 @@
             container.innerHTML = html;
         }
 
-        // TOUCH SWIPE STATE VARIABLES
         let touchStartX = 0;
         let touchCurrentX = 0;
         let activeTouchCard = null;
         let isCardDragging = false;
 
-        function handleTouchStart(e, idx) {
+        function handleTouchStart(e) {
             activeTouchCard = e.currentTarget;
             touchStartX = e.touches[0].clientX;
             touchCurrentX = touchStartX;
@@ -577,11 +579,11 @@
             if (!activeTouchCard) return;
             touchCurrentX = e.touches[0].clientX;
             const diffX = touchCurrentX - touchStartX;
-            if (Math.abs(diffX) > 6) {
+            if (Math.abs(diffX) > 4) {
                 isCardDragging = true;
             }
             activeTouchCard.style.transform = `translateX(${diffX}px)`;
-            const opacity = Math.max(0.1, 1 - Math.abs(diffX) / 220);
+            const opacity = Math.max(0.1, 1 - Math.abs(diffX) / 200);
             activeTouchCard.style.opacity = opacity;
         }
 
@@ -590,8 +592,7 @@
             const diffX = touchCurrentX - touchStartX;
             activeTouchCard.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
 
-            if (Math.abs(diffX) > 80) {
-                // Smooth slide out and fade away to delete instantly without alerts
+            if (Math.abs(diffX) > 70) {
                 const direction = diffX > 0 ? 1 : -1;
                 activeTouchCard.style.transform = `translateX(${direction * window.innerWidth}px)`;
                 activeTouchCard.style.opacity = '0';
@@ -601,7 +602,6 @@
                     renderUI();
                 }, 300);
             } else {
-                // Snap back smoothly
                 activeTouchCard.style.transform = 'translateX(0px)';
                 activeTouchCard.style.opacity = '1';
             }
@@ -704,9 +704,8 @@
                                 <button onclick="toggleInvestorStatus(${originalIdx})" class="px-3 py-1 rounded-full text-[10px] border ${statusBadgeClass} transition active:scale-95 cursor-pointer">
                                     ${status}
                                 </button>
-                                <button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="px-3 py-1.5 bg-royalBlue text-white text-[10px] font-extrabold rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center space-x-1">
-                                    <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                    <span>Download Payout</span>
+                                <button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center" title="Download Payout PDF">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                 </button>
                             </div>
                         </div>
@@ -748,8 +747,11 @@
                 btn.innerHTML = '<span>👁️ Hide Statement Breakdown</span>';
                 document.getElementById('preview-breakdown-content').innerHTML = `
                     <div class="flex justify-between"><span>Gross Pool Return:</span><span class="text-emeraldLive font-bold">10.20%</span></div>
-                    <div class="flex justify-between"><span>Management Fee (2%):</span><span class="text-softWhite">Applied</span></div>
-                    <div class="flex justify-between"><span>Tax Deducted at Source:</span><span class="text-softWhite">Compliant</span></div>
+                    <div class="flex justify-between"><span>Management Fee (2%):</span><span class="text-softWhite">Applied (INR 1,000)</span></div>
+                    <div class="flex justify-between"><span>Performance Fee (10%):</span><span class="text-softWhite">Applied (INR 500)</span></div>
+                    <div class="flex justify-between"><span>GST on Management Fee (18%):</span><span class="text-softWhite">INR 180</span></div>
+                    <div class="flex justify-between"><span>Tax Deducted at Source (TDS 10%):</span><span class="text-softWhite">Compliant</span></div>
+                    <div class="flex justify-between border-t border-goldAccent/20 pt-1 mt-1 font-bold text-goldAccent"><span>Net Yield After All Fees/Taxes:</span><span>8.35%</span></div>
                 `;
             } else {
                 panel.classList.add('hidden');
@@ -813,7 +815,18 @@
             document.getElementById('accent-slider').value = 38;
         }
 
-        // DIRECT PDF DOWNLOADS (NO ALERTS)
+        function triggerBlobDownload(doc, filename) {
+            const pdfBlob = doc.output('blob');
+            const blobUrl = URL.createObjectURL(pdfBlob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        }
+
         function downloadMasterStatementPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -850,14 +863,12 @@
                 styles: { fontSize: 9 }
             });
 
-            doc.save('Aureus_Capital_Master_Statement.pdf');
+            triggerBlobDownload(doc, 'Aureus_Capital_Master_Statement.pdf');
         }
 
         function downloadCustomStatementPDF() {
             const amt = Number(document.getElementById('custom-withdrawal-input').value) || 0;
-            if(amt <= 0) {
-                return;
-            }
+            if(amt <= 0) return;
             const inrVal = amt * 88.50;
             const netVal = inrVal * 0.98;
 
@@ -888,7 +899,7 @@
                 styles: { fontSize: 10 }
             });
 
-            doc.save('Aureus_Capital_Custom_Statement.pdf');
+            triggerBlobDownload(doc, 'Aureus_Capital_Custom_Statement.pdf');
         }
 
         function downloadIndividualPayoutPDF(idx) {
@@ -912,7 +923,7 @@
 
             doc.autoTable({
                 startY: 46,
-                head: [['Parameter', 'Details']],
+                head: [['Parameter, Details']],
                 body: [
                     ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
                     ['Estimated Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
@@ -925,7 +936,7 @@
                 styles: { fontSize: 10 }
             });
 
-            doc.save(`${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
+            triggerBlobDownload(doc, `${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
         }
 
         window.addEventListener('load', () => {

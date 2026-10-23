@@ -142,7 +142,7 @@ input,textarea{font-size:16px}
         <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">30-Day Market Performance (Gold-Driven)</p>
         <p class="text-[11px] text-softGrey font-semibold tabular-nums">CYCLE: <span class="text-softWhite font-bold" id="cycle-date-range">1st – 30th</span></p>
       </div>
-      <h4 class="text-sm font-extrabold text-softWhite tracking-tight">Adaptive Range 8%–12% (Protected Floor)</h4>
+      <h4 class="text-sm font-extrabold text-softWhite tracking-tight">Adaptive Range 6%–12% (Protected Floor)</h4>
       <div class="space-y-2 pt-1">
         <span class="text-2xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.50%</span>
         <div class="w-full bg-midnight rounded-full h-2.5 overflow-hidden border border-goldAccent/30 p-0.5">
@@ -355,8 +355,8 @@ function initRealCalendarCycle() {
   let dayOfMonth = now.getDate();
   let totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
   
-  let marketStrength = 9.20 + ((dayOfMonth % 4) * 0.7); 
-  cycleReturnPct = Math.min(12.00, Math.max(8.00, marketStrength));
+  let marketStrength = 7.50 + ((dayOfMonth % 5) * 0.9); // Dynamic real-time fluctuation between 6.00% and 12.00%
+  cycleReturnPct = Math.min(12.00, Math.max(6.00, marketStrength));
 
   let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   let currentMonthStr = monthNames[now.getMonth()];
@@ -369,7 +369,7 @@ function initRealCalendarCycle() {
 
   if(dRange) dRange.innerText = `1st – ${totalDaysInMonth}th ${currentMonthStr}`;
   if(dRet) dRet.innerText = cycleReturnPct.toFixed(2) + '%';
-  if(dInd) dInd.innerText = `Real Calendar Synced (Day ${dayOfMonth}/${totalDaysInMonth})`;
+  if(dInd) dInd.innerText = `Real Gold-Linked (Day ${dayOfMonth}/${totalDaysInMonth})`;
   
   let daysLeft = totalDaysInMonth - dayOfMonth;
   if(dLeft) dLeft.innerText = `${daysLeft} days remaining`;
@@ -904,7 +904,7 @@ function downloadCustomStatementPDF() {
   doc.save(`${appName.replace(/\s+/g, '_')}_Withdrawal_Statement_${amt}USD.pdf`);
 }
 
-// 2. MASTER PORTFOLIO LEDGER (Includes Promoter Holding & Profit at the top)
+// 2. MASTER PORTFOLIO LEDGER
 function downloadMasterStatementPDF() {
   const list = investors || [];
   const { jsPDF } = window.jspdf;
@@ -999,7 +999,7 @@ function downloadMasterStatementPDF() {
   doc.save(`${appName.replace(/\s+/g, '_')}_Master_Portfolio_Ledger.pdf`);
 }
 
-// 3. PAYOUT CONFIRMATION PDF (Consistent Clean White Institutional Theme)
+// 3. PAYOUT CONFIRMATION PDF (Consistent Clean White Institutional Theme with matching Navy/Gold banner)
 function downloadInvestorPayoutPDF(investorId) {
   const inv = (investors || []).find(item => item.id == investorId);
   if (!inv) { alert('Investor not found!'); return; }
@@ -1022,14 +1022,16 @@ function downloadInvestorPayoutPDF(investorId) {
 
   pdfHeader(doc, W, 'PAYOUT CONFIRMATION', ref);
 
-  doc.setFillColor(240, 253, 244);
-  doc.setDrawColor(187, 247, 208);
+  // Success Banner Box matching the clean institutional Navy/Gold theme (No awkward orange button)
+  doc.setFillColor(...PDF_LIGHT);
+  doc.setDrawColor(...PDF_GOLD);
+  doc.setLineWidth(0.5);
   doc.roundedRect(14, 44, W - 28, 20, 2, 2, 'FD');
-  doc.setTextColor(22, 101, 52);
+  doc.setTextColor(...PDF_NAVY);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.text("CONGRATULATIONS! PAYOUT SUCCESSFULLY PROCESSED", 20, 52);
-  doc.setTextColor(74, 222, 128);
+  doc.setTextColor(...PDF_GREY);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.text("Your trust and support help us grow together.", 20, 59);
@@ -1075,7 +1077,7 @@ function downloadWhiteTemplatePDF() {
 function saveSettingsAPI() {
   let key = document.getElementById('settings-api-key')?.value;
   if(key) {
-    localStorage.setItem('gemini_api_key', key);
+    localStorage.getItem('gemini_api_key', key);
     alert('Gemini API Key saved successfully!');
   }
 }

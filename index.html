@@ -62,7 +62,7 @@ input,textarea{font-size:16px}
   </div>
 </div>
 
-<!-- HEADER (Safe Padding from Status Bar)[span_2](start_span)[span_2](end_span) -->
+<!-- HEADER (Safe Padding from Status Bar)[span_3](start_span)[span_3](end_span) -->
 <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/20 px-4 pb-3.5 flex items-center justify-between shadow-lg" style="padding-top: max(2rem, env(safe-area-inset-top));">
   <div class="flex items-center space-x-3">
     <div id="header-logo-box" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/60 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/20 overflow-hidden">AC</div>
@@ -170,7 +170,7 @@ input,textarea{font-size:16px}
       </span>
       <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name" class="w-full card-box rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent">
     </div>
-    <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete[span_3](start_span)[span_3](end_span)</p>
+    <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete[span_4](start_span)[span_4](end_span)</p>
     <div class="space-y-3.5" id="investors-list-container"></div>
   </section>
 
@@ -299,7 +299,7 @@ input,textarea{font-size:16px}
   </section>
 </main>
 
-<!-- PROFESSIONAL CUSTOM MODAL (Add/Edit Investor)[span_4](start_span)[span_4](end_span) -->
+<!-- PROFESSIONAL CUSTOM MODAL (Add/Edit Investor)[span_5](start_span)[span_5](end_span) -->
 <div id="custom-investor-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] hidden flex items-center justify-center p-4">
   <div class="card-box w-full max-w-sm p-5 space-y-4 rounded-2xl border border-goldAccent/40 shadow-2xl">
     <div class="flex justify-between items-center border-b border-goldAccent/20 pb-3">
@@ -486,23 +486,18 @@ function renderInvestors() {
 
     const displayName = (inv.name && inv.name.toString().trim() !== '' && inv.name !== '1') ? inv.name : ('Investor #' + (idx + 1));
 
-    // CLEAN CARD LAYOUT WITHOUT OUTSIDE BUTTONS (Tap to edit, Swipe to delete)[span_5](start_span)[span_5](end_span)
+    // CLEAN CARD: Tap anywhere to edit[span_6](start_span)[span_6](end_span), swipe left/right to delete[span_7](start_span)[span_7](end_span) (No extra text/buttons on right)
     html += `
-      <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} cursor-pointer" 
+      <div class="card-box p-4 rounded-2xl flex flex-col space-y-1 swipe-card ${tierClass} cursor-pointer" 
            ontouchstart="handleTouchStart(event)" 
            ontouchend="handleTouchEnd(event, ${idx})"
            onclick="editInvestor(${idx})">
-        <div>
-          <div class="flex items-center space-x-2">
-            <h4 class="font-bold text-softWhite text-sm">${displayName}</h4>
-            <span class="px-2 py-0.5 rounded text-[9px] font-black bg-midnight text-goldAccent border border-goldAccent/30">${tierText}</span>
-          </div>
-          <p class="text-[10px] text-softGrey mt-0.5">Phone: ${inv.phone || 'No phone'} · Joined: ${inv.date || 'N/A'}</p>
-          <p class="text-[11px] text-goldAccent font-bold mt-1">INR ${cap.toLocaleString('en-IN')}</p>
+        <div class="flex items-center space-x-2">
+          <h4 class="font-bold text-softWhite text-sm">${displayName}</h4>
+          <span class="px-2 py-0.5 rounded text-[9px] font-black bg-midnight text-goldAccent border border-goldAccent/30">${tierText}</span>
         </div>
-        <div class="text-[11px] text-goldAccent font-semibold">
-          Tap to Edit ✏️
-        </div>
+        <p class="text-[10px] text-softGrey">Phone: ${inv.phone || 'No phone'} · Joined: ${inv.date || 'N/A'}</p>
+        <p class="text-[11px] text-goldAccent font-bold mt-0.5">INR ${cap.toLocaleString('en-IN')}</p>
       </div>
     `;
   });
@@ -515,7 +510,7 @@ function handleTouchStart(e) {
 
 function handleTouchEnd(e, idx) {
   touchEndX = e.changedTouches[0].screenX;
-  if (touchStartX - touchEndX > 60 || touchEndX - touchStartX > 60) {
+  if (touchStartX - touchEndX > 40 || touchEndX - touchStartX > 40) {
     deleteInvestor(idx);
   }
 }

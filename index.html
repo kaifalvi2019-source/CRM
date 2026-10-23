@@ -171,7 +171,7 @@
                         <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">INR 0</p>
                     </div>
                     <div>
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider">Calc. Profit</p>
+                        <p class="text-[9px] text-softGrey uppercase tracking-wider">30-Day Profit</p>
                         <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$0.00</p>
                         <p class="text-[10px] text-softGrey tabular-nums" id="home-calc-profit-inr">INR 0</p>
                     </div>
@@ -190,8 +190,8 @@
 
                 <div class="flex justify-between items-baseline pt-1">
                     <div>
-                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.20%</span>
-                        <p class="text-[10px] text-softGrey mt-0.5">Strategy Floor Protected · Real-Time Gold Sync</p>
+                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">8.46%</span>
+                        <p class="text-[10px] text-softGrey mt-0.5">30-Day Fixed Cycle Return · Real-Time Gold Sync</p>
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">18 days remaining</span>
@@ -498,7 +498,7 @@
             renderSettlement();
         }
 
-        // ADVANCED GOLD-DRIVEN REAL-TIME MARKET PERFORMANCE & TRADING GRAPH ENGINE
+        // DIRECT 30-DAY MONTHLY CYCLE CALCULATION ENGINE (PROMOTER + INVESTORS TOTAL POOL)
         function calculateHomeMetrics() {
             const promoter = Number(appData.promoterHolding) || 50000;
             let activeInvCap = 0;
@@ -523,36 +523,15 @@
                 usdBadge.textContent = `+${usdTrendPct}% ▲`;
             }
 
-            const goldTrendPct = +(0.40 + (timeFactor * 0.15)).toFixed(2);
             const statusPill = document.getElementById('market-status-pill');
             const sparklineLine = document.getElementById('sparkline-line');
             const sparklineArea = document.getElementById('sparkline-area');
 
-            if(goldTrendPct >= 0) {
-                if(statusPill) {
-                    statusPill.textContent = "BULLISH ▲";
-                    statusPill.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-950 text-emeraldLive border border-emeraldLive/50";
-                }
-                if(sparklineLine) sparklineLine.setAttribute('stroke', '#10B981');
-                document.getElementById('dynamic-return-display').className = "text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight";
-            } else {
-                if(statusPill) {
-                    statusPill.textContent = "BEARISH ▼";
-                    statusPill.className = "px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-950 text-roseLive border border-roseLive/50";
-                }
-                if(sparklineLine) sparklineLine.setAttribute('stroke', '#EF4444');
-                document.getElementById('dynamic-return-display').className = "text-3xl font-extrabold text-roseLive tabular-nums tracking-tight";
-            }
-
-            let baseRet = 10.20;
+            let baseRet = 8.46; // Exact match to user's monthly cycle return
             if(appData.returnMode === 'range1') {
-                baseRet = 6.00 + (Math.abs(goldTrendPct) * 6);
-                if(baseRet > 12.00) baseRet = 12.00;
-                if(baseRet < 6.00) baseRet = 6.00;
+                baseRet = 8.46; 
             } else if(appData.returnMode === 'range2') {
-                baseRet = 12.00 + (Math.abs(goldTrendPct) * 6);
-                if(baseRet > 18.00) baseRet = 18.00;
-                if(baseRet < 12.00) baseRet = 12.00;
+                baseRet = 15.00;
             } else if(appData.returnMode === 'custom') {
                 baseRet = Number(appData.customReturnRate) || 10.50;
             }
@@ -560,8 +539,7 @@
             document.getElementById('dynamic-return-display').textContent = baseRet.toFixed(2) + '%';
 
             if(sparklineLine && sparklineArea) {
-                const waveHeight = goldTrendPct >= 0 ? 15 : 35;
-                const pathD = `M0,35 Q75,${waveHeight} 150,25 T300,${waveHeight + 5}`;
+                const pathD = `M0,35 Q75,15 150,25 T300,20`;
                 sparklineLine.setAttribute('d', pathD);
                 sparklineArea.setAttribute('d', `${pathD} L300,50 L0,50 Z`);
             }
@@ -571,7 +549,8 @@
             const daysLeft = Math.max(0, totalDays - now.getDate());
             document.getElementById('cycle-days-left').textContent = daysLeft + ' days remaining';
 
-            const profitINR = totalCap * (baseRet / 100) * (30/365);
+            // DIRECT 30-DAY MONTHLY RETURN CALCULATION (Total Pool * Return %)
+            const profitINR = totalCap * (baseRet / 100);
             const exRate = liveUsdSpot;
             const profitUSD = profitINR / exRate;
 
@@ -765,8 +744,9 @@
                 return;
             }
             let html = '';
+            const baseRet = 8.46;
             appData.investors.forEach((inv, originalIdx) => {
-                const estProfitINR = (inv.capital || 0) * 0.102 * (30/365);
+                const estProfitINR = (inv.capital || 0) * (baseRet / 100);
                 const estProfitUSD = estProfitINR / 88.50;
                 const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
                 const status = inv.status || 'Pending';
@@ -794,7 +774,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[11px] text-softGrey">
                             <div>Capital: <span class="text-softWhite font-bold">INR ${Number(inv.capital || 0).toLocaleString('en-IN')}</span></div>
-                            <div>Est. Profit: <span class="text-emeraldLive font-bold">$${estProfitUSD.toFixed(2)} (INR ${Math.round(estProfitINR).toLocaleString('en-IN')})</span></div>
+                            <div>30-Day Profit: <span class="text-emeraldLive font-bold">$${estProfitUSD.toFixed(2)} (INR ${Math.round(estProfitINR).toLocaleString('en-IN')})</span></div>
                         </div>
                     </div>
                 `;
@@ -903,6 +883,7 @@
         function downloadMasterStatementPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const baseRet = 8.46;
             
             doc.setFontSize(18);
             doc.setTextColor(229, 193, 133);
@@ -910,13 +891,13 @@
             
             doc.setFontSize(11);
             doc.setTextColor(150, 150, 150);
-            doc.text("Master Statement & Investor Payout Ledger", 14, 28);
+            doc.text("Master Statement & Investor 30-Day Payout Ledger", 14, 28);
             doc.text(`Lead Manager: ${appData.managerName}`, 14, 34);
             doc.text(`Promoter Holding: INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}`, 14, 40);
 
             let tableData = [];
             appData.investors.forEach((inv, index) => {
-                const estProfit = (inv.capital || 0) * 0.102 * (30/365);
+                const estProfit = (inv.capital || 0) * (baseRet / 100);
                 const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
                 tableData.push([
                     index + 1,
@@ -929,7 +910,7 @@
 
             doc.autoTable({
                 startY: 48,
-                head: [['#', 'Investor Name', 'Phone', 'Capital', 'Est. Profit']],
+                head: [['#', 'Investor Name', 'Phone', 'Capital', '30-Day Profit']],
                 body: tableData,
                 theme: 'grid',
                 headStyles: { fillColor: [13, 20, 36] },
@@ -980,7 +961,8 @@
 
         function downloadIndividualPayoutPDF(idx) {
             const inv = appData.investors[idx];
-            const estProfitINR = (inv.capital || 0) * 0.102 * (30/365);
+            const baseRet = 8.46;
+            const estProfitINR = (inv.capital || 0) * (baseRet / 100);
             const estProfitUSD = estProfitINR / 88.50;
             const status = inv.status || 'Pending';
 
@@ -1002,8 +984,8 @@
                 head: [['Parameter', 'Details']],
                 body: [
                     ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
-                    ['Estimated Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
-                    ['Estimated Profit (USD)', `$${estProfitUSD.toFixed(2)}`],
+                    ['30-Day Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
+                    ['30-Day Profit (USD)', `$${estProfitUSD.toFixed(2)}`],
                     ['Payout Status', status],
                     ['Lead Manager', appData.managerName]
                 ],

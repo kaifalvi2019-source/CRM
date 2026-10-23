@@ -336,16 +336,11 @@ window.addEventListener('load', () => {
   initRealCalendarCycle();
 });
 
-// Robust LocalStorage initialization with safety check
 let investors = [];
 try {
   let saved = localStorage.getItem('aureus_investors');
-  if (saved) {
-    investors = JSON.parse(saved);
-  }
-} catch(e) {
-  console.error("Error loading investors from localStorage", e);
-}
+  if (saved) { investors = JSON.parse(saved); }
+} catch(e) { console.error("Error loading investors", e); }
 
 let promoterHolding = Number(localStorage.getItem('aureus_promoter_holding')) || 50000;
 let managerName = localStorage.getItem('aureus_manager_name') || 'Kaif Alvi';
@@ -601,12 +596,9 @@ function saveInvestorData() {
     });
   }
 
-  // Save securely to localStorage
   try {
     localStorage.setItem('aureus_investors', JSON.stringify(investors));
-  } catch(e) {
-    console.error("Failed to save to localStorage", e);
-  }
+  } catch(e) { console.error("Failed to save", e); }
 
   closeInvestorModal();
   renderInvestors();
@@ -618,9 +610,7 @@ function deleteInvestor(id) {
     investors = investors.filter(i => i.id !== id);
     try {
       localStorage.setItem('aureus_investors', JSON.stringify(investors));
-    } catch(e) {
-      console.error("Failed to save to localStorage", e);
-    }
+    } catch(e) { console.error("Failed to save", e); }
     renderInvestors();
     updateDashboard();
   }
@@ -736,15 +726,13 @@ function togglePayoutStatus(id) {
     inv.status = inv.status === 'Completed' ? 'Pending' : 'Completed';
     try {
       localStorage.setItem('aureus_investors', JSON.stringify(investors));
-    } catch(e) {
-      console.error("Failed to save to localStorage", e);
-    }
+    } catch(e) { console.error("Failed to save", e); }
     renderSettlementLedger();
   }
 }
 
 /* =====================================================================
-   PROFESSIONAL PDF GENERATION HELPERS & FUNCTIONS
+   PROFESSIONAL PDF GENERATION (Consistent Clean White Institutional Theme)
    ===================================================================== */
 const PDF_NAVY = [16, 23, 42];
 const PDF_GOLD = [176, 132, 62];
@@ -823,7 +811,7 @@ function pdfSectionLabel(doc, text, x, y) {
   doc.text(text.toUpperCase(), x, y);
 }
 
-// 1. STATEMENT PDF
+// 1. WITHDRAWAL STATEMENT
 function downloadCustomStatementPDF() {
   const amt = parseFloat(document.getElementById('custom-withdrawal-input').value) || 0;
   if (amt <= 0) { alert('Please enter a withdrawal amount first.'); return; }
@@ -916,11 +904,9 @@ function downloadCustomStatementPDF() {
   doc.save(`${appName.replace(/\s+/g, '_')}_Withdrawal_Statement_${amt}USD.pdf`);
 }
 
-// 2. MASTER SHEET PDF
+// 2. MASTER PORTFOLIO LEDGER (Includes Promoter Holding & Profit at the top)
 function downloadMasterStatementPDF() {
   const list = investors || [];
-  if (list.length === 0) { alert('Add at least one investor first.'); return; }
-
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('landscape');
   const W = 297, H = 210;
@@ -930,19 +916,46 @@ function downloadMasterStatementPDF() {
 
   pdfHeader(doc, W, 'MASTER PORTFOLIO LEDGER', ref);
 
-  const rows = list.map((inv, i) => {
+  let rows = [];
+  const promoterCapINR = promoterHolding;
+  const promoterProfitINR = promoterCapINR * (ret / 100);
+
+  rows.push({
+    i: 1,
+    name: managerName + ' (Promoter / Leader)',
+    date: pdfDate(),
+    capINR: promoterCapINR,
+    capUSD: promoterCapINR / rate,
+    profitINR: promoterProfitINR,
+    profitUSD: promoterProfitINR / rate,
+    totalINR: promoterCapINR + promoterProfitINR,
+    status: 'Active Lead'
+  });
+
+  list.forEach((inv, i) => {
     const capINR = Number(inv.amount) || 0;
     const profitINR = capINR * (ret / 100);
-    return { i: i + 1, name: String(inv.name || 'N/A'), date: pdfDate(inv.date), capINR, capUSD: capINR / rate, profitINR, profitUSD: profitINR / rate, totalINR: capINR + profitINR, status: inv.status || 'Pending' };
+    rows.push({
+      i: i + 2,
+      name: String(inv.name || 'N/A'),
+      date: pdfDate(inv.date),
+      capINR,
+      capUSD: capINR / rate,
+      profitINR,
+      profitUSD: profitINR / rate,
+      totalINR: capINR + profitINR,
+      status: inv.status || 'Pending'
+    });
   });
+
   const sum = (k) => rows.reduce((s, r) => s + r[k], 0);
   const totCap = sum('capINR'), totProfit = sum('profitINR');
 
   const tiles = [
-    ['Investors', String(rows.length)],
-    ['Total Capital', pdfInr(totCap)],
+    ['Total Members', String(rows.length)],
+    ['Grand Total Pool Capital', pdfInr(totCap)],
     ['Cycle Return Rate', ret.toFixed(2) + '%'],
-    ['Cycle Profit', pdfInr(totProfit)]
+    ['Total Cycle Profit', pdfInr(totProfit)]
   ];
   const tileW = (W - 28 - 9) / 4;
   tiles.forEach((t, i) => {
@@ -955,16 +968,16 @@ function downloadMasterStatementPDF() {
     doc.setTextColor(...PDF_GREY);
     doc.text(t[0].toUpperCase(), x + 4, 51);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
+    doc.setFontSize(11);
     doc.setTextColor(...PDF_NAVY);
     doc.text(t[1], x + 4, 58);
   });
 
   doc.autoTable({
     startY: 68,
-    head: [['#', 'Investor', 'Joined', 'Capital (INR)', 'Capital (USD)', 'Return', 'Profit (INR)', 'Profit (USD)', 'Total Value (INR)', 'Payout']],
+    head: [['#', 'Investor / Member Name', 'Joined', 'Capital (INR)', 'Capital (USD)', 'Return', 'Profit (INR)', 'Profit (USD)', 'Total Value (INR)', 'Status']],
     body: rows.map(r => [r.i, r.name, r.date, pdfInr(r.capINR), pdfUsd(r.capUSD), ret.toFixed(2) + '%', pdfInr(r.profitINR), pdfUsd(r.profitUSD), pdfInr(r.totalINR), r.status]),
-    foot: [['', 'Total', '', pdfInr(totCap), pdfUsd(totCap / rate), '', pdfInr(totProfit), pdfUsd(totProfit / rate), pdfInr(totCap + totProfit), '']],
+    foot: [['', 'Grand Total (Promoter + Investors)', '', pdfInr(totCap), pdfUsd(totCap / rate), '', pdfInr(totProfit), pdfUsd(totProfit / rate), pdfInr(totCap + totProfit), '']],
     theme: 'plain',
     headStyles: { fillColor: PDF_NAVY, textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
     footStyles: { fillColor: PDF_LIGHT, textColor: PDF_INK, fontStyle: 'bold', fontSize: 8.5 },
@@ -986,7 +999,7 @@ function downloadMasterStatementPDF() {
   doc.save(`${appName.replace(/\s+/g, '_')}_Master_Portfolio_Ledger.pdf`);
 }
 
-// 3. PAYOUT CONFIRMATION PDF (AMOLED Dark Gold Style matching Image 59508.jpg)
+// 3. PAYOUT CONFIRMATION PDF (Consistent Clean White Institutional Theme)
 function downloadInvestorPayoutPDF(investorId) {
   const inv = (investors || []).find(item => item.id == investorId);
   if (!inv) { alert('Investor not found!'); return; }
@@ -1004,99 +1017,55 @@ function downloadInvestorPayoutPDF(investorId) {
   const W = 210, H = 297;
   const ref = pdfRef('PA');
 
-  // Premium Dark AMOLED/Midnight Background
-  doc.setFillColor(7, 11, 20);
+  doc.setFillColor(255, 255, 255);
   doc.rect(0, 0, W, H, 'F');
 
-  // Top Header Branding
-  doc.setTextColor(223, 179, 115); // Rich Golden Accent
+  pdfHeader(doc, W, 'PAYOUT CONFIRMATION', ref);
+
+  doc.setFillColor(240, 253, 244);
+  doc.setDrawColor(187, 247, 208);
+  doc.roundedRect(14, 44, W - 28, 20, 2, 2, 'FD');
+  doc.setTextColor(22, 101, 52);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.text("AUREUS CAPITAL", 105, 20, { align: 'center' });
-
-  doc.setFontSize(9);
-  doc.setTextColor(249, 250, 251);
-  doc.setFont("helvetica", "normal");
-  doc.text("WEALTH  •  STRATEGY  •  GLOBAL MARKETS", 105, 26, { align: 'center' });
-
-  doc.setDrawColor(223, 179, 115);
-  doc.setLineWidth(0.5);
-  doc.line(14, 32, 196, 32);
-
-  // Title: PAYOUT CONFIRMED
-  doc.setFontSize(22);
-  doc.setFont("helvetica", "bold");
-  doc.setTextColor(255, 255, 255);
-  doc.text("PAYOUT CONFIRMED", 105, 45, { align: 'center' });
-
   doc.setFontSize(10);
-  doc.setTextColor(203, 213, 225);
-  doc.text("Your Earnings Have Been Successfully Processed", 105, 53, { align: 'center' });
+  doc.text("CONGRATULATIONS! PAYOUT SUCCESSFULLY PROCESSED", 20, 52);
+  doc.setTextColor(74, 222, 128);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.text("Your trust and support help us grow together.", 20, 59);
 
-  // Details Container Box
-  doc.setFillColor(15, 23, 42);
-  doc.setDrawColor(223, 179, 115);
-  doc.setLineWidth(0.4);
-  doc.roundedRect(14, 62, 182, 95, 3, 3, 'FD');
-
-  doc.setFontSize(11);
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
-
-  let startY = 78;
-  const lineHeight = 14;
-
-  const fields = [
-    { label: "Client Name", value: name },
-    { label: "Date", value: pdfDate(inv.date) },
-    { label: "Investment Amount", value: `$${capUSD.toFixed(2)} (Rs. ${capINR.toLocaleString('en-IN')})` },
-    { label: "Rate", value: `${ret.toFixed(2)}% (Monthly Return)` },
-    { label: "Earnings (USD)", value: `$${profitUSD.toFixed(2)}` },
-    { label: "Earnings (INR)", value: `Rs. ${profitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})} (Approx. @ Rs. ${rate.toFixed(2)} per USD)` }
-  ];
-
-  fields.forEach((f, idx) => {
-    let y = startY + (idx * lineHeight);
-    doc.setTextColor(203, 213, 225);
-    doc.text(f.label, 24, y);
-    doc.text(":", 78, y);
-    doc.setTextColor(idx >= 4 ? 74 : 255, idx >= 4 ? 222 : 255, idx >= 4 ? 128 : 255); // Green highlight for earnings
-    doc.text(f.value, 86, y);
+  pdfSectionLabel(doc, 'Payout Confirmation Details', 14, 74);
+  doc.autoTable({
+    startY: 78,
+    theme: 'plain',
+    body: [
+      ['Client Name', name],
+      ['Statement Date', pdfDate()],
+      ['Investment Amount', `${pdfUsd(capUSD)}  (${pdfInr(capINR)})`],
+      ['Rate', `${ret.toFixed(2)}% (Monthly Return)`],
+      ['Earnings (USD)', pdfUsd(profitUSD)],
+      ['Earnings (INR)', pdfInr(profitINR)],
+      ['Exchange Rate', `INR ${rate.toFixed(2)} per USD`],
+      ['Payout Status', 'Completed / Verified']
+    ],
+    styles: { fontSize: 10, textColor: PDF_INK, lineColor: PDF_LINE, lineWidth: {bottom: 0.3}, cellPadding: {top: 5, bottom: 5, left: 4, right: 4} },
+    columnStyles: { 0: {textColor: PDF_GREY, cellWidth: 55}, 1: {fontStyle: 'bold'} },
+    alternateRowStyles: { fillColor: PDF_LIGHT }
   });
 
-  // Success Banner Box at bottom
-  doc.setFillColor(217, 119, 6);
-  doc.roundedRect(25, 168, 160, 24, 3, 3, 'F');
-  
-  doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
+  let y = doc.lastAutoTable.finalY + 15;
+  doc.setFont('helvetica', 'italic');
   doc.setFontSize(12);
-  doc.text("CONGRATULATIONS! PAYOUT SUCCESSFUL", 105, 178, { align: 'center' });
-  
+  doc.setTextColor(...PDF_GOLD);
+  doc.text("Thank You for being a valued client!", 14, y);
+
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
-  doc.setFont("helvetica", "normal");
-  doc.text("Your trust and support help us grow together.", 105, 186, { align: 'center' });
+  doc.setTextColor(...PDF_GREY);
+  doc.text("We appreciate your trust and continued partnership with Aureus Capital.", 14, y + 8);
 
-  // Footer Thank You Message
-  doc.setFont("helvetica", "italic");
-  doc.setFontSize(14);
-  doc.setTextColor(223, 179, 115);
-  doc.text("Thank You", 105, 206, { align: 'center' });
-  
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(203, 213, 225);
-  doc.text("for being a valued client!", 105, 213, { align: 'center' });
-
-  doc.setDrawColor(223, 179, 115);
-  doc.line(14, 224, 196, 224);
-
-  doc.setFontSize(8);
-  doc.setTextColor(156, 163, 175);
-  doc.text("AUREUS CAPITAL  |  YOUR GROWTH • OUR PRIORITY", 14, 232);
-  doc.text("TRADE SMART EARN MORE", 196, 232, { align: 'right' });
-
-  doc.save(`Aureus_Capital_Payout_${name.replace(/\s+/g, '_')}.pdf`);
+  pdfFooters(doc, W, H);
+  doc.save(`${appName.replace(/\s+/g, '_')}_Payout_Confirmation_${name.replace(/\s+/g, '_')}.pdf`);
 }
 
 function downloadWhiteTemplatePDF() {

@@ -273,7 +273,7 @@
 
                 <div id="statement-preview-panel" class="hidden bg-midnight p-4 rounded-xl border border-goldAccent/50 space-y-2 text-xs tabular-nums text-softWhite transition-all duration-300">
                     <div class="border-b border-goldAccent/30 pb-2 mb-2 flex justify-between items-center">
-                        <span class="font-extrabold text-goldAccent uppercase tracking-wider text-[10px]">Detailed Fee & Tax Breakdown</span>
+                        <span class="font-extrabold text-goldAccent uppercase tracking-wider text-[10px]">Detailed Fee & Tax Breakdown (10% Total)[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)</span>
                         <span class="text-[9px] text-emeraldLive font-bold">CA-Compliant</span>
                     </div>
                     <div id="preview-breakdown-content" class="space-y-1.5"></div>
@@ -434,7 +434,11 @@
         }
 
         function saveAppData() {
-            localStorage.setItem('aureus_capital_data', JSON.stringify(appData));
+            try {
+                localStorage.setItem('aureus_capital_data', JSON.stringify(appData));
+            } catch(e) {
+                alert("Storage limit full ho gayi hai.");
+            }
         }
 
         function switchTab(tabId) {
@@ -498,7 +502,6 @@
             renderSettlement();
         }
 
-        // DIRECT 30-DAY MONTHLY CYCLE CALCULATION ENGINE (PROMOTER + INVESTORS TOTAL POOL)
         function calculateHomeMetrics() {
             const promoter = Number(appData.promoterHolding) || 50000;
             let activeInvCap = 0;
@@ -523,7 +526,7 @@
                 usdBadge.textContent = `+${usdTrendPct}% ▲`;
             }
 
-            let baseRet = 8.46; // Exact match to user's monthly cycle return
+            let baseRet = 8.46; 
             if(appData.returnMode === 'range1') {
                 baseRet = 8.46; 
             } else if(appData.returnMode === 'range2') {
@@ -547,7 +550,6 @@
             const daysLeft = Math.max(0, totalDays - now.getDate());
             document.getElementById('cycle-days-left').textContent = daysLeft + ' days remaining';
 
-            // DIRECT 30-DAY MONTHLY RETURN CALCULATION (Total Pool * Return %)
             const profitINR = totalCap * (baseRet / 100);
             const exRate = liveUsdSpot;
             const profitUSD = profitINR / exRate;
@@ -556,6 +558,7 @@
             document.getElementById('home-calc-profit-inr').textContent = 'INR ' + Math.round(profitINR).toLocaleString('en-IN');
         }
 
+        // AUTOMATIC CAPITAL-BASED TIER SORTING & ASSIGNMENT
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             if(!container) return;
@@ -793,7 +796,7 @@
                 return;
             }
             const inrVal = amt * 88.50;
-            const netVal = inrVal * 0.90; // Exact 10.00% Total Deduction
+            const netVal = inrVal * 0.90; // Exact 10.00% Total Deduction[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
             resultBox.innerHTML = `
                 <div class="flex justify-between"><span>Requested USD:</span><span class="font-bold text-goldAccent">$${amt.toFixed(2)}</span></div>
                 <div class="flex justify-between"><span>Converted INR (88.50):</span><span class="font-bold text-softWhite">INR ${Math.round(inrVal).toLocaleString('en-IN')}</span></div>
@@ -801,18 +804,26 @@
             `;
         }
 
+        // TRANSPARENT ITEMIZED FEE & TAX BREAKDOWN (EXACT AMOUNTS & PERCENTAGES)
         function toggleStatementPreview() {
             const panel = document.getElementById('statement-preview-panel');
             const btn = document.getElementById('toggle-preview-btn');
             if(panel.classList.contains('hidden')) {
                 panel.classList.remove('hidden');
                 btn.innerHTML = '<span>👁️ Hide Statement Breakdown</span>';
+                
+                const sampleINR = 10000;
+                const mgmtFeeINR = sampleINR * 0.02;     // 2.00%[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
+                const gstINR = sampleINR * 0.0036;       // 0.36%[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+                const perfFeeINR = sampleINR * 0.03;     // 3.00%[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
+                const tdsINR = sampleINR * 0.0464;       // 4.64%[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)
+
                 document.getElementById('preview-breakdown-content').innerHTML = `
-                    <div class="flex justify-between"><span>Management Fee (2.00%):</span><span class="text-softWhite">Applied</span></div>
-                    <div class="flex justify-between"><span>GST on Mgmt Fee (0.36%):</span><span class="text-softWhite">Applied</span></div>
-                    <div class="flex justify-between"><span>Performance / Alpha Fee (3.00%):</span><span class="text-softWhite">Applied</span></div>
-                    <div class="flex justify-between"><span>TDS / Brokerage Tax (4.64%):</span><span class="text-softWhite">Applied</span></div>
-                    <div class="flex justify-between border-t border-goldAccent/30 pt-1 mt-1 font-bold text-goldAccent"><span>Total Deduction:</span><span>10.00% Exact</span></div>
+                    <div class="flex justify-between"><span>Management Fee (2.00%):[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)</span><span class="text-softWhite">INR ${Math.round(mgmtFeeINR)} ($${(mgmtFeeINR/88.50).toFixed(2)})</span></div>
+                    <div class="flex justify-between"><span>GST on Mgmt Fee (0.36%):[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span)</span><span class="text-softWhite">INR ${Math.round(gstINR)} ($${(gstINR/88.50).toFixed(2)})</span></div>
+                    <div class="flex justify-between"><span>Performance / Alpha Fee (3.00%):[span_18](start_span)[span_18](end_span)[span_19](start_span)[span_19](end_span)</span><span class="text-softWhite">INR ${Math.round(perfFeeINR)} ($${(perfFeeINR/88.50).toFixed(2)})</span></div>
+                    <div class="flex justify-between"><span>TDS / Brokerage Tax (4.64%):[span_20](start_span)[span_20](end_span)[span_21](start_span)[span_21](end_span)</span><span class="text-softWhite">INR ${Math.round(tdsINR)} ($${(tdsINR/88.50).toFixed(2)})</span></div>
+                    <div class="flex justify-between border-t border-goldAccent/30 pt-1 mt-1 font-bold text-goldAccent"><span>Total Deduction:[span_22](start_span)[span_22](end_span)[span_23](start_span)[span_23](end_span)</span><span>10.00% Exact[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span)</span></div>
                 `;
             } else {
                 panel.classList.add('hidden');
@@ -825,9 +836,37 @@
             if(!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
-                appData.customLogo = e.target.result;
-                saveAppData();
-                renderUI();
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 150;
+                    const MAX_HEIGHT = 150;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    appData.customLogo = canvas.toDataURL('image/jpeg', 0.85);
+                    saveAppData();
+                    renderUI();
+                    alert("Logo successfully upload aur save ho gaya hai!");
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
@@ -925,7 +964,7 @@
                 return;
             }
             const inrVal = amt * 88.50;
-            const netVal = inrVal * 0.90;
+            const netVal = inrVal * 0.90; //[span_26](start_span)[span_26](end_span)[span_27](start_span)[span_27](end_span)
             const companyName = appData.appName || "Aureus Capital";
 
             const { jsPDF } = window.jspdf;
@@ -947,7 +986,11 @@
                     ['Requested USD', `$${amt.toFixed(2)}`],
                     ['Exchange Rate', 'INR 88.50'],
                     ['Converted INR', `INR ${Math.round(inrVal).toLocaleString('en-IN')}`],
-                    ['Net Payoutable (After 10% Deduction)', `INR ${Math.round(netVal).toLocaleString('en-IN')}`],
+                    ['Management Fee (2.00%)', `INR ${Math.round(inrVal * 0.02)}`],[span_28](start_span)[span_28](end_span)[span_29](start_span)[span_29](end_span)
+                    ['GST on Mgmt Fee (0.36%)', `INR ${Math.round(inrVal * 0.0036)}`],[span_30](start_span)[span_30](end_span)[span_31](start_span)[span_31](end_span)
+                    ['Performance Fee (3.00%)', `INR ${Math.round(inrVal * 0.03)}`],[span_32](start_span)[span_32](end_span)[span_33](start_span)[span_33](end_span)
+                    ['TDS / Brokerage Tax (4.64%)', `INR ${Math.round(inrVal * 0.0464)}`],[span_34](start_span)[span_34](end_span)[span_35](start_span)[span_35](end_span)
+                    ['Net Payoutable (After 10% Deduction)', `INR ${Math.round(netVal).toLocaleString('en-IN')}`],[span_36](start_span)[span_36](end_span)[span_37](start_span)[span_37](end_span)
                     ['Compliance', 'CA-Compliant Statement']
                 ],
                 theme: 'grid',
@@ -991,6 +1034,10 @@
                     ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
                     ['30-Day Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
                     ['30-Day Profit (USD)', `$${estProfitUSD.toFixed(2)}`],
+                    ['Management Fee (2.00%)', `INR ${Math.round(estProfitINR * 0.02)}`],[span_38](start_span)[span_38](end_span)[span_39](start_span)[span_39](end_span)
+                    ['GST on Mgmt Fee (0.36%)', `INR ${Math.round(estProfitINR * 0.0036)}`],[span_40](start_span)[span_40](end_span)[span_41](start_span)[span_41](end_span)
+                    ['Performance Fee (3.00%)', `INR ${Math.round(estProfitINR * 0.03)}`],[span_42](start_span)[span_42](end_span)[span_43](start_span)[span_43](end_span)
+                    ['TDS / Brokerage Tax (4.64%)', `INR ${Math.round(estProfitINR * 0.0464)}`],[span_44](start_span)[span_44](end_span)[span_45](start_span)[span_45](end_span)
                     ['Payout Status', status]
                 ],
                 theme: 'grid',

@@ -233,7 +233,7 @@
                 <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name" class="w-full card-box border border-goldAccent/40 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
             </div>
 
-            <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe left or right to delete</p>
+            <p class="text-[10px] text-softGrey px-1">Tap card to edit details · Swipe left or right to delete</p>
             <div class="space-y-3.5 pt-1" id="investors-list-container"></div>
         </section>
 
@@ -242,7 +242,7 @@
             <div class="flex justify-between items-center px-1 gap-2">
                 <div>
                     <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">LEDGER</p>
-                    <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
+                    <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Confirmation</h2>
                 </div>
                 <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 cursor-pointer relative z-20">Master Sheet PDF</button>
             </div>
@@ -267,21 +267,21 @@
 
                 <div class="pt-2">
                     <button onclick="toggleStatementPreview()" id="toggle-preview-btn" class="w-full py-2 bg-graphite text-goldAccent border border-goldAccent/50 font-bold rounded-xl text-xs hover:bg-midnight transition flex items-center justify-center space-x-2 shadow-md cursor-pointer relative z-20">
-                        <span>👁️ Preview Full Statement Breakdown</span>
+                        <span>👁️ Preview Payout Details</span>
                     </button>
                 </div>
 
                 <div id="statement-preview-panel" class="hidden bg-midnight p-4 rounded-xl border border-goldAccent/50 space-y-2 text-xs tabular-nums text-softWhite transition-all duration-300">
                     <div class="border-b border-goldAccent/30 pb-2 mb-2 flex justify-between items-center">
-                        <span class="font-extrabold text-goldAccent uppercase tracking-wider text-[10px]">Detailed Fee & Tax Breakdown (10% Total)</span>
-                        <span class="text-[9px] text-emeraldLive font-bold">CA-Compliant</span>
+                        <span class="font-extrabold text-goldAccent uppercase tracking-wider text-[10px]">Payout Confirmation Summary</span>
+                        <span class="text-[9px] text-emeraldLive font-bold">Verified & Confirmed</span>
                     </div>
                     <div id="preview-breakdown-content" class="space-y-1.5"></div>
                 </div>
             </div>
 
             <div class="space-y-3 pt-1">
-                <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold px-1">Investor Payout Ledger (CA-Compliant)</p>
+                <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold px-1">Investor Payout Confirmations</p>
                 <div id="settlement-list-container" class="space-y-3"></div>
             </div>
         </section>
@@ -558,19 +558,18 @@
             document.getElementById('home-calc-profit-inr').textContent = 'INR ' + Math.round(profitINR).toLocaleString('en-IN');
         }
 
-        // AUTOMATIC CAPITAL-BASED TIER SORTING & ASSIGNMENT
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             if(!container) return;
             const query = (document.getElementById('investor-search')?.value || '').toLowerCase();
             
-            const filtered = appData.investors.filter(inv => ((inv.name || '') + '').toLowerCase().includes(query));
+            let sortedInvestors = [...appData.investors].sort((a, b) => (Number(b.capital) || 0) - (Number(a.capital) || 0));
+            const filtered = sortedInvestors.filter(inv => ((inv.name || '') + '').toLowerCase().includes(query));
+            
             if(filtered.length === 0) {
                 container.innerHTML = `<div class="card-box p-6 text-center text-xs text-softGrey rounded-2xl">No investors found. Tap '+ Add' to create one.</div>`;
                 return;
             }
-
-            let sortedInvestors = [...appData.investors].sort((a,b) => (b.capital || 0) - (a.capital || 0));
 
             let html = '';
             filtered.forEach((inv) => {
@@ -582,15 +581,15 @@
                 let tierText = 'NORMAL';
                 let badgeColor = 'bg-blue-950 text-blue-400 border-blue-700/50';
 
-                if (rankIndex === 0 && appData.investors.length > 0) {
+                if (rankIndex === 0 && sortedInvestors.length > 0) {
                     tierClass = 'tier-gold-card';
                     tierText = 'GOLD';
                     badgeColor = 'bg-amber-950 text-goldAccent border-goldAccent/50';
-                } else if (rankIndex === 1 && appData.investors.length > 1) {
+                } else if (rankIndex === 1 && sortedInvestors.length > 1) {
                     tierClass = 'tier-silver-card';
                     tierText = 'SILVER';
                     badgeColor = 'bg-slate-800 text-slate-300 border-slate-500/50';
-                } else if (rankIndex === 2 && appData.investors.length > 2) {
+                } else if (rankIndex === 2 && sortedInvestors.length > 2) {
                     tierClass = 'tier-bronze-card';
                     tierText = 'BRONZE';
                     badgeColor = 'bg-amber-900/60 text-amber-500 border-amber-700/50';
@@ -638,7 +637,7 @@
             if (!activeTouchCard) return;
             touchCurrentX = e.touches[0].clientX;
             const diffX = touchCurrentX - touchStartX;
-            if (Math.abs(diffX) > 4) {
+            if (Math.abs(diffX) > 8) {
                 isCardDragging = true;
             }
             activeTouchCard.style.transform = `translateX(${diffX}px)`;
@@ -741,12 +740,16 @@
             const container = document.getElementById('settlement-list-container');
             if(!container) return;
             if(appData.investors.length === 0) {
-                container.innerHTML = `<div class="card-box p-4 text-center text-xs text-softGrey rounded-2xl">No investors available for settlement.</div>`;
+                container.innerHTML = `<div class="card-box p-4 text-center text-xs text-softGrey rounded-2xl">No investors available for confirmation.</div>`;
                 return;
             }
             let html = '';
-            const baseRet = 8.46;
+            let baseRet = 8.46;
+            if(appData.returnMode === 'range2') baseRet = 15.00;
+            else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
+
             appData.investors.forEach((inv, originalIdx) => {
+                // Fixed 30-day cycle calculation (independent of joining date)
                 const estProfitINR = (inv.capital || 0) * (baseRet / 100);
                 const estProfitUSD = estProfitINR / 88.50;
                 const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
@@ -757,7 +760,7 @@
                     : 'bg-amber-500/20 text-amber-400 border-amber-500/40 font-bold';
 
                 const downloadBtnHtml = status === 'Complete' 
-                    ? `<button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center animate-fade-in cursor-pointer relative z-20" title="Download Payout PDF">
+                    ? `<button onclick="downloadIndividualPayoutPDF(${originalIdx})" class="p-2 bg-royalBlue text-white rounded-xl hover:bg-blue-600 transition active:scale-95 shadow-lg flex items-center justify-center animate-fade-in cursor-pointer relative z-20" title="Download Payout Confirmation">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                        </button>` 
                     : '';
@@ -775,7 +778,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[11px] text-softGrey">
                             <div>Capital: <span class="text-softWhite font-bold">INR ${Number(inv.capital || 0).toLocaleString('en-IN')}</span></div>
-                            <div>30-Day Profit: <span class="text-emeraldLive font-bold">$${estProfitUSD.toFixed(2)} (INR ${Math.round(estProfitINR).toLocaleString('en-IN')})</span></div>
+                            <div>30-Day Return (${baseRet.toFixed(2)}%): <span class="text-emeraldLive font-bold">$${estProfitUSD.toFixed(2)} (INR ${Math.round(estProfitINR).toLocaleString('en-IN')})</span></div>
                         </div>
                     </div>
                 `;
@@ -796,39 +799,37 @@
                 return;
             }
             const inrVal = amt * 88.50;
-            const netVal = inrVal * 0.90; // Exact 10.00% Total Deduction
 
             resultBox.innerHTML = `
                 <div class="flex justify-between"><span>Requested USD:</span><span class="font-bold text-goldAccent">$${amt.toFixed(2)}</span></div>
-                <div class="flex justify-between"><span>Converted INR (88.50):</span><span class="font-bold text-softWhite">INR ${Math.round(inrVal).toLocaleString('en-IN')}</span></div>
-                <div class="flex justify-between text-emeraldLive font-bold"><span>Net Payoutable (After 10% Deduction):</span><span>INR ${Math.round(netVal).toLocaleString('en-IN')}</span></div>
+                <div class="flex justify-between text-emeraldLive font-bold"><span>Total INR Value (88.50):</span><span>INR ${Math.round(inrVal).toLocaleString('en-IN')}</span></div>
             `;
         }
 
-        // CLEAN ITEMIZED FEE & TAX BREAKDOWN PREVIEW
         function toggleStatementPreview() {
             const panel = document.getElementById('statement-preview-panel');
             const btn = document.getElementById('toggle-preview-btn');
+            let baseRet = 8.46;
+            if(appData.returnMode === 'range2') baseRet = 15.00;
+            else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
+
             if(panel.classList.contains('hidden')) {
                 panel.classList.remove('hidden');
-                btn.innerHTML = '<span>👁️ Hide Statement Breakdown</span>';
+                btn.innerHTML = '<span>👁️ Hide Payout Details</span>';
                 
-                const sampleINR = 10000;
-                const mgmtFeeINR = sampleINR * 0.02;     // 2.00%
-                const gstINR = sampleINR * 0.0036;       // 0.36%
-                const perfFeeINR = sampleINR * 0.03;     // 3.00%
-                const tdsINR = sampleINR * 0.0464;       // 4.64%
+                const sampleINR = 50000;
+                const sampleProfitINR = sampleINR * (baseRet / 100);
 
                 document.getElementById('preview-breakdown-content').innerHTML = `
-                    <div class="flex justify-between"><span>Management Fee (2.00%):</span><span class="text-softWhite">INR ${Math.round(mgmtFeeINR)} ($${(mgmtFeeINR/88.50).toFixed(2)})</span></div>
-                    <div class="flex justify-between"><span>GST on Mgmt Fee (0.36%):</span><span class="text-softWhite">INR ${Math.round(gstINR)} ($${(gstINR/88.50).toFixed(2)})</span></div>
-                    <div class="flex justify-between"><span>Performance / Alpha Fee (3.00%):</span><span class="text-softWhite">INR ${Math.round(perfFeeINR)} ($${(perfFeeINR/88.50).toFixed(2)})</span></div>
-                    <div class="flex justify-between"><span>TDS / Brokerage Tax (4.64%):</span><span class="text-softWhite">INR ${Math.round(tdsINR)} ($${(tdsINR/88.50).toFixed(2)})</span></div>
-                    <div class="flex justify-between border-t border-goldAccent/30 pt-1 mt-1 font-bold text-goldAccent"><span>Total Deduction:</span><span>10.00% Exact</span></div>
+                    <div class="flex justify-between"><span>Sample Investment Capital:</span><span class="text-softWhite">INR 50,000</span></div>
+                    <div class="flex justify-between"><span>Cycle Duration:</span><span class="text-softWhite">30 Days (Fixed)</span></div>
+                    <div class="flex justify-between"><span>Return Rate:</span><span class="text-softWhite">${baseRet.toFixed(2)}%</span></div>
+                    <div class="flex justify-between"><span>Profit (USD):</span><span class="text-emeraldLive font-bold">$${(sampleProfitINR / 88.50).toFixed(2)}</span></div>
+                    <div class="flex justify-between"><span>Profit (INR):</span><span class="text-emeraldLive font-bold">INR ${Math.round(sampleProfitINR).toLocaleString('en-IN')}</span></div>
                 `;
             } else {
                 panel.classList.add('hidden');
-                btn.innerHTML = '<span>👁️ Preview Full Statement Breakdown</span>';
+                btn.innerHTML = '<span>👁️ Preview Payout Details</span>';
             }
         }
 
@@ -921,7 +922,10 @@
         function downloadMasterStatementPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const baseRet = 8.46;
+            let baseRet = 8.46;
+            if(appData.returnMode === 'range2') baseRet = 15.00;
+            else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
+
             const companyName = appData.appName || "Aureus Capital";
             
             doc.setFontSize(18);
@@ -930,11 +934,12 @@
             
             doc.setFontSize(11);
             doc.setTextColor(150, 150, 150);
-            doc.text("Master Statement & Investor 30-Day Payout Ledger", 14, 28);
+            doc.text("Master Statement & Investor Payout Confirmations", 14, 28);
             doc.text(`Promoter Holding: INR ${Number(appData.promoterHolding).toLocaleString('en-IN')}`, 14, 34);
 
             let tableData = [];
-            appData.investors.forEach((inv, index) => {
+            let sortedForPDF = [...appData.investors].sort((a, b) => (Number(b.capital) || 0) - (Number(a.capital) || 0));
+            sortedForPDF.forEach((inv, index) => {
                 const estProfit = (inv.capital || 0) * (baseRet / 100);
                 const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
                 tableData.push([
@@ -965,7 +970,6 @@
                 return;
             }
             const inrVal = amt * 88.50;
-            const netVal = inrVal * 0.90;
             const companyName = appData.appName || "Aureus Capital";
 
             const { jsPDF } = window.jspdf;
@@ -977,76 +981,81 @@
 
             doc.setFontSize(11);
             doc.setTextColor(150, 150, 150);
-            doc.text("Custom Withdrawal & Settlement Statement", 14, 28);
+            doc.text("Custom Payout Confirmation Summary", 14, 28);
 
             doc.autoTable({
                 startY: 36,
                 head: [['Parameter', 'Details']],
                 body: [
                     ['Company Name', companyName],
-                    ['Requested USD', `$${amt.toFixed(2)}`],
-                    ['Exchange Rate', 'INR 88.50'],
-                    ['Converted INR', `INR ${Math.round(inrVal).toLocaleString('en-IN')}`],
-                    ['Management Fee (2.00%)', `INR ${Math.round(inrVal * 0.02)}`],
-                    ['GST on Mgmt Fee (0.36%)', `INR ${Math.round(inrVal * 0.0036)}`],
-                    ['Performance Fee (3.00%)', `INR ${Math.round(inrVal * 0.03)}`],
-                    ['TDS / Brokerage Tax (4.64%)', `INR ${Math.round(inrVal * 0.0464)}`],
-                    ['Net Payoutable (After 10% Deduction)', `INR ${Math.round(netVal).toLocaleString('en-IN')}`],
-                    ['Compliance', 'CA-Compliant Statement']
+                    ['Requested Amount (USD)', `$${amt.toFixed(2)}`],
+                    ['Exchange Rate (USD/INR)', 'INR 88.50'],
+                    ['Total Converted Value (INR)', `INR ${Math.round(inrVal).toLocaleString('en-IN')}`],
+                    ['Status', 'Confirmed & Ready']
                 ],
                 theme: 'grid',
                 headStyles: { fillColor: [13, 20, 36] },
                 styles: { fontSize: 10 }
             });
 
-            doc.save('Aureus_Capital_Custom_Statement.pdf');
+            doc.save('Aureus_Capital_Payout_Confirmation.pdf');
         }
 
+        // FIXED 30-DAY INDIVIDUAL PAYOUT CONFIRMATION PDF
         function downloadIndividualPayoutPDF(idx) {
             const inv = appData.investors[idx];
-            const baseRet = 8.46;
+            let baseRet = 8.46;
+            if(appData.returnMode === 'range2') baseRet = 15.00;
+            else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
+
             const estProfitINR = (inv.capital || 0) * (baseRet / 100);
             const estProfitUSD = estProfitINR / 88.50;
-            const status = inv.status || 'Pending';
+            const status = inv.status || 'Complete';
             const companyName = appData.appName || "Aureus Capital";
+            const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
-            doc.setFontSize(18);
+            doc.setFontSize(20);
             doc.setTextColor(229, 193, 133);
             doc.text(companyName, 14, 20);
 
-            doc.setFontSize(11);
+            doc.setFontSize(12);
             doc.setTextColor(16, 185, 129);
-            doc.text("Congratulation! Your payout has been successfully confirmed.", 14, 28);
+            doc.text("🎉 Congratulations! Your Payout has been Successfully Confirmed.", 14, 30);
 
             doc.setFontSize(10);
-            doc.setTextColor(150, 150, 150);
-            doc.text("Individual Investor Payout Statement", 14, 36);
-            doc.text(`Investor Name: ${inv.name || 'Investor'}`, 14, 42);
-            doc.text(`Status: ${status}`, 14, 48);
+            doc.setTextColor(180, 180, 180);
+            doc.text("30-Day Fixed Cycle Payout Confirmation Statement", 14, 38);
 
             doc.autoTable({
-                startY: 54,
-                head: [['Parameter', 'Details']],
+                startY: 46,
+                head: [['Confirmation Parameter', 'Details']],
                 body: [
-                    ['Company Name', companyName],
+                    ['Investor Name', displayName],
                     ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
-                    ['30-Day Profit (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
-                    ['30-Day Profit (USD)', `$${estProfitUSD.toFixed(2)}`],
-                    ['Management Fee (2.00%)', `INR ${Math.round(estProfitINR * 0.02)}`],
-                    ['GST on Mgmt Fee (0.36%)', `INR ${Math.round(estProfitINR * 0.0036)}`],
-                    ['Performance Fee (3.00%)', `INR ${Math.round(estProfitINR * 0.03)}`],
-                    ['TDS / Brokerage Tax (4.64%)', `INR ${Math.round(estProfitINR * 0.0464)}`],
+                    ['Cycle Duration', '30 Days (Fixed)'],
+                    ['Total Return Rate', `${baseRet.toFixed(2)}%`],
+                    ['Profit Value (USD)', `$${estProfitUSD.toFixed(2)}`],
+                    ['Profit Value (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
                     ['Payout Status', status]
                 ],
                 theme: 'grid',
-                headStyles: { fillColor: [13, 20, 36] },
-                styles: { fontSize: 10 }
+                headStyles: { fillColor: [13, 20, 36], textColor: [229, 193, 133] },
+                styles: { fontSize: 10, cellPadding: 5 }
             });
 
-            doc.save(`${(inv.name || 'Investor').replace(/\s+/g, '_')}_Payout_Statement.pdf`);
+            const finalY = doc.lastAutoTable.finalY + 15;
+            doc.setFontSize(11);
+            doc.setTextColor(229, 193, 133);
+            doc.text(`Thank you for choosing ${companyName}!`, 14, finalY);
+            
+            doc.setFontSize(9);
+            doc.setTextColor(150, 150, 150);
+            doc.text("We appreciate your continued trust in our private pool portfolio.", 14, finalY + 6);
+
+            doc.save(`${displayName.replace(/\s+/g, '_')}_Payout_Confirmation.pdf`);
         }
 
         window.addEventListener('load', () => {

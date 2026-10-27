@@ -558,6 +558,15 @@
             document.getElementById('home-calc-profit-inr').textContent = 'INR ' + Math.round(profitINR).toLocaleString('en-IN');
         }
 
+        // DYNAMIC MONTH-TO-DATE / ELAPSED DAYS CALCULATION LOGIC (CURRENT MONTH DAYS UP TO TODAY)
+        function getCurrentElapsedCycleDays() {
+            const now = new Date();
+            const currentDay = now.getDate(); // Mahine ki aaj ki tarikh (jaise 11th)
+            const totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            // Mahine ke 30 din (ya total days) ke anusaar aaj tak ke din (max 30)
+            return Math.min(30, Math.max(1, currentDay));
+        }
+
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             if(!container) return;
@@ -603,9 +612,13 @@
 
                 html += `
                     <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} mb-3 cursor-pointer animate-fade-in"
+                         data-index="${originalIdx}"
                          ontouchstart="handleTouchStart(event)"
                          ontouchmove="handleTouchMove(event)"
                          ontouchend="handleTouchEnd(event, ${originalIdx})"
+                         onmousedown="handleMouseDown(event, ${originalIdx})"
+                         onmousemove="handleMouseMove(event)"
+                         onmouseup="handleMouseUp(event, ${originalIdx})"
                          onclick="handleCardClick(event, ${originalIdx})">
                         <div>
                             <div class="flex items-center space-x-2">
@@ -620,58 +633,108 @@
             container.innerHTML = html;
         }
 
-        let touchStartX = 0;
-        let touchCurrentX = 0;
-        let activeTouchCard = null;
-        let isCardDragging = false;
+        // ROBUST TOUCH & MOUSE SWIPE-TO-DELETE & CLICK CONFLICT RESOLUTION
+        let startX = 0;
+        let currentX = 0;
+        let activeCard = null;
+        let isDragging = false;
 
         function handleTouchStart(e) {
-            activeTouchCard = e.currentTarget;
-            touchStartX = e.touches[0].clientX;
-            touchCurrentX = touchStartX;
-            isCardDragging = false;
-            activeTouchCard.style.transition = 'none';
+            activeCard = e.currentTarget;
+            startX = e.touches[0].clientX;
+            currentX = startX;
+            isDragging = false;
+            activeCard.style.transition = 'none';
         }
 
         function handleTouchMove(e) {
-            if (!activeTouchCard) return;
-            touchCurrentX = e.touches[0].clientX;
-            const diffX = touchCurrentX - touchStartX;
-            if (Math.abs(diffX) > 8) {
-                isCardDragging = true;
+            if (!activeCard) return;
+            currentX = e.touches[0].clientX;
+            const diffX = currentX - startX;
+            if (Math.abs(diffX) > 6) {
+                isDragging = true;
             }
-            activeTouchCard.style.transform = `translateX(${diffX}px)`;
+            activeCard.style.transform = `translateX(${diffX}px)`;
             const opacity = Math.max(0.1, 1 - Math.abs(diffX) / 200);
-            activeTouchCard.style.opacity = opacity;
+            activeCard.style.opacity = opacity;
         }
 
         function handleTouchEnd(e, idx) {
-            if (!activeTouchCard) return;
-            const diffX = touchCurrentX - touchStartX;
-            activeTouchCard.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
+            if (!activeCard) return;
+            const diffX = currentX - startX;
+            activeCard.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
 
             if (Math.abs(diffX) > 70) {
                 const direction = diffX > 0 ? 1 : -1;
-                activeTouchCard.style.transform = `translateX(${direction * window.innerWidth}px)`;
-                activeTouchCard.style.opacity = '0';
+                activeCard.style.transform = `translateX(${direction * window.innerWidth}px)`;
+                activeCard.style.opacity = '0';
                 setTimeout(() => {
                     appData.investors.splice(idx, 1);
                     saveAppData();
                     renderUI();
                 }, 300);
             } else {
-                activeTouchCard.style.transform = 'translateX(0px)';
-                activeTouchCard.style.opacity = '1';
+                activeCard.style.transform = 'translateX(0px)';
+                activeCard.style.opacity = '1';
             }
 
             setTimeout(() => {
-                isCardDragging = false;
-                activeTouchCard = null;
+                isDragging = false;
+                activeCard = null;
+            }, 350);
+        }
+
+        function handleMouseDown(e, idx) {
+            activeCard = e.currentTarget;
+            startX = e.clientX;
+            currentX = startX;
+            isDragging = false;
+            activeCard.style.transition = 'none';
+        }
+
+        function handleMouseMove(e) {
+            if (!activeCard || e.buttons !== 1) return;
+            currentX = e.clientX;
+            const diffX = currentX - startX;
+            if (Math.abs(diffX) > 6) {
+                isDragging = true;
+            }
+            activeCard.style.transform = `translateX(${diffX}px)`;
+            const opacity = Math.max(0.1, 1 - Math.abs(diffX) / 200);
+            activeCard.style.opacity = opacity;
+        }
+
+        function handleMouseUp(e, idx) {
+            if (!activeCard) return;
+            const diffX = currentX - startX;
+            activeCard.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
+
+            if (Math.abs(diffX) > 70) {
+                const direction = diffX > 0 ? 1 : -1;
+                activeCard.style.transform = `translateX(${direction * window.innerWidth}px)`;
+                activeCard.style.opacity = '0';
+                setTimeout(() => {
+                    appData.investors.splice(idx, 1);
+                    saveAppData();
+                    renderUI();
+                }, 300);
+            } else {
+                activeCard.style.transform = 'translateX(0px)';
+                activeCard.style.opacity = '1';
+            }
+
+            setTimeout(() => {
+                isDragging = false;
+                activeCard = null;
             }, 350);
         }
 
         function handleCardClick(e, idx) {
-            if (isCardDragging) return;
+            if (isDragging) {
+                e.stopPropagation();
+                e.preventDefault();
+                return;
+            }
             editInvestor(idx);
         }
 
@@ -729,7 +792,7 @@
 
         function toggleInvestorStatus(idx) {
             if(!appData.investors[idx].status) {
-                appData.investors[idx].status = 'Pending';
+                appData.investors.status = 'Pending';
             }
             appData.investors[idx].status = (appData.investors[idx].status === 'Complete') ? 'Pending' : 'Complete';
             saveAppData();
@@ -748,9 +811,11 @@
             if(appData.returnMode === 'range2') baseRet = 15.00;
             else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
 
+            const elapsedDays = getCurrentElapsedCycleDays();
+            const proportionalRet = (baseRet / 30) * elapsedDays;
+
             appData.investors.forEach((inv, originalIdx) => {
-                // Fixed 30-day cycle calculation (independent of joining date)
-                const estProfitINR = (inv.capital || 0) * (baseRet / 100);
+                const estProfitINR = (inv.capital || 0) * (proportionalRet / 100);
                 const estProfitUSD = estProfitINR / 88.50;
                 const displayName = (inv.name && inv.name.toString().trim() !== '') ? inv.name : 'Investor';
                 const status = inv.status || 'Pending';
@@ -778,7 +843,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-[11px] text-softGrey">
                             <div>Capital: <span class="text-softWhite font-bold">INR ${Number(inv.capital || 0).toLocaleString('en-IN')}</span></div>
-                            <div>30-Day Return (${baseRet.toFixed(2)}%): <span class="text-emeraldLive font-bold">$${estProfitUSD.toFixed(2)} (INR ${Math.round(estProfitINR).toLocaleString('en-IN')})</span></div>
+                            <div>Return (${elapsedDays} Days - ${proportionalRet.toFixed(2)}%): <span class="text-emeraldLive font-bold">$${estProfitUSD.toFixed(2)} (INR ${Math.round(estProfitINR).toLocaleString('en-IN')})</span></div>
                         </div>
                     </div>
                 `;
@@ -813,17 +878,20 @@
             if(appData.returnMode === 'range2') baseRet = 15.00;
             else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
 
+            const elapsedDays = getCurrentElapsedCycleDays();
+            const proportionalRet = (baseRet / 30) * elapsedDays;
+
             if(panel.classList.contains('hidden')) {
                 panel.classList.remove('hidden');
                 btn.innerHTML = '<span>👁️ Hide Payout Details</span>';
                 
                 const sampleINR = 50000;
-                const sampleProfitINR = sampleINR * (baseRet / 100);
+                const sampleProfitINR = sampleINR * (proportionalRet / 100);
 
                 document.getElementById('preview-breakdown-content').innerHTML = `
                     <div class="flex justify-between"><span>Sample Investment Capital:</span><span class="text-softWhite">INR 50,000</span></div>
-                    <div class="flex justify-between"><span>Cycle Duration:</span><span class="text-softWhite">30 Days (Fixed)</span></div>
-                    <div class="flex justify-between"><span>Return Rate:</span><span class="text-softWhite">${baseRet.toFixed(2)}%</span></div>
+                    <div class="flex justify-between"><span>Active Cycle Duration:</span><span class="text-softWhite">${elapsedDays} Days (Month-to-Date)</span></div>
+                    <div class="flex justify-between"><span>Effective Return Rate:</span><span class="text-softWhite">${proportionalRet.toFixed(2)}%</span></div>
                     <div class="flex justify-between"><span>Profit (USD):</span><span class="text-emeraldLive font-bold">$${(sampleProfitINR / 88.50).toFixed(2)}</span></div>
                     <div class="flex justify-between"><span>Profit (INR):</span><span class="text-emeraldLive font-bold">INR ${Math.round(sampleProfitINR).toLocaleString('en-IN')}</span></div>
                 `;
@@ -1001,14 +1069,17 @@
             doc.save('Aureus_Capital_Payout_Confirmation.pdf');
         }
 
-        // FIXED 30-DAY INDIVIDUAL PAYOUT CONFIRMATION PDF
+        // PROPORTIONAL DAY-WISE INDIVIDUAL PAYOUT CONFIRMATION PDF (BASED ON ELAPSED DAYS OF THE MONTH)
         function downloadIndividualPayoutPDF(idx) {
             const inv = appData.investors[idx];
             let baseRet = 8.46;
             if(appData.returnMode === 'range2') baseRet = 15.00;
             else if(appData.returnMode === 'custom') baseRet = Number(appData.customReturnRate) || 10.50;
 
-            const estProfitINR = (inv.capital || 0) * (baseRet / 100);
+            const elapsedDays = getCurrentElapsedCycleDays();
+            const proportionalRet = (baseRet / 30) * elapsedDays;
+
+            const estProfitINR = (inv.capital || 0) * (proportionalRet / 100);
             const estProfitUSD = estProfitINR / 88.50;
             const status = inv.status || 'Complete';
             const companyName = appData.appName || "Aureus Capital";
@@ -1027,7 +1098,7 @@
 
             doc.setFontSize(10);
             doc.setTextColor(180, 180, 180);
-            doc.text("30-Day Fixed Cycle Payout Confirmation Statement", 14, 38);
+            doc.text(`Payout Confirmation Statement (${elapsedDays} Days Cycle Calculated)`, 14, 38);
 
             doc.autoTable({
                 startY: 46,
@@ -1035,8 +1106,8 @@
                 body: [
                     ['Investor Name', displayName],
                     ['Investment Capital', `INR ${Number(inv.capital || 0).toLocaleString('en-IN')}`],
-                    ['Cycle Duration', '30 Days (Fixed)'],
-                    ['Total Return Rate', `${baseRet.toFixed(2)}%`],
+                    ['Cycle Duration', `${elapsedDays} Days (Month-to-Date)`],
+                    ['Return Rate', `${proportionalRet.toFixed(2)}% (${elapsedDays} Days)`],
                     ['Profit Value (USD)', `$${estProfitUSD.toFixed(2)}`],
                     ['Profit Value (INR)', `INR ${Math.round(estProfitINR).toLocaleString('en-IN')}`],
                     ['Payout Status', status]
@@ -1055,7 +1126,7 @@
             doc.setTextColor(150, 150, 150);
             doc.text("We appreciate your continued trust in our private pool portfolio.", 14, finalY + 6);
 
-            doc.save(`${displayName.replace(/\s+/g, '_')}_Payout_Confirmation.pdf`);
+            doc.save(`${displayName.replace(/\s+/g, '_')}_Payout_Confirmation_${elapsedDays}Days.pdf`);
         }
 
         window.addEventListener('load', () => {

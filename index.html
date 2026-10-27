@@ -609,8 +609,8 @@
 
                 html += `
                     <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} mb-3 cursor-pointer animate-fade-in"
-                         ontouchstart="initSwipe(event, ${originalIdx})"
-                         onclick="handleCardClick(event, ${originalIdx})">
+                         onpointerdown="initPointerSwipe(event, ${originalIdx})"
+                         onclick="handleCardClick(event)">
                         <div>
                             <div class="flex items-center space-x-2">
                                 <h4 class="font-bold text-softWhite text-sm">${displayName}</h4>
@@ -624,35 +624,36 @@
             container.innerHTML = html;
         }
 
-        // PRECISE SWIPE-TO-DELETE LOGIC (NO ACCIDENTAL CLICK/DELETE CONFLICT)
-        function initSwipe(e, idx) {
+        // SMOOTH POINTER EVENTS SWIPE-TO-DELETE LOGIC (WORKS ON BOTH MOBILE & DESKTOP MOUSE)
+        function initPointerSwipe(e, idx) {
             const card = e.currentTarget;
-            const startX = e.touches[0].clientX;
+            const startX = e.clientX;
             let currentX = startX;
-            let moved = false;
+            let hasMoved = false;
 
             card.style.transition = 'none';
 
-            function onTouchMove(ev) {
-                currentX = ev.touches[0].clientX;
+            function onPointerMove(ev) {
+                currentX = ev.clientX;
                 const diffX = currentX - startX;
-                if (Math.abs(diffX) > 5) {
-                    moved = true; // Dragging flag true ho gaya taaki click trigger na ho
+                if (Math.abs(diffX) > 6) {
+                    hasMoved = true;
                 }
                 card.style.transform = `translateX(${diffX}px)`;
                 card.style.opacity = Math.max(0.1, 1 - Math.abs(diffX) / 200);
             }
 
-            function onTouchEnd() {
-                card.removeEventListener('touchmove', onTouchMove);
-                card.removeEventListener('touchend', onTouchEnd);
+            function onPointerUp(ev) {
+                card.removeEventListener('pointermove', onPointerMove);
+                card.removeEventListener('pointerup', onPointerUp);
+                card.removeEventListener('pointercancel', onPointerUp);
+
                 const diffX = currentX - startX;
-                card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                card.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
 
                 if (Math.abs(diffX) > 70) {
-                    // 70px se zyada swipe karne par delete
-                    const dir = diffX > 0 ? 1 : -1;
-                    card.style.transform = `translateX(${dir * window.innerWidth}px)`;
+                    const direction = diffX > 0 ? 1 : -1;
+                    card.style.transform = `translateX(${direction * window.innerWidth}px)`;
                     card.style.opacity = '0';
                     setTimeout(() => {
                         appData.investors.splice(idx, 1);
@@ -660,28 +661,27 @@
                         renderUI();
                     }, 300);
                 } else {
-                    // Wapas apni jagah aa jayega
                     card.style.transform = 'translateX(0px)';
                     card.style.opacity = '1';
                 }
 
-                // Thodi der ke baad moved flag reset karenge taaki click handle ho sake agar swipe nahi hua
-                setTimeout(() => {
-                    card.dataset.swiped = moved ? "true" : "false";
-                }, 50);
+                card.dataset.dragged = hasMoved ? "true" : "false";
             }
 
-            card.addEventListener('touchmove', onTouchMove);
-            card.addEventListener('touchend', onTouchEnd);
+            card.addEventListener('pointermove', onPointerMove);
+            card.addEventListener('pointerup', onPointerUp);
+            card.addEventListener('pointercancel', onPointerUp);
         }
 
-        function handleCardClick(e, idx) {
+        function handleCardClick(e) {
             const card = e.currentTarget;
-            if (card.dataset.swiped === "true") {
-                card.dataset.swiped = "false";
+            if (card.dataset.dragged === "true") {
+                card.dataset.dragged = "false";
+                e.stopImmediatePropagation();
                 return;
             }
-            editInvestor(idx);
+            const index = Array.from(card.parentNode.children).indexOf(card);
+            editInvestor(index);
         }
 
         function openAddInvestorModal() {

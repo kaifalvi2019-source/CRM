@@ -558,12 +558,9 @@
             document.getElementById('home-calc-profit-inr').textContent = 'INR ' + Math.round(profitINR).toLocaleString('en-IN');
         }
 
-        // DYNAMIC MONTH-TO-DATE / ELAPSED DAYS CALCULATION LOGIC (CURRENT MONTH DAYS UP TO TODAY)
         function getCurrentElapsedCycleDays() {
             const now = new Date();
-            const currentDay = now.getDate(); // Mahine ki aaj ki tarikh (jaise 11th)
-            const totalDaysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-            // Mahine ke 30 din (ya total days) ke anusaar aaj tak ke din (max 30)
+            const currentDay = now.getDate();
             return Math.min(30, Math.max(1, currentDay));
         }
 
@@ -612,13 +609,7 @@
 
                 html += `
                     <div class="card-box p-4 rounded-2xl flex justify-between items-center swipe-card ${tierClass} mb-3 cursor-pointer animate-fade-in"
-                         data-index="${originalIdx}"
-                         ontouchstart="handleTouchStart(event)"
-                         ontouchmove="handleTouchMove(event)"
-                         ontouchend="handleTouchEnd(event, ${originalIdx})"
-                         onmousedown="handleMouseDown(event, ${originalIdx})"
-                         onmousemove="handleMouseMove(event)"
-                         onmouseup="handleMouseUp(event, ${originalIdx})"
+                         ontouchstart="initSwipe(event, ${originalIdx})"
                          onclick="handleCardClick(event, ${originalIdx})">
                         <div>
                             <div class="flex items-center space-x-2">
@@ -633,106 +624,61 @@
             container.innerHTML = html;
         }
 
-        // ROBUST TOUCH & MOUSE SWIPE-TO-DELETE & CLICK CONFLICT RESOLUTION
-        let startX = 0;
-        let currentX = 0;
-        let activeCard = null;
-        let isDragging = false;
+        // PRECISE SWIPE-TO-DELETE LOGIC (NO ACCIDENTAL CLICK/DELETE CONFLICT)
+        function initSwipe(e, idx) {
+            const card = e.currentTarget;
+            const startX = e.touches[0].clientX;
+            let currentX = startX;
+            let moved = false;
 
-        function handleTouchStart(e) {
-            activeCard = e.currentTarget;
-            startX = e.touches[0].clientX;
-            currentX = startX;
-            isDragging = false;
-            activeCard.style.transition = 'none';
-        }
+            card.style.transition = 'none';
 
-        function handleTouchMove(e) {
-            if (!activeCard) return;
-            currentX = e.touches[0].clientX;
-            const diffX = currentX - startX;
-            if (Math.abs(diffX) > 6) {
-                isDragging = true;
+            function onTouchMove(ev) {
+                currentX = ev.touches[0].clientX;
+                const diffX = currentX - startX;
+                if (Math.abs(diffX) > 5) {
+                    moved = true; // Dragging flag true ho gaya taaki click trigger na ho
+                }
+                card.style.transform = `translateX(${diffX}px)`;
+                card.style.opacity = Math.max(0.1, 1 - Math.abs(diffX) / 200);
             }
-            activeCard.style.transform = `translateX(${diffX}px)`;
-            const opacity = Math.max(0.1, 1 - Math.abs(diffX) / 200);
-            activeCard.style.opacity = opacity;
-        }
 
-        function handleTouchEnd(e, idx) {
-            if (!activeCard) return;
-            const diffX = currentX - startX;
-            activeCard.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
+            function onTouchEnd() {
+                card.removeEventListener('touchmove', onTouchMove);
+                card.removeEventListener('touchend', onTouchEnd);
+                const diffX = currentX - startX;
+                card.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
 
-            if (Math.abs(diffX) > 70) {
-                const direction = diffX > 0 ? 1 : -1;
-                activeCard.style.transform = `translateX(${direction * window.innerWidth}px)`;
-                activeCard.style.opacity = '0';
+                if (Math.abs(diffX) > 70) {
+                    // 70px se zyada swipe karne par delete
+                    const dir = diffX > 0 ? 1 : -1;
+                    card.style.transform = `translateX(${dir * window.innerWidth}px)`;
+                    card.style.opacity = '0';
+                    setTimeout(() => {
+                        appData.investors.splice(idx, 1);
+                        saveAppData();
+                        renderUI();
+                    }, 300);
+                } else {
+                    // Wapas apni jagah aa jayega
+                    card.style.transform = 'translateX(0px)';
+                    card.style.opacity = '1';
+                }
+
+                // Thodi der ke baad moved flag reset karenge taaki click handle ho sake agar swipe nahi hua
                 setTimeout(() => {
-                    appData.investors.splice(idx, 1);
-                    saveAppData();
-                    renderUI();
-                }, 300);
-            } else {
-                activeCard.style.transform = 'translateX(0px)';
-                activeCard.style.opacity = '1';
+                    card.dataset.swiped = moved ? "true" : "false";
+                }, 50);
             }
 
-            setTimeout(() => {
-                isDragging = false;
-                activeCard = null;
-            }, 350);
-        }
-
-        function handleMouseDown(e, idx) {
-            activeCard = e.currentTarget;
-            startX = e.clientX;
-            currentX = startX;
-            isDragging = false;
-            activeCard.style.transition = 'none';
-        }
-
-        function handleMouseMove(e) {
-            if (!activeCard || e.buttons !== 1) return;
-            currentX = e.clientX;
-            const diffX = currentX - startX;
-            if (Math.abs(diffX) > 6) {
-                isDragging = true;
-            }
-            activeCard.style.transform = `translateX(${diffX}px)`;
-            const opacity = Math.max(0.1, 1 - Math.abs(diffX) / 200);
-            activeCard.style.opacity = opacity;
-        }
-
-        function handleMouseUp(e, idx) {
-            if (!activeCard) return;
-            const diffX = currentX - startX;
-            activeCard.style.transition = 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
-
-            if (Math.abs(diffX) > 70) {
-                const direction = diffX > 0 ? 1 : -1;
-                activeCard.style.transform = `translateX(${direction * window.innerWidth}px)`;
-                activeCard.style.opacity = '0';
-                setTimeout(() => {
-                    appData.investors.splice(idx, 1);
-                    saveAppData();
-                    renderUI();
-                }, 300);
-            } else {
-                activeCard.style.transform = 'translateX(0px)';
-                activeCard.style.opacity = '1';
-            }
-
-            setTimeout(() => {
-                isDragging = false;
-                activeCard = null;
-            }, 350);
+            card.addEventListener('touchmove', onTouchMove);
+            card.addEventListener('touchend', onTouchEnd);
         }
 
         function handleCardClick(e, idx) {
-            if (isDragging) {
-                e.stopPropagation();
-                e.preventDefault();
+            const card = e.currentTarget;
+            if (card.dataset.swiped === "true") {
+                card.dataset.swiped = "false";
                 return;
             }
             editInvestor(idx);
@@ -792,7 +738,7 @@
 
         function toggleInvestorStatus(idx) {
             if(!appData.investors[idx].status) {
-                appData.investors.status = 'Pending';
+                appData.investors[idx].status = 'Pending';
             }
             appData.investors[idx].status = (appData.investors[idx].status === 'Complete') ? 'Pending' : 'Complete';
             saveAppData();
@@ -1069,7 +1015,6 @@
             doc.save('Aureus_Capital_Payout_Confirmation.pdf');
         }
 
-        // PROPORTIONAL DAY-WISE INDIVIDUAL PAYOUT CONFIRMATION PDF (BASED ON ELAPSED DAYS OF THE MONTH)
         function downloadIndividualPayoutPDF(idx) {
             const inv = appData.investors[idx];
             let baseRet = 8.46;

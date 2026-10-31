@@ -53,6 +53,10 @@
         .animate-pulse-glow { animation: pulseGlow 4s infinite ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes splashZoom { 0% { transform: scale(0.75); opacity: 0; filter: blur(12px); } 50% { transform: scale(1.03); opacity: 1; filter: blur(0px); } 100% { transform: scale(1); opacity: 1; } }
+        .animate-splash { animation: splashZoom 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+        .animate-progress { animation: loadProgress 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; transition: transform 0.3s ease, opacity 0.3s ease; }
     </style>
 </head>
@@ -151,7 +155,7 @@
                     </div>
                 </div>
 
-                <!-- Real Gold Monthly Movement Indicator Box (Dynamic Green/Red Support) -->
+                <!-- Real Gold Monthly Movement Indicator Box -->
                 <div class="bg-midnight/80 px-3.5 py-2.5 rounded-xl border border-goldAccent/30 flex justify-between items-center text-xs shadow-inner">
                     <div class="flex items-center space-x-2">
                         <span class="w-2 h-2 rounded-full bg-goldAccent animate-pulse"></span>
@@ -304,7 +308,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_1](start_span)[span_1](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_2](start_span)[span_2](end_span)
                     </div>
                     
                     <button onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -373,7 +377,7 @@
             managerName: "Kaif Alvi",
             promoterHolding: 50000,
             usdSpot: 88.50,
-            apiKey: "6xbPBcPcO",[span_2](start_span)[span_2](end_span)
+            apiKey: "6xbPBcPcO",[span_3](start_span)[span_3](end_span)
             returnBracket: "bracket1",
             customReturn: 10.50,
             returnRate: 10.50,
@@ -398,7 +402,7 @@
             if(cycleEl) cycleEl.innerText = cycleText;
             if(daysEl) daysEl.innerText = `${daysRemaining >= 0 ? daysRemaining : 0} days remaining`;
 
-            let goldMonthlyChange = -1.25; // Dynamic real gold trend simulation
+            let goldMonthlyChange = -1.25; 
             let isBullish = goldMonthlyChange >= 0;
 
             const trendEl = document.getElementById('gold-monthly-movement-text');
@@ -458,7 +462,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v13');
+            const saved = localStorage.getItem('aureus_capital_state_v14');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -476,7 +480,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v13', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v14', JSON.stringify(appState));
             calculateCalendarCycleAndGoldYield();
             updateDashboard();
             renderInvestors();
@@ -491,25 +495,31 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_4](start_span)[span_4](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
-            document.getElementById('bracket-1').checked = (appState.returnBracket === "bracket1");
-            document.getElementById('bracket-2').checked = (appState.returnBracket === "bracket2");
-            document.getElementById('bracket-custom').checked = (appState.returnBracket === "custom");
+            const b1 = document.getElementById('bracket-1');
+            const b2 = document.getElementById('bracket-2');
+            const bc = document.getElementById('bracket-custom');
+
+            if(b1) b1.checked = (appState.returnBracket === "bracket1");
+            if(b2) b2.checked = (appState.returnBracket === "bracket2");
+            if(bc) bc.checked = (appState.returnBracket === "custom");
 
             let customCont = document.getElementById('custom-return-container');
-            if(appState.returnBracket === "custom") {
-                customCont.classList.remove('hidden');
-            } else {
-                customCont.classList.add('hidden');
+            if(customCont) {
+                if(appState.returnBracket === "custom") {
+                    customCont.classList.remove('hidden');
+                } else {
+                    customCont.classList.add('hidden');
+                }
             }
         }
 
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_4](start_span)[span_4](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_5](start_span)[span_5](end_span)
             
             if(document.getElementById('bracket-1').checked) appState.returnBracket = "bracket1";
             else if(document.getElementById('bracket-2').checked) appState.returnBracket = "bracket2";

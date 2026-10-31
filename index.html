@@ -244,7 +244,7 @@
                     <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">LEDGER</p>
                     <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
                 </div>
-                <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 cursor-pointer relative z-20">Master Sheet PDF</button>
+                <button onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 cursor-pointer relative z-20">Consolidated Portfolio Return Statement</button>
             </div>
 
             <div class="card-box p-4 space-y-3.5 rounded-2xl">
@@ -259,7 +259,7 @@
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
                         <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount e.g. 700" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
-                        <button onclick="downloadCustomStatementPDF()" class="px-3 py-2 bg-royalBlue hover:bg-blue-600 text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shrink-0 cursor-pointer relative z-20">Statement PDF</button>
+                        <button onclick="downloadCustomStatementPDF()" class="px-3 py-2 bg-royalBlue hover:bg-blue-600 text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shrink-0 cursor-pointer relative z-20">Investor Withdrawal & Net Distribution Statement</button>
                     </div>
                 </div>
                 
@@ -387,7 +387,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v5');
+            const saved = localStorage.getItem('aureus_capital_state_v7');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -404,7 +404,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v5', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v7', JSON.stringify(appState));
             updateDashboard();
             renderInvestors();
             renderSettlementInvestors();
@@ -554,7 +554,7 @@
             });
         }
 
-        // Render Settlement page with conditional download button (only visible when status is Complete)
+        // Render Settlement page: PENDING by default, and Download PDF appears ONLY when status is COMPLETE
         function renderSettlementInvestors() {
             const container = document.getElementById('settlement-investors-container');
             if(!container) return;
@@ -581,11 +581,11 @@
                         <p class="text-[10px] text-softGrey">Capital: INR ${inv.capital.toLocaleString('en-IN')} · Profit: $${profitUSD.toFixed(2)}</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button onclick="toggleInvestorStatus('${inv.id}')" class="px-3 py-1.5 rounded-lg text-[10px] border uppercase tracking-wider ${statusBg} transition active:scale-95 cursor-pointer">
+                        <button onclick="toggleInvestorStatus('${inv.id}')" class="px-3.5 py-1.5 rounded-lg text-[10px] border uppercase tracking-wider ${statusBg} transition active:scale-95 cursor-pointer">
                             ${status}
                         </button>
                         ${isComplete ? `
-                            <button onclick="downloadInvestorStatementPDF('${inv.id}')" class="px-3 py-1.5 bg-royalBlue hover:bg-blue-600 text-white font-bold rounded-lg transition active:scale-95 flex items-center space-x-1 cursor-pointer animate-fade-in" title="Download Confirmation PDF">
+                            <button onclick="downloadInvestorStatementPDF('${inv.id}')" class="px-3.5 py-1.5 bg-royalBlue hover:bg-blue-600 text-white font-bold rounded-lg transition active:scale-95 flex items-center space-x-1 cursor-pointer animate-fade-in" title="Download Confirmation PDF">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                                 <span>PDF</span>
                             </button>
@@ -809,9 +809,10 @@
             doc.save(`Aureus_Capital_Payout_${inv.name.replace(/\s+/g, '_')}.pdf`);
         }
 
+        // Investor Withdrawal & Net Distribution Statement PDF
         function downloadCustomStatementPDF() {
             const withdrawalUSD = parseFloat(document.getElementById('custom-withdrawal-input').value) || 700;
-            const refId = 'AC-PAY-' + Math.floor(100000 + Math.random() * 900000);
+            const refId = 'AC-WD-' + Math.floor(100000 + Math.random() * 900000);
             const genDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
 
             const { jsPDF } = window.jspdf;
@@ -835,7 +836,7 @@
 
             doc.setFontSize(14);
             doc.setTextColor(11, 27, 61);
-            doc.text("Payout Confirmation Statement", 105, 43, { align: "center" });
+            doc.text("Investor Withdrawal & Net Distribution Statement", 105, 43, { align: "center" });
 
             doc.setDrawColor(229, 193, 133);
             doc.setLineWidth(0.6);
@@ -846,23 +847,26 @@
             doc.text(`Reference ID: ${refId}`, 20, 56);
             doc.text(`Generated Date: ${genDate}`, 190, 56, { align: "right" });
 
-            const sampleInvestor = appState.investors[0] || { name: "Hussain Khan", capital: 70000, returnRate: 8.46 };
-            const profitUSD = withdrawalUSD;
-            const profitINR = profitUSD * appState.usdSpot;
+            // CA-Friendly Fee Calculation Structure
+            let grossUSD = withdrawalUSD;
+            let perfFeeUSD = grossUSD * 0.20; // 20% Performance Fee on profit withdrawal
+            let networkFeeUSD = 15.00; // Fixed blockchain network fee
+            let netUSD = grossUSD - perfFeeUSD - networkFeeUSD;
+            if(netUSD < 0) netUSD = 0;
+            let netINR = netUSD * appState.usdSpot;
 
             const tableBody = [
-                ["Investor Name", sampleInvestor.name],
-                ["Investment Capital (INR)", "INR " + sampleInvestor.capital.toLocaleString('en-IN')],
-                ["Cycle Duration", "30 Days"],
-                ["Return Rate (%)", sampleInvestor.returnRate.toFixed(2) + "%"],
-                ["Profit Value (USD)", "$" + profitUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
-                ["Profit Value (INR)", "INR " + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2})],
-                ["Payout Status", "COMPLETE"]
+                ["Gross Withdrawal Amount (USD)", "$" + grossUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
+                ["Performance Fee (20% on Profit)", "- $" + perfFeeUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
+                ["Blockchain Network Fee", "- $" + networkFeeUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
+                ["Net Distribution Amount (USD)", "$" + netUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
+                ["Exchange Rate Spot", "INR " + appState.usdSpot.toFixed(2)],
+                ["Final Net Payout in Bank (INR)", "INR " + netINR.toLocaleString('en-IN', {maximumFractionDigits: 2})]
             ];
 
             doc.autoTable({
                 startY: 64,
-                head: [["Payout Particulars", "Confirmation Details"]],
+                head: [["Fee & Distribution Particulars", "Amount Breakdown"]],
                 body: tableBody,
                 theme: 'grid',
                 headStyles: {
@@ -877,11 +881,11 @@
                     cellPadding: 5
                 },
                 columnStyles: {
-                    0: { fontStyle: 'bold', cellWidth: 80 },
-                    1: { cellWidth: 90 }
+                    0: { fontStyle: 'bold', cellWidth: 110 },
+                    1: { cellWidth: 60, halign: 'right' }
                 },
                 didParseCell: function(data) {
-                    if(data.row.index === 6 && data.column.index === 1) {
+                    if(data.row.index === 5) {
                         data.cell.styles.textColor = [16, 185, 129];
                         data.cell.styles.fontStyle = 'bold';
                     }
@@ -893,18 +897,19 @@
             doc.setFont("helvetica", "bold");
             doc.setFontSize(10);
             doc.setTextColor(11, 27, 61);
-            doc.text("Congratulations & Thank You for Investing with Aureus Capital!", 105, finalY, { align: "center" });
+            doc.text("Thank You for Partnering with Aureus Capital!", 105, finalY, { align: "center" });
 
             finalY += 15;
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
             doc.setTextColor(120, 120, 120);
-            doc.text("This is a cryptographically verified digital statement generated by Aureus Capital Systems.", 105, finalY, { align: "center" });
+            doc.text("This is a cryptographically verified CA-friendly digital statement generated by Aureus Capital Systems.", 105, finalY, { align: "center" });
             doc.text("Confidential & Proprietary Institutional Report © 2026 Aureus Capital.", 105, finalY + 5, { align: "center" });
 
-            doc.save(`Aureus_Capital_Payout_Confirmation_${refId}.pdf`);
+            doc.save(`Aureus_Capital_Withdrawal_Statement_${refId}.pdf`);
         }
 
+        // Consolidated Portfolio Return Statement PDF (Master Sheet)
         function downloadMasterStatementPDF() {
             const genDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
             const { jsPDF } = window.jspdf;
@@ -928,7 +933,7 @@
 
             doc.setFontSize(14);
             doc.setTextColor(11, 27, 61);
-            doc.text("Master Investor Return Statement", 105, 43, { align: "center" });
+            doc.text("Consolidated Portfolio Return Statement", 105, 43, { align: "center" });
 
             doc.setDrawColor(229, 193, 133);
             doc.setLineWidth(0.6);
@@ -1009,9 +1014,9 @@
             doc.setFontSize(8);
             doc.setTextColor(120, 120, 120);
             doc.text("All figures are verified against real-time gold market benchmarks and exchange rate feeds.", 105, finalY, { align: "center" });
-            doc.text("Aureus Capital Master Report · Confidential Institutional Documentation © 2026.", 105, finalY + 5, { align: "center" });
+            doc.text("Aureus Capital Consolidated Portfolio Report · Confidential Institutional Documentation © 2026.", 105, finalY + 5, { align: "center" });
 
-            doc.save(`Aureus_Capital_Master_Return_Statement_${Date.now()}.pdf`);
+            doc.save(`Aureus_Capital_Consolidated_Portfolio_Statement_${Date.now()}.pdf`);
         }
     </script>
 </body>

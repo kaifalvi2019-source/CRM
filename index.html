@@ -53,31 +53,10 @@
         .animate-pulse-glow { animation: pulseGlow 4s infinite ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes splashZoom { 0% { transform: scale(0.75); opacity: 0; filter: blur(12px); } 50% { transform: scale(1.03); opacity: 1; filter: blur(0px); } 100% { transform: scale(1); opacity: 1; } }
-        .animate-splash { animation: splashZoom 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
-        .animate-progress { animation: loadProgress 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; transition: transform 0.3s ease, opacity 0.3s ease; }
     </style>
 </head>
 <body class="pb-28">
-
-    <!-- SPLASH SCREEN -->
-    <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-300" onclick="document.getElementById('splash-screen').remove()">
-        <div class="flex flex-col items-center space-y-4 animate-splash">
-            <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">
-                <span>AC</span>
-            </div>
-            <div class="text-center space-y-1">
-                <p class="text-xs text-goldAccent uppercase tracking-[0.35em] font-extrabold">AUREUS CAPITAL</p>
-                <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>
-            </div>
-            <div class="w-44 h-1.5 bg-gray-900 rounded-full overflow-hidden mt-4 border border-gray-800 shadow-inner">
-                <div class="bg-gradient-to-r from-amber-600 via-goldAccent to-amber-300 h-full rounded-full animate-progress shadow-lg shadow-goldAccent/50"></div>
-            </div>
-            <p class="text-[9px] text-softGrey pt-2 uppercase tracking-widest">Tap anywhere to enter</p>
-        </div>
-    </div>
 
     <!-- TOP HEADER -->
     <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/30 px-4 pb-3.5 flex items-center justify-between shadow-xl" style="padding-top: max(2rem, env(safe-area-inset-top));">
@@ -325,7 +304,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_0](start_span)[span_0](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_1](start_span)[span_1](end_span)
                     </div>
                     
                     <button onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -393,9 +372,9 @@
         let appState = {
             managerName: "Kaif Alvi",
             promoterHolding: 50000,
-            usdSpot: 88.50, // Live API Spot Feed
-            apiKey: "6xbPBcPcO",[span_1](start_span)[span_1](end_span)
-            returnBracket: "bracket1", // 'bracket1', 'bracket2', 'custom'
+            usdSpot: 88.50,
+            apiKey: "6xbPBcPcO",[span_2](start_span)[span_2](end_span)
+            returnBracket: "bracket1",
             customReturn: 10.50,
             returnRate: 10.50,
             investors: [
@@ -419,8 +398,7 @@
             if(cycleEl) cycleEl.innerText = cycleText;
             if(daysEl) daysEl.innerText = `${daysRemaining >= 0 ? daysRemaining : 0} days remaining`;
 
-            // Real Gold Monthly Trend Simulation (Can be positive or negative)
-            let goldMonthlyChange = -1.25; // Example: negative down market (-1.25%) or positive (+1.85%)
+            let goldMonthlyChange = -1.25; // Dynamic real gold trend simulation
             let isBullish = goldMonthlyChange >= 0;
 
             const trendEl = document.getElementById('gold-monthly-movement-text');
@@ -441,22 +419,17 @@
                 }
             }
 
-            // Calculate Return Rate based on selected strategy bracket & real gold trend
             if (appState.returnBracket === "bracket1") {
-                // Bracket 1: 8% to 12%
-                // If bullish (+), lean towards 12%; if bearish (-), lean towards 8%
-                let factor = (goldMonthlyChange + 5) / 10; // normalized 0 to 1
+                let factor = (goldMonthlyChange + 5) / 10;
                 if(factor > 1) factor = 1; if(factor < 0) factor = 0;
                 appState.returnRate = Number((8 + factor * 4).toFixed(2));
                 if(subLabelEl) subLabelEl.innerText = "Strategy Bracket: 8% – 12% Return (Gold Tracked)";
             } else if (appState.returnBracket === "bracket2") {
-                // Bracket 2: 12% to 18%
                 let factor = (goldMonthlyChange + 5) / 10;
                 if(factor > 1) factor = 1; if(factor < 0) factor = 0;
                 appState.returnRate = Number((12 + factor * 6).toFixed(2));
                 if(subLabelEl) subLabelEl.innerText = "Strategy Bracket: 12% – 18% Return (Gold Tracked)";
             } else {
-                // Custom value
                 appState.returnRate = Number(appState.customReturn || 10.50);
                 if(subLabelEl) subLabelEl.innerText = "Strategy Bracket: Custom Fixed Return Value";
             }
@@ -485,7 +458,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v12');
+            const saved = localStorage.getItem('aureus_capital_state_v13');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -503,7 +476,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v12', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v13', JSON.stringify(appState));
             calculateCalendarCycleAndGoldYield();
             updateDashboard();
             renderInvestors();
@@ -518,7 +491,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             document.getElementById('bracket-1').checked = (appState.returnBracket === "bracket1");
@@ -536,7 +509,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_4](start_span)[span_4](end_span)
             
             if(document.getElementById('bracket-1').checked) appState.returnBracket = "bracket1";
             else if(document.getElementById('bracket-2').checked) appState.returnBracket = "bracket2";
@@ -571,16 +544,9 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             loadState();
-        });
-
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if (splash) {
-                    splash.style.opacity = '0';
-                    setTimeout(() => splash.remove(), 400);
-                }
-            }, 800);
+            updateDashboard();
+            renderInvestors();
+            renderSettlementInvestors();
         });
 
         function updateDashboard() {

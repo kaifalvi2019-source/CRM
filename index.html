@@ -151,7 +151,7 @@
                     </div>
                 </div>
 
-                <!-- Real Gold Monthly Movement Indicator Box (Dynamic Green/Red Support) -->
+                <!-- Real Gold Monthly Movement Indicator Box -->
                 <div class="bg-midnight/80 px-3.5 py-2.5 rounded-xl border border-goldAccent/30 flex justify-between items-center text-xs shadow-inner">
                     <div class="flex items-center space-x-2">
                         <span class="w-2 h-2 rounded-full bg-goldAccent animate-pulse"></span>
@@ -323,7 +323,7 @@
     </main>
 
     <!-- BOTTOM NAVIGATION BAR -->
-    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/30 px-2 py-2 flex justify-around items-center shadow-2xl" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
+    <nav class="fixed bottom-0 left-0 right-0 z-40 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/30 px-2 py-2 flex justify-around items-center shadow-2xl" style="padding-bottom: max(0.75rem, env(safe-area-inset-top));">
         <button onclick="switchTab('home')" id="nav-btn-home" class="flex flex-col items-center py-1.5 px-3 rounded-xl text-goldAccent transition active:scale-95 cursor-pointer relative z-20">
             <svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             <span class="text-[10px] font-bold tracking-wider">Home</span>
@@ -460,7 +460,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v16');
+            const saved = localStorage.getItem('aureus_capital_state_v15');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -478,7 +478,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v16', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v15', JSON.stringify(appState));
             calculateCalendarCycleAndGoldYield();
             updateDashboard();
             renderInvestors();

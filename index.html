@@ -62,8 +62,8 @@
 </head>
 <body class="pb-28">
 
-    <!-- ANIMATED SPLASH SCREEN -->
-    <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-300" onclick="document.getElementById('splash-screen').remove()">
+    <!-- BULLETPROOF SPLASH SCREEN WITH EMERGENCY REMOVE -->
+    <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-300" onclick="const s = document.getElementById('splash-screen'); if(s) s.remove();">
         <div class="flex flex-col items-center space-y-4 animate-splash">
             <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">
                 <span>AC</span>
@@ -75,7 +75,7 @@
             <div class="w-44 h-1.5 bg-gray-900 rounded-full overflow-hidden mt-4 border border-gray-800 shadow-inner">
                 <div class="bg-gradient-to-r from-amber-600 via-goldAccent to-amber-300 h-full rounded-full animate-progress shadow-lg shadow-goldAccent/50"></div>
             </div>
-            <p class="text-[9px] text-softGrey pt-2 uppercase tracking-widest">Tap anywhere to enter</p>
+            <p class="text-[9px] text-softGrey pt-2 uppercase tracking-widest animate-pulse">Tap anywhere to enter</p>
         </div>
     </div>
 
@@ -251,4 +251,4 @@
                 <div class="pt-2">
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
-                        <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount e.g. 700" class="w-full bg-midnig
+                        <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" 

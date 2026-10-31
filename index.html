@@ -53,24 +53,17 @@
         .animate-pulse-glow { animation: pulseGlow 4s infinite ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        /* Splash Animation Styles */
-        @keyframes splashZoom { 
-            0% { transform: scale(0.75); opacity: 0; filter: blur(12px); } 
-            50% { transform: scale(1.03); opacity: 1; filter: blur(0px); } 
-            100% { transform: scale(1); opacity: 1; } 
-        }
+        @keyframes splashZoom { 0% { transform: scale(0.75); opacity: 0; filter: blur(12px); } 50% { transform: scale(1.03); opacity: 1; filter: blur(0px); } 100% { transform: scale(1); opacity: 1; } }
         .animate-splash { animation: splashZoom 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
         @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
-        .animate-progress { animation: loadProgress 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .animate-progress { animation: loadProgress 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; transition: transform 0.3s ease, opacity 0.3s ease; }
     </style>
 </head>
 <body class="pb-28">
 
     <!-- ANIMATED SPLASH SCREEN -->
-    <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-700" onclick="document.getElementById('splash-screen').remove()">
+    <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-300" onclick="document.getElementById('splash-screen').remove()">
         <div class="flex flex-col items-center space-y-4 animate-splash">
             <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">
                 <span>AC</span>
@@ -82,7 +75,7 @@
             <div class="w-44 h-1.5 bg-gray-900 rounded-full overflow-hidden mt-4 border border-gray-800 shadow-inner">
                 <div class="bg-gradient-to-r from-amber-600 via-goldAccent to-amber-300 h-full rounded-full animate-progress shadow-lg shadow-goldAccent/50"></div>
             </div>
-            <p class="text-[9px] text-softGrey pt-2 uppercase tracking-widest animate-pulse">Initializing Secure Pool...</p>
+            <p class="text-[9px] text-softGrey pt-2 uppercase tracking-widest">Tap anywhere to enter</p>
         </div>
     </div>
 
@@ -169,7 +162,7 @@
                 </div>
             </div>
 
-            <!-- 30-Day Performance Card with Real Gold Trend & Bracket Indicator -->
+            <!-- 30-Day Performance Card with Real Gold Trend & Active Strategy Tier Indicator -->
             <div class="card-box p-5 space-y-3.5 rounded-2xl">
                 <div class="flex justify-between items-center">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">30-Day Market Performance (Gold-Driven)</p>
@@ -191,7 +184,7 @@
                 <div class="flex justify-between items-baseline pt-1">
                     <div>
                         <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.50%</span>
-                        <p class="text-[10px] text-softGrey mt-0.5" id="bracket-label-sub">Strategy Bracket: 8% – 12% Return</p>
+                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Tier 1 (8% – 12% Normal Market)</p>
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">18 days remaining</span>
@@ -276,7 +269,7 @@
             </div>
         </section>
 
-        <!-- TAB 4: MORE / SETTINGS & STRATEGY BRACKET SELECTOR -->
+        <!-- TAB 4: MORE / SETTINGS & 4-TIER STRATEGY BRACKET SELECTOR -->
         <section id="tab-more" class="space-y-4 hidden animate-fade-in">
             <div class="px-1">
                 <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">PREFERENCES</p>
@@ -294,24 +287,32 @@
                         <input type="number" id="settings-promoter-holding" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
                     </div>
 
-                    <!-- STRATEGY RETURN BRACKET SELECTOR -->
-                    <div class="space-y-2 pt-1 border-t border-goldAccent/20">
+                    <!-- 4-TIER STRATEGY RETURN BRACKET SELECTOR -->
+                    <div class="space-y-2.5 pt-1 border-t border-goldAccent/20">
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Return Bracket Strategy (Gold Tracked)</label>
                         
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3 bg-midnight/90 p-3 rounded-xl border border-goldAccent/30 cursor-pointer hover:border-goldAccent transition">
-                                <input type="radio" name="returnBracket" value="bracket1" id="bracket-1" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
+                                <input type="radio" name="returnBracket" value="bad" id="bracket-bad" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
                                 <div class="text-xs">
-                                    <p class="font-bold text-softWhite">Option 1: 8% to 12% Return Bracket</p>
-                                    <p class="text-[10px] text-softGrey">Worst market min 8%, Best market max 12%</p>
+                                    <p class="font-bold text-softWhite">Bad / Volatile Market (5% – 8%)</p>
+                                    <p class="text-[10px] text-softGrey">Minimum secure return floor for capital safety</p>
                                 </div>
                             </label>
 
                             <label class="flex items-center space-x-3 bg-midnight/90 p-3 rounded-xl border border-goldAccent/30 cursor-pointer hover:border-goldAccent transition">
-                                <input type="radio" name="returnBracket" value="bracket2" id="bracket-2" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
+                                <input type="radio" name="returnBracket" value="normal" id="bracket-normal" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
                                 <div class="text-xs">
-                                    <p class="font-bold text-softWhite">Option 2: 12% to 18% Return Bracket</p>
-                                    <p class="text-[10px] text-softGrey">Worst market min 12%, Best market max 18%</p>
+                                    <p class="font-bold text-softWhite">Tier 1: Normal / Sideways Market (8% – 12%)</p>
+                                    <p class="text-[10px] text-softGrey">Standard stability-oriented steady returns</p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-center space-x-3 bg-midnight/90 p-3 rounded-xl border border-goldAccent/30 cursor-pointer hover:border-goldAccent transition">
+                                <input type="radio" name="returnBracket" value="bullish" id="bracket-bullish" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
+                                <div class="text-xs">
+                                    <p class="font-bold text-softWhite">Tier 2: Strong Trend & Bullish (12% – 18%)</p>
+                                    <p class="text-[10px] text-softGrey">High-potential growth partnership bracket</p>
                                 </div>
                             </label>
 
@@ -319,7 +320,7 @@
                                 <input type="radio" name="returnBracket" value="custom" id="bracket-custom" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
                                 <div class="text-xs">
                                     <p class="font-bold text-softWhite">Option 3: Custom Return Value (%)</p>
-                                    <p class="text-[10px] text-softGrey">Set your own fixed or targeted return</p>
+                                    <p class="text-[10px] text-softGrey">Manual override fixed target return</p>
                                 </div>
                             </label>
                         </div>
@@ -395,16 +396,16 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH SPLASH ANIMATION -->
+    <!-- JAVASCRIPT APPLICATION CORE -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
             promoterHolding: 50000,
             usdSpot: 88.50,
             apiKey: "6xbPBcPcO",
-            returnBracket: "bracket1",
+            returnBracket: "normal", // 'bad', 'normal', 'bullish', 'custom'
             customReturn: 10.50,
-            returnRate: 10.50,
+            returnRate: 9.50,
             investors: [
                 { id: "1", name: "Hussain Khan", capital: 70000, status: "Pending" },
                 { id: "2", name: "Zaif alvi", capital: 60000, status: "Pending" },
@@ -431,7 +432,7 @@
 
             const trendEl = document.getElementById('gold-monthly-movement-text');
             const pillEl = document.getElementById('gold-market-pill');
-            const subLabelEl = document.getElementById('bracket-label-sub');
+            const activeTierBadge = document.getElementById('active-strategy-tier-badge');
 
             if(trendEl && pillEl) {
                 if(isBullish) {
@@ -447,25 +448,29 @@
                 }
             }
 
-            if (appState.returnBracket === "bracket1") {
-                let factor = (goldMonthlyChange + 5) / 10;
-                if(factor > 1) factor = 1; if(factor < 0) factor = 0;
-                appState.returnRate = Number((8 + factor * 4).toFixed(2));
-                if(subLabelEl) subLabelEl.innerText = "Strategy Bracket: 8% – 12% Return (Gold Tracked)";
-            } else if (appState.returnBracket === "bracket2") {
-                let factor = (goldMonthlyChange + 5) / 10;
-                if(factor > 1) factor = 1; if(factor < 0) factor = 0;
-                appState.returnRate = Number((12 + factor * 6).toFixed(2));
-                if(subLabelEl) subLabelEl.innerText = "Strategy Bracket: 12% – 18% Return (Gold Tracked)";
+            // 4-Tier Strategy Bracket Calculation Logic
+            let factor = (goldMonthlyChange + 5) / 10;
+            if(factor > 1) factor = 1; if(factor < 0) factor = 0;
+
+            if (appState.returnBracket === "bad") {
+                appState.returnRate = Number((5 + factor * 3).toFixed(2)); // 5% to 8%
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Bad Market (5% – 8% Floor)";
+            } else if (appState.returnBracket === "normal") {
+                appState.returnRate = Number((8 + factor * 4).toFixed(2)); // 8% to 12%
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Tier 1 (8% – 12% Normal Market)";
+            } else if (appState.returnBracket === "bullish") {
+                appState.returnRate = Number((12 + factor * 6).toFixed(2)); // 12% to 18%
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Tier 2 (12% – 18% Bullish Trend)";
             } else {
                 appState.returnRate = Number(appState.customReturn || 10.50);
-                if(subLabelEl) subLabelEl.innerText = "Strategy Bracket: Custom Fixed Return Value";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Custom Fixed Target Return";
             }
         }
 
         function onBracketChange() {
-            if(document.getElementById('bracket-1').checked) appState.returnBracket = "bracket1";
-            else if(document.getElementById('bracket-2').checked) appState.returnBracket = "bracket2";
+            if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
+            else if(document.getElementById('bracket-normal').checked) appState.returnBracket = "normal";
+            else if(document.getElementById('bracket-bullish').checked) appState.returnBracket = "bullish";
             else if(document.getElementById('bracket-custom').checked) appState.returnBracket = "custom";
 
             let customCont = document.getElementById('custom-return-container');
@@ -488,7 +493,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v17');
+            const saved = localStorage.getItem('aureus_capital_state_v21_4tier');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -506,7 +511,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v17', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v21_4tier', JSON.stringify(appState));
             calculateCalendarCycleAndGoldYield();
             updateDashboard();
             renderInvestors();
@@ -524,12 +529,14 @@
             if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
-            const b1 = document.getElementById('bracket-1');
-            const b2 = document.getElementById('bracket-2');
+            const bBad = document.getElementById('bracket-bad');
+            const bNorm = document.getElementById('bracket-normal');
+            const bBull = document.getElementById('bracket-bullish');
             const bc = document.getElementById('bracket-custom');
 
-            if(b1) b1.checked = (appState.returnBracket === "bracket1");
-            if(b2) b2.checked = (appState.returnBracket === "bracket2");
+            if(bBad) bBad.checked = (appState.returnBracket === "bad");
+            if(bNorm) bNorm.checked = (appState.returnBracket === "normal");
+            if(bBull) bBull.checked = (appState.returnBracket === "bullish");
             if(bc) bc.checked = (appState.returnBracket === "custom");
 
             let customCont = document.getElementById('custom-return-container');
@@ -547,15 +554,16 @@
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
             appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";
             
-            if(document.getElementById('bracket-1').checked) appState.returnBracket = "bracket1";
-            else if(document.getElementById('bracket-2').checked) appState.returnBracket = "bracket2";
+            if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
+            else if(document.getElementById('bracket-normal').checked) appState.returnBracket = "normal";
+            else if(document.getElementById('bracket-bullish').checked) appState.returnBracket = "bullish";
             else if(document.getElementById('bracket-custom').checked) {
                 appState.returnBracket = "custom";
                 appState.customReturn = parseFloat(document.getElementById('settings-custom-return').value) || 10.50;
             }
 
             saveState();
-            alert("Settings & Strategy Bracket synchronized successfully!");
+            alert("Settings & 4-Tier Strategy Bracket synchronized successfully!");
         }
 
         function switchTab(tabId) {
@@ -585,7 +593,6 @@
             renderSettlementInvestors();
         });
 
-        // Smooth Splash Animation Removal with 1.2s delay
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');

@@ -1,255 +1,707 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#050811">
-    <title id="page-title">Aureus Capital - Executive Summary</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        midnight: '#050811',
-                        graphite: '#0D1424',
-                        goldAccent: '#E5C185',
-                        goldDeep: '#C59B47',
-                        royalBlue: '#3B82F6',
-                        emeraldLive: '#10B981',
-                        roseLive: '#EF4444',
-                        softWhite: '#F9FAFB',
-                        softGrey: '#9CA3AF'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { background-color: #050811; color: #F9FAFB; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        .card-box { 
-            background: linear-gradient(135deg, rgba(17, 24, 39, 0.9) 0%, rgba(8, 12, 22, 0.95) 100%); 
-            border: 1px solid rgba(229, 193, 133, 0.3);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(229, 193, 133, 0.15);
-            backdrop-filter: blur(12px);
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .card-box:hover {
-            border-color: rgba(229, 193, 133, 0.6);
-            box-shadow: 0 15px 45px -10px rgba(229, 193, 133, 0.25), inset 0 1px 0 0 rgba(229, 193, 133, 0.3);
-            transform: translateY(-2px);
-        }
-        .tier-gold-card { background: linear-gradient(135deg, rgba(45,35,18,.95) 0%, rgba(10,14,24,.98) 100%); border: 1px solid rgba(229,193,133,0.7); border-left: 6px solid #E5C185; box-shadow: 0 10px 35px rgba(229,193,133,0.2); }
-        .tier-silver-card { background: linear-gradient(135deg, rgba(30,35,45,.95) 0%, rgba(10,14,24,.98) 100%); border: 1px solid rgba(148,163,184,0.6); border-left: 6px solid #94A3B8; box-shadow: 0 10px 35px rgba(148,163,184,0.2); }
-        .tier-bronze-card { background: linear-gradient(135deg, rgba(40,22,12,.95) 0%, rgba(10,14,24,.98) 100%); border: 1px solid rgba(180,83,9,0.6); border-left: 6px solid #B45309; box-shadow: 0 10px 35px rgba(180,83,9,0.2); }
-        .tier-normal-card { background: linear-gradient(135deg, rgba(15,30,55,.95) 0%, rgba(10,14,24,.98) 100%); border: 1px solid rgba(59,130,246,0.6); border-left: 6px solid #3B82F6; box-shadow: 0 10px 35px rgba(59,130,246,0.2); }
-        @keyframes pulseGlow { 
-            0%, 100% { box-shadow: 0 0 25px rgba(229, 193, 133, 0.15), inset 0 0 15px rgba(229, 193, 133, 0.05); } 
-            50% { box-shadow: 0 0 40px rgba(229, 193, 133, 0.35), inset 0 0 25px rgba(229, 193, 133, 0.12); } 
-        }
-        .animate-pulse-glow { animation: pulseGlow 4s infinite ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; transition: transform 0.3s ease, opacity 0.3s ease; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050811">
+<title>Aureus Capital - Executive Summary</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+tailwind.config={
+darkMode:'class',
+theme:{
+extend:{
+colors:{
+midnight:'#050811',
+graphite:'#0D1424',
+goldAccent:'#E5C185',
+goldDeep:'#C59B47',
+royalBlue:'#3B82F6',
+emeraldLive:'#10B981',
+roseLive:'#EF4444',
+softWhite:'#F9FAFB',
+softGrey:'#9CA3AF'
+}
+}
+}
+};
+</script>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+background:#050811;
+color:#F9FAFB;
+font-family:system-ui,-apple-system,sans-serif;
+-webkit-tap-highlight-color:transparent;
+overflow-x:hidden
+}
+
+.card-box{
+background:linear-gradient(135deg,rgba(17,24,39,.9),rgba(8,12,22,.96));
+border:1px solid rgba(229,193,133,.3);
+box-shadow:0 10px 30px -10px #0008,inset 0 1px 0 #e5c18526;
+backdrop-filter:blur(12px)
+}
+
+.tier-gold-card{
+background:linear-gradient(135deg,rgba(45,35,18,.95),rgba(10,14,24,.98));
+border:1px solid #e5c185b3;
+border-left:6px solid #E5C185
+}
+
+.tier-silver-card{
+background:linear-gradient(135deg,rgba(30,35,45,.95),rgba(10,14,24,.98));
+border:1px solid #94a3b899;
+border-left:6px solid #94A3B8
+}
+
+.tier-bronze-card{
+background:linear-gradient(135deg,rgba(40,22,12,.95),rgba(10,14,24,.98));
+border:1px solid #b4530999;
+border-left:6px solid #B45309
+}
+
+.tier-normal-card{
+background:linear-gradient(135deg,rgba(15,30,55,.95),rgba(10,14,24,.98));
+border:1px solid #3b82f699;
+border-left:6px solid #3B82F6
+}
+
+.animate-fade-in{
+animation:fade .35s ease
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(7px)}
+to{opacity:1;transform:none}
+}
+
+.nav-active{
+color:#E5C185!important;
+border-top:2px solid #E5C185;
+background:#171626
+}
+
+input,select{color-scheme:dark}
+button{touch-action:manipulation}
+
+.modal-backdrop{background:#000b}
+
+.small-label{
+font-size:10px;
+color:#9CA3AF;
+text-transform:uppercase;
+letter-spacing:.08em;
+font-weight:700
+}
+</style>
 </head>
-<body class="pb-28">
 
-    <!-- TOP HEADER -->
-    <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/30 px-4 pb-3.5 flex items-center justify-between shadow-xl" style="padding-top: max(2rem, env(safe-area-inset-top));">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/70 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/25 tracking-wider overflow-hidden">
-                <span>AC</span>
-            </div>
-            <div>
-                <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">AUREUS CAPITAL</p>
-                <h1 class="text-sm font-bold text-softWhite tracking-tight">Executive Summary</h1>
-            </div>
-        </div>
-        <div class="flex items-center space-x-2.5">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-950/90 text-royalBlue border border-blue-700/50 shadow-sm">
-                <span class="w-1.5 h-1.5 rounded-full bg-royalBlue mr-1.5 animate-ping"></span> STANDARD
-            </span>
-            <button type="button" onclick="switchTab('more')" class="p-2.5 rounded-xl card-box text-goldAccent hover:text-softWhite transition active:scale-95 shadow-md cursor-pointer relative z-20" title="Settings">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            </button>
-        </div>
-    </header>
+<body class="pb-24">
 
-    <!-- MAIN CONTAINER -->
-    <main class="max-w-3xl mx-auto px-4 py-5 space-y-4">
-        
-        <!-- TAB 1: HOME DASHBOARD -->
-        <section id="tab-home" class="space-y-4 animate-fade-in">
-            <div class="card-box p-5 space-y-4 animate-pulse-glow rounded-2xl">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Lead Portfolio Manager</p>
-                        <h2 class="text-xl font-extrabold text-softWhite mt-0.5 tracking-tight" id="display-manager-name">Kaif Alvi</h2>
-                        <p class="text-xs text-softGrey mt-0.5 font-medium">Gold-Linked Pool · Standard</p>
-                    </div>
-                    <span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/60 tracking-widest shadow-lg shadow-goldAccent/20">LEAD</span>
-                </div>
-                <div class="grid grid-cols-2 gap-3 pt-1">
-                    <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30 shadow-inner">
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>
-                        <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">INR 50,000</h3>
-                    </div>
-                    <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30 shadow-inner">
-                        <div class="flex justify-between items-center">
-                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">USDT / API Feed</p>
-                            <span class="flex items-center text-[9px] text-emeraldLive font-extrabold"><span class="w-1.5 h-1.5 rounded-full bg-emeraldLive mr-1 animate-ping"></span> LIVE</span>
-                        </div>
-                        <div class="mt-1 flex justify-between items-end">
-                            <div>
-                                <p class="text-[8px] text-softGrey">USD / INR Spot</p>
-                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-usd-spot">INR 88.50</h3>
-                            </div>
-                            <span id="api-status-pill" class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50">API SYNCED</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<header class="sticky top-0 z-40 bg-midnight/95 backdrop-blur-xl border-b border-goldAccent/30 px-4 pb-3 flex items-center justify-between shadow-xl"
+style="padding-top:max(1.5rem,env(safe-area-inset-top))">
 
-            <!-- Portfolio Overview Card -->
-            <div class="card-box p-5 space-y-3.5 rounded-2xl">
-                <div class="flex justify-between items-center">
-                    <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Portfolio Overview</p>
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-goldAccent/20 text-goldAccent border border-goldAccent/40">Active</span>
-                </div>
-                <div>
-                    <p class="text-[10px] text-softGrey uppercase tracking-wider font-semibold">Total Pool Capital (Promoter + Investors)</p>
-                    <h3 class="text-3xl font-extrabold text-goldAccent mt-1 tabular-nums tracking-tight" id="home-total-capital">INR 50,000</h3>
-                </div>
-                <div class="grid grid-cols-3 gap-2 pt-3 border-t border-goldAccent/30 text-xs">
-                    <div>
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Investors</p>
-                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-count">0</p>
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider">Active Capital</p>
-                        <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">INR 0</p>
-                    </div>
-                    <div>
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider">30-Day Profit</p>
-                        <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$0.00</p>
-                        <p class="text-[10px] text-softGrey tabular-nums" id="home-calc-profit-inr">INR 0</p>
-                    </div>
-                </div>
-            </div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/70 flex items-center justify-center text-goldAccent font-serif font-bold shadow-md">
+AC
+</div>
 
-            <!-- 30-Day Performance Card with Auto Threshold & Capital Protection Indicator -->
-            <div class="card-box p-5 space-y-3.5 rounded-2xl">
-                <div class="flex justify-between items-center">
-                    <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">30-Day Market Performance (Gold-Driven)</p>
-                    <div class="flex items-center space-x-1.5">
-                        <span id="gold-market-pill" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-950 text-emeraldLive border border-emeraldLive/50">BULLISH ▲</span>
-                        <p class="text-[11px] text-softGrey font-semibold tabular-nums">CYCLE: <span id="calendar-cycle-range" class="text-softWhite font-bold">1st – 30th</span></p>
-                    </div>
-                </div>
+<div>
+<p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">
+AUREUS CAPITAL
+</p>
+<h1 class="text-sm font-bold">Executive Summary</h1>
+</div>
+</div>
 
-                <!-- Real Gold Monthly Movement Indicator Box -->
-                <div class="bg-midnight/80 px-3.5 py-2.5 rounded-xl border border-goldAccent/30 flex justify-between items-center text-xs shadow-inner">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-2 h-2 rounded-full bg-goldAccent animate-pulse"></span>
-                        <span class="text-softGrey font-semibold">Real Gold Monthly Trend:</span>
-                    </div>
-                    <span id="gold-monthly-movement-text" class="font-extrabold text-emeraldLive tabular-nums">+1.85% (Up This Month)</span>
-                </div>
+<div class="flex items-center gap-2">
+<span id="mode-chip" class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-950 text-blue-300 border border-blue-700/50">
+STANDARD
+</span>
 
-                <div class="flex justify-between items-baseline pt-1">
-                    <div>
-                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.50%</span>
-                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Tier 1 (8% – 12% Normal Market)</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">18 days remaining</span>
-                    </div>
-                </div>
+<button onclick="switchTab('more')" title="Settings" class="p-2.5 rounded-xl card-box text-goldAccent">
+⚙
+</button>
+</div>
+</header>
 
-                <!-- Capital Protection & Exposure Status Banner -->
-                <div id="capital-protection-banner" class="bg-emerald-950/40 border border-emeraldLive/30 px-3 py-2 rounded-xl text-[11px] text-emeraldLive font-semibold flex items-center justify-between">
-                    <span>🛡️ Capital Protection: Active (100% Exposure)</span>
-                    <span id="exposure-pct-badge" class="font-mono font-bold">100% Exp</span>
-                </div>
+<main class="max-w-3xl mx-auto px-4 py-5 space-y-4">
 
-                <!-- Live Trading Sparkline Wave Chart -->
-                <div class="w-full bg-midnight/90 rounded-xl p-3 border border-goldAccent/30 relative overflow-hidden h-20 flex items-center shadow-inner">
-                    <svg class="w-full h-12" viewBox="0 0 300 50" preserveAspectRatio="none">
-                        <defs>
-                            <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="#10B981" stop-opacity="0.4"/>
-                                <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
-                            </linearGradient>
-                        </defs>
-                        <path d="M0,40 Q75,15 150,30 T300,20 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
-                        <path d="M0,40 Q75,15 150,30 T300,20" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
-                    </svg>
-                </div>
-            </div>
-        </section>
+<!-- HOME DASHBOARD -->
 
-        <!-- TAB 2: INVESTOR PORTFOLIO DIRECTORY (Sorted Descending by Capital) -->
-        <section id="tab-investors" class="space-y-4 hidden animate-fade-in">
-            <div class="flex justify-between items-center px-1">
-                <div>
-                    <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">DIRECTORY</p>
-                    <h2 class="text-base font-bold text-softWhite tracking-tight">Investors (Highest Capital First)</h2>
-                </div>
-                <button type="button" onclick="openAddInvestorModal()" class="px-4 py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition-all duration-300 shadow-lg shadow-goldAccent/30 flex items-center active:scale-95 cursor-pointer relative z-20">
-                    + Add
-                </button>
-            </div>
+<section id="tab-home" class="space-y-4 animate-fade-in">
 
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-softGrey">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </span>
-                <input type="text" id="investor-search" oninput="renderInvestors()" placeholder="Search by name" class="w-full card-box border border-goldAccent/40 rounded-2xl pl-10 pr-4 py-3 text-xs text-softWhite focus:outline-none focus:border-goldAccent shadow-inner">
-            </div>
+<div class="card-box p-5 space-y-4 rounded-2xl">
 
-            <p class="text-[10px] text-softGrey px-1">Tap card to edit · Swipe card left or right more than 50% to delete</p>
-            <div class="space-y-3.5 pt-1" id="investors-list-container"></div>
-        </section>
+<div class="flex justify-between items-start">
+<div>
+<p class="small-label text-goldAccent">Lead Portfolio Manager</p>
+<h2 id="display-manager-name" class="text-xl font-extrabold mt-1">Kaif Alvi</h2>
+<p class="text-xs text-softGrey mt-1">Gold-Linked Pool · Standard</p>
+</div>
 
-        <!-- TAB 3: SETTLEMENT & STATEMENTS -->
-        <section id="tab-settlement" class="space-y-4 hidden animate-fade-in">
-            <div class="flex justify-between items-center px-1 gap-2">
-                <div>
-                    <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">LEDGER</p>
-                    <h2 class="text-base font-bold text-softWhite tracking-tight">Settlement & Payout Calculator</h2>
-                </div>
-                <button type="button" onclick="downloadMasterStatementPDF()" class="px-3.5 py-2 text-midnight text-xs font-extrabold rounded-xl shadow-lg active:scale-95 transition shrink-0 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 cursor-pointer relative z-20">Consolidated Portfolio Return Statement</button>
-            </div>
+<span class="px-3 py-1 rounded-lg text-[10px] font-black bg-midnight text-goldAccent border border-goldAccent/60">
+LEAD
+</span>
+</div>
 
-            <div class="card-box p-4 space-y-3.5 rounded-2xl">
-                <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Quick Preset Withdrawal ($)</p>
-                <div class="grid grid-cols-4 gap-2">
-                    <button type="button" onclick="selectPresetAmount(500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition hover:border-goldAccent cursor-pointer relative z-20">$500</button>
-                    <button type="button" onclick="selectPresetAmount(700)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition hover:border-goldAccent cursor-pointer relative z-20">$700</button>
-                    <button type="button" onclick="selectPresetAmount(1000)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition hover:border-goldAccent cursor-pointer relative z-20">$1000</button>
-                    <button type="button" onclick="selectPresetAmount(1500)" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 rounded-xl text-xs font-extrabold tabular-nums active:scale-95 transition hover:border-goldAccent cursor-pointer relative z-20">$1500</button>
-                </div>
-                <div class="pt-2">
-                    <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
-                    <div class="flex space-x-2">
-                        <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount e.g. 700" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
-                        <button type="button" onclick="downloadCustomStatementPDF()" class="px-3 py-2 bg-royalBlue hover:bg-blue-600 text-white text-xs font-extrabold rounded-xl active:scale-95 transition shadow-lg shrink-0 cursor-pointer relative z-20">Investor Withdrawal & Net Distribution Statement</button>
-                    </div>
-                </div>
-                
-                <div id="calculator-result-box" class="bg-midnight/90 p-3.5 rounded-xl border border-goldAccent/40 text-xs space-y-1.5 tabular-nums shadow-inner"></div>
-            </div>
+<div class="grid grid-cols-2 gap-3">
 
-            <!-- Settlement Individual Investor List Section -->
-            <div class="space-y-3 pt-2">
-                <div class="flex justify-between items-center px-1">
-                    <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Investor Payout Confirmations</p>
-                    <p class="text-[10px] text-softGrey">Tap Pending to complete & unlock PDF</p>
-                </div>
-                <div class="space-y-2.5" id="settlement-investors-container"></div>
-            </div>
-        </
+<div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30">
+<p class="small-label">Promoter Holding</p>
+<h3 id="display-promoter-holding" class="text-base font-bold text-goldAccent mt-1">
+INR 50,000
+</h3>
+</div>
+
+<div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30">
+<p class="small-label">USD / INR Spot</p>
+<h3 id="live-usd-spot" class="text-base font-bold text-goldAccent mt-1">
+INR 88.50
+</h3>
+<p id="fx-status" class="text-[9px] text-softGrey mt-1">
+Configured reference rate
+</p>
+</div>
+
+</div>
+</div>
+
+<!-- PORTFOLIO OVERVIEW -->
+
+<div class="card-box p-5 space-y-3.5 rounded-2xl">
+
+<div class="flex justify-between items-center">
+<p class="small-label text-goldAccent">Portfolio Overview</p>
+<span class="px-2.5 py-0.5 rounded-full text-[10px] bg-goldAccent/20 text-goldAccent border border-goldAccent/40">
+Active
+</span>
+</div>
+
+<div>
+<p class="small-label">Total Pool Capital (Promoter + Investors)</p>
+<h3 id="home-total-capital" class="text-3xl font-extrabold text-goldAccent mt-1">
+INR 50,000
+</h3>
+</div>
+
+<div class="grid grid-cols-3 gap-2 pt-3 border-t border-goldAccent/30">
+
+<div>
+<p class="small-label">Active Investors</p>
+<p id="home-active-count" class="font-bold mt-1">0</p>
+</div>
+
+<div>
+<p class="small-label">Active Capital</p>
+<p id="home-active-capital" class="font-bold mt-1 text-sm">INR 0</p>
+</div>
+
+<div>
+<p class="small-label">30-Day Profit</p>
+<p id="home-calc-profit-usd" class="font-bold mt-1 text-sm text-emeraldLive">$0.00</p>
+<p id="home-calc-profit-inr" class="text-[10px] text-softGrey">INR 0</p>
+</div>
+
+</div>
+</div>
+
+<!-- GOLD STRATEGY -->
+
+<div class="card-box p-5 space-y-3.5 rounded-2xl">
+
+<div class="flex justify-between items-center gap-2">
+<p class="small-label text-goldAccent">
+30-Day Market Performance (Gold-Driven)
+</p>
+
+<span id="strategy-pill" class="px-2 py-1 rounded text-[10px] font-extrabold bg-blue-950 text-blue-300">
+NORMAL
+</span>
+</div>
+
+<div class="bg-midnight/80 px-3.5 py-3 rounded-xl border border-goldAccent/30 flex justify-between items-center gap-2 text-xs">
+
+<span class="text-softGrey">Gold monthly movement</span>
+
+<span id="gold-monthly-movement-text" class="font-extrabold text-softGrey">
+Waiting for verified feed
+</span>
+
+</div>
+
+<div class="flex justify-between items-end">
+
+<div>
+<span id="dynamic-return-display" class="text-3xl font-extrabold text-emeraldLive">
+10.50%
+</span>
+
+<p id="bracket-label-sub" class="text-[10px] text-softGrey mt-1">
+Configured strategy target
+</p>
+</div>
+
+<div class="text-right">
+<span id="market-feed-status" class="text-[10px] text-roseLive font-bold">
+FEED NOT CONNECTED
+</span>
+
+<p id="cycle-days-left" class="text-xs text-softGrey mt-1">
+Risk controls active
+</p>
+</div>
+
+</div>
+
+<div class="bg-midnight/90 rounded-xl p-3 border border-goldAccent/30">
+
+<div class="flex justify-between text-xs">
+<span class="text-softGrey">Capital exposure limit</span>
+<b id="exposure-label">100%</b>
+</div>
+
+<div class="w-full bg-gray-800 h-2 rounded-full mt-2 overflow-hidden">
+<div id="exposure-bar" class="h-2 bg-goldAccent rounded-full" style="width:100%"></div>
+</div>
+
+<p id="risk-note" class="text-[10px] text-softGrey mt-2">
+No live market signal received. Automatic strategy will not infer market data.
+</p>
+
+</div>
+</div>
+
+<!-- MARKET CONNECTION -->
+
+<div class="card-box p-4 rounded-2xl">
+
+<p class="small-label text-goldAccent mb-2">Market data connection</p>
+
+<p class="text-xs text-softGrey">
+Live data is only displayed after a successful response from your secure backend. API keys and Angel One credentials must remain server-side.
+</p>
+
+<div class="flex gap-2 mt-3">
+
+<button onclick="connectMarketFeed()" class="flex-1 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight text-xs font-extrabold rounded-xl py-2.5">
+Connect / Retry Feed
+</button>
+
+<button onclick="disconnectMarketFeed()" class="px-3 bg-midnight border border-goldAccent/40 text-goldAccent text-xs rounded-xl">
+Stop
+</button>
+
+</div>
+</div>
+
+</section>
+
+<!-- INVESTORS -->
+
+<section id="tab-investors" class="space-y-4 hidden animate-fade-in">
+
+<div class="flex justify-between items-center">
+
+<div>
+<p class="small-label text-goldAccent">DIRECTORY</p>
+<h2 class="text-base font-bold">Investors</h2>
+</div>
+
+<button onclick="openInvestorModal()" class="px-4 py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight text-xs font-extrabold rounded-xl">
++ Add
+</button>
+
+</div>
+
+<input id="investor-search" oninput="renderInvestors()" placeholder="Search by name"
+class="w-full card-box rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-goldAccent">
+
+<p class="text-[10px] text-softGrey">
+Automatically sorted by capital — highest first. Tap Edit to update.
+</p>
+
+<div id="investors-list-container" class="space-y-3"></div>
+
+</section>
+
+<!-- SETTLEMENT -->
+
+<section id="tab-settlement" class="space-y-4 hidden animate-fade-in">
+
+<div class="flex justify-between items-center gap-2">
+
+<div>
+<p class="small-label text-goldAccent">LEDGER</p>
+<h2 class="text-base font-bold">Settlement & Payout Calculator</h2>
+</div>
+
+<button onclick="downloadMasterStatementPDF()" class="px-3 py-2 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight text-[10px] font-extrabold rounded-xl">
+Consolidated PDF
+</button>
+
+</div>
+
+<div class="card-box p-4 space-y-3 rounded-2xl">
+
+<p class="small-label text-goldAccent">Quick Preset Withdrawal ($)</p>
+
+<div class="grid grid-cols-4 gap-2">
+
+<button class="preset py-2 bg-midnight border border-goldAccent/40 rounded-lg text-xs" onclick="selectPresetAmount(500)">
+$500
+</button>
+
+<button class="preset py-2 bg-midnight border border-goldAccent/40 rounded-lg text-xs" onclick="selectPresetAmount(700)">
+$700
+</button>
+
+<button class="preset py-2 bg-midnight border border-goldAccent/40 rounded-lg text-xs" onclick="selectPresetAmount(1000)">
+$1000
+</button>
+
+<button class="preset py-2 bg-midnight border border-goldAccent/40 rounded-lg text-xs" onclick="selectPresetAmount(1500)">
+$1500
+</button>
+
+</div>
+
+<label class="small-label block">Custom Dollar Withdrawal</label>
+
+<div class="flex gap-2">
+
+<input type="number" min="0" id="custom-withdrawal-input"
+oninput="calculateCustomPayout()" placeholder="Enter amount"
+class="min-w-0 flex-1 bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs">
+
+<button onclick="downloadCustomStatementPDF()" class="px-3 py-2 bg-royalBlue text-white text-xs font-bold rounded-xl">
+PDF
+</button>
+
+</div>
+
+<div id="calculator-result-box" class="bg-midnight p-3 rounded-xl border border-goldAccent/30 text-xs space-y-1"></div>
+
+</div>
+
+<div class="space-y-3">
+
+<div class="flex justify-between">
+<p class="small-label text-goldAccent">Investor Payout Confirmations</p>
+<p class="text-[10px] text-softGrey">Mark settled to unlock PDF</p>
+</div>
+
+<div id="settlement-investors-container" class="space-y-2"></div>
+
+</div>
+</section>
+
+<!-- SETTINGS -->
+
+<section id="tab-more" class="space-y-4 hidden animate-fade-in">
+
+<div>
+<p class="small-label text-goldAccent">PREFERENCES</p>
+<h2 class="text-base font-bold">Settings & Strategy Bracket Selector</h2>
+</div>
+
+<div class="card-box p-4 rounded-2xl space-y-3">
+
+<div>
+<label class="small-label block mb-1">Manager Name</label>
+<input id="manager-name" value="Kaif Alvi" class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+</div>
+
+<div>
+<label class="small-label block mb-1">Promoter Capital (INR)</label>
+<input id="promoter-capital" type="number" min="0" value="50000" class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+</div>
+
+<div>
+<label class="small-label block mb-1">USD / INR conversion rate</label>
+<input id="fx-rate" type="number" min="0.01" step=".01" value="88.50" class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+<p class="text-[10px] text-softGrey mt-1">
+Manual reference rate. Not represented as a live FX quote.
+</p>
+</div>
+
+<button onclick="saveGeneralSettings()" class="w-full py-3 rounded-xl bg-gradient-to-r from-goldAccent to-amber-600 text-midnight font-extrabold text-xs">
+Save General Settings
+</button>
+
+</div>
+
+<!-- STRATEGY SETTINGS -->
+
+<div class="card-box p-4 rounded-2xl space-y-3">
+
+<p class="small-label text-goldAccent">Strategy & Risk Controls</p>
+
+<div>
+<label class="small-label block mb-1">Strategy mode</label>
+
+<select id="strategy-mode" onchange="changeMode()" class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+<option value="auto">Automatic — Gold trend</option>
+<option value="manual">Manual override</option>
+</select>
+</div>
+
+<div>
+<label class="small-label block mb-1">Custom return target (%)</label>
+<input id="manual-return" type="number" min="0" max="18" step=".1" value="10.5" class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+</div>
+
+<div>
+<label class="small-label block mb-1">Maximum exposure (%)</label>
+<input id="max-exposure" type="number" min="1" max="100" step="1" value="100" class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+</div>
+
+<div>
+<label class="small-label block mb-1">Market confirmation period (minutes)</label>
+<input id="confirm-minutes" type="number" min="1" max="240" value="15" class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+</div>
+
+<div>
+<label class="small-label block mb-1">Defensive exposure (%) when gold below -1%</label>
+<input id="defensive-exposure" type="number" min="1" max="100" value="50" class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+</div>
+
+<button onclick="saveStrategySettings()" class="w-full py-3 rounded-xl bg-gradient-to-r from-goldAccent to-amber-600 text-midnight font-extrabold text-xs">
+Save Strategy Settings
+</button>
+
+<p class="text-[10px] text-softGrey">
+Automatic mode requires a verified backend signal. Threshold changes are held for the confirmation period. This dashboard calculates indicative exposure limits; it does not execute trades or guarantee returns.
+</p>
+
+</div>
+
+<!-- ANGEL ONE -->
+
+<div class="card-box p-4 rounded-2xl space-y-2">
+
+<p class="small-label text-goldAccent">Angel One SmartAPI backend</p>
+
+<label class="small-label block">Secure market-data endpoint</label>
+
+<input id="market-endpoint" value="/api/market/gold"
+class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-xs">
+
+<button onclick="saveEndpoint()" class="w-full py-2.5 bg-midnight border border-goldAccent/50 rounded-xl text-goldAccent text-xs font-bold">
+Save Endpoint & Connect
+</button>
+
+<p class="text-[10px] text-softGrey">
+Expected JSON:
+{"price":12345.6,"changePercent":1.25,"timestamp":"2026-11-01T00:00:00Z","source":"Angel One SmartAPI","instrument":"MCX GOLD"}.
+Your backend must authenticate to Angel One, select a valid MCX gold instrument token and return verified values. Never put API key, client code, PIN or TOTP in this page.
+</p>
+
+</div>
+
+<!-- DATA MANAGEMENT -->
+
+<div class="card-box p-4 rounded-2xl space-y-2">
+
+<p class="small-label text-goldAccent">Data management</p>
+
+<button onclick="exportBackup()" class="w-full py-2.5 rounded-xl border border-goldAccent/40 text-goldAccent text-xs">
+Export App Data Backup (JSON)
+</button>
+
+<button onclick="resetData()" class="w-full py-2.5 rounded-xl border border-roseLive/50 text-roseLive text-xs">
+Reset All App Data
+</button>
+
+</div>
+
+</section>
+</main>
+
+<!-- BOTTOM NAVIGATION -->
+
+<nav class="fixed bottom-0 inset-x-0 z-50 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/30 grid grid-cols-4 pb-safe"
+style="padding-bottom:max(.35rem,env(safe-area-inset-bottom))">
+
+<button data-tab="home" onclick="switchTab('home')" class="nav-btn py-3 flex flex-col items-center gap-1 text-softGrey text-[10px]">
+<span class="text-lg">⌂</span>Home
+</button>
+
+<button data-tab="investors" onclick="switchTab('investors')" class="nav-btn py-3 flex flex-col items-center gap-1 text-softGrey text-[10px]">
+<span class="text-lg">♙</span>Investors
+</button>
+
+<button data-tab="settlement" onclick="switchTab('settlement')" class="nav-btn py-3 flex flex-col items-center gap-1 text-softGrey text-[10px]">
+<span class="text-lg">▤</span>Settlement
+</button>
+
+<button data-tab="more" onclick="switchTab('more')" class="nav-btn py-3 flex flex-col items-center gap-1 text-softGrey text-[10px]">
+<span class="text-lg">⚙</span>Settings
+</button>
+
+</nav>
+
+<!-- INVESTOR MODAL -->
+
+<div id="investor-modal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 modal-backdrop">
+
+<div class="card-box rounded-2xl p-5 w-full max-w-md space-y-3">
+
+<div class="flex justify-between items-center">
+<h3 id="investor-modal-title" class="font-bold text-goldAccent">Add Investor</h3>
+<button onclick="closeInvestorModal()" class="text-softGrey text-xl">×</button>
+</div>
+
+<input id="inv-name" placeholder="Investor full name"
+class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+
+<input id="inv-capital" type="number" min="0" placeholder="Capital (INR)"
+class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+
+<input id="inv-return" type="number" min="0" max="100" step=".01" placeholder="Return (%) e.g. 10.5"
+class="w-full bg-midnight border border-goldAccent/40 rounded-xl p-3 text-sm">
+
+<p class="text-[10px] text-softGrey">
+Return percentage is entered per investor. Profit is calculated on capital × return percentage.
+</p>
+
+<div class="flex gap-2">
+
+<button onclick="saveInvestor()" class="flex-1 py-3 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight font-extrabold rounded-xl text-xs">
+Save Investor
+</button>
+
+<button onclick="closeInvestorModal()" class="px-4 py-3 border border-goldAccent/40 rounded-xl text-xs">
+Cancel
+</button>
+
+</div>
+</div>
+</div>
+
+<script>
+'use strict';
+
+const STORAGE_KEY='aureus-capital-v2';
+
+const defaults={
+manager:'Kaif Alvi',
+promoter:50000,
+fx:88.5,
+mode:'auto',
+manualReturn:10.5,
+maxExposure:100,
+confirmMinutes:15,
+defensiveExposure:50,
+endpoint:'/api/market/gold',
+investors:[],
+market:{
+price:null,
+changePercent:null,
+timestamp:null,
+source:null
+},
+strategy:{
+current:'normal',
+candidate:null,
+candidateSince:null
+},
+settlements:{}
+};
+
+let state=loadState();
+let editingInvestorId=null;
+let feedTimer=null;
+let feedAbort=null;
+let latestPayout=0;
+
+function loadState(){
+try{
+const x=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+
+return x?{
+...structuredClone(defaults),
+...x,
+investors:Array.isArray(x.investors)?x.investors:[]
+}:structuredClone(defaults);
+
+}catch(e){
+return structuredClone(defaults);
+}
+}
+
+function persist(){
+localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+}
+
+function fmtINR(n){
+return 'INR '+Number(n||0).toLocaleString('en-IN',{
+maximumFractionDigits:2
+});
+}
+
+function fmtUSD(n){
+return '$'+Number(n||0).toLocaleString('en-US',{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+});
+}
+
+function safeNum(v,min=0,max=Infinity){
+const n=Number(v);
+return Number.isFinite(n)?Math.min(max,Math.max(min,n)):min;
+}
+
+function switchTab(tab){
+
+document.querySelectorAll('main section[id^="tab-"]').forEach(s=>{
+s.classList.add('hidden');
+});
+
+document.getElementById('tab-'+tab).classList.remove('hidden');
+
+document.querySelectorAll('.nav-btn').forEach(b=>{
+b.classList.toggle('nav-active',b.dataset.tab===tab);
+});
+
+if(tab==='investors')renderInvestors();
+
+if(tab==='settlement')renderSettlement();
+
+if(tab==='more')loadSettingsUI();
+
+window.scrollTo({top:0,behavior:'instant'});
+}
+
+function totalInvestorCapital(){
+return state.investors.reduce((a,x)=>a+x.capital,0);
+}
+
+function investorProfit(inv){
+return inv.capital*inv.returnPct/100;
+}
+
+function totalProfit(){
+return state.investors.reduce((a,x)=>a+investorProfit(x),0);
+}
+
+// HOME DASHBOARD
+
+function renderHome(){
+
+document.getElementById('display-manager-name').textContent=state.manager;
+
+document.getElementById('display-promoter-holding').textContent=fmtINR(state.promoter);
+
+document.getElementById('live-usd-spot').textContent='INR '+state.fx.toFixed(2);
+
+document.getElementById('home-total-capital').textContent=fmtINR(state.promoter+totalInvestorCapital());
+
+document.getElementById('home-active-count').textContent=state.investors.

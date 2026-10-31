@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#050811">
     <title id="page-title">Aureus Capital - Executive Summary</title>
-    <link rel="manifest" href="/manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -73,24 +72,24 @@
             0% { width: 0%; }
             100% { width: 100%; }
         }
-        .animate-progress { animation: loadProgress 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .animate-progress { animation: loadProgress 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; transition: transform 0.3s ease, opacity 0.3s ease; }
     </style>
 </head>
 <body class="pb-28">
 
     <!-- SPLASH SCREEN -->
-    <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-700">
+    <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-500">
         <div class="flex flex-col items-center space-y-4 animate-splash">
-            <div id="splash-logo-container" class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">
-                <span id="splash-logo-text">AC</span>
+            <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">
+                <span>AC</span>
             </div>
             <div class="text-center space-y-1">
-                <p id="splash-company-sub" class="text-xs text-goldAccent uppercase tracking-[0.35em] font-extrabold">AUREUS CAPITAL</p>
+                <p class="text-xs text-goldAccent uppercase tracking-[0.35em] font-extrabold">AUREUS CAPITAL</p>
                 <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>
             </div>
             <div class="w-44 h-1.5 bg-gray-900 rounded-full overflow-hidden mt-4 border border-gray-800 shadow-inner">
-                <div id="splash-bar" class="bg-gradient-to-r from-amber-600 via-goldAccent to-amber-300 h-full rounded-full animate-progress shadow-lg shadow-goldAccent/50"></div>
+                <div class="bg-gradient-to-r from-amber-600 via-goldAccent to-amber-300 h-full rounded-full animate-progress shadow-lg shadow-goldAccent/50"></div>
             </div>
         </div>
     </div>
@@ -98,11 +97,11 @@
     <!-- TOP HEADER -->
     <header class="sticky top-0 z-40 bg-midnight/90 backdrop-blur-xl border-b border-goldAccent/30 px-4 pb-3.5 flex items-center justify-between shadow-xl" style="padding-top: max(2rem, env(safe-area-inset-top));">
         <div class="flex items-center space-x-3">
-            <div id="header-logo-container" class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/70 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/25 tracking-wider overflow-hidden">
-                <span id="header-logo-text">AC</span>
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-graphite to-midnight border border-goldAccent/70 flex items-center justify-center text-goldAccent font-serif font-bold text-sm shadow-md shadow-goldAccent/25 tracking-wider overflow-hidden">
+                <span>AC</span>
             </div>
             <div>
-                <p id="header-company-name" class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">AUREUS CAPITAL</p>
+                <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">AUREUS CAPITAL</p>
                 <h1 class="text-sm font-bold text-softWhite tracking-tight">Executive Summary</h1>
             </div>
         </div>
@@ -145,7 +144,7 @@
                                 <p class="text-[8px] text-softGrey">USD / INR Spot</p>
                                 <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-usd-spot">INR 88.50</h3>
                             </div>
-                            <span id="usd-trend-badge" class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50">+0.12% ▲</span>
+                            <span class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50">+0.12% ▲</span>
                         </div>
                     </div>
                 </div>
@@ -209,15 +208,15 @@
 
                 <!-- Live Trading Sparkline Wave Chart -->
                 <div class="w-full bg-midnight/90 rounded-xl p-3 border border-goldAccent/30 relative overflow-hidden h-20 flex items-center shadow-inner">
-                    <svg id="trading-sparkline" class="w-full h-12" viewBox="0 0 300 50" preserveAspectRatio="none">
+                    <svg class="w-full h-12" viewBox="0 0 300 50" preserveAspectRatio="none">
                         <defs>
                             <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stop-color="#10B981" stop-opacity="0.4"/>
                                 <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
                             </linearGradient>
                         </defs>
-                        <path id="sparkline-area" d="M0,40 Q75,15 150,30 T300,20 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
-                        <path id="sparkline-line" d="M0,40 Q75,15 150,30 T300,20" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
+                        <path d="M0,40 Q75,15 150,30 T300,20 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
+                        <path d="M0,40 Q75,15 150,30 T300,20" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
                     </svg>
                 </div>
             </div>
@@ -267,4 +266,5 @@
                 <div class="pt-2">
                     <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Or Enter Custom Dollar Amount ($)</label>
                     <div class="flex space-x-2">
-                        <input type="number" inputmode=
+                        <input type="number" inputmode="decimal" min="0" id="custom-withdrawal-input" oninput="calculateCustomPayout()" placeholder="Enter amount e.g. 700" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3.5 py-2 text-softWhite tabular-nums focus:outline-none focus:border-goldAccent text-xs">
+                    

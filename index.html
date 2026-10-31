@@ -270,7 +270,7 @@
             <div class="space-y-3 pt-2">
                 <div class="flex justify-between items-center px-1">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Investor Payout Confirmations</p>
-                    <p class="text-[10px] text-softGrey">Tap status to toggle Pending/Complete</p>
+                    <p class="text-[10px] text-softGrey">Tap Pending to complete & unlock PDF</p>
                 </div>
                 <div class="space-y-2.5" id="settlement-investors-container"></div>
             </div>
@@ -376,15 +376,18 @@
             ]
         };
 
-        function getTierByCapital(capital) {
-            if (capital >= 75000) return "Gold";
-            if (capital >= 50000) return "Silver";
-            if (capital >= 30000) return "Bronze";
+        // Dynamic Tier Assignment based on capital ranking (1st Gold, 2nd Silver, 3rd Bronze, Rest Normal)
+        function getDynamicTier(investorId, investorsList) {
+            let sorted = [...investorsList].sort((a, b) => b.capital - a.capital);
+            let rank = sorted.findIndex(i => i.id === investorId);
+            if (rank === 0) return "Gold";
+            if (rank === 1) return "Silver";
+            if (rank === 2) return "Bronze";
             return "Standard";
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v4');
+            const saved = localStorage.getItem('aureus_capital_state_v5');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -401,7 +404,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v4', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v5', JSON.stringify(appState));
             updateDashboard();
             renderInvestors();
             renderSettlementInvestors();
@@ -483,7 +486,7 @@
             filtered.forEach(inv => {
                 let profitINR = inv.capital * (inv.returnRate / 100);
                 let profitUSD = profitINR / appState.usdSpot;
-                let tier = getTierByCapital(inv.capital);
+                let tier = getDynamicTier(inv.id, appState.investors);
 
                 let cardClass = 'tier-normal-card';
                 if(tier === 'Gold') cardClass = 'tier-gold-card';
@@ -538,7 +541,7 @@
                     let diff = currentX - startX;
                     let cardWidth = card.offsetWidth;
                     if(Math.abs(diff) > cardWidth * 0.5) {
-                        card.style.transform = `translateX(${diff > 0 ? '100%': '-100%'})`;
+                        card.style.transform = `translateX(${diff > 0 ? '100%' : '-100%'})`;
                         card.style.opacity = '0';
                         setTimeout(() => deleteInvestor(inv.id), 300);
                     } else {
@@ -551,7 +554,7 @@
             });
         }
 
-        // Render Settlement page investor cards with Status toggle & Individual PDF download button
+        // Render Settlement page with conditional download button (only visible when status is Complete)
         function renderSettlementInvestors() {
             const container = document.getElementById('settlement-investors-container');
             if(!container) return;
@@ -566,7 +569,9 @@
                 let profitINR = inv.capital * (inv.returnRate / 100);
                 let profitUSD = profitINR / appState.usdSpot;
                 let status = inv.status || "Pending";
-                let statusBg = status === "Complete" ? "bg-emerald-950 text-emeraldLive border-emeraldLive" : "bg-amber-950/80 text-amber-400 border-amber-600/60";
+                let isComplete = status === "Complete";
+                
+                let statusBg = isComplete ? "bg-emerald-950 text-emeraldLive border-emeraldLive font-black" : "bg-amber-950/80 text-amber-400 border-amber-600/60 font-extrabold";
 
                 const row = document.createElement('div');
                 row.className = 'card-box p-3 rounded-xl flex items-center justify-between text-xs';
@@ -576,13 +581,15 @@
                         <p class="text-[10px] text-softGrey">Capital: INR ${inv.capital.toLocaleString('en-IN')} · Profit: $${profitUSD.toFixed(2)}</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button onclick="toggleInvestorStatus('${inv.id}')" class="px-2.5 py-1 rounded-lg text-[10px] font-extrabold border uppercase tracking-wider ${statusBg} transition active:scale-95 cursor-pointer">
+                        <button onclick="toggleInvestorStatus('${inv.id}')" class="px-3 py-1.5 rounded-lg text-[10px] border uppercase tracking-wider ${statusBg} transition active:scale-95 cursor-pointer">
                             ${status}
                         </button>
-                        <button onclick="downloadInvestorStatementPDF('${inv.id}')" class="px-3 py-1.5 bg-royalBlue hover:bg-blue-600 text-white font-bold rounded-lg transition active:scale-95 flex items-center space-x-1 cursor-pointer" title="Download Confirmation PDF">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                            <span>PDF</span>
-                        </button>
+                        ${isComplete ? `
+                            <button onclick="downloadInvestorStatementPDF('${inv.id}')" class="px-3 py-1.5 bg-royalBlue hover:bg-blue-600 text-white font-bold rounded-lg transition active:scale-95 flex items-center space-x-1 cursor-pointer animate-fade-in" title="Download Confirmation PDF">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                <span>PDF</span>
+                            </button>
+                        ` : ''}
                     </div>
                 `;
                 container.appendChild(row);
@@ -706,7 +713,6 @@
         // PROFESSIONAL PDF STATEMENT GENERATORS
         // ==========================================
 
-        // Individual Investor Statement PDF from Settlement List Button
         function downloadInvestorStatementPDF(id) {
             const inv = appState.investors.find(i => i.id === id);
             if(!inv) return;
@@ -780,7 +786,7 @@
                 },
                 didParseCell: function(data) {
                     if(data.row.index === 6 && data.column.index === 1) {
-                        data.cell.styles.textColor = inv.status === "Complete" ? [16, 185, 129] : [180, 83, 9];
+                        data.cell.styles.textColor = [16, 185, 129];
                         data.cell.styles.fontStyle = 'bold';
                     }
                 },
@@ -803,7 +809,6 @@
             doc.save(`Aureus_Capital_Payout_${inv.name.replace(/\s+/g, '_')}.pdf`);
         }
 
-        // Custom Calculator Statement PDF
         function downloadCustomStatementPDF() {
             const withdrawalUSD = parseFloat(document.getElementById('custom-withdrawal-input').value) || 700;
             const refId = 'AC-PAY-' + Math.floor(100000 + Math.random() * 900000);
@@ -900,7 +905,6 @@
             doc.save(`Aureus_Capital_Payout_Confirmation_${refId}.pdf`);
         }
 
-        // Master Investor Return Statement PDF
         function downloadMasterStatementPDF() {
             const genDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
             const { jsPDF } = window.jspdf;

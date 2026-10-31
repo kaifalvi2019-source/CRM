@@ -558,7 +558,7 @@
         }
 
         // =========================================================================
-        // UPDATED PDF GENERATOR 1: Individual Investor Payout Confirmation Statement
+        // UPDATED PDF 1: Individual Investor Payout Confirmation (Corporate Design)
         // =========================================================================
         function downloadCustomStatementPDF() {
             const amtUSD = parseFloat(document.getElementById('custom-withdrawal-input').value) || 500;
@@ -591,8 +591,8 @@
             doc.setFontSize(10);
             doc.setTextColor(249, 250, 251);
             doc.text("Payout Confirmation Statement", 15, 30);
-            doc.text(`Ref ID: ${refId}`, 155, 22, { align: 'right' });
-            doc.text(`Date: ${genDate}`, 155, 30, { align: 'right' });
+            doc.text(`Ref ID: ${refId}`, 195, 22, { align: 'right' });
+            doc.text(`Date: ${genDate}`, 195, 30, { align: 'right' });
 
             // Section Title
             doc.setTextColor(13, 20, 36);
@@ -647,7 +647,7 @@
         }
 
         // =========================================================================
-        // UPDATED PDF GENERATOR 2: Master Investor Return Statement
+        // UPDATED PDF 2: Master Investor Return Statement (Corporate Design)
         // =========================================================================
         function downloadMasterStatementPDF() {
             const genDate = new Date().toLocaleString();

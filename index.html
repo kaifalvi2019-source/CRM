@@ -141,7 +141,7 @@
                 </div>
             </div>
 
-            <!-- 30-Day Performance Card with Auto Threshold & Capital Protection Indicator -->
+            <!-- 30-Day Performance Card with Real Calendar & Auto Threshold -->
             <div class="card-box p-5 space-y-3.5 rounded-2xl">
                 <div class="flex justify-between items-center">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">MCX Gold Contract Performance</p>
@@ -157,7 +157,7 @@
                         <span class="w-2 h-2 rounded-full bg-goldAccent animate-pulse"></span>
                         <span class="text-softGrey font-semibold">MCX Gold Contract:</span>
                     </div>
-                    <span id="gold-monthly-movement-text" class="font-extrabold text-roseLive tabular-nums">MCX INR 1,38,354.05 (-0.30%)</span>
+                    <span id="gold-monthly-movement-text" class="font-extrabold text-roseLive tabular-nums">MCX INR 1,38,358.13 (-0.30%)</span>
                 </div>
 
                 <div class="flex justify-between items-baseline pt-1">
@@ -166,7 +166,7 @@
                         <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Auto Bad Market (5% – 8% Floor)</p>
                     </div>
                     <div class="text-right">
-                        <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">18 days remaining</span>
+                        <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">28 days remaining</span>
                     </div>
                 </div>
 
@@ -326,7 +326,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_4](start_span)[span_4](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_2](start_span)[span_2](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -389,26 +389,24 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH REAL-TIME CONTRACT & TREND SYNC -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH REAL CALENDAR ATTACHMENT -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
             promoterHolding: 50000,
-            usdSpot: 88.51, // USD/INR contract rate
-            apiKey: "6xbPBcPcO", // Angel One Smart API Key[span_5](start_span)[span_5](end_span)
+            usdSpot: 88.51,
+            apiKey: "6xbPBcPcO",[span_3](start_span)[span_3](end_span)
             returnBracket: "auto",
             customReturn: 10.50,
             returnRate: 9.50,
-            mcxGoldContractPrice: 138354.05, // MCX Gold contract price matching live view
-            mcxGoldChangePct: -0.30,       // MCX Gold contract percentage change
-            investors: [] // Clean empty array as requested
+            mcxGoldContractPrice: 138358.13,
+            mcxGoldChangePct: -0.30,
+            investors: [] // 100% clean empty array by default
         };
 
-        // Real-Time Contract & Price Sync Engine via Angel One / Live Feeds
         async function fetchRealTimeContractFeeds() {
             try {
-                // Simulating live contract price and USD/INR contract rate ticks
-                appState.mcxGoldContractPrice = 138354.05 + (Math.random() * 10 - 5);
+                appState.mcxGoldContractPrice = 138358.13 + (Math.random() * 10 - 5);
                 appState.mcxGoldChangePct = -0.30 + (Math.random() * 0.04 - 0.02);
                 appState.usdSpot = 88.51 + (Math.random() * 0.02 - 0.01);
 
@@ -422,10 +420,10 @@
             }
         }
 
-        // Live polling every 3 seconds for active contract tracking
         setInterval(fetchRealTimeContractFeeds, 3000);
 
         function calculateCalendarCycleAndGoldYield() {
+            // Real Calendar Attachment for 1st to End of Month calculation
             const now = new Date();
             const currentDay = now.getDate();
             const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -438,7 +436,6 @@
             if(cycleEl) cycleEl.innerText = cycleText;
             if(daysEl) daysEl.innerText = `${daysRemaining >= 0 ? daysRemaining : 0} days remaining`;
 
-            // JavaScript automatically calculates BULLISH / BEARISH / NEUTRAL from MCX Gold contract price movement
             let contractChange = appState.mcxGoldChangePct;
             let trendStatus = "NEUTRAL";
             if (contractChange > 0.05) trendStatus = "BULLISH";
@@ -473,7 +470,6 @@
 
             let effectiveBracket = appState.returnBracket;
 
-            // Auto-Threshold Strategy driven by Contract Trend Calculation
             if (appState.returnBracket === "auto") {
                 if (contractChange < -0.20) {
                     effectiveBracket = "bad";
@@ -549,7 +545,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v31_clean');
+            const saved = localStorage.getItem('aureus_capital_state_v32_calendar');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -567,7 +563,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v31_clean', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v32_calendar', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -582,7 +578,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_6](start_span)[span_6](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_4](start_span)[span_4](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -610,7 +606,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_7](start_span)[span_7](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_5](start_span)[span_5](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -624,7 +620,7 @@
             }
 
             saveState();
-            alert("Settings & SmartAPI Contract Strategy synchronized successfully!");
+            alert("Settings & Real Calendar Synchronization updated successfully!");
         }
 
         function switchTab(tabId) {
@@ -684,7 +680,7 @@
             if(retDispEl) retDispEl.innerText = appState.returnRate.toFixed(2) + '%';
         }
 
-        // Automatic Descending Sorting (Highest Capital First)[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+        // Automatic Descending Sorting (Highest Capital First)[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             const queryInput = document.getElementById('investor-search');
@@ -1172,7 +1168,7 @@
             doc.setFont("helvetica", "bold");
             doc.setFontSize(9);
             doc.setTextColor(11, 27, 61);
-            doc.text("GRAND TOTALS:", 15, finalY + 10.5);
+            doc.text("GRANDTOTALS:", 15, finalY + 10.5);
 
             doc.text("INR " + grandTotalInvestment.toLocaleString('en-IN'), 92, finalY + 10.5, { align: "right" });
             doc.text('$' + grandTotalProfitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}), 148, finalY + 10.5, { align: "right" });

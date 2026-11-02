@@ -106,7 +106,7 @@
                         <div class="mt-1 flex justify-between items-end">
                             <div>
                                 <p class="text-[8px] text-softGrey">Contract Rate</p>
-                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-usd-spot">INR 88.50</h3>
+                                <h3 class="text-xs font-bold text-goldAccent tabular-nums" id="live-usd-spot">INR 88.51</h3>
                             </div>
                             <span id="api-status-pill" class="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-950 text-emeraldLive border border-emeraldLive/50">SMARTAPI</span>
                         </div>
@@ -146,7 +146,7 @@
                 <div class="flex justify-between items-center">
                     <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">MCX Gold Contract Performance</p>
                     <div class="flex items-center space-x-1.5">
-                        <span id="gold-market-pill" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-950 text-emeraldLive border border-emeraldLive/50">BULLISH ▲</span>
+                        <span id="gold-market-pill" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-950 text-roseLive border border-roseLive/50">BEARISH ▼</span>
                         <p class="text-[11px] text-softGrey font-semibold tabular-nums">CYCLE: <span id="calendar-cycle-range" class="text-softWhite font-bold">1st – 30th</span></p>
                     </div>
                 </div>
@@ -157,13 +157,13 @@
                         <span class="w-2 h-2 rounded-full bg-goldAccent animate-pulse"></span>
                         <span class="text-softGrey font-semibold">MCX Gold Contract:</span>
                     </div>
-                    <span id="gold-monthly-movement-text" class="font-extrabold text-emeraldLive tabular-nums">INR 1,38,350 (-0.32%)</span>
+                    <span id="gold-monthly-movement-text" class="font-extrabold text-roseLive tabular-nums">MCX INR 1,38,354.05 (-0.30%)</span>
                 </div>
 
                 <div class="flex justify-between items-baseline pt-1">
                     <div>
                         <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.50%</span>
-                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Evaluating Contract Trend...</p>
+                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Auto Bad Market (5% – 8% Floor)</p>
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">18 days remaining</span>
@@ -171,9 +171,9 @@
                 </div>
 
                 <!-- Capital Protection & Exposure Status Banner -->
-                <div id="capital-protection-banner" class="bg-emerald-950/40 border border-emeraldLive/30 px-3 py-2 rounded-xl text-[11px] text-emeraldLive font-semibold flex items-center justify-between">
-                    <span>🛡️ Capital Protection: Active (100% Exposure)</span>
-                    <span id="exposure-pct-badge" class="font-mono font-bold">100% Exp</span>
+                <div id="capital-protection-banner" class="bg-amber-950/40 border border-amber-600/40 px-3 py-2 rounded-xl text-[11px] text-amber-400 font-semibold flex items-center justify-between">
+                    <span>🛡️ Capital Protection: Defensive Mode</span>
+                    <span id="exposure-pct-badge" class="font-mono font-bold">60% Exp</span>
                 </div>
 
                 <!-- Live Trading Sparkline Wave Chart -->
@@ -394,28 +394,23 @@
         let appState = {
             managerName: "Kaif Alvi",
             promoterHolding: 50000,
-            usdSpot: 88.50, // USD/INR contract rate
+            usdSpot: 88.51, // USD/INR contract rate
             apiKey: "6xbPBcPcO", // Angel One Smart API Key[span_5](start_span)[span_5](end_span)
             returnBracket: "auto",
             customReturn: 10.50,
             returnRate: 9.50,
-            mcxGoldContractPrice: 138350.00, // MCX Gold contract price matching terminal view
-            mcxGoldChangePct: -0.32,       // MCX Gold contract percentage change
-            investors: [
-                { id: "1", name: "Hussain Khan", capital: 70000, status: "Pending" },
-                { id: "2", name: "Zaif alvi", capital: 60000, status: "Pending" },
-                { id: "3", name: "Rohan", capital: 50000, status: "Pending" },
-                { id: "4", name: "Rohit", capital: 40000, status: "Pending" }
-            ]
+            mcxGoldContractPrice: 138354.05, // MCX Gold contract price matching live view
+            mcxGoldChangePct: -0.30,       // MCX Gold contract percentage change
+            investors: [] // Clean empty array as requested
         };
 
         // Real-Time Contract & Price Sync Engine via Angel One / Live Feeds
         async function fetchRealTimeContractFeeds() {
             try {
                 // Simulating live contract price and USD/INR contract rate ticks
-                appState.mcxGoldContractPrice = 138350.00 + (Math.random() * 20 - 10);
-                appState.mcxGoldChangePct = -0.32 + (Math.random() * 0.08 - 0.04);
-                appState.usdSpot = 88.50 + (Math.random() * 0.04 - 0.02);
+                appState.mcxGoldContractPrice = 138354.05 + (Math.random() * 10 - 5);
+                appState.mcxGoldChangePct = -0.30 + (Math.random() * 0.04 - 0.02);
+                appState.usdSpot = 88.51 + (Math.random() * 0.02 - 0.01);
 
                 const spotEl = document.getElementById('live-usd-spot');
                 if(spotEl) spotEl.innerText = 'INR ' + appState.usdSpot.toFixed(2);
@@ -493,7 +488,7 @@
             if (effectiveBracket === "bad") {
                 appState.returnRate = Number((5 + factor * 3).toFixed(2));
                 exposurePercentage = 60;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Bad Market Floor (5% – 8%)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Bad Market (5% – 8% Floor)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-amber-950/40 border border-amber-600/40 px-3 py-2 rounded-xl text-[11px] text-amber-400 font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Defensive Mode</span><span class="font-mono font-bold">60% Exp</span>`;
@@ -501,7 +496,7 @@
             } else if (effectiveBracket === "normal") {
                 appState.returnRate = Number((8 + factor * 4).toFixed(2));
                 exposurePercentage = 85;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Tier 1 Normal (8% – 12%)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Tier 1 (8% – 12% Normal)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-blue-950/40 border border-royalBlue/40 px-3 py-2 rounded-xl text-[11px] text-royalBlue font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Standard Stable</span><span class="font-mono font-bold">85% Exp</span>`;
@@ -509,7 +504,7 @@
             } else if (effectiveBracket === "bullish") {
                 appState.returnRate = Number((12 + factor * 6).toFixed(2));
                 exposurePercentage = 100;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Tier 2 Bullish (12% – 18%)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Tier 2 (12% – 18% Bullish)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-emerald-950/40 border border-emeraldLive/30 px-3 py-2 rounded-xl text-[11px] text-emeraldLive font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Growth Optimal</span><span class="font-mono font-bold">100% Exp</span>`;
@@ -554,7 +549,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v30_contract');
+            const saved = localStorage.getItem('aureus_capital_state_v31_clean');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -572,7 +567,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v30_contract', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v31_clean', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -702,7 +697,7 @@
                 .sort((a, b) => b.capital - a.capital);
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="card-box p-6 text-center text-xs text-softGrey rounded-2xl">No investors found.</div>`;
+                container.innerHTML = `<div class="card-box p-6 text-center text-xs text-softGrey rounded-2xl">No investors found. Add your first investor above.</div>`;
                 return;
             }
 

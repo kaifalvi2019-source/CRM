@@ -56,13 +56,13 @@
         @keyframes splashZoom { 0% { transform: scale(0.75); opacity: 0; filter: blur(12px); } 50% { transform: scale(1.03); opacity: 1; filter: blur(0px); } 100% { transform: scale(1); opacity: 1; } }
         .animate-splash { animation: splashZoom 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
-        .animate-progress { animation: loadProgress 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .animate-progress { animation: loadProgress 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         .swipe-card { position: relative; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; will-change: transform, opacity; transition: transform 0.3s ease, opacity 0.3s ease; }
     </style>
 </head>
 <body class="pb-28">
 
-    <!-- ANIMATED SPLASH SCREEN ON LAUNCH / REFRESH -->
+    <!-- SMOOTH ANIMATED SPLASH SCREEN WITH PROGRESS LINE -->
     <div id="splash-screen" class="fixed inset-0 bg-midnight z-[100] flex flex-col items-center justify-center transition-opacity duration-500" onclick="const s=this; s.style.opacity='0'; setTimeout(()=>s.remove(),400);">
         <div class="flex flex-col items-center space-y-4 animate-splash">
             <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-900 via-graphite to-midnight border-2 border-goldAccent flex items-center justify-center text-goldAccent font-serif font-extrabold text-3xl shadow-2xl shadow-goldAccent/40 tracking-wider overflow-hidden">
@@ -72,7 +72,7 @@
                 <p class="text-xs text-goldAccent uppercase tracking-[0.35em] font-extrabold">AUREUS CAPITAL</p>
                 <h1 class="text-lg font-bold text-softWhite tracking-tight">Institutional Private Pool</h1>
             </div>
-            <div class="w-44 h-1.5 bg-gray-900 rounded-full overflow-hidden mt-4 border border-gray-800 shadow-inner">
+            <div class="w-48 h-1.5 bg-gray-900 rounded-full overflow-hidden mt-4 border border-gray-800 shadow-inner">
                 <div class="bg-gradient-to-r from-amber-600 via-goldAccent to-amber-300 h-full rounded-full animate-progress shadow-lg shadow-goldAccent/50"></div>
             </div>
             <p class="text-[9px] text-softGrey pt-2 uppercase tracking-widest animate-pulse">Initializing Secure Private Pool...</p>
@@ -347,7 +347,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_9](start_span)[span_9](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_3](start_span)[span_3](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -410,19 +410,19 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH REAL CALENDAR ATTACHMENT -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH ANIMATED SPLASH & REAL CALENDAR -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
             promoterHolding: 50000,
             usdSpot: 88.51,
-            apiKey: "6xbPBcPcO",[span_10](start_span)[span_10](end_span)
+            apiKey: "6xbPBcPcO",
             returnBracket: "auto",
             customReturn: 10.50,
             returnRate: 9.50,
             mcxGoldContractPrice: 138358.13,
             mcxGoldChangePct: -0.30,
-            investors: [] // 100% clean empty array by default
+            investors: []
         };
 
         async function fetchRealTimeContractFeeds() {
@@ -444,7 +444,6 @@
         setInterval(fetchRealTimeContractFeeds, 3000);
 
         function calculateCalendarCycleAndGoldYield() {
-            // Real Calendar Attachment for 1st to End of Month calculation
             const now = new Date();
             const currentDay = now.getDate();
             const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -566,7 +565,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v33_fresh');
+            const saved = localStorage.getItem('aureus_capital_state_v35_splashline');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -584,7 +583,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v33_fresh', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v35_splashline', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -599,7 +598,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_11](start_span)[span_11](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_4](start_span)[span_4](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -627,7 +626,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_12](start_span)[span_12](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_5](start_span)[span_5](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -641,7 +640,7 @@
             }
 
             saveState();
-            alert("Settings & Real Calendar Synchronization updated successfully!");
+            alert("Settings synchronized successfully!");
         }
 
         function switchTab(tabId) {
@@ -671,7 +670,7 @@
             renderSettlementInvestors();
         });
 
-        // Splash screen auto-dismissal
+        // Bulletproof Animated Splash Screen Removal with Progress Line Completion
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -679,7 +678,7 @@
                     splash.style.opacity = '0';
                     setTimeout(() => splash.remove(), 500);
                 }
-            }, 800);
+            }, 1400);
         });
 
         function updateDashboard() {
@@ -712,7 +711,7 @@
             if(retDispEl) retDispEl.innerText = appState.returnRate.toFixed(2) + '%';
         }
 
-        // Automatic Descending Sorting (Highest Capital First)[span_13](start_span)[span_13](end_span)[span_14](start_span)[span_14](end_span)
+        // Automatic Descending Sorting (Highest Capital First)[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             const queryInput = document.getElementById('investor-search');

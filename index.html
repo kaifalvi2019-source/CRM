@@ -162,7 +162,7 @@
                 </div>
             </div>
 
-            <!-- 30-Day Performance Card with Live System Date & Cycle Range -->
+            <!-- 30-Day Performance Card with Strict Bracket Enforcement & Day Accrual -->
             <div class="card-box p-5 space-y-3.5 rounded-2xl">
                 <div class="flex justify-between items-center">
                     <div>
@@ -186,8 +186,8 @@
 
                 <div class="flex justify-between items-baseline pt-1">
                     <div>
-                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">10.50%</span>
-                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Auto Bad Market (5% – 8% Floor)</p>
+                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">6.50%</span>
+                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Bad Market (Strict 5% - 8%)</p>
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">28 days remaining</span>
@@ -200,17 +200,18 @@
                     <span id="exposure-pct-badge" class="font-mono font-bold">60% Exp</span>
                 </div>
 
-                <!-- Live Trading Sparkline Wave Chart -->
+                <!-- Live Trading Sparkline Wave Chart with Day Progression Accrual -->
                 <div class="w-full bg-midnight/90 rounded-xl p-3 border border-goldAccent/30 relative overflow-hidden h-20 flex items-center shadow-inner">
-                    <svg class="w-full h-12" viewBox="0 0 300 50" preserveAspectRatio="none">
+                    <div class="absolute left-3 top-2 text-[8px] text-goldAccent font-mono tracking-wider">Day Accrual: <span id="day-accrual-label">Day 2 of 30</span></div>
+                    <svg class="w-full h-12 pt-2" viewBox="0 0 300 50" preserveAspectRatio="none">
                         <defs>
                             <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stop-color="#10B981" stop-opacity="0.4"/>
                                 <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
                             </linearGradient>
                         </defs>
-                        <path d="M0,40 Q75,15 150,30 T300,20 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
-                        <path d="M0,40 Q75,15 150,30 T300,20" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
+                        <path d="M0,40 Q75,25 150,20 T300,10 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
+                        <path d="M0,40 Q75,25 150,20 T300,10" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
                     </svg>
                 </div>
             </div>
@@ -278,7 +279,7 @@
             </div>
         </section>
 
-        <!-- TAB 4: MORE / SETTINGS & STRATEGY BRACKET SELECTOR -->
+        <!-- TAB 4: MORE / SETTINGS & STRICT BRACKET SELECTOR -->
         <section id="tab-more" class="space-y-4 hidden animate-fade-in">
             <div class="px-1">
                 <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">PREFERENCES</p>
@@ -296,40 +297,40 @@
                         <input type="number" id="settings-promoter-holding" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent">
                     </div>
 
-                    <!-- STRATEGY RETURN BRACKET SELECTOR WITH REAL-TIME CONTRACT TREND -->
+                    <!-- STRICT BRACKET SELECTOR WITH FIXED BOUNDARIES -->
                     <div class="space-y-2.5 pt-1 border-t border-goldAccent/20">
-                        <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Return Bracket Strategy (Auto Contract & Manual)</label>
+                        <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Return Bracket Strategy (Strict Boundaries)</label>
                         
                         <div class="space-y-2">
                             <label class="flex items-center space-x-3 bg-midnight/90 p-3 rounded-xl border border-goldAccent/30 cursor-pointer hover:border-goldAccent transition">
                                 <input type="radio" name="returnBracket" value="auto" id="bracket-auto" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
                                 <div class="text-xs">
-                                    <p class="font-bold text-softWhite">Auto-Threshold (MCX Contract Trend Based)</p>
-                                    <p class="text-[10px] text-softGrey">Calculates BULLISH / BEARISH / NEUTRAL from Gold contract</p>
+                                    <p class="font-bold text-softWhite">Auto-Threshold (Market Condition Based)</p>
+                                    <p class="text-[10px] text-softGrey">Switches automatically within strict bracket limits</p>
                                 </div>
                             </label>
 
                             <label class="flex items-center space-x-3 bg-midnight/90 p-3 rounded-xl border border-goldAccent/30 cursor-pointer hover:border-goldAccent transition">
                                 <input type="radio" name="returnBracket" value="bad" id="bracket-bad" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
                                 <div class="text-xs">
-                                    <p class="font-bold text-softWhite">Bad / Volatile Market (5% – 8%)</p>
-                                    <p class="text-[10px] text-softGrey">Minimum secure return floor for capital safety</p>
+                                    <p class="font-bold text-softWhite">Bad / Volatile Market (Strict 5% – 8%)</p>
+                                    <p class="text-[10px] text-softGrey">Locked strictly between 5.00% and 8.00%</p>
                                 </div>
                             </label>
 
                             <label class="flex items-center space-x-3 bg-midnight/90 p-3 rounded-xl border border-goldAccent/30 cursor-pointer hover:border-goldAccent transition">
                                 <input type="radio" name="returnBracket" value="normal" id="bracket-normal" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
                                 <div class="text-xs">
-                                    <p class="font-bold text-softWhite">Tier 1: Normal / Sideways Market (8% – 12%)</p>
-                                    <p class="text-[10px] text-softGrey">Standard stability-oriented steady returns</p>
+                                    <p class="font-bold text-softWhite">Tier 1: Normal / Sideways (Strict 8% – 12%)</p>
+                                    <p class="text-[10px] text-softGrey">Locked strictly between 8.00% and 12.00%</p>
                                 </div>
                             </label>
 
                             <label class="flex items-center space-x-3 bg-midnight/90 p-3 rounded-xl border border-goldAccent/30 cursor-pointer hover:border-goldAccent transition">
                                 <input type="radio" name="returnBracket" value="bullish" id="bracket-bullish" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
                                 <div class="text-xs">
-                                    <p class="font-bold text-softWhite">Tier 2: Strong Trend & Bullish (12% – 18%)</p>
-                                    <p class="text-[10px] text-softGrey">High-potential growth partnership bracket</p>
+                                    <p class="font-bold text-softWhite">Tier 2: Strong Bullish (Strict 12% – 18%)</p>
+                                    <p class="text-[10px] text-softGrey">Locked strictly between 12.00% and 18.00%</p>
                                 </div>
                             </label>
 
@@ -337,20 +338,20 @@
                                 <input type="radio" name="returnBracket" value="custom" id="bracket-custom" onchange="onBracketChange()" class="text-goldAccent focus:ring-goldAccent">
                                 <div class="text-xs">
                                     <p class="font-bold text-softWhite">Option 3: Custom Return Value (%)</p>
-                                    <p class="text-[10px] text-softGrey">Manual override fixed target return (Capped 5% - 18%)</p>
+                                    <p class="text-[10px] text-softGrey">Manual override (Strictly clamped between 5% - 18%)</p>
                                 </div>
                             </label>
                         </div>
 
                         <div id="custom-return-container" class="pt-2 hidden">
-                            <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Custom Return Rate (%)</label>
+                            <label class="block text-[10px] text-softGrey uppercase tracking-wider mb-1 font-semibold">Custom Return Rate (%) [5% - 18% Clamp]</label>
                             <input type="number" step="0.01" id="settings-custom-return" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-softWhite tabular-nums focus:outline-none focus:border-goldAccent" placeholder="e.g. 10.50">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_1](start_span)[span_1](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_0](start_span)[span_0](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -413,7 +414,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH REAL CALENDAR ATTACHMENT -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH STRICT CLAMPING & DAY ACCRUAL -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
@@ -422,16 +423,16 @@
             apiKey: "6xbPBcPcO",
             returnBracket: "auto",
             customReturn: 10.50,
-            returnRate: 9.50,
-            mcxGoldContractPrice: 138358.13,
-            mcxGoldChangePct: -0.30,
+            returnRate: 6.50,
+            mcxGoldContractPrice: 138353.93,
+            mcxGoldChangePct: -0.32,
             investors: []
         };
 
         async function fetchRealTimeContractFeeds() {
             try {
-                appState.mcxGoldContractPrice = 138358.13 + (Math.random() * 10 - 5);
-                appState.mcxGoldChangePct = -0.30 + (Math.random() * 0.04 - 0.02);
+                appState.mcxGoldContractPrice = 138353.93 + (Math.random() * 10 - 5);
+                appState.mcxGoldChangePct = -0.32 + (Math.random() * 0.04 - 0.02);
                 appState.usdSpot = 88.51 + (Math.random() * 0.02 - 0.01);
 
                 const spotEl = document.getElementById('live-usd-spot');
@@ -454,7 +455,6 @@
             const cycleText = `1st – ${lastDayOfMonth}th`;
             const daysRemaining = lastDayOfMonth - currentDay;
 
-            // Display live system date e.g. 2 Nov 2026
             const dateDisplayEl = document.getElementById('current-system-date-display');
             if(dateDisplayEl) {
                 const options = { day: 'numeric', month: 'short', year: 'numeric' };
@@ -463,8 +463,10 @@
 
             const cycleEl = document.getElementById('calendar-cycle-range');
             const daysEl = document.getElementById('cycle-days-left');
+            const accrualEl = document.getElementById('day-accrual-label');
             if(cycleEl) cycleEl.innerText = cycleText;
             if(daysEl) daysEl.innerText = `${daysRemaining >= 0 ? daysRemaining : 0} days remaining`;
+            if(accrualEl) accrualEl.innerText = `Day ${currentDay} of ${lastDayOfMonth} (Accruing)`;
 
             let contractChange = appState.mcxGoldChangePct;
             let trendStatus = "NEUTRAL";
@@ -495,9 +497,6 @@
                 }
             }
 
-            let factor = (contractChange + 5) / 10;
-            if(factor > 1) factor = 1; if(factor < 0) factor = 0;
-
             let effectiveBracket = appState.returnBracket;
 
             if (appState.returnBracket === "auto") {
@@ -510,42 +509,62 @@
                 }
             }
 
+            // STRICT BOUNDARY CLAMPING (Never below min, never above max)
+            let calculatedRate = 9.50;
             let exposurePercentage = 100;
+
             if (effectiveBracket === "bad") {
-                appState.returnRate = Number((5 + factor * 3).toFixed(2));
+                // Bad Market: Strictly 5% to 8%
+                calculatedRate = 5.0 + Math.abs(contractChange) * 3.0;
+                if(calculatedRate < 5.0) calculatedRate = 5.0;
+                if(calculatedRate > 8.0) calculatedRate = 8.0;
+
                 exposurePercentage = 60;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Bad Market (5% – 8% Floor)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Bad Market (Strict 5% - 8%)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-amber-950/40 border border-amber-600/40 px-3 py-2 rounded-xl text-[11px] text-amber-400 font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Defensive Mode</span><span class="font-mono font-bold">60% Exp</span>`;
                 }
             } else if (effectiveBracket === "normal") {
-                appState.returnRate = Number((8 + factor * 4).toFixed(2));
+                // Tier 1 Normal: Strictly 8% to 12%
+                calculatedRate = 8.0 + (contractChange + 0.2) * 4.0;
+                if(calculatedRate < 8.0) calculatedRate = 8.0;
+                if(calculatedRate > 12.0) calculatedRate = 12.0;
+
                 exposurePercentage = 85;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Tier 1 (8% – 12% Normal)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Tier 1 Normal (Strict 8% - 12%)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-blue-950/40 border border-royalBlue/40 px-3 py-2 rounded-xl text-[11px] text-royalBlue font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Standard Stable</span><span class="font-mono font-bold">85% Exp</span>`;
                 }
             } else if (effectiveBracket === "bullish") {
-                appState.returnRate = Number((12 + factor * 6).toFixed(2));
+                // Tier 2 Bullish: Strictly 12% to 18%
+                calculatedRate = 12.0 + contractChange * 6.0;
+                if(calculatedRate < 12.0) calculatedRate = 12.0;
+                if(calculatedRate > 18.0) calculatedRate = 18.0;
+
                 exposurePercentage = 100;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Auto Tier 2 (12% – 18% Bullish)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Tier 2 Bullish (Strict 12% - 18%)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-emerald-950/40 border border-emeraldLive/30 px-3 py-2 rounded-xl text-[11px] text-emeraldLive font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Growth Optimal</span><span class="font-mono font-bold">100% Exp</span>`;
                 }
             } else {
+                // Custom Return: Strictly clamped between 5% and 18%
                 let customVal = parseFloat(appState.customReturn) || 10.50;
-                if(customVal < 5) customVal = 5; if(customVal > 18) customVal = 18;
-                appState.returnRate = Number(customVal.toFixed(2));
+                if(customVal < 5.0) customVal = 5.0;
+                if(customVal > 18.0) customVal = 18.0;
+                calculatedRate = customVal;
+
                 exposurePercentage = 90;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Custom Manual Target Return";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Custom Manual Target (Strict 5% - 18%)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-purple-950/40 border border-purple-500/40 px-3 py-2 rounded-xl text-[11px] text-purple-300 font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Manual Override</span><span class="font-mono font-bold">90% Exp</span>`;
                 }
             }
+
+            appState.returnRate = Number(calculatedRate.toFixed(2));
         }
 
         function onBracketChange() {
@@ -575,7 +594,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v36_final');
+            const saved = localStorage.getItem('aureus_capital_state_v37_strict');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -593,7 +612,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v36_final', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v37_strict', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -608,7 +627,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_1](start_span)[span_1](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -636,7 +655,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -645,12 +664,13 @@
             else if(document.getElementById('bracket-custom').checked) {
                 appState.returnBracket = "custom";
                 let customVal = parseFloat(document.getElementById('settings-custom-return').value) || 10.50;
-                if(customVal < 5) customVal = 5; if(customVal > 18) customVal = 18;
+                if(customVal < 5.0) customVal = 5.0;
+                if(customVal > 18.0) customVal = 18.0;
                 appState.customReturn = customVal;
             }
 
             saveState();
-            alert("Settings synchronized successfully!");
+            alert("Settings & Strict Strategy Boundaries synchronized successfully!");
         }
 
         function switchTab(tabId) {
@@ -680,7 +700,6 @@
             renderSettlementInvestors();
         });
 
-        // Bulletproof Animated Splash Screen Removal with Progress Line Completion
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -713,7 +732,13 @@
             if(countEl) countEl.innerText = appState.investors.length;
             if(actCapEl) actCapEl.innerText = 'INR ' + totalInvestorCapital.toLocaleString('en-IN');
 
-            let totalProfitINR = totalInvestorCapital * (appState.returnRate / 100);
+            // Day-by-day accrual pro-rata calculation (Day current / Total days in month)
+            const now = new Date();
+            const currentDay = now.getDate();
+            const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            let accrualFactor = currentDay / lastDayOfMonth;
+
+            let totalProfitINR = totalInvestorCapital * (appState.returnRate / 100) * accrualFactor;
             let totalProfitUSD = totalProfitINR / appState.usdSpot;
 
             if(pUSDEl) pUSDEl.innerText = '$' + totalProfitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -721,7 +746,7 @@
             if(retDispEl) retDispEl.innerText = appState.returnRate.toFixed(2) + '%';
         }
 
-        // Automatic Descending Sorting (Highest Capital First)[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+        // Automatic Descending Sorting (Highest Capital First)[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span)
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             const queryInput = document.getElementById('investor-search');
@@ -739,7 +764,10 @@
             }
 
             filtered.forEach(inv => {
-                let profitINR = inv.capital * (appState.returnRate / 100);
+                const now = new Date();
+                let accrualFactor = now.getDate() / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+                let profitINR = inv.capital * (appState.returnRate / 100) * accrualFactor;
                 let profitUSD = profitINR / appState.usdSpot;
                 let tier = getDynamicTier(inv.id, appState.investors);
 
@@ -765,11 +793,11 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-goldAccent/20 text-xs">
                         <div>
-                            <span class="text-[9px] text-softGrey uppercase">Profit (USD)</span>
+                            <span class="text-[9px] text-softGrey uppercase">Accrued Profit (USD)</span>
                             <p class="font-bold text-emeraldLive tabular-nums">$${profitUSD.toFixed(2)}</p>
                         </div>
                         <div class="text-right">
-                            <span class="text-[9px] text-softGrey uppercase">Profit (INR)</span>
+                            <span class="text-[9px] text-softGrey uppercase">Accrued Profit (INR)</span>
                             <p class="font-bold text-softWhite tabular-nums">INR ${profitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})}</p>
                         </div>
                     </div>
@@ -813,9 +841,11 @@
             }
 
             const sortedInvestors = [...appState.investors].sort((a, b) => b.capital - a.capital);
+            const now = new Date();
+            let accrualFactor = now.getDate() / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 
             sortedInvestors.forEach(inv => {
-                let profitINR = inv.capital * (appState.returnRate / 100);
+                let profitINR = inv.capital * (appState.returnRate / 100) * accrualFactor;
                 let profitUSD = profitINR / appState.usdSpot;
                 let status = inv.status || "Pending";
                 let isComplete = status === "Complete";
@@ -827,7 +857,7 @@
                 row.innerHTML = `
                     <div class="space-y-0.5">
                         <h4 class="font-bold text-softWhite">${inv.name}</h4>
-                        <p class="text-[10px] text-softGrey">Capital: INR ${inv.capital.toLocaleString('en-IN')} · Profit: $${profitUSD.toFixed(2)}</p>
+                        <p class="text-[10px] text-softGrey">Capital: INR ${inv.capital.toLocaleString('en-IN')} · Accrued: $${profitUSD.toFixed(2)}</p>
                     </div>
                     <div class="flex items-center space-x-2">
                         <button type="button" onclick="toggleInvestorStatus('${inv.id}')" class="px-3.5 py-1.5 rounded-lg text-[10px] border uppercase tracking-wider ${statusBg} transition active:scale-95 cursor-pointer">
@@ -959,7 +989,9 @@
             const refId = 'AC-PAY-' + Math.floor(100000 + Math.random() * 900000);
             const genDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
 
-            const profitINR = inv.capital * (appState.returnRate / 100);
+            const now = new Date();
+            let accrualFactor = now.getDate() / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+            const profitINR = inv.capital * (appState.returnRate / 100) * accrualFactor;
             const profitUSD = profitINR / appState.usdSpot;
 
             const { jsPDF } = window.jspdf;
@@ -998,9 +1030,9 @@
                 ["Investor Name", inv.name],
                 ["Investment Capital (INR)", "INR " + inv.capital.toLocaleString('en-IN')],
                 ["Cycle Duration", "30 Days (1st – End of Month)"],
-                ["Return Rate (%)", appState.returnRate.toFixed(2) + "% (Strategy Bracket)"],
-                ["Profit Value (USD)", "$" + profitUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
-                ["Profit Value (INR)", "INR " + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2})],
+                ["Return Rate (%)", appState.returnRate.toFixed(2) + "% (Strict Bracket)"],
+                ["Accrued Profit (USD)", "$" + profitUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
+                ["Accrued Profit (INR)", "INR " + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2})],
                 ["Payout Status", inv.status.toUpperCase()]
             ];
 
@@ -1163,9 +1195,11 @@
             let grandTotalProfitINR = 0;
 
             const sortedPDFInvestors = [...appState.investors].sort((a, b) => b.capital - a.capital);
+            const now = new Date();
+            let accrualFactor = now.getDate() / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
 
             sortedPDFInvestors.forEach((inv, index) => {
-                let profitINR = inv.capital * (appState.returnRate / 100);
+                let profitINR = inv.capital * (appState.returnRate / 100) * accrualFactor;
                 let profitUSD = profitINR / appState.usdSpot;
 
                 grandTotalInvestment += inv.capital;
@@ -1184,7 +1218,7 @@
 
             doc.autoTable({
                 startY: 62,
-                head: [["#", "Investor Details", "Total Investment (INR)", "Total Return (%)", "Profit Value (USD)", "Profit Value (INR)"]],
+                head: [["#", "Investor Details", "Total Investment (INR)", "Total Return (%)", "Accrued Profit (USD)", "Accrued Profit (INR)"]],
                 body: tableRows,
                 theme: 'grid',
                 headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },

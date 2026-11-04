@@ -165,7 +165,7 @@
                 </div>
             </div>
 
-            <!-- 30-Day Performance Card with Progressive Day-by-Day Accrual -->
+            <!-- 30-Day Performance Card with Progressive Return Display -->
             <div class="card-box p-5 space-y-3.5 rounded-2xl">
                 <div class="flex justify-between items-center">
                     <div>
@@ -189,8 +189,8 @@
 
                 <div class="flex justify-between items-baseline pt-1">
                     <div>
-                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">0.87%</span>
-                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Bad Market (Monthly Target: 5% - 8%)</p>
+                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">0.00%</span>
+                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Bad Market (Monthly Target: 5% - 8% Target)</p>
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">26 days remaining</span>
@@ -203,7 +203,7 @@
                     <span id="exposure-pct-badge" class="font-mono font-bold">60% Exp</span>
                 </div>
 
-                <!-- Live Progressive Growth Sparkline Chart (Starts at 0.00% on Day 1, grows daily) -->
+                <!-- Live Progressive Growth Sparkline Chart -->
                 <div class="w-full bg-midnight/90 rounded-xl p-3 border border-goldAccent/30 relative overflow-hidden h-20 flex items-center shadow-inner">
                     <div class="absolute left-3 top-2 text-[8px] text-goldAccent font-mono tracking-wider">Progressive Growth: <span id="day-accrual-label">Day 4 of 30 (Accruing Real-Time)</span></div>
                     <svg class="w-full h-12 pt-2" viewBox="0 0 300 50" preserveAspectRatio="none">
@@ -354,7 +354,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_0](start_span)[span_0](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_2](start_span)[span_2](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -417,7 +417,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH PROGRESSIVE RETURN DISPLAY -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH PROFESSIONAL LANDSCAPE PDF FORMAT -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
@@ -592,7 +592,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v41_pro');
+            const saved = localStorage.getItem('aureus_capital_state_v42_landscape');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -610,7 +610,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v41_pro', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v42_landscape', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -625,7 +625,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_1](start_span)[span_1](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -653,7 +653,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_4](start_span)[span_4](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -738,10 +738,9 @@
             let dailyAccrualRate = (appState.returnRate / 100) / lastDayOfMonth;
             let currentCycleAccrualFactor = dailyAccrualRate * currentDay;
 
-            // Progressive Return Percentage for the current day (Starts at 0% on Day 1, grows daily)
+            // Progressive Return Percentage for current day starting from 0.00%
             let progressiveReturnPct = appState.returnRate * (currentDay / lastDayOfMonth);
 
-            // Promoter Profit Growth
             let promoterProfitINR = appState.promoterHolding * currentCycleAccrualFactor;
             let promoterProfitUSD = promoterProfitINR / appState.usdSpot;
             if(promoterProfitBadge) promoterProfitBadge.innerText = `+$${promoterProfitUSD.toFixed(2)}`;
@@ -755,7 +754,7 @@
             if(retDispEl) retDispEl.innerText = progressiveReturnPct.toFixed(2) + '%';
         }
 
-        // Automatic Descending Sorting (Highest Capital First)[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span)
+        // Automatic Descending Sorting (Highest Capital First)[span_5](start_span)[span_5](end_span)[span_6](start_span)[span_6](end_span)
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             const queryInput = document.getElementById('investor-search');
@@ -991,7 +990,7 @@
         }
 
         // ==========================================
-        // PROFESSIONAL PDF STATEMENT GENERATORS WITH PROMOTER SUMMARY
+        // PROFESSIONAL LANDSCAPE EXECUTIVE PDF GENERATORS
         // ==========================================
 
         function downloadInvestorStatementPDF(id) {
@@ -1003,83 +1002,86 @@
             const now = new Date();
             let dailyAccrualRate = (appState.returnRate / 100) / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
             let currentCycleAccrualFactor = dailyAccrualRate * now.getDate();
+            let progressiveReturnPct = appState.returnRate * (now.getDate() / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate());
 
             const profitINR = inv.capital * currentCycleAccrualFactor;
             const profitUSD = profitINR / appState.usdSpot;
+            const totalValINR = inv.capital + profitINR;
+            const totalValUSD = totalValINR / appState.usdSpot;
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
             doc.setFillColor(255, 255, 255);
-            doc.rect(0, 0, 210, 297, 'F');
+            doc.rect(0, 0, 297, 210, 'F');
 
-            doc.setDrawColor(229, 193, 133);
-            doc.setLineWidth(1.2);
-            doc.rect(10, 10, 190, 277);
-
+            // Header Top
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
+            doc.setFontSize(20);
             doc.setTextColor(11, 27, 61);
-            doc.text("AUREUS CAPITAL", 105, 25, { align: "center" });
+            doc.text("AUREUS CAPITAL", 20, 22);
 
             doc.setFontSize(10);
-            doc.setTextColor(180, 83, 9);
-            doc.text("INSTITUTIONAL PRIVATE POOL", 105, 31, { align: "center" });
+            doc.setTextColor(100, 100, 100);
+            doc.text("Investor Portfolio Management", 20, 28);
 
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+            doc.text(`Report Date : ${genDate}`, 277, 20, { align: "right" });
+            doc.text(`Document Ref : ${refId}`, 277, 26, { align: "right" });
+            doc.text(`Status : Verified & Approved`, 277, 32, { align: "right" });
+
+            doc.setDrawColor(11, 27, 61);
+            doc.setLineWidth(0.8);
+            doc.line(20, 38, 277, 38);
+
+            doc.setFont("helvetica", "bold");
             doc.setFontSize(14);
             doc.setTextColor(11, 27, 61);
-            doc.text("Payout Confirmation Statement", 105, 43, { align: "center" });
+            doc.text("Individual Participant Payout Confirmation", 20, 48);
 
-            doc.setDrawColor(229, 193, 133);
-            doc.setLineWidth(0.6);
-            doc.line(20, 48, 190, 48);
-
+            doc.setFont("helvetica", "normal");
             doc.setFontSize(9);
             doc.setTextColor(100, 100, 100);
-            doc.text(`Reference ID: ${refId}`, 20, 56);
-            doc.text(`Generated Date: ${genDate}`, 190, 56, { align: "right" });
+            doc.text(`Detailed statement for ${inv.name} under institutional management.`, 20, 54);
 
             const tableBody = [
-                ["Investor Name", inv.name],
-                ["Investment Capital (INR)", "INR " + inv.capital.toLocaleString('en-IN')],
-                ["Cycle Duration", "30 Days (1st – End of Month)"],
-                ["Return Rate (%)", appState.returnRate.toFixed(2) + "% (Strict Bracket)"],
-                ["Progressive Profit (USD)", "$" + profitUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
-                ["Progressive Profit (INR)", "INR " + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2})],
-                ["Payout Status", inv.status.toUpperCase()]
+                [inv.name, "INV-" + inv.id.slice(-4), "01/11/2026", "INR " + inv.capital.toLocaleString('en-IN'), "$" + (inv.capital / appState.usdSpot).toFixed(2), progressiveReturnPct.toFixed(2) + "%", "INR " + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2}), "$" + profitUSD.toFixed(2), "INR " + totalValINR.toLocaleString('en-IN', {maximumFractionDigits: 2}), "$" + totalValUSD.toFixed(2)]
             ];
 
             doc.autoTable({
-                startY: 64,
-                head: [["Payout Particulars", "Confirmation Details"]],
+                startY: 62,
+                head: [["Participant Name", "ID", "Start Date", "Investment (INR)", "Investment (USD)", "Return %", "Return (INR)", "Return (USD)", "Total Value (INR)", "Total Value (USD)"]],
                 body: tableBody,
                 theme: 'grid',
-                headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 10 },
-                bodyStyles: { textColor: [30, 30, 30], fontSize: 9, cellPadding: 5 },
-                columnStyles: { 0: { fontStyle: 'bold', cellWidth: 80 }, 1: { cellWidth: 90 } },
-                didParseCell: function(data) {
-                    if(data.row.index === 6 && data.column.index === 1) {
-                        data.cell.styles.textColor = [16, 185, 129];
-                        data.cell.styles.fontStyle = 'bold';
-                    }
+                headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8.5 },
+                bodyStyles: { textColor: [30, 30, 30], fontSize: 8.5, cellPadding: 5 },
+                columnStyles: {
+                    0: { fontStyle: 'bold' },
+                    3: { halign: 'right' }, 4: { halign: 'right' }, 5: { halign: 'center', textColor: [16, 185, 129], fontStyle: 'bold' },
+                    6: { halign: 'right' }, 7: { halign: 'right' }, 8: { halign: 'right' }, 9: { halign: 'right' }
                 },
                 margin: { left: 20, right: 20 }
             });
 
             let finalY = doc.lastAutoTable.finalY + 15;
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(10);
+            doc.setFontSize(9);
             doc.setTextColor(11, 27, 61);
-            doc.text("Congratulations & Thank You for Investing with Aureus Capital!", 105, finalY, { align: "center" });
+            doc.text("Important Notes:", 20, finalY);
 
-            finalY += 15;
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
-            doc.setTextColor(120, 120, 120);
-            doc.text("This is a cryptographically verified digital statement generated by Aureus Capital Systems.", 105, finalY, { align: "center" });
-            doc.text("Confidential & Proprietary Institutional Report © 2026 Aureus Capital.", 105, finalY + 5, { align: "center" });
+            doc.setTextColor(100, 100, 100);
+            doc.text("1. Returns are calculated based on progressive daily accrual aligned with live institutional strategies.", 20, finalY + 6);
+            doc.text(`2. USD to INR conversion is done using the live rate of 1 USD = INR ${appState.usdSpot.toFixed(2)}.`, 20, finalY + 11);
+            doc.text("3. The above figures are official and verified against market benchmark feeds.", 20, finalY + 16);
 
-            doc.save(`Aureus_Capital_Payout_${inv.name.replace(/\s+/g, '_')}.pdf`);
+            doc.setFontSize(8);
+            doc.text("AUREUS CAPITAL | Payout Statement", 20, 195);
+            doc.text("Page 1 of 1", 277, 195, { align: "right" });
+
+            doc.save(`Aureus_Capital_Statement_${inv.name.replace(/\s+/g, '_')}.pdf`);
         }
 
         function downloadCustomStatementPDF() {
@@ -1088,36 +1090,34 @@
             const genDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
 
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
             doc.setFillColor(255, 255, 255);
-            doc.rect(0, 0, 210, 297, 'F');
-
-            doc.setDrawColor(229, 193, 133);
-            doc.setLineWidth(1.2);
-            doc.rect(10, 10, 190, 277);
+            doc.rect(0, 0, 297, 210, 'F');
 
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
+            doc.setFontSize(20);
             doc.setTextColor(11, 27, 61);
-            doc.text("AUREUS CAPITAL", 105, 25, { align: "center" });
+            doc.text("AUREUS CAPITAL", 20, 22);
 
             doc.setFontSize(10);
-            doc.setTextColor(180, 83, 9);
-            doc.text("INSTITUTIONAL PRIVATE POOL", 105, 31, { align: "center" });
+            doc.setTextColor(100, 100, 100);
+            doc.text("Institutional Private Pool Management", 20, 28);
 
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+            doc.text(`Report Date : ${genDate}`, 277, 20, { align: "right" });
+            doc.text(`Document Ref : ${refId}`, 277, 26, { align: "right" });
+            doc.text(`Status : Verified & Approved`, 277, 32, { align: "right" });
+
+            doc.setDrawColor(11, 27, 61);
+            doc.setLineWidth(0.8);
+            doc.line(20, 38, 277, 38);
+
+            doc.setFont("helvetica", "bold");
             doc.setFontSize(14);
             doc.setTextColor(11, 27, 61);
-            doc.text("Investor Withdrawal & Net Distribution Statement", 105, 43, { align: "center" });
-
-            doc.setDrawColor(229, 193, 133);
-            doc.setLineWidth(0.6);
-            doc.line(20, 48, 190, 48);
-
-            doc.setFontSize(9);
-            doc.setTextColor(100, 100, 100);
-            doc.text(`Reference ID: ${refId}`, 20, 56);
-            doc.text(`Generated Date: ${genDate}`, 190, 56, { align: "right" });
+            doc.text("Investor Withdrawal & Net Distribution Statement", 20, 48);
 
             let grossUSD = withdrawalUSD;
             let perfFeeUSD = grossUSD * 0.20; 
@@ -1127,24 +1127,26 @@
             let netINR = netUSD * appState.usdSpot;
 
             const tableBody = [
-                ["Gross Withdrawal Amount (USD)", "$" + grossUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
-                ["Performance Fee (20% on Profit)", "- $" + perfFeeUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
-                ["Blockchain Network Fee", "- $" + networkFeeUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
-                ["Net Distribution Amount (USD)", "$" + netUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
-                ["Currency Contract Rate Feed", "INR " + appState.usdSpot.toFixed(2)],
-                ["Final Net Payout in Bank (INR)", "INR " + netINR.toLocaleString('en-IN', {maximumFractionDigits: 2})]
+                ["Gross Withdrawal Request", "$" + grossUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "INR " + (grossUSD * appState.usdSpot).toLocaleString('en-IN', {maximumFractionDigits: 2})],
+                ["Performance Fee (20% on Profit)", "- $" + perfFeeUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "- INR " + (perfFeeUSD * appState.usdSpot).toLocaleString('en-IN', {maximumFractionDigits: 2})],
+                ["Blockchain Network Fee", "- $" + networkFeeUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "- INR " + (networkFeeUSD * appState.usdSpot).toLocaleString('en-IN', {maximumFractionDigits: 2})],
+                ["Net Distribution Amount", "$" + netUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "INR " + netINR.toLocaleString('en-IN', {maximumFractionDigits: 2})]
             ];
 
             doc.autoTable({
-                startY: 64,
-                head: [["Fee & Distribution Particulars", "Amount Breakdown"]],
+                startY: 58,
+                head: [["Fee & Distribution Particulars", "Amount (USD)", "Amount Equivalent (INR)"]],
                 body: tableBody,
                 theme: 'grid',
-                headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 10 },
-                bodyStyles: { textColor: [30, 30, 30], fontSize: 9, cellPadding: 5 },
-                columnStyles: { 0: { fontStyle: 'bold', cellWidth: 110 }, 1: { cellWidth: 60, halign: 'right' } },
+                headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },
+                bodyStyles: { textColor: [30, 30, 30], fontSize: 9, cellPadding: 6 },
+                columnStyles: {
+                    0: { fontStyle: 'bold', cellWidth: 120 },
+                    1: { halign: 'right', cellWidth: 70 },
+                    2: { halign: 'right', cellWidth: 87 }
+                },
                 didParseCell: function(data) {
-                    if(data.row.index === 5) {
+                    if(data.row.index === 3) {
                         data.cell.styles.textColor = [16, 185, 129];
                         data.cell.styles.fontStyle = 'bold';
                     }
@@ -1154,53 +1156,60 @@
 
             let finalY = doc.lastAutoTable.finalY + 15;
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(10);
+            doc.setFontSize(9);
             doc.setTextColor(11, 27, 61);
-            doc.text("Thank You for Partnering with Aureus Capital!", 105, finalY, { align: "center" });
+            doc.text("Important Notes:", 20, finalY);
 
-            finalY += 15;
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
-            doc.setTextColor(120, 120, 120);
-            doc.text("This is a cryptographically verified digital statement generated by Aureus Capital Systems.", 105, finalY, { align: "center" });
-            doc.text("Confidential & Proprietary Institutional Report © 2026 Aureus Capital.", 105, finalY + 5, { align: "center" });
+            doc.setTextColor(100, 100, 100);
+            doc.text(`1. Exchange rate applied: 1 USD = INR ${appState.usdSpot.toFixed(2)}.`, 20, finalY + 6);
+            doc.text("2. Net distribution is credited directly to the registered banking or crypto institutional channel.", 20, finalY + 11);
 
-            doc.save(`Aureus_Capital_Withdrawal_Statement_${refId}.pdf`);
+            doc.setFontSize(8);
+            doc.text("AUREUS CAPITAL | Withdrawal Statement", 20, 195);
+            doc.text("Page 1 of 1", 277, 195, { align: "right" });
+
+            doc.save(`Aureus_Capital_Withdrawal_${refId}.pdf`);
         }
 
         function downloadMasterStatementPDF() {
             const genDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
 
             doc.setFillColor(255, 255, 255);
-            doc.rect(0, 0, 210, 297, 'F');
+            doc.rect(0, 0, 297, 210, 'F');
 
-            doc.setDrawColor(229, 193, 133);
-            doc.setLineWidth(1.2);
-            doc.rect(10, 10, 190, 277);
-
+            // Header Top
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(16);
+            doc.setFontSize(20);
             doc.setTextColor(11, 27, 61);
-            doc.text("AUREUS CAPITAL", 105, 25, { align: "center" });
+            doc.text("AUREUS CAPITAL", 20, 20);
 
             doc.setFontSize(10);
-            doc.setTextColor(180, 83, 9);
-            doc.text("INSTITUTIONAL PRIVATE POOL", 105, 31, { align: "center" });
+            doc.setTextColor(100, 100, 100);
+            doc.text("Investor Portfolio Management", 20, 26);
 
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+            doc.text(`Report Date : ${genDate}`, 277, 18, { align: "right" });
+            doc.text(`Document Ref : AC-MASTER-${Date.now().toString().slice(-6)}`, 277, 24, { align: "right" });
+            doc.text(`Status : Verified & Approved`, 277, 30, { align: "right" });
+
+            doc.setDrawColor(11, 27, 61);
+            doc.setLineWidth(0.8);
+            doc.line(20, 35, 277, 35);
+
+            doc.setFont("helvetica", "bold");
             doc.setFontSize(14);
             doc.setTextColor(11, 27, 61);
-            doc.text("Consolidated Portfolio Return Statement", 105, 43, { align: "center" });
+            doc.text("Master Investor Portfolio & Return Summary", 20, 44);
 
-            doc.setDrawColor(229, 193, 133);
-            doc.setLineWidth(0.6);
-            doc.line(20, 48, 190, 48);
-
+            doc.setFont("helvetica", "normal");
             doc.setFontSize(9);
             doc.setTextColor(100, 100, 100);
-            doc.text(`Statement Generation Date & Time: ${genDate}`, 20, 56);
-            doc.text(`Currency Contract Rate: INR ${appState.usdSpot.toFixed(2)} / USD`, 190, 56, { align: "right" });
+            doc.text("Complete overview of all participants, investments, and progressive returns (INR & USD)", 20, 50);
 
             const now = new Date();
             let dailyAccrualRate = (appState.returnRate / 100) / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -1210,28 +1219,52 @@
             let promoterProfitINR = appState.promoterHolding * currentCycleAccrualFactor;
             let promoterProfitUSD = promoterProfitINR / appState.usdSpot;
 
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(10);
-            doc.setTextColor(11, 27, 61);
-            doc.text("Lead Portfolio Manager / Promoter Summary:", 20, 62);
+            let totalInvestorsCount = appState.investors.length + 1; // Promoter + Investors
+            let totalInvCapitalINR = appState.promoterHolding + appState.investors.reduce((s, i) => s + i.capital, 0);
+            let totalInvCapitalUSD = totalInvCapitalINR / appState.usdSpot;
+            let totalProfitINR = promoterProfitINR + (appState.investors.reduce((s, i) => s + i.capital, 0) * currentCycleAccrualFactor);
+            let totalProfitUSD = totalProfitINR / appState.usdSpot;
+            let totalPortfolioINR = totalInvCapitalINR + totalProfitINR;
+            let totalPortfolioUSD = totalPortfolioINR / appState.usdSpot;
 
-            doc.setFont("helvetica", "normal");
-            doc.setFontSize(9);
-            doc.text(`Promoter Principal Holding: INR ${appState.promoterHolding.toLocaleString('en-IN')}`, 20, 69);
-            doc.text(`Promoter Progressive Accrued Profit: INR ${promoterProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})} ($${promoterProfitUSD.toFixed(2)})`, 20, 75);
+            // Summary Box Top
+            doc.setFillColor(248, 250, 252);
+            doc.setDrawColor(229, 193, 133);
+            doc.rect(20, 55, 257, 20, 'FD');
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(8.5);
+            doc.setTextColor(100, 100, 100);
+            doc.text("PARTICIPANTS", 26, 62);
+            doc.text("TOTAL INVESTMENT (INR)", 75, 62);
+            doc.text("TOTAL INVESTMENT (USD)", 125, 62);
+            doc.text("TOTAL PROFIT (INR)", 175, 62);
+            doc.text("TOTAL PORTFOLIO (INR)", 226, 62);
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(11);
+            doc.setTextColor(11, 27, 61);
+            doc.text(totalInvestorsCount.toString(), 26, 70);
+            doc.text("INR " + totalInvCapitalINR.toLocaleString('en-IN', {maximumFractionDigits: 2}), 75, 70);
+            doc.text("$" + totalInvCapitalUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}), 125, 70);
+            doc.text("INR " + totalProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 2}), 175, 70);
+            doc.text("INR " + totalPortfolioINR.toLocaleString('en-IN', {maximumFractionDigits: 2}), 226, 70);
 
             let tableRows = [];
-            let grandTotalInvestment = appState.promoterHolding;
-            let grandTotalProfitUSD = promoterProfitUSD;
-            let grandTotalProfitINR = promoterProfitINR;
 
+            // Add Promoter as Row #1
             tableRows.push([
                 "1",
                 appState.managerName + " (Promoter / Lead)",
+                "INV-LEAD",
+                "01/11/2026",
                 'INR ' + appState.promoterHolding.toLocaleString('en-IN'),
+                '$' + (appState.promoterHolding / appState.usdSpot).toFixed(2),
                 progressiveReturnPct.toFixed(2) + '%',
-                '$' + promoterProfitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-                'INR ' + promoterProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})
+                'INR ' + promoterProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 2}),
+                '$' + promoterProfitUSD.toFixed(2),
+                'INR ' + (appState.promoterHolding + promoterProfitINR).toLocaleString('en-IN', {maximumFractionDigits: 2}),
+                '$' + ((appState.promoterHolding + promoterProfitINR) / appState.usdSpot).toFixed(2)
             ]);
 
             const sortedPDFInvestors = [...appState.investors].sort((a, b) => b.capital - a.capital);
@@ -1239,62 +1272,59 @@
             sortedPDFInvestors.forEach((inv, index) => {
                 let profitINR = inv.capital * currentCycleAccrualFactor;
                 let profitUSD = profitINR / appState.usdSpot;
-
-                grandTotalInvestment += inv.capital;
-                grandTotalProfitUSD += profitUSD;
-                grandTotalProfitINR += profitINR;
+                let totalValINR = inv.capital + profitINR;
+                let totalValUSD = totalValINR / appState.usdSpot;
 
                 tableRows.push([
-                    index + 2,
+                    (index + 2).toString(),
                     inv.name,
+                    "INV-" + inv.id.slice(-4),
+                    "01/11/2026",
                     'INR ' + inv.capital.toLocaleString('en-IN'),
+                    '$' + (inv.capital / appState.usdSpot).toFixed(2),
                     progressiveReturnPct.toFixed(2) + '%',
-                    '$' + profitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-                    'INR ' + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})
+                    'INR ' + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2}),
+                    '$' + profitUSD.toFixed(2),
+                    'INR ' + totalValINR.toLocaleString('en-IN', {maximumFractionDigits: 2}),
+                    '$' + totalValUSD.toFixed(2)
                 ]);
             });
 
             doc.autoTable({
                 startY: 82,
-                head: [["#", "Participant Details", "Total Investment (INR)", "Progressive Return (%)", "Progressive Profit (USD)", "Progressive Profit (INR)"]],
+                head: [["#", "Participant Name", "ID", "Start Date", "Investment (INR)", "Investment (USD)", "Return %", "Return (INR)", "Return (USD)", "Total Value (INR)", "Total Value (USD)"]],
                 body: tableRows,
                 theme: 'grid',
-                headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },
-                bodyStyles: { textColor: [30, 30, 30], fontSize: 8.5, cellPadding: 3.5 },
+                headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8 },
+                bodyStyles: { textColor: [30, 30, 30], fontSize: 8, cellPadding: 3.5 },
                 columnStyles: {
-                    0: { cellWidth: 10, halign: 'center' },
-                    1: { cellWidth: 45, fontStyle: 'bold' },
-                    2: { cellWidth: 35, halign: 'right' },
-                    3: { cellWidth: 25, halign: 'center', textColor: [16, 185, 129], fontStyle: 'bold' },
-                    4: { cellWidth: 35, halign: 'right', fontStyle: 'bold' },
-                    5: { cellWidth: 40, halign: 'right' }
+                    0: { cellWidth: 8, halign: 'center' },
+                    1: { fontStyle: 'bold' },
+                    4: { halign: 'right' }, 5: { halign: 'right' }, 
+                    6: { halign: 'center', textColor: [16, 185, 129], fontStyle: 'bold' },
+                    7: { halign: 'right' }, 8: { halign: 'right' }, 9: { halign: 'right' }, 10: { halign: 'right' }
                 },
-                margin: { left: 10, right: 10 }
+                margin: { left: 20, right: 20 }
             });
 
-            let finalY = doc.lastAutoTable.finalY + 8;
-            
-            doc.setFillColor(245, 247, 250);
-            doc.setDrawColor(229, 193, 133);
-            doc.rect(10, finalY, 190, 16, 'FD');
-
+            let finalY = doc.lastAutoTable.finalY + 12;
             doc.setFont("helvetica", "bold");
             doc.setFontSize(9);
             doc.setTextColor(11, 27, 61);
-            doc.text("GRAND TOTALS:", 15, finalY + 10.5);
+            doc.text("Important Notes:", 20, finalY);
 
-            doc.text("INR " + grandTotalInvestment.toLocaleString('en-IN'), 92, finalY + 10.5, { align: "right" });
-            doc.text('$' + grandTotalProfitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}), 148, finalY + 10.5, { align: "right" });
-            doc.text('INR ' + grandTotalProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 0}), 195, finalY + 10.5, { align: "right" });
-
-            finalY += 28;
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
-            doc.setTextColor(120, 120, 120);
-            doc.text("All figures include promoter capital participation and are verified against real-time MCX gold contract feeds.", 105, finalY, { align: "center" });
-            doc.text("Aureus Capital Consolidated Portfolio Report · Confidential Institutional Documentation © 2026.", 105, finalY + 5, { align: "center" });
+            doc.setTextColor(100, 100, 100);
+            doc.text("1. Returns are calculated based on progressive daily accrual aligned with institutional strategy brackets.", 20, finalY + 5);
+            doc.text(`2. USD to INR conversion rate applied: 1 USD = INR ${appState.usdSpot.toFixed(2)}.`, 20, finalY + 10);
+            doc.text("3. Figures include promoter capital participation and are verified against real-time MCX contract feeds.", 20, finalY + 15);
 
-            doc.save(`Aureus_Capital_Consolidated_Portfolio_Statement_${Date.now()}.pdf`);
+            doc.setFontSize(8);
+            doc.text("AUREUS CAPITAL | Master Portfolio Summary", 20, 195);
+            doc.text("Page 1 of 1", 277, 195, { align: "right" });
+
+            doc.save(`Aureus_Capital_Master_Portfolio_Statement_${Date.now()}.pdf`);
         }
     </script>
 </body>

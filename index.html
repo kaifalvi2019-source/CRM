@@ -165,7 +165,7 @@
                 </div>
             </div>
 
-            <!-- 30-Day Performance Card with Day-by-Day Progressive Accrual -->
+            <!-- 30-Day Performance Card with Progressive Day-by-Day Accrual -->
             <div class="card-box p-5 space-y-3.5 rounded-2xl">
                 <div class="flex justify-between items-center">
                     <div>
@@ -189,8 +189,8 @@
 
                 <div class="flex justify-between items-baseline pt-1">
                     <div>
-                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">6.50%</span>
-                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Bad Market (Strict 5% - 8% Target)</p>
+                        <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">0.87%</span>
+                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Bad Market (Monthly Target: 5% - 8%)</p>
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">26 days remaining</span>
@@ -203,7 +203,7 @@
                     <span id="exposure-pct-badge" class="font-mono font-bold">60% Exp</span>
                 </div>
 
-                <!-- Live Progressive Growth Sparkline Chart (Starts at $0, grows realistically day-by-day) -->
+                <!-- Live Progressive Growth Sparkline Chart (Starts at 0.00% on Day 1, grows daily) -->
                 <div class="w-full bg-midnight/90 rounded-xl p-3 border border-goldAccent/30 relative overflow-hidden h-20 flex items-center shadow-inner">
                     <div class="absolute left-3 top-2 text-[8px] text-goldAccent font-mono tracking-wider">Progressive Growth: <span id="day-accrual-label">Day 4 of 30 (Accruing Real-Time)</span></div>
                     <svg class="w-full h-12 pt-2" viewBox="0 0 300 50" preserveAspectRatio="none">
@@ -213,8 +213,8 @@
                                 <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
                             </linearGradient>
                         </defs>
-                        <path d="M0,48 Q75,44 150,35 T300,18 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
-                        <path d="M0,48 Q75,44 150,35 T300,18" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
+                        <path d="M0,48 Q75,46 150,40 T300,22 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
+                        <path d="M0,48 Q75,46 150,40 T300,22" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
                     </svg>
                 </div>
             </div>
@@ -417,7 +417,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH REALISTIC PRO-RATA ACCRUAL -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH PROGRESSIVE RETURN DISPLAY -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
@@ -429,7 +429,7 @@
             returnRate: 6.50,
             mcxGoldContractPrice: 138358.40,
             mcxGoldChangePct: -0.32,
-            investors: [] // Clean empty state
+            investors: []
         };
 
         async function fetchRealTimeContractFeeds() {
@@ -521,7 +521,7 @@
                 if(calculatedRate > 8.0) calculatedRate = 8.0;
 
                 exposurePercentage = 60;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Bad Market (Strict 5% - 8% Target)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Bad Market (Monthly Target: 5% - 8%)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-amber-950/40 border border-amber-600/40 px-3 py-2 rounded-xl text-[11px] text-amber-400 font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Defensive Mode</span><span class="font-mono font-bold">60% Exp</span>`;
@@ -532,7 +532,7 @@
                 if(calculatedRate > 12.0) calculatedRate = 12.0;
 
                 exposurePercentage = 85;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Tier 1 Normal (Strict 8% - 12% Target)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Tier 1 Normal (Monthly Target: 8% - 12%)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-blue-950/40 border border-royalBlue/40 px-3 py-2 rounded-xl text-[11px] text-royalBlue font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Standard Stable</span><span class="font-mono font-bold">85% Exp</span>`;
@@ -543,7 +543,7 @@
                 if(calculatedRate > 18.0) calculatedRate = 18.0;
 
                 exposurePercentage = 100;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Tier 2 Bullish (Strict 12% - 18% Target)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Tier 2 Bullish (Monthly Target: 12% - 18%)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-emerald-950/40 border border-emeraldLive/30 px-3 py-2 rounded-xl text-[11px] text-emeraldLive font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Growth Optimal</span><span class="font-mono font-bold">100% Exp</span>`;
@@ -555,7 +555,7 @@
                 calculatedRate = customVal;
 
                 exposurePercentage = 90;
-                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Custom Manual Target (Strict 5% - 18%)";
+                if(activeTierBadge) activeTierBadge.innerText = "Active Strategy: Custom Manual Target (Monthly Target: 5% - 18%)";
                 if(protectionBanner) {
                     protectionBanner.className = "bg-purple-950/40 border border-purple-500/40 px-3 py-2 rounded-xl text-[11px] text-purple-300 font-semibold flex items-center justify-between";
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Manual Override</span><span class="font-mono font-bold">90% Exp</span>`;
@@ -592,7 +592,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v40_pro');
+            const saved = localStorage.getItem('aureus_capital_state_v41_pro');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -610,7 +610,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v40_pro', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v41_pro', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -735,11 +735,13 @@
             const currentDay = now.getDate();
             const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
             
-            // True Pro-Rata Accrual Calculation: (Monthly Rate / 30) * Current Day
             let dailyAccrualRate = (appState.returnRate / 100) / lastDayOfMonth;
             let currentCycleAccrualFactor = dailyAccrualRate * currentDay;
 
-            // Promoter Profit Growth (Pro-Rata for Day 4)
+            // Progressive Return Percentage for the current day (Starts at 0% on Day 1, grows daily)
+            let progressiveReturnPct = appState.returnRate * (currentDay / lastDayOfMonth);
+
+            // Promoter Profit Growth
             let promoterProfitINR = appState.promoterHolding * currentCycleAccrualFactor;
             let promoterProfitUSD = promoterProfitINR / appState.usdSpot;
             if(promoterProfitBadge) promoterProfitBadge.innerText = `+$${promoterProfitUSD.toFixed(2)}`;
@@ -750,7 +752,7 @@
 
             if(pUSDEl) pUSDEl.innerText = '$' + totalProfitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             if(pINREl) pINREl.innerText = 'INR ' + totalProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 0});
-            if(retDispEl) retDispEl.innerText = appState.returnRate.toFixed(2) + '%';
+            if(retDispEl) retDispEl.innerText = progressiveReturnPct.toFixed(2) + '%';
         }
 
         // Automatic Descending Sorting (Highest Capital First)[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span)
@@ -1203,6 +1205,7 @@
             const now = new Date();
             let dailyAccrualRate = (appState.returnRate / 100) / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
             let currentCycleAccrualFactor = dailyAccrualRate * now.getDate();
+            let progressiveReturnPct = appState.returnRate * (now.getDate() / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate());
 
             let promoterProfitINR = appState.promoterHolding * currentCycleAccrualFactor;
             let promoterProfitUSD = promoterProfitINR / appState.usdSpot;
@@ -1226,7 +1229,7 @@
                 "1",
                 appState.managerName + " (Promoter / Lead)",
                 'INR ' + appState.promoterHolding.toLocaleString('en-IN'),
-                appState.returnRate.toFixed(2) + '%',
+                progressiveReturnPct.toFixed(2) + '%',
                 '$' + promoterProfitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
                 'INR ' + promoterProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})
             ]);
@@ -1245,7 +1248,7 @@
                     index + 2,
                     inv.name,
                     'INR ' + inv.capital.toLocaleString('en-IN'),
-                    appState.returnRate.toFixed(2) + '%',
+                    progressiveReturnPct.toFixed(2) + '%',
                     '$' + profitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
                     'INR ' + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})
                 ]);
@@ -1253,7 +1256,7 @@
 
             doc.autoTable({
                 startY: 82,
-                head: [["#", "Participant Details", "Total Investment (INR)", "Total Return (%)", "Progressive Profit (USD)", "Progressive Profit (INR)"]],
+                head: [["#", "Participant Details", "Total Investment (INR)", "Progressive Return (%)", "Progressive Profit (USD)", "Progressive Profit (INR)"]],
                 body: tableRows,
                 theme: 'grid',
                 headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },

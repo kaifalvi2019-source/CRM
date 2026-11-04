@@ -116,7 +116,10 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3 pt-1">
                     <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30 shadow-inner">
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>
+                        <div class="flex justify-between items-center">
+                            <p class="text-[9px] text-softGrey uppercase tracking-wider font-semibold">Promoter Holding</p>
+                            <span class="text-[9px] font-extrabold text-emeraldLive tabular-nums" id="promoter-profit-badge">+$0.00</span>
+                        </div>
                         <h3 class="text-base font-bold text-goldAccent mt-1 tabular-nums" id="display-promoter-holding">INR 50,000</h3>
                     </div>
                     <div class="bg-midnight/80 p-3.5 rounded-xl border border-goldAccent/30 shadow-inner">
@@ -155,7 +158,7 @@
                         <p class="font-bold text-softWhite mt-1 text-sm tabular-nums" id="home-active-capital">INR 0</p>
                     </div>
                     <div>
-                        <p class="text-[9px] text-softGrey uppercase tracking-wider">30-Day Profit</p>
+                        <p class="text-[9px] text-softGrey uppercase tracking-wider">Progressive Profit</p>
                         <p class="font-bold text-emeraldLive mt-1 text-sm tabular-nums" id="home-calc-profit-usd">$0.00</p>
                         <p class="text-[10px] text-softGrey tabular-nums" id="home-calc-profit-inr">INR 0</p>
                     </div>
@@ -167,7 +170,7 @@
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">MCX Gold Contract Performance</p>
-                        <p class="text-[10px] text-softGrey font-semibold mt-0.5" id="current-system-date-display">Today: 2 Nov 2026</p>
+                        <p class="text-[10px] text-softGrey font-semibold mt-0.5" id="current-system-date-display">Today: 4 Nov 2026</p>
                     </div>
                     <div class="flex items-center space-x-1.5">
                         <span id="gold-market-pill" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-950 text-roseLive border border-roseLive/50">BEARISH ▼</span>
@@ -181,7 +184,7 @@
                         <span class="w-2 h-2 rounded-full bg-goldAccent animate-pulse"></span>
                         <span class="text-softGrey font-semibold">MCX Gold Contract:</span>
                     </div>
-                    <span id="gold-monthly-movement-text" class="font-extrabold text-roseLive tabular-nums">MCX INR 1,38,358.13 (-0.30%)</span>
+                    <span id="gold-monthly-movement-text" class="font-extrabold text-roseLive tabular-nums">MCX INR 1,38,358.4 (-0.32%)</span>
                 </div>
 
                 <div class="flex justify-between items-baseline pt-1">
@@ -190,7 +193,7 @@
                         <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Bad Market (Strict 5% - 8%)</p>
                     </div>
                     <div class="text-right">
-                        <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">28 days remaining</span>
+                        <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">26 days remaining</span>
                     </div>
                 </div>
 
@@ -200,9 +203,9 @@
                     <span id="exposure-pct-badge" class="font-mono font-bold">60% Exp</span>
                 </div>
 
-                <!-- Live Trading Sparkline Wave Chart with Day Progression Accrual -->
+                <!-- Live Progressive Growth Sparkline Chart -->
                 <div class="w-full bg-midnight/90 rounded-xl p-3 border border-goldAccent/30 relative overflow-hidden h-20 flex items-center shadow-inner">
-                    <div class="absolute left-3 top-2 text-[8px] text-goldAccent font-mono tracking-wider">Day Accrual: <span id="day-accrual-label">Day 2 of 30</span></div>
+                    <div class="absolute left-3 top-2 text-[8px] text-goldAccent font-mono tracking-wider">Progressive Growth: <span id="day-accrual-label">Day 4 of 30 (Growing)</span></div>
                     <svg class="w-full h-12 pt-2" viewBox="0 0 300 50" preserveAspectRatio="none">
                         <defs>
                             <linearGradient id="sparklineGrad" x1="0" y1="0" x2="0" y2="1">
@@ -210,8 +213,8 @@
                                 <stop offset="100%" stop-color="#10B981" stop-opacity="0.0"/>
                             </linearGradient>
                         </defs>
-                        <path d="M0,40 Q75,25 150,20 T300,10 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
-                        <path d="M0,40 Q75,25 150,20 T300,10" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
+                        <path d="M0,48 Q75,40 150,28 T300,12 L300,50 L0,50 Z" fill="url(#sparklineGrad)"></path>
+                        <path d="M0,48 Q75,40 150,28 T300,12" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"></path>
                     </svg>
                 </div>
             </div>
@@ -351,7 +354,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_0](start_span)[span_0](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_4](start_span)[span_4](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -414,7 +417,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH STRICT CLAMPING & DAY ACCRUAL -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH PROMOTER PROFIT & CLEAN STATE -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
@@ -424,14 +427,14 @@
             returnBracket: "auto",
             customReturn: 10.50,
             returnRate: 6.50,
-            mcxGoldContractPrice: 138353.93,
+            mcxGoldContractPrice: 138358.40,
             mcxGoldChangePct: -0.32,
-            investors: []
+            investors: [] // 100% clean empty array by default (Zero default investors)
         };
 
         async function fetchRealTimeContractFeeds() {
             try {
-                appState.mcxGoldContractPrice = 138353.93 + (Math.random() * 10 - 5);
+                appState.mcxGoldContractPrice = 138358.40 + (Math.random() * 10 - 5);
                 appState.mcxGoldChangePct = -0.32 + (Math.random() * 0.04 - 0.02);
                 appState.usdSpot = 88.51 + (Math.random() * 0.02 - 0.01);
 
@@ -466,7 +469,7 @@
             const accrualEl = document.getElementById('day-accrual-label');
             if(cycleEl) cycleEl.innerText = cycleText;
             if(daysEl) daysEl.innerText = `${daysRemaining >= 0 ? daysRemaining : 0} days remaining`;
-            if(accrualEl) accrualEl.innerText = `Day ${currentDay} of ${lastDayOfMonth} (Accruing)`;
+            if(accrualEl) accrualEl.innerText = `Day ${currentDay} of ${lastDayOfMonth} (Growing)`;
 
             let contractChange = appState.mcxGoldChangePct;
             let trendStatus = "NEUTRAL";
@@ -509,12 +512,10 @@
                 }
             }
 
-            // STRICT BOUNDARY CLAMPING (Never below min, never above max)
             let calculatedRate = 9.50;
             let exposurePercentage = 100;
 
             if (effectiveBracket === "bad") {
-                // Bad Market: Strictly 5% to 8%
                 calculatedRate = 5.0 + Math.abs(contractChange) * 3.0;
                 if(calculatedRate < 5.0) calculatedRate = 5.0;
                 if(calculatedRate > 8.0) calculatedRate = 8.0;
@@ -526,7 +527,6 @@
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Defensive Mode</span><span class="font-mono font-bold">60% Exp</span>`;
                 }
             } else if (effectiveBracket === "normal") {
-                // Tier 1 Normal: Strictly 8% to 12%
                 calculatedRate = 8.0 + (contractChange + 0.2) * 4.0;
                 if(calculatedRate < 8.0) calculatedRate = 8.0;
                 if(calculatedRate > 12.0) calculatedRate = 12.0;
@@ -538,7 +538,6 @@
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Standard Stable</span><span class="font-mono font-bold">85% Exp</span>`;
                 }
             } else if (effectiveBracket === "bullish") {
-                // Tier 2 Bullish: Strictly 12% to 18%
                 calculatedRate = 12.0 + contractChange * 6.0;
                 if(calculatedRate < 12.0) calculatedRate = 12.0;
                 if(calculatedRate > 18.0) calculatedRate = 18.0;
@@ -550,7 +549,6 @@
                     protectionBanner.innerHTML = `<span>🛡️ Capital Protection: Growth Optimal</span><span class="font-mono font-bold">100% Exp</span>`;
                 }
             } else {
-                // Custom Return: Strictly clamped between 5% and 18%
                 let customVal = parseFloat(appState.customReturn) || 10.50;
                 if(customVal < 5.0) customVal = 5.0;
                 if(customVal > 18.0) customVal = 18.0;
@@ -594,11 +592,11 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v37_strict');
+            const saved = localStorage.getItem('aureus_capital_state_v39_clean');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
-                    if(parsed && parsed.investors) {
+                    if(parsed && Array.isArray(parsed.investors)) {
                         appState = parsed;
                     }
                 } catch(e){}
@@ -612,7 +610,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v37_strict', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v39_clean', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -627,7 +625,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_1](start_span)[span_1](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_5](start_span)[span_5](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -655,7 +653,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_6](start_span)[span_6](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -670,7 +668,7 @@
             }
 
             saveState();
-            alert("Settings & Strict Strategy Boundaries synchronized successfully!");
+            alert("Settings synchronized successfully!");
         }
 
         function switchTab(tabId) {
@@ -719,6 +717,7 @@
             const actCapEl = document.getElementById('home-active-capital');
             const pUSDEl = document.getElementById('home-calc-profit-usd');
             const pINREl = document.getElementById('home-calc-profit-inr');
+            const promoterProfitBadge = document.getElementById('promoter-profit-badge');
             const retDispEl = document.getElementById('dynamic-return-display');
 
             if(mNameEl) mNameEl.innerText = appState.managerName;
@@ -732,13 +731,18 @@
             if(countEl) countEl.innerText = appState.investors.length;
             if(actCapEl) actCapEl.innerText = 'INR ' + totalInvestorCapital.toLocaleString('en-IN');
 
-            // Day-by-day accrual pro-rata calculation (Day current / Total days in month)
             const now = new Date();
             const currentDay = now.getDate();
             const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
             let accrualFactor = currentDay / lastDayOfMonth;
 
-            let totalProfitINR = totalInvestorCapital * (appState.returnRate / 100) * accrualFactor;
+            // Calculate Promoter Profit Growth
+            let promoterProfitINR = appState.promoterHolding * (appState.returnRate / 100) * accrualFactor;
+            let promoterProfitUSD = promoterProfitINR / appState.usdSpot;
+            if(promoterProfitBadge) promoterProfitBadge.innerText = `+$${promoterProfitUSD.toFixed(2)}`;
+
+            let totalInvestorProfitINR = totalInvestorCapital * (appState.returnRate / 100) * accrualFactor;
+            let totalProfitINR = promoterProfitINR + totalInvestorProfitINR;
             let totalProfitUSD = totalProfitINR / appState.usdSpot;
 
             if(pUSDEl) pUSDEl.innerText = '$' + totalProfitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -746,7 +750,7 @@
             if(retDispEl) retDispEl.innerText = appState.returnRate.toFixed(2) + '%';
         }
 
-        // Automatic Descending Sorting (Highest Capital First)[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span)
+        // Automatic Descending Sorting (Highest Capital First)[span_7](start_span)[span_7](end_span)[span_8](start_span)[span_8](end_span)
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             const queryInput = document.getElementById('investor-search');
@@ -793,11 +797,11 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-goldAccent/20 text-xs">
                         <div>
-                            <span class="text-[9px] text-softGrey uppercase">Accrued Profit (USD)</span>
+                            <span class="text-[9px] text-softGrey uppercase">Progressive Profit (USD)</span>
                             <p class="font-bold text-emeraldLive tabular-nums">$${profitUSD.toFixed(2)}</p>
                         </div>
                         <div class="text-right">
-                            <span class="text-[9px] text-softGrey uppercase">Accrued Profit (INR)</span>
+                            <span class="text-[9px] text-softGrey uppercase">Progressive Profit (INR)</span>
                             <p class="font-bold text-softWhite tabular-nums">INR ${profitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})}</p>
                         </div>
                     </div>
@@ -857,7 +861,7 @@
                 row.innerHTML = `
                     <div class="space-y-0.5">
                         <h4 class="font-bold text-softWhite">${inv.name}</h4>
-                        <p class="text-[10px] text-softGrey">Capital: INR ${inv.capital.toLocaleString('en-IN')} · Accrued: $${profitUSD.toFixed(2)}</p>
+                        <p class="text-[10px] text-softGrey">Capital: INR ${inv.capital.toLocaleString('en-IN')} · Profit: $${profitUSD.toFixed(2)}</p>
                     </div>
                     <div class="flex items-center space-x-2">
                         <button type="button" onclick="toggleInvestorStatus('${inv.id}')" class="px-3.5 py-1.5 rounded-lg text-[10px] border uppercase tracking-wider ${statusBg} transition active:scale-95 cursor-pointer">
@@ -980,7 +984,7 @@
         }
 
         // ==========================================
-        // PROFESSIONAL PDF STATEMENT GENERATORS
+        // PROFESSIONAL PDF STATEMENT GENERATORS WITH PROMOTER SUMMARY
         // ==========================================
 
         function downloadInvestorStatementPDF(id) {
@@ -1031,8 +1035,8 @@
                 ["Investment Capital (INR)", "INR " + inv.capital.toLocaleString('en-IN')],
                 ["Cycle Duration", "30 Days (1st – End of Month)"],
                 ["Return Rate (%)", appState.returnRate.toFixed(2) + "% (Strict Bracket)"],
-                ["Accrued Profit (USD)", "$" + profitUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
-                ["Accrued Profit (INR)", "INR " + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2})],
+                ["Progressive Profit (USD)", "$" + profitUSD.toLocaleString('en-US', {minimumFractionDigits: 2})],
+                ["Progressive Profit (INR)", "INR " + profitINR.toLocaleString('en-IN', {maximumFractionDigits: 2})],
                 ["Payout Status", inv.status.toUpperCase()]
             ];
 
@@ -1189,14 +1193,39 @@
             doc.text(`Statement Generation Date & Time: ${genDate}`, 20, 56);
             doc.text(`Currency Contract Rate: INR ${appState.usdSpot.toFixed(2)} / USD`, 190, 56, { align: "right" });
 
-            let tableRows = [];
-            let grandTotalInvestment = 0;
-            let grandTotalProfitUSD = 0;
-            let grandTotalProfitINR = 0;
-
-            const sortedPDFInvestors = [...appState.investors].sort((a, b) => b.capital - a.capital);
             const now = new Date();
             let accrualFactor = now.getDate() / new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+            // Promoter Principal & Profit Breakdown on top of PDF table
+            let promoterProfitINR = appState.promoterHolding * (appState.returnRate / 100) * accrualFactor;
+            let promoterProfitUSD = promoterProfitINR / appState.usdSpot;
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(10);
+            doc.setTextColor(11, 27, 61);
+            doc.text("Lead Portfolio Manager / Promoter Summary:", 20, 62);
+
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(9);
+            doc.text(`Promoter Principal Holding: INR ${appState.promoterHolding.toLocaleString('en-IN')}`, 20, 69);
+            doc.text(`Promoter Progressive Accrued Profit: INR ${promoterProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})} ($${promoterProfitUSD.toFixed(2)})`, 20, 75);
+
+            let tableRows = [];
+            let grandTotalInvestment = appState.promoterHolding;
+            let grandTotalProfitUSD = promoterProfitUSD;
+            let grandTotalProfitINR = promoterProfitINR;
+
+            // Add Promoter as Row #1 for transparency and trust building
+            tableRows.push([
+                "1",
+                appState.managerName + " (Promoter / Lead)",
+                'INR ' + appState.promoterHolding.toLocaleString('en-IN'),
+                appState.returnRate.toFixed(2) + '%',
+                '$' + promoterProfitUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                'INR ' + promoterProfitINR.toLocaleString('en-IN', {maximumFractionDigits: 0})
+            ]);
+
+            const sortedPDFInvestors = [...appState.investors].sort((a, b) => b.capital - a.capital);
 
             sortedPDFInvestors.forEach((inv, index) => {
                 let profitINR = inv.capital * (appState.returnRate / 100) * accrualFactor;
@@ -1207,7 +1236,7 @@
                 grandTotalProfitINR += profitINR;
 
                 tableRows.push([
-                    index + 1,
+                    index + 2,
                     inv.name,
                     'INR ' + inv.capital.toLocaleString('en-IN'),
                     appState.returnRate.toFixed(2) + '%',
@@ -1217,8 +1246,8 @@
             });
 
             doc.autoTable({
-                startY: 62,
-                head: [["#", "Investor Details", "Total Investment (INR)", "Total Return (%)", "Accrued Profit (USD)", "Accrued Profit (INR)"]],
+                startY: 82,
+                head: [["#", "Participant Details", "Total Investment (INR)", "Total Return (%)", "Progressive Profit (USD)", "Progressive Profit (INR)"]],
                 body: tableRows,
                 theme: 'grid',
                 headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },
@@ -1253,7 +1282,7 @@
             doc.setFont("helvetica", "normal");
             doc.setFontSize(8);
             doc.setTextColor(120, 120, 120);
-            doc.text("All figures are verified against real-time MCX gold contract benchmarks and contract rate feeds.", 105, finalY, { align: "center" });
+            doc.text("All figures include promoter capital participation and are verified against real-time MCX gold contract feeds.", 105, finalY, { align: "center" });
             doc.text("Aureus Capital Consolidated Portfolio Report · Confidential Institutional Documentation © 2026.", 105, finalY + 5, { align: "center" });
 
             doc.save(`Aureus_Capital_Consolidated_Portfolio_Statement_${Date.now()}.pdf`);

@@ -190,7 +190,7 @@
                 <div class="flex justify-between items-baseline pt-1">
                     <div>
                         <span class="text-3xl font-extrabold text-emeraldLive tabular-nums tracking-tight" id="dynamic-return-display">0.00%</span>
-                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Bad Market (Monthly Target: 5% - 8% Target)</p>
+                        <p class="text-[10px] text-softGrey mt-0.5 font-bold" id="active-strategy-tier-badge">Active Strategy: Bad Market (Monthly Target: 5% - 8%)</p>
                     </div>
                     <div class="text-right">
                         <span class="text-xs font-bold text-softWhite tabular-nums" id="cycle-days-left">26 days remaining</span>
@@ -354,7 +354,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_2](start_span)[span_2](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_1](start_span)[span_1](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -417,7 +417,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH PROFESSIONAL LANDSCAPE PDF FORMAT -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH STABLE STATE SYNCHRONIZATION -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
@@ -592,7 +592,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v42_landscape');
+            const saved = localStorage.getItem('aureus_capital_state_v43_sync');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -610,7 +610,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v42_landscape', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v43_sync', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -625,7 +625,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -653,7 +653,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_4](start_span)[span_4](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -689,6 +689,10 @@
                 targetBtn.classList.add('text-goldAccent');
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Force re-render when switching tabs to ensure 100% sync
+            if(tabId === 'investors') renderInvestors();
+            if(tabId === 'settlement') renderSettlementInvestors();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -738,7 +742,6 @@
             let dailyAccrualRate = (appState.returnRate / 100) / lastDayOfMonth;
             let currentCycleAccrualFactor = dailyAccrualRate * currentDay;
 
-            // Progressive Return Percentage for current day starting from 0.00%
             let progressiveReturnPct = appState.returnRate * (currentDay / lastDayOfMonth);
 
             let promoterProfitINR = appState.promoterHolding * currentCycleAccrualFactor;
@@ -754,7 +757,7 @@
             if(retDispEl) retDispEl.innerText = progressiveReturnPct.toFixed(2) + '%';
         }
 
-        // Automatic Descending Sorting (Highest Capital First)[span_5](start_span)[span_5](end_span)[span_6](start_span)[span_6](end_span)
+        // Automatic Descending Sorting (Highest Capital First)[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             const queryInput = document.getElementById('investor-search');
@@ -1015,7 +1018,6 @@
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, 297, 210, 'F');
 
-            // Header Top
             doc.setFont("helvetica", "bold");
             doc.setFontSize(20);
             doc.setTextColor(11, 27, 61);
@@ -1181,7 +1183,6 @@
             doc.setFillColor(255, 255, 255);
             doc.rect(0, 0, 297, 210, 'F');
 
-            // Header Top
             doc.setFont("helvetica", "bold");
             doc.setFontSize(20);
             doc.setTextColor(11, 27, 61);
@@ -1219,7 +1220,7 @@
             let promoterProfitINR = appState.promoterHolding * currentCycleAccrualFactor;
             let promoterProfitUSD = promoterProfitINR / appState.usdSpot;
 
-            let totalInvestorsCount = appState.investors.length + 1; // Promoter + Investors
+            let totalInvestorsCount = appState.investors.length + 1;
             let totalInvCapitalINR = appState.promoterHolding + appState.investors.reduce((s, i) => s + i.capital, 0);
             let totalInvCapitalUSD = totalInvCapitalINR / appState.usdSpot;
             let totalProfitINR = promoterProfitINR + (appState.investors.reduce((s, i) => s + i.capital, 0) * currentCycleAccrualFactor);
@@ -1227,7 +1228,6 @@
             let totalPortfolioINR = totalInvCapitalINR + totalProfitINR;
             let totalPortfolioUSD = totalPortfolioINR / appState.usdSpot;
 
-            // Summary Box Top
             doc.setFillColor(248, 250, 252);
             doc.setDrawColor(229, 193, 133);
             doc.rect(20, 55, 257, 20, 'FD');
@@ -1252,7 +1252,6 @@
 
             let tableRows = [];
 
-            // Add Promoter as Row #1
             tableRows.push([
                 "1",
                 appState.managerName + " (Promoter / Lead)",

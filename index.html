@@ -24,6 +24,14 @@ body{background:#050811;color:#F9FAFB;font-family:system-ui,-apple-system,sans-s
 .animate-fade-in{animation:fadeIn .35s ease}
 .swipe-card{position:relative;overflow:hidden;touch-action:pan-y;user-select:none}
 button{cursor:pointer}
+.bottom-nav{min-height:82px;gap:4px}
+.bottom-nav-btn{flex:1;min-width:0;min-height:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:6px 2px 8px;font-size:12px;font-weight:800;letter-spacing:.01em;border-radius:14px;touch-action:manipulation}
+.bottom-nav-btn:active{background:rgba(229,193,133,.12);transform:scale(.97)}
+.nav-icon{font-size:27px;line-height:1.1;font-weight:500}
+.refresh-price-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;min-height:38px;border:1px solid rgba(229,193,133,.55);border-radius:11px;background:linear-gradient(135deg,#2b2419,#111827);color:#E5C185;font-size:11px;font-weight:800;white-space:nowrap}
+.refresh-price-btn:disabled{opacity:.6;cursor:wait}
+#refresh-gold-icon{font-size:17px;line-height:1}
+@media(min-width:600px){.bottom-nav-btn{font-size:13px}.nav-icon{font-size:29px}}
 </style>
 </head>
 <body class="pb-28">
@@ -67,8 +75,10 @@ button{cursor:pointer}
  </div>
 
  <div class="card-box p-5 space-y-3.5 rounded-2xl">
-  <div class="flex justify-between"><div><p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">MCX Gold Contract Performance</p><p id="current-system-date-display" class="text-[10px] text-softGrey mt-1"></p></div><span id="gold-market-pill" class="px-2 py-1 rounded text-[10px] font-bold bg-blue-950 text-blue-300">INDICATIVE</span></div>
-  <div class="bg-midnight/80 p-3 rounded-xl border border-goldAccent/30 flex justify-between text-xs"><span class="text-softGrey">Reference contract price</span><b id="gold-monthly-movement-text" class="text-goldAccent">INR 1,38,358.40</b></div>
+  <div class="flex justify-between items-start gap-3"><div><p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Gold Market Performance</p><p id="current-system-date-display" class="text-[10px] text-softGrey mt-1"></p></div><div class="flex flex-col items-end gap-2"><span id="gold-market-pill" class="px-2 py-1 rounded text-[10px] font-bold bg-blue-950 text-blue-300">CONNECTING</span><button id="refresh-gold-btn" onclick="refreshGoldPrice(true)" class="refresh-price-btn"><span id="refresh-gold-icon">↻</span> Refresh Price</button></div></div>
+  <div class="bg-midnight/80 p-3 rounded-xl border border-goldAccent/30 flex justify-between items-center gap-3 text-xs"><span class="text-softGrey">Indicative gold spot (INR / 10g)</span><b id="gold-monthly-movement-text" class="text-goldAccent text-right">Loading live price…</b></div>
+  <p id="gold-price-updated" class="text-[10px] text-softGrey">Waiting for price feed…</p>
+  <p class="text-[9px] text-amber-300/80">Global gold spot converted to INR per 10g; this is an indicative estimate, not the exact MCX futures contract LTP.</p>
   <div class="flex justify-between items-end"><div><span id="dynamic-return-display" class="text-3xl font-extrabold text-emeraldLive">0.00%</span><p id="active-strategy-tier-badge" class="text-[10px] text-softGrey font-bold">Monthly target</p></div><span id="cycle-days-left" class="text-xs text-softGrey"></span></div>
   <div id="capital-protection-banner" class="bg-amber-950/40 border border-amber-600/40 px-3 py-2 rounded-xl text-[11px] text-amber-300">Strategy exposure is an estimate, not a guarantee.</div>
   <div class="bg-midnight rounded-xl p-3 border border-goldAccent/30 text-[10px] text-softGrey">Progressive accrual: <span id="day-accrual-label"></span></div>
@@ -99,6 +109,7 @@ button{cursor:pointer}
   <div><label class="block text-[10px] text-softGrey mb-1">Manager Name</label><input id="settings-manager-name" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs"></div>
   <div><label class="block text-[10px] text-softGrey mb-1">Promoter Holding (INR)</label><input type="number" id="settings-promoter-holding" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs"></div>
   <div><label class="block text-[10px] text-softGrey mb-1">USD/INR Conversion Rate</label><input type="number" step=".01" id="settings-usd-spot" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs"></div>
+
   <div class="space-y-2 pt-2 border-t border-goldAccent/20"><label class="block text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Return Bracket Strategy</label>
    <label class="flex gap-3 bg-midnight p-3 rounded-xl border border-goldAccent/30 text-xs"><input type="radio" name="returnBracket" value="auto" id="bracket-auto"> <span><b>Auto-Threshold</b><small class="block text-softGrey">Market condition based</small></span></label>
    <label class="flex gap-3 bg-midnight p-3 rounded-xl border border-goldAccent/30 text-xs"><input type="radio" name="returnBracket" value="bad" id="bracket-bad"> <span><b>Bad / Volatile Market (5%–8%)</b></span></label>
@@ -107,18 +118,19 @@ button{cursor:pointer}
    <label class="flex gap-3 bg-midnight p-3 rounded-xl border border-goldAccent/30 text-xs"><input type="radio" name="returnBracket" value="custom" id="bracket-custom"> <span><b>Custom Return Value</b><small class="block text-softGrey">Clamped between 5% and 18%</small></span></label>
    <div id="custom-return-container" class="hidden"><label class="block text-[10px] text-softGrey mb-1">Custom Return Rate (%)</label><input type="number" step=".01" id="settings-custom-return" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs"></div>
   </div>
+
   <button onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 text-midnight text-xs font-extrabold rounded-xl">Save Settings & Sync Strategy</button>
  </div>
+
  <div class="card-box p-4 space-y-3 rounded-2xl"><p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Data Management</p><p id="storage-status" class="text-[10px] text-softGrey">Checking secure local database...</p><div class="grid grid-cols-2 gap-2"><button onclick="exportJSONData()" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 text-xs font-bold rounded-xl">Backup JSON</button><button onclick="document.getElementById('import-file-input').click()" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 text-xs font-bold rounded-xl">Restore JSON</button><input type="file" id="import-file-input" accept=".json,application/json" onchange="importJSONData(event)" class="hidden"></div></div>
 </section>
-
 </main>
 
-<nav class="fixed bottom-0 left-0 right-0 z-40 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/30 px-2 py-2 flex justify-around shadow-2xl" style="padding-bottom:max(.75rem,env(safe-area-inset-bottom))">
- <button onclick="switchTab('home')" id="nav-btn-home" class="flex flex-col items-center py-1.5 px-3 text-goldAccent text-[10px] font-bold">⌂<span>Home</span></button>
- <button onclick="switchTab('investors')" id="nav-btn-investors" class="flex flex-col items-center py-1.5 px-3 text-softGrey text-[10px] font-bold">♙<span>Investors</span></button>
- <button onclick="switchTab('settlement')" id="nav-btn-settlement" class="flex flex-col items-center py-1.5 px-3 text-softGrey text-[10px] font-bold">▤<span>Settlement</span></button>
- <button onclick="switchTab('more')" id="nav-btn-more" class="flex flex-col items-center py-1.5 px-3 text-softGrey text-[10px] font-bold">⚙<span>Settings</span></button>
+<nav class="bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-midnight/95 backdrop-blur-xl border-t border-goldAccent/30 px-2 pt-2 flex justify-around shadow-2xl" style="padding-bottom:max(.75rem,env(safe-area-inset-bottom))">
+ <button onclick="switchTab('home')" id="nav-btn-home" class="bottom-nav-btn text-goldAccent"><span class="nav-icon">⌂</span><span>Home</span></button>
+ <button onclick="switchTab('investors')" id="nav-btn-investors" class="bottom-nav-btn text-softGrey"><span class="nav-icon">♙</span><span>Investors</span></button>
+ <button onclick="switchTab('settlement')" id="nav-btn-settlement" class="bottom-nav-btn text-softGrey"><span class="nav-icon">▤</span><span>Settlement</span></button>
+ <button onclick="switchTab('more')" id="nav-btn-more" class="bottom-nav-btn text-softGrey"><span class="nav-icon">⚙</span><span>Settings</span></button>
 </nav>
 
 <div id="investor-modal" class="fixed inset-0 bg-midnight/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
@@ -133,78 +145,43 @@ button{cursor:pointer}
 
 <script>
 'use strict';
-
 const LEGACY_KEY='aureus_capital_state_v43_sync';
 const FALLBACK_KEY='aureus_investors_fallback_v1';
 const SETTINGS_KEY='aureus_capital_settings_v1';
 const DB_NAME='AureusInvestorDatabase';
 const STORE_NAME='investor_records';
 
-let appState={
- managerName:'Kaif Alvi',
- promoterHolding:50000,
- usdSpot:88.51,
- returnBracket:'auto',
- customReturn:10.5,
- returnRate:6.5,
- mcxGoldContractPrice:138358.4,
- mcxGoldChangePct:-.32,
- investors:[]
-};
-
+let appState={managerName:'Kaif Alvi',promoterHolding:50000,usdSpot:88.51,returnBracket:'auto',customReturn:10.5,returnRate:6.5,mcxGoldContractPrice:138358.4,mcxGoldChangePct:-.32,investors:[]};
 let dbPromise=null,saveQueue=Promise.resolve(),storageMode='initializing';
+let goldRefreshInProgress=false,goldAutoRefreshTimer=null;
+const GOLD_PRICE_CACHE_KEY='aureus_gold_spot_cache_v1';
 
 function normalizeInvestor(raw,index=0){
  if(!raw||typeof raw!=='object')return null;
  const name=String(raw.name??raw.investorName??'').trim();
  const capital=Number(raw.capital??raw.amount??raw.investment??0);
  if(!name||!Number.isFinite(capital)||capital<=0)return null;
- return {
-  id:String(raw.id??('INV-'+Date.now()+'-'+index+'-'+Math.random().toString(36).slice(2,7))),
-  name,
-  capital,
-  status:raw.status==='Complete'?'Complete':'Pending'
- };
+ return {id:String(raw.id??('INV-'+Date.now()+'-'+index+'-'+Math.random().toString(36).slice(2,7))),name,capital,status:raw.status==='Complete'?'Complete':'Pending'};
 }
-
-function normalizeInvestors(list){
- return (Array.isArray(list)?list:[]).map(normalizeInvestor).filter(Boolean);
-}
+function normalizeInvestors(list){return (Array.isArray(list)?list:[]).map(normalizeInvestor).filter(Boolean)}
 
 function openInvestorDB(){
  if(!('indexedDB' in window))return Promise.reject(new Error('IndexedDB unavailable'));
  if(dbPromise)return dbPromise;
-
  dbPromise=new Promise((resolve,reject)=>{
   const request=indexedDB.open(DB_NAME,1);
-
-  request.onupgradeneeded=()=>{
-   const db=request.result;
-   if(!db.objectStoreNames.contains(STORE_NAME)){
-    db.createObjectStore(STORE_NAME,{keyPath:'id'});
-   }
-  };
-
-  request.onsuccess=()=>{
-   const db=request.result;
-   db.onversionchange=()=>db.close();
-   resolve(db);
-  };
-
+  request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains(STORE_NAME))db.createObjectStore(STORE_NAME,{keyPath:'id'})};
+  request.onsuccess=()=>{const db=request.result;db.onversionchange=()=>db.close();resolve(db)};
   request.onerror=()=>reject(request.error||new Error('Database open failed'));
   request.onblocked=()=>reject(new Error('Database is blocked by another tab'));
  });
-
  return dbPromise;
 }
 
 async function readInvestorsDB(){
  const db=await openInvestorDB();
-
  return new Promise((resolve,reject)=>{
-  const tx=db.transaction(STORE_NAME,'readonly');
-  const req=tx.objectStore(STORE_NAME).getAll();
-
+  const tx=db.transaction(STORE_NAME,'readonly'),req=tx.objectStore(STORE_NAME).getAll();
   req.onsuccess=()=>resolve(normalizeInvestors(req.result));
   req.onerror=()=>reject(req.error||new Error('Database read failed'));
   tx.onabort=()=>reject(tx.error||new Error('Database read aborted'));
@@ -212,730 +189,255 @@ async function readInvestorsDB(){
 }
 
 async function writeInvestorsDB(list){
- const db=await openInvestorDB();
- const clean=normalizeInvestors(list);
-
+ const db=await openInvestorDB(),clean=normalizeInvestors(list);
  return new Promise((resolve,reject)=>{
-  const tx=db.transaction(STORE_NAME,'readwrite');
-  const store=tx.objectStore(STORE_NAME);
-
-  store.clear();
-  clean.forEach(item=>store.put(item));
-
+  const tx=db.transaction(STORE_NAME,'readwrite'),store=tx.objectStore(STORE_NAME);
+  store.clear();clean.forEach(item=>store.put(item));
   tx.oncomplete=()=>resolve(true);
   tx.onerror=()=>reject(tx.error||new Error('Database write failed'));
   tx.onabort=()=>reject(tx.error||new Error('Database write aborted'));
  });
 }
 
-function readFallback(){
- try{
-  const v=JSON.parse(localStorage.getItem(FALLBACK_KEY)||'null');
-  return Array.isArray(v)?normalizeInvestors(v):null;
- }catch(e){
-  return null;
- }
-}
-
+function readFallback(){try{const v=JSON.parse(localStorage.getItem(FALLBACK_KEY)||'null');return Array.isArray(v)?normalizeInvestors(v):null}catch(e){return null}}
 function readLegacyState(){
- try{
-  const raw=localStorage.getItem(LEGACY_KEY);
-  if(!raw)return null;
-  const parsed=JSON.parse(raw);
-  if(!parsed||typeof parsed!=='object')return null;
-  return parsed;
- }catch(e){
-  return null;
- }
+ try{const raw=localStorage.getItem(LEGACY_KEY);if(!raw)return null;const parsed=JSON.parse(raw);if(!parsed||typeof parsed!=='object')return null;return parsed}catch(e){return null}
 }
-
 function applySettings(saved){
  if(!saved||typeof saved!=='object')return;
-
- const keys=[
-  'managerName','promoterHolding','usdSpot','returnBracket',
-  'customReturn','returnRate','mcxGoldContractPrice','mcxGoldChangePct'
- ];
-
- keys.forEach(k=>{
-  if(saved[k]!==undefined)appState[k]=saved[k];
- });
+ const keys=['managerName','promoterHolding','usdSpot','returnBracket','customReturn','returnRate','mcxGoldContractPrice','mcxGoldChangePct'];
+ keys.forEach(k=>{if(saved[k]!==undefined)appState[k]=saved[k]});
 }
 
 async function loadState(){
  const legacy=readLegacyState();
  let settings=null;
-
- try{
-  settings=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'null');
- }catch(e){}
-
+ try{settings=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'null')}catch(e){}
  applySettings(settings||legacy);
-
  let investors=null;
-
- try{
-  investors=await readInvestorsDB();
-  storageMode='IndexedDB + local backup';
- }catch(err){
-  console.warn('IndexedDB read failed:',err);
-  investors=readFallback();
-  storageMode='LocalStorage fallback';
- }
-
+ try{investors=await readInvestorsDB();storageMode='IndexedDB + local backup'}catch(err){console.warn('IndexedDB read failed:',err);investors=readFallback();storageMode='LocalStorage fallback'}
  if(!investors||investors.length===0){
   const legacyInvestors=normalizeInvestors(legacy?.investors);
   const fallback=readFallback();
-
   if(legacyInvestors.length)investors=legacyInvestors;
   else if(fallback&&fallback.length)investors=fallback;
   else investors=investors||[];
  }
-
  appState.investors=normalizeInvestors(investors);
-
+ // Save migrated/loaded records without ever replacing a valid database with an empty fallback.
  await persistAll(false);
-
- syncSettingsToUI();
- calculateCalendarCycleAndGoldYield();
- updateDashboard();
- renderInvestors();
- renderSettlementInvestors();
- calculateCustomPayout();
- updateStorageStatus();
+ syncSettingsToUI();calculateCalendarCycleAndGoldYield();updateDashboard();renderInvestors();renderSettlementInvestors();calculateCustomPayout();updateStorageStatus();
 }
 
 function persistAll(includeLegacy=true){
  const snapshot=JSON.stringify(appState);
-
  saveQueue=saveQueue.then(async()=>{
-  try{
-   localStorage.setItem(FALLBACK_KEY,JSON.stringify(appState.investors));
-   localStorage.setItem(SETTINGS_KEY,JSON.stringify({...appState,investors:undefined}));
-   if(includeLegacy)localStorage.setItem(LEGACY_KEY,snapshot);
-  }catch(e){
-   console.warn('Local storage save failed:',e);
-  }
-
-  try{
-   await writeInvestorsDB(appState.investors);
-   storageMode='IndexedDB + local backup';
-  }catch(e){
-   console.warn('IndexedDB save failed:',e);
-   storageMode='LocalStorage fallback';
-  }
-
+  try{localStorage.setItem(FALLBACK_KEY,JSON.stringify(appState.investors));localStorage.setItem(SETTINGS_KEY,JSON.stringify({...appState,investors:undefined}));if(includeLegacy)localStorage.setItem(LEGACY_KEY,snapshot)}catch(e){console.warn('Local storage save failed:',e)}
+  try{await writeInvestorsDB(appState.investors);storageMode='IndexedDB + local backup'}catch(e){console.warn('IndexedDB save failed:',e);storageMode='LocalStorage fallback'}
   updateStorageStatus();
  }).catch(e=>console.error('Save queue error:',e));
-
  return saveQueue;
 }
+function saveState(){persistAll(true);calculateCalendarCycleAndGoldYield();updateDashboard();renderInvestors();renderSettlementInvestors();calculateCustomPayout()}
+function updateStorageStatus(){const el=document.getElementById('storage-status');if(el)el.textContent='Storage: '+storageMode+'. Keep JSON backups for protection if Chrome site data is cleared.'}
 
-function saveState(){
- persistAll(true);
- calculateCalendarCycleAndGoldYield();
- updateDashboard();
- renderInvestors();
- renderSettlementInvestors();
- calculateCustomPayout();
+async function refreshGoldPrice(manual=false){
+ if(goldRefreshInProgress)return;
+ const btn=document.getElementById('refresh-gold-btn'),icon=document.getElementById('refresh-gold-icon'),priceEl=document.getElementById('gold-monthly-movement-text'),updatedEl=document.getElementById('gold-price-updated'),pill=document.getElementById('gold-market-pill');
+ goldRefreshInProgress=true;if(btn)btn.disabled=true;if(icon)icon.textContent='⟳';if(manual&&updatedEl)updatedEl.textContent='Refreshing live gold spot…';
+ try{
+  const response=await fetch('https://xaus.com/api/v1/spot?currency=INR&unit=gram&compact=1',{cache:'no-store'});
+  if(!response.ok)throw new Error('Price service returned HTTP '+response.status);
+  const data=await response.json();
+  const gramPrice=Number(data?.xau?.price),updatedAt=data?.updated_at||data?.data_state?.as_of;
+  if(!Number.isFinite(gramPrice)||gramPrice<=0)throw new Error('Invalid gold price received');
+  const price10g=gramPrice*10;
+  const state=data?.data_state?.status||'unknown';
+  appState.mcxGoldContractPrice=price10g;
+  if(Number.isFinite(Number(data.fx_rate))&&Number(data.fx_rate)>0)appState.usdSpot=Number(data.fx_rate);
+  const quote={price10g,usdSpot:appState.usdSpot,updatedAt:updatedAt||new Date().toISOString(),state};
+  try{localStorage.setItem(GOLD_PRICE_CACHE_KEY,JSON.stringify(quote))}catch(e){}
+  if(priceEl)priceEl.textContent='INR '+price10g.toLocaleString('en-IN',{maximumFractionDigits:2});
+  if(updatedEl){const dt=new Date(quote.updatedAt);updatedEl.textContent='Updated: '+(Number.isNaN(dt.getTime())?'Time unavailable':dt.toLocaleString('en-IN'))+' · '+(state==='fresh'?'Fresh spot feed':'Last available spot quote')}
+  if(pill){pill.textContent=state==='fresh'?'LIVE SPOT':'CACHED SPOT';pill.className='px-2 py-1 rounded text-[10px] font-bold '+(state==='fresh'?'bg-emerald-950 text-emerald-300':'bg-amber-950 text-amber-300')}
+  setText('live-usd-spot','INR '+Number(appState.usdSpot).toFixed(2));
+  calculateCustomPayout();updateDashboard();
+  persistAll(true);
+ }catch(err){
+  console.warn('Gold price refresh failed:',err);
+  let cached=null;try{cached=JSON.parse(localStorage.getItem(GOLD_PRICE_CACHE_KEY)||'null')}catch(e){}
+  if(cached&&Number(cached.price10g)>0){
+   if(priceEl)priceEl.textContent='INR '+Number(cached.price10g).toLocaleString('en-IN',{maximumFractionDigits:2});
+   if(updatedEl)updatedEl.textContent='Feed unavailable · Showing last saved quote from '+new Date(cached.updatedAt).toLocaleString('en-IN');
+   if(pill){pill.textContent='LAST SAVED';pill.className='px-2 py-1 rounded text-[10px] font-bold bg-amber-950 text-amber-300'}
+  }else{
+   if(updatedEl)updatedEl.textContent='Live feed unavailable. Check internet and tap Refresh Price.';
+   if(pill){pill.textContent='OFFLINE';pill.className='px-2 py-1 rounded text-[10px] font-bold bg-rose-950 text-rose-300'}
+  }
+  if(manual)alert('Gold price could not be refreshed. Please check your internet connection and try again.');
+ }finally{
+  goldRefreshInProgress=false;if(btn)btn.disabled=false;if(icon)icon.textContent='↻';
+ }
 }
 
-function updateStorageStatus(){
- const el=document.getElementById('storage-status');
- if(el){
-  el.textContent='Storage: '+storageMode+'. Keep JSON backups for protection if Chrome site data is cleared.';
- }
+function startGoldAutoRefresh(){
+ if(goldAutoRefreshTimer)clearInterval(goldAutoRefreshTimer);
+ refreshGoldPrice(false);
+ goldAutoRefreshTimer=setInterval(()=>{if(document.visibilityState==='visible')refreshGoldPrice(false)},60000);
 }
 
 function calculateCalendarCycleAndGoldYield(){
- const now=new Date();
- const day=now.getDate();
- const last=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
-
- const dateEl=document.getElementById('current-system-date-display');
- if(dateEl)dateEl.textContent='Today: '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-
- const cyc=document.getElementById('cycle-days-left');
- if(cyc)cyc.textContent=(last-day)+' days remaining';
-
- const accr=document.getElementById('day-accrual-label');
- if(accr)accr.textContent=`Day ${day} of ${last}`;
-
- const rate=Number(appState.usdSpot)||88.51;
- const change=Number(appState.mcxGoldChangePct)||0;
-
- const price=document.getElementById('gold-monthly-movement-text');
- if(price){
-  price.textContent='INR '+Number(appState.mcxGoldContractPrice).toLocaleString('en-IN',{maximumFractionDigits:2})+' ('+(change>0?'+':'')+change.toFixed(2)+'%)';
- }
-
+ const now=new Date(),day=now.getDate(),last=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+ const dateEl=document.getElementById('current-system-date-display');if(dateEl)dateEl.textContent='Today: '+now.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+ const cyc=document.getElementById('cycle-days-left');if(cyc)cyc.textContent=(last-day)+' days remaining';
+ const accr=document.getElementById('day-accrual-label');if(accr)accr.textContent=`Day ${day} of ${last}`;
+ const rate=Number(appState.usdSpot)||88.51,change=Number(appState.mcxGoldChangePct)||0;
+ const price=document.getElementById('gold-monthly-movement-text');if(price&&!price.textContent.includes('Loading'))price.textContent='INR '+Number(appState.mcxGoldContractPrice).toLocaleString('en-IN',{maximumFractionDigits:2});
  let bracket=appState.returnBracket;
-
- if(bracket==='auto'){
-  bracket=change<-.2?'bad':change<=.5?'normal':'bullish';
- }
-
+ if(bracket==='auto')bracket=change<-.2?'bad':change<=.5?'normal':'bullish';
  let r=10.5,exposure=90,label='Custom Manual Target';
-
- if(bracket==='bad'){
-  r=Math.max(5,Math.min(8,5+Math.abs(change)*3));
-  exposure=60;
-  label='Bad Market (5%–8%)';
- }else if(bracket==='normal'){
-  r=Math.max(8,Math.min(12,8+(change+.2)*4));
-  exposure=85;
-  label='Tier 1 Normal (8%–12%)';
- }else if(bracket==='bullish'){
-  r=Math.max(12,Math.min(18,12+change*6));
-  exposure=100;
-  label='Tier 2 Bullish (12%–18%)';
- }else{
-  r=Math.max(5,Math.min(18,Number(appState.customReturn)||10.5));
-  exposure=90;
- }
-
+ if(bracket==='bad'){r=Math.max(5,Math.min(8,5+Math.abs(change)*3));exposure=60;label='Bad Market (5%–8%)'}
+ else if(bracket==='normal'){r=Math.max(8,Math.min(12,8+(change+.2)*4));exposure=85;label='Tier 1 Normal (8%–12%)'}
+ else if(bracket==='bullish'){r=Math.max(12,Math.min(18,12+change*6));exposure=100;label='Tier 2 Bullish (12%–18%)'}
+ else{r=Math.max(5,Math.min(18,Number(appState.customReturn)||10.5));exposure=90}
  appState.returnRate=Number(r.toFixed(2));
-
- const badge=document.getElementById('active-strategy-tier-badge');
- if(badge)badge.textContent='Active Strategy: '+label;
-
- const exp=document.getElementById('capital-protection-banner');
- if(exp)exp.textContent='Strategy exposure reference: '+exposure+'% · Illustrative calculation only; returns are not guaranteed.';
-
- const ret=document.getElementById('dynamic-return-display');
- if(ret)ret.textContent=(r*day/last).toFixed(2)+'%';
-
- const pill=document.getElementById('gold-market-pill');
- if(pill)pill.textContent=change>.05?'BULLISH ▲':change<-.05?'BEARISH ▼':'NEUTRAL';
+ const badge=document.getElementById('active-strategy-tier-badge');if(badge)badge.textContent='Active Strategy: '+label;
+ const exp=document.getElementById('capital-protection-banner');if(exp)exp.textContent='Strategy exposure reference: '+exposure+'% · Illustrative calculation only; returns are not guaranteed.';
+ const ret=document.getElementById('dynamic-return-display');if(ret)ret.textContent=(r*day/last).toFixed(2)+'%';
+ const pill=document.getElementById('gold-market-pill');if(pill)pill.textContent=change>.05?'BULLISH ▲':change<-.05?'BEARISH ▼':'NEUTRAL';
 }
 
-function accrualFactor(){
- const n=new Date();
- const days=new Date(n.getFullYear(),n.getMonth()+1,0).getDate();
- return (appState.returnRate/100/days)*n.getDate();
-}
-
+function accrualFactor(){const n=new Date(),days=new Date(n.getFullYear(),n.getMonth()+1,0).getDate();return (appState.returnRate/100/days)*n.getDate()}
 function updateDashboard(){
- const total=appState.investors.reduce((s,i)=>s+i.capital,0);
- const factor=accrualFactor();
- const spot=Number(appState.usdSpot)||1;
- const profit=(total+Number(appState.promoterHolding||0))*factor;
-
- setText('display-manager-name',appState.managerName);
- setText('display-promoter-holding','INR '+Number(appState.promoterHolding).toLocaleString('en-IN'));
- setText('live-usd-spot','INR '+spot.toFixed(2));
- setText('home-total-capital','INR '+(total+Number(appState.promoterHolding||0)).toLocaleString('en-IN'));
- setText('home-active-count',appState.investors.length);
- setText('home-active-capital','INR '+total.toLocaleString('en-IN'));
- setText('home-calc-profit-usd','$'+(profit/spot).toFixed(2));
- setText('home-calc-profit-inr','INR '+profit.toLocaleString('en-IN',{maximumFractionDigits:0}));
+ const total=appState.investors.reduce((s,i)=>s+i.capital,0),factor=accrualFactor(),spot=Number(appState.usdSpot)||1,profit=(total+Number(appState.promoterHolding||0))*factor;
+ setText('display-manager-name',appState.managerName);setText('display-promoter-holding','INR '+Number(appState.promoterHolding).toLocaleString('en-IN'));setText('live-usd-spot','INR '+spot.toFixed(2));
+ setText('home-total-capital','INR '+(total+Number(appState.promoterHolding||0)).toLocaleString('en-IN'));setText('home-active-count',appState.investors.length);setText('home-active-capital','INR '+total.toLocaleString('en-IN'));
+ setText('home-calc-profit-usd','$'+(profit/spot).toFixed(2));setText('home-calc-profit-inr','INR '+profit.toLocaleString('en-IN',{maximumFractionDigits:0}));
 }
+function setText(id,value){const e=document.getElementById(id);if(e)e.textContent=value}
 
-function setText(id,value){
- const e=document.getElementById(id);
- if(e)e.textContent=value;
-}
-
-function getDynamicTier(id){
- const sorted=[...appState.investors].sort((a,b)=>b.capital-a.capital);
- const rank=sorted.findIndex(x=>x.id===id);
- return ['Gold','Silver','Bronze'][rank]||'Standard';
-}
+function getDynamicTier(id){const sorted=[...appState.investors].sort((a,b)=>b.capital-a.capital);const rank=sorted.findIndex(x=>x.id===id);return ['Gold','Silver','Bronze'][rank]||'Standard'}
 
 function renderInvestors(){
- const box=document.getElementById('investors-list-container');
- if(!box)return;
-
- box.innerHTML='';
+ const box=document.getElementById('investors-list-container');if(!box)return;box.innerHTML='';
  const q=(document.getElementById('investor-search')?.value||'').toLowerCase();
-
- const rows=appState.investors
-  .filter(x=>x.name.toLowerCase().includes(q))
-  .sort((a,b)=>b.capital-a.capital);
-
- if(!rows.length){
-  box.innerHTML='<div class="card-box p-6 text-center text-xs text-softGrey rounded-2xl">No investors found. Add your first investor above.</div>';
-  return;
- }
-
+ const rows=appState.investors.filter(x=>x.name.toLowerCase().includes(q)).sort((a,b)=>b.capital-a.capital);
+ if(!rows.length){box.innerHTML='<div class="card-box p-6 text-center text-xs text-softGrey rounded-2xl">No investors found. Add your first investor above.</div>';return}
  rows.forEach(inv=>{
-  const p=inv.capital*accrualFactor();
-  const usd=p/(Number(appState.usdSpot)||1);
-  const tier=getDynamicTier(inv.id);
-
-  const c=document.createElement('div');
-  c.className='card-box p-4 rounded-2xl swipe-card cursor-pointer '+({Gold:'tier-gold-card',Silver:'tier-silver-card',Bronze:'tier-bronze-card'}[tier]||'tier-normal-card');
-
+  const p=inv.capital*accrualFactor(),usd=p/(Number(appState.usdSpot)||1),tier=getDynamicTier(inv.id);
+  const c=document.createElement('div');c.className='card-box p-4 rounded-2xl swipe-card cursor-pointer '+({Gold:'tier-gold-card',Silver:'tier-silver-card',Bronze:'tier-bronze-card'}[tier]||'tier-normal-card');
   c.innerHTML=`<div class="flex justify-between items-start"><div><h4 class="text-sm font-extrabold"></h4><span class="text-[9px] text-goldAccent uppercase font-bold">${tier} · ${inv.status}</span></div><div class="text-right"><p class="text-[9px] text-softGrey uppercase">Capital</p><p class="text-xs font-bold text-goldAccent">INR ${inv.capital.toLocaleString('en-IN')}</p></div></div><div class="grid grid-cols-2 gap-2 mt-3 pt-2 border-t border-goldAccent/20 text-xs"><div><span class="text-[9px] text-softGrey uppercase">Progressive Profit (USD)</span><p class="font-bold text-emeraldLive">$${usd.toFixed(2)}</p></div><div class="text-right"><span class="text-[9px] text-softGrey uppercase">Progressive Profit (INR)</span><p class="font-bold">INR ${p.toLocaleString('en-IN',{maximumFractionDigits:0})}</p></div></div>`;
-
-  c.querySelector('h4').textContent=inv.name;
-  c.addEventListener('click',()=>openEditInvestorModal(inv.id));
-
-  let sx=0,cx=0;
-
-  c.addEventListener('touchstart',e=>{
-   sx=e.touches[0].clientX;
-   cx=sx;
-  },{passive:true});
-
-  c.addEventListener('touchmove',e=>{
-   cx=e.touches[0].clientX;
-   const d=cx-sx;
-   c.style.transform=`translateX(${d}px)`;
-   c.style.opacity=String(Math.max(.15,1-Math.abs(d)/300));
-  },{passive:true});
-
-  c.addEventListener('touchend',()=>{
-   const d=cx-sx;
-
-   if(Math.abs(d)>c.offsetWidth*.5){
-    if(confirm('Delete '+inv.name+'?'))deleteInvestor(inv.id);
-    else{
-     c.style.transform='';
-     c.style.opacity='1';
-    }
-   }else{
-    c.style.transform='';
-    c.style.opacity='1';
-   }
-  },{passive:true});
-
+  c.querySelector('h4').textContent=inv.name;c.addEventListener('click',()=>openEditInvestorModal(inv.id));
+  let sx=0,cx=0;c.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;cx=sx},{passive:true});c.addEventListener('touchmove',e=>{cx=e.touches[0].clientX;const d=cx-sx;c.style.transform=`translateX(${d}px)`;c.style.opacity=String(Math.max(.15,1-Math.abs(d)/300))},{passive:true});c.addEventListener('touchend',()=>{const d=cx-sx;if(Math.abs(d)>c.offsetWidth*.5){if(confirm('Delete '+inv.name+'?'))deleteInvestor(inv.id);else{c.style.transform='';c.style.opacity='1'}}else{c.style.transform='';c.style.opacity='1'}},{passive:true});
   box.appendChild(c);
  });
 }
 
 function renderSettlementInvestors(){
- const box=document.getElementById('settlement-investors-container');
- if(!box)return;
-
- box.innerHTML='';
-
- if(!appState.investors.length){
-  box.innerHTML='<div class="card-box p-4 text-center text-xs text-softGrey rounded-xl">No investors available for settlement.</div>';
-  return;
- }
-
+ const box=document.getElementById('settlement-investors-container');if(!box)return;box.innerHTML='';
+ if(!appState.investors.length){box.innerHTML='<div class="card-box p-4 text-center text-xs text-softGrey rounded-xl">No investors available for settlement.</div>';return}
  [...appState.investors].sort((a,b)=>b.capital-a.capital).forEach(inv=>{
-  const p=inv.capital*accrualFactor();
-  const usd=p/(Number(appState.usdSpot)||1);
-  const row=document.createElement('div');
-  row.className='card-box p-3 rounded-xl flex items-center justify-between gap-2 text-xs';
-
-  const left=document.createElement('div');
-  left.innerHTML='<h4 class="font-bold"></h4><p class="text-[10px] text-softGrey"></p>';
-  left.querySelector('h4').textContent=inv.name;
-  left.querySelector('p').textContent=`Capital: INR ${inv.capital.toLocaleString('en-IN')} · Profit: $${usd.toFixed(2)}`;
-
-  const actions=document.createElement('div');
-  actions.className='flex items-center gap-2';
-
-  const status=document.createElement('button');
-  status.className='px-3 py-1.5 rounded-lg text-[10px] border uppercase '+(inv.status==='Complete'?'bg-emerald-950 text-emerald-400 border-emerald-500':'bg-amber-950 text-amber-300 border-amber-600');
-  status.textContent=inv.status;
-  status.onclick=()=>toggleInvestorStatus(inv.id);
-  actions.appendChild(status);
-
-  if(inv.status==='Complete'){
-   const pdf=document.createElement('button');
-   pdf.className='px-3 py-1.5 bg-royalBlue rounded-lg text-[10px] font-bold';
-   pdf.textContent='PDF';
-   pdf.onclick=()=>downloadInvestorStatementPDF(inv.id);
-   actions.appendChild(pdf);
-  }
-
-  row.append(left,actions);
-  box.appendChild(row);
+  const p=inv.capital*accrualFactor(),usd=p/(Number(appState.usdSpot)||1),row=document.createElement('div');row.className='card-box p-3 rounded-xl flex items-center justify-between gap-2 text-xs';
+  const left=document.createElement('div');left.innerHTML='<h4 class="font-bold"></h4><p class="text-[10px] text-softGrey"></p>';left.querySelector('h4').textContent=inv.name;left.querySelector('p').textContent=`Capital: INR ${inv.capital.toLocaleString('en-IN')} · Profit: $${usd.toFixed(2)}`;
+  const actions=document.createElement('div');actions.className='flex items-center gap-2';
+  const status=document.createElement('button');status.className='px-3 py-1.5 rounded-lg text-[10px] border uppercase '+(inv.status==='Complete'?'bg-emerald-950 text-emerald-400 border-emerald-500':'bg-amber-950 text-amber-300 border-amber-600');status.textContent=inv.status;status.onclick=()=>toggleInvestorStatus(inv.id);actions.appendChild(status);
+  if(inv.status==='Complete'){const pdf=document.createElement('button');pdf.className='px-3 py-1.5 bg-royalBlue rounded-lg text-[10px] font-bold';pdf.textContent='PDF';pdf.onclick=()=>downloadInvestorStatementPDF(inv.id);actions.appendChild(pdf)}
+  row.append(left,actions);box.appendChild(row);
  });
 }
 
-function toggleInvestorStatus(id){
- const i=appState.investors.find(x=>x.id===id);
- if(i){
-  i.status=i.status==='Complete'?'Pending':'Complete';
-  saveState();
- }
-}
-
-function openAddInvestorModal(){
- setText('modal-title','Add Investor');
- document.getElementById('edit-investor-id').value='';
- document.getElementById('modal-name').value='';
- document.getElementById('modal-capital').value='';
- document.getElementById('investor-modal').classList.remove('hidden');
-}
-
-function openEditInvestorModal(id){
- const i=appState.investors.find(x=>x.id===id);
- if(!i)return;
-
- setText('modal-title','Edit Investor');
- document.getElementById('edit-investor-id').value=i.id;
- document.getElementById('modal-name').value=i.name;
- document.getElementById('modal-capital').value=i.capital;
- document.getElementById('investor-modal').classList.remove('hidden');
-}
-
-function closeAddInvestorModal(){
- document.getElementById('investor-modal').classList.add('hidden');
-}
+function toggleInvestorStatus(id){const i=appState.investors.find(x=>x.id===id);if(i){i.status=i.status==='Complete'?'Pending':'Complete';saveState()}}
+function openAddInvestorModal(){setText('modal-title','Add Investor');document.getElementById('edit-investor-id').value='';document.getElementById('modal-name').value='';document.getElementById('modal-capital').value='';document.getElementById('investor-modal').classList.remove('hidden')}
+function openEditInvestorModal(id){const i=appState.investors.find(x=>x.id===id);if(!i)return;setText('modal-title','Edit Investor');document.getElementById('edit-investor-id').value=i.id;document.getElementById('modal-name').value=i.name;document.getElementById('modal-capital').value=i.capital;document.getElementById('investor-modal').classList.remove('hidden')}
+function closeAddInvestorModal(){document.getElementById('investor-modal').classList.add('hidden')}
 
 function saveInvestorData(){
- const id=document.getElementById('edit-investor-id').value;
- const name=document.getElementById('modal-name').value.trim();
- const capital=Number(document.getElementById('modal-capital').value);
-
- if(!name||!Number.isFinite(capital)||capital<=0){
-  alert('Please enter a valid name and investment capital.');
-  return;
- }
-
- if(id){
-  const i=appState.investors.find(x=>x.id===id);
-  if(i){
-   i.name=name;
-   i.capital=capital;
-  }
- }else{
-  appState.investors.push({
-   id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),
-   name,
-   capital,
-   status:'Pending'
-  });
- }
-
- saveState();
- closeAddInvestorModal();
+ const id=document.getElementById('edit-investor-id').value,name=document.getElementById('modal-name').value.trim(),capital=Number(document.getElementById('modal-capital').value);
+ if(!name||!Number.isFinite(capital)||capital<=0){alert('Please enter a valid name and investment capital.');return}
+ if(id){const i=appState.investors.find(x=>x.id===id);if(i){i.name=name;i.capital=capital}}
+ else appState.investors.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),name,capital,status:'Pending'});
+ saveState();closeAddInvestorModal();
 }
-
-function deleteInvestor(id){
- appState.investors=appState.investors.filter(x=>x.id!==id);
- saveState();
-}
+function deleteInvestor(id){appState.investors=appState.investors.filter(x=>x.id!==id);saveState()}
 
 function syncSettingsToUI(){
- setValue('settings-manager-name',appState.managerName);
- setValue('settings-promoter-holding',appState.promoterHolding);
- setValue('settings-usd-spot',appState.usdSpot);
- setValue('settings-custom-return',appState.customReturn);
-
- ['auto','bad','normal','bullish','custom'].forEach(v=>{
-  const el=document.getElementById('bracket-'+v);
-  if(el)el.checked=appState.returnBracket===v;
- });
-
+ setValue('settings-manager-name',appState.managerName);setValue('settings-promoter-holding',appState.promoterHolding);setValue('settings-usd-spot',appState.usdSpot);setValue('settings-custom-return',appState.customReturn);
+ ['auto','bad','normal','bullish','custom'].forEach(v=>{const el=document.getElementById('bracket-'+v);if(el)el.checked=appState.returnBracket===v});
  document.getElementById('custom-return-container').classList.toggle('hidden',appState.returnBracket!=='custom');
 }
-
-function setValue(id,v){
- const e=document.getElementById(id);
- if(e)e.value=v??'';
-}
+function setValue(id,v){const e=document.getElementById(id);if(e)e.value=v??''}
 
 function saveAppSettings(){
  appState.managerName=document.getElementById('settings-manager-name').value.trim()||'Kaif Alvi';
  appState.promoterHolding=Math.max(0,Number(document.getElementById('settings-promoter-holding').value)||0);
  appState.usdSpot=Math.max(.01,Number(document.getElementById('settings-usd-spot').value)||88.51);
-
- const selected=document.querySelector('input[name="returnBracket"]:checked');
- appState.returnBracket=selected?.value||'auto';
-
+ const selected=document.querySelector('input[name="returnBracket"]:checked');appState.returnBracket=selected?.value||'auto';
  appState.customReturn=Math.max(5,Math.min(18,Number(document.getElementById('settings-custom-return').value)||10.5));
-
- saveState();
- alert('Settings saved successfully.');
+ saveState();alert('Settings saved successfully.');
 }
-
-function onBracketChange(){
- document.getElementById('custom-return-container').classList.toggle('hidden',!document.getElementById('bracket-custom').checked);
-}
+function onBracketChange(){document.getElementById('custom-return-container').classList.toggle('hidden',!document.getElementById('bracket-custom').checked)}
 
 function switchTab(id){
- ['home','investors','settlement','more'].forEach(t=>{
-  document.getElementById('tab-'+t).classList.add('hidden');
-  const b=document.getElementById('nav-btn-'+t);
-  b.classList.remove('text-goldAccent');
-  b.classList.add('text-softGrey');
- });
-
- document.getElementById('tab-'+id).classList.remove('hidden');
-
- const b=document.getElementById('nav-btn-'+id);
- b.classList.remove('text-softGrey');
- b.classList.add('text-goldAccent');
-
- window.scrollTo({top:0,behavior:'smooth'});
-
- if(id==='investors')renderInvestors();
- if(id==='settlement')renderSettlementInvestors();
+ ['home','investors','settlement','more'].forEach(t=>{document.getElementById('tab-'+t).classList.add('hidden');const b=document.getElementById('nav-btn-'+t);b.classList.remove('text-goldAccent');b.classList.add('text-softGrey')});
+ document.getElementById('tab-'+id).classList.remove('hidden');const b=document.getElementById('nav-btn-'+id);b.classList.remove('text-softGrey');b.classList.add('text-goldAccent');window.scrollTo({top:0,behavior:'smooth'});
+ if(id==='investors')renderInvestors();if(id==='settlement')renderSettlementInvestors();
 }
 
-function selectPresetAmount(n){
- setValue('custom-withdrawal-input',n);
- calculateCustomPayout();
-}
-
+function selectPresetAmount(n){setValue('custom-withdrawal-input',n);calculateCustomPayout()}
 function calculateCustomPayout(){
- const v=Math.max(0,Number(document.getElementById('custom-withdrawal-input')?.value)||0);
- const inr=v*(Number(appState.usdSpot)||1);
- const box=document.getElementById('calculator-result-box');
-
- if(!box)return;
-
+ const v=Math.max(0,Number(document.getElementById('custom-withdrawal-input')?.value)||0),inr=v*(Number(appState.usdSpot)||1),box=document.getElementById('calculator-result-box');if(!box)return;
  box.innerHTML=`<div class="flex justify-between"><span class="text-softGrey">Withdrawal Amount (USD):</span><b class="text-goldAccent">$${v.toFixed(2)}</b></div><div class="flex justify-between"><span class="text-softGrey">Conversion Rate:</span><b>INR ${Number(appState.usdSpot).toFixed(2)}</b></div><div class="flex justify-between border-t border-goldAccent/30 pt-1"><span class="text-softGrey">Equivalent INR:</span><b class="text-emeraldLive">INR ${inr.toLocaleString('en-IN',{maximumFractionDigits:2})}</b></div>`;
 }
 
 function exportJSONData(){
- const data={
-  app:'Aureus Capital',
-  type:'investor_backup',
-  version:2,
-  exportedAt:new Date().toISOString(),
-  settings:{
-   managerName:appState.managerName,
-   promoterHolding:appState.promoterHolding,
-   usdSpot:appState.usdSpot,
-   returnBracket:appState.returnBracket,
-   customReturn:appState.customReturn,
-   returnRate:appState.returnRate
-  },
-  investors:normalizeInvestors(appState.investors)
- };
-
- const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
- const url=URL.createObjectURL(blob);
- const a=document.createElement('a');
-
- a.href=url;
- a.download='aureus_capital_backup_'+Date.now()+'.json';
- document.body.appendChild(a);
- a.click();
- a.remove();
- URL.revokeObjectURL(url);
+ const data={app:'Aureus Capital',type:'investor_backup',version:2,exportedAt:new Date().toISOString(),settings:{managerName:appState.managerName,promoterHolding:appState.promoterHolding,usdSpot:appState.usdSpot,returnBracket:appState.returnBracket,customReturn:appState.customReturn,returnRate:appState.returnRate},investors:normalizeInvestors(appState.investors)};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='aureus_capital_backup_'+Date.now()+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
 
 function importJSONData(event){
- const file=event.target.files?.[0];
- if(!file)return;
-
- const reader=new FileReader();
-
- reader.onload=async e=>{
-  try{
-   const parsed=JSON.parse(e.target.result);
-   const list=Array.isArray(parsed)?parsed:(parsed.investors||parsed.appState?.investors);
-
-   if(!Array.isArray(list))throw new Error('No investor list');
-
-   const clean=normalizeInvestors(list);
-   if(list.length&&!clean.length)throw new Error('No valid investor records');
-
-   if(parsed.settings)applySettings(parsed.settings);
-   else if(parsed.managerName!==undefined)applySettings(parsed);
-
-   appState.investors=clean;
-
-   await persistAll(true);
-   syncSettingsToUI();
-   saveState();
-
-   alert('Backup restored successfully. '+clean.length+' investor(s) loaded.');
-  }catch(err){
-   alert('Invalid backup JSON: '+err.message);
-  }finally{
-   event.target.value='';
-  }
- };
-
+ const file=event.target.files?.[0];if(!file)return;const reader=new FileReader();
+ reader.onload=async e=>{try{const parsed=JSON.parse(e.target.result);const list=Array.isArray(parsed)?parsed:(parsed.investors||parsed.appState?.investors);if(!Array.isArray(list))throw new Error('No investor list');const clean=normalizeInvestors(list);if(list.length&&!clean.length)throw new Error('No valid investor records');
+  if(parsed.settings)applySettings(parsed.settings);else if(parsed.managerName!==undefined)applySettings(parsed);
+  appState.investors=clean;await persistAll(true);syncSettingsToUI();saveState();alert('Backup restored successfully. '+clean.length+' investor(s) loaded.');
+ }catch(err){alert('Invalid backup JSON: '+err.message)}finally{event.target.value=''}};
  reader.readAsText(file);
 }
 
-function pdfReady(){
- if(!window.jspdf?.jsPDF){
-  alert('PDF library could not load. Please check your internet connection and retry.');
-  return null;
- }
- return new window.jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-}
-
+function pdfReady(){if(!window.jspdf?.jsPDF){alert('PDF library could not load. Please check your internet connection and retry.');return null}return new window.jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a4'})}
 function pdfHeader(doc,title,ref){
- doc.setFillColor(255,255,255);
- doc.rect(0,0,297,210,'F');
-
- doc.setFont('helvetica','bold');
- doc.setFontSize(20);
- doc.setTextColor(11,27,61);
- doc.text('AUREUS CAPITAL',20,22);
-
- doc.setFont('helvetica','normal');
- doc.setFontSize(9);
- doc.setTextColor(100,100,100);
- doc.text('Investor Portfolio Management',20,28);
- doc.text('Report Date: '+new Date().toLocaleString('en-IN'),277,20,{align:'right'});
- doc.text('Document Ref: '+ref,277,26,{align:'right'});
-
- doc.setDrawColor(197,155,71);
- doc.setLineWidth(.7);
- doc.line(20,36,277,36);
-
- doc.setFont('helvetica','bold');
- doc.setFontSize(14);
- doc.setTextColor(11,27,61);
- doc.text(title,20,47);
+ doc.setFillColor(255,255,255);doc.rect(0,0,297,210,'F');doc.setFont('helvetica','bold');doc.setFontSize(20);doc.setTextColor(11,27,61);doc.text('AUREUS CAPITAL',20,22);
+ doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(100,100,100);doc.text('Investor Portfolio Management',20,28);doc.text('Report Date: '+new Date().toLocaleString('en-IN'),277,20,{align:'right'});doc.text('Document Ref: '+ref,277,26,{align:'right'});
+ doc.setDrawColor(197,155,71);doc.setLineWidth(.7);doc.line(20,36,277,36);doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(11,27,61);doc.text(title,20,47);
 }
 
-function getReturnData(capital){
- const f=accrualFactor();
- const p=capital*f;
- const spot=Number(appState.usdSpot)||1;
-
- return {
-  pct:(appState.returnRate*(new Date().getDate()/new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate())),
-  profitINR:p,
-  profitUSD:p/spot,
-  totalINR:capital+p,
-  totalUSD:(capital+p)/spot
- };
-}
+function getReturnData(capital){const f=accrualFactor(),p=capital*f,spot=Number(appState.usdSpot)||1;return {pct:(appState.returnRate*(new Date().getDate()/new Date(new Date().getFullYear(),new Date().getMonth()+1,0).getDate())),profitINR:p,profitUSD:p/spot,totalINR:capital+p,totalUSD:(capital+p)/spot}}
 
 function downloadInvestorStatementPDF(id){
- const inv=appState.investors.find(x=>x.id===id);
- if(!inv)return;
-
- const doc=pdfReady();
- if(!doc)return;
-
- const d=getReturnData(inv.capital);
- const ref='AC-PAY-'+Date.now().toString().slice(-8);
-
+ const inv=appState.investors.find(x=>x.id===id);if(!inv)return;const doc=pdfReady();if(!doc)return;const d=getReturnData(inv.capital),ref='AC-PAY-'+Date.now().toString().slice(-8);
  pdfHeader(doc,'Individual Investor Return Statement',ref);
-
- doc.autoTable({
-  startY:58,
-  head:[['Investor Name','Capital (INR)','Capital (USD)','Return %','Return (INR)','Return (USD)','Total Value (INR)','Total Value (USD)']],
-  body:[[
-   inv.name,
-   'INR '+inv.capital.toLocaleString('en-IN'),
-   '$'+(inv.capital/appState.usdSpot).toFixed(2),
-   d.pct.toFixed(2)+'%',
-   'INR '+d.profitINR.toFixed(2),
-   '$'+d.profitUSD.toFixed(2),
-   'INR '+d.totalINR.toFixed(2),
-   '$'+d.totalUSD.toFixed(2)
-  ]],
-  theme:'grid',
-  headStyles:{fillColor:[11,27,61],textColor:255,fontSize:8},
-  bodyStyles:{fontSize:8,textColor:[30,30,30]},
-  margin:{left:20,right:20}
- });
-
- doc.setFontSize(8);
- doc.setTextColor(100);
- doc.text('Conversion rate used: 1 USD = INR '+Number(appState.usdSpot).toFixed(2),20,doc.lastAutoTable.finalY+12);
- doc.text('Figures are estimates based on the selected return rate and elapsed days; not guaranteed returns.',20,doc.lastAutoTable.finalY+18);
-
- doc.save('Aureus_Investor_'+inv.name.replace(/[^a-z0-9]+/gi,'_')+'.pdf');
+ doc.autoTable({startY:58,head:[['Investor Name','Capital (INR)','Capital (USD)','Return %','Return (INR)','Return (USD)','Total Value (INR)','Total Value (USD)']],body:[[inv.name,'INR '+inv.capital.toLocaleString('en-IN'),'$'+(inv.capital/appState.usdSpot).toFixed(2),d.pct.toFixed(2)+'%','INR '+d.profitINR.toFixed(2),'$'+d.profitUSD.toFixed(2),'INR '+d.totalINR.toFixed(2),'$'+d.totalUSD.toFixed(2)]],theme:'grid',headStyles:{fillColor:[11,27,61],textColor:255,fontSize:8},bodyStyles:{fontSize:8,textColor:[30,30,30]},margin:{left:20,right:20}});
+ doc.setFontSize(8);doc.setTextColor(100);doc.text('Conversion rate used: 1 USD = INR '+Number(appState.usdSpot).toFixed(2),20,doc.lastAutoTable.finalY+12);doc.text('Figures are estimates based on the selected return rate and elapsed days; not guaranteed returns.',20,doc.lastAutoTable.finalY+18);doc.save('Aureus_Investor_'+inv.name.replace(/[^a-z0-9]+/gi,'_')+'.pdf');
 }
 
 function downloadMasterStatementPDF(){
- const doc=pdfReady();
- if(!doc)return;
-
- const ref='AC-MASTER-'+Date.now().toString().slice(-8);
- pdfHeader(doc,'Master Investor Portfolio & Return Summary',ref);
-
- const rows=[];
- const all=[
-  {name:appState.managerName+' (Promoter)',capital:Number(appState.promoterHolding)||0},
-  ...([...appState.investors].sort((a,b)=>b.capital-a.capital))
- ];
-
- all.forEach((i,n)=>{
-  const d=getReturnData(i.capital);
-  rows.push([
-   String(n+1),
-   i.name,
-   'INR '+i.capital.toLocaleString('en-IN'),
-   d.pct.toFixed(2)+'%',
-   'INR '+d.profitINR.toFixed(2),
-   '$'+d.profitUSD.toFixed(2),
-   'INR '+d.totalINR.toFixed(2),
-   '$'+d.totalUSD.toFixed(2)
-  ]);
- });
-
- doc.autoTable({
-  startY:57,
-  head:[['#','Participant Name','Capital (INR)','Return %','Return (INR)','Return (USD)','Total (INR)','Total (USD)']],
-  body:rows,
-  theme:'grid',
-  headStyles:{fillColor:[11,27,61],textColor:255,fontSize:8},
-  bodyStyles:{fontSize:8,textColor:[30,30,30]},
-  columnStyles:{0:{halign:'center'}},
-  margin:{left:20,right:20}
- });
-
- doc.setFontSize(8);
- doc.setTextColor(100);
- doc.text('Exchange rate: 1 USD = INR '+Number(appState.usdSpot).toFixed(2),20,doc.lastAutoTable.finalY+10);
- doc.text('Illustrative calculations only. This report is not a guarantee of profit or capital protection.',20,doc.lastAutoTable.finalY+16);
-
- doc.save('Aureus_Capital_Master_Statement_'+Date.now()+'.pdf');
+ const doc=pdfReady();if(!doc)return;const ref='AC-MASTER-'+Date.now().toString().slice(-8);pdfHeader(doc,'Master Investor Portfolio & Return Summary',ref);
+ const rows=[];const all=[{name:appState.managerName+' (Promoter)',capital:Number(appState.promoterHolding)||0},...([...appState.investors].sort((a,b)=>b.capital-a.capital))];
+ all.forEach((i,n)=>{const d=getReturnData(i.capital);rows.push([String(n+1),i.name,'INR '+i.capital.toLocaleString('en-IN'),d.pct.toFixed(2)+'%','INR '+d.profitINR.toFixed(2),'$'+d.profitUSD.toFixed(2),'INR '+d.totalINR.toFixed(2),'$'+d.totalUSD.toFixed(2)])});
+ doc.autoTable({startY:57,head:[['#','Participant Name','Capital (INR)','Return %','Return (INR)','Return (USD)','Total (INR)','Total (USD)']],body:rows,theme:'grid',headStyles:{fillColor:[11,27,61],textColor:255,fontSize:8},bodyStyles:{fontSize:8,textColor:[30,30,30]},columnStyles:{0:{halign:'center'}},margin:{left:20,right:20}});
+ doc.setFontSize(8);doc.setTextColor(100);doc.text('Exchange rate: 1 USD = INR '+Number(appState.usdSpot).toFixed(2),20,doc.lastAutoTable.finalY+10);doc.text('Illustrative calculations only. This report is not a guarantee of profit or capital protection.',20,doc.lastAutoTable.finalY+16);doc.save('Aureus_Capital_Master_Statement_'+Date.now()+'.pdf');
 }
 
 function downloadCustomStatementPDF(){
- const gross=Math.max(0,Number(document.getElementById('custom-withdrawal-input').value)||0);
- const doc=pdfReady();
- if(!doc)return;
-
- const fee=gross*.2;
- const network=15;
- const net=Math.max(0,gross-fee-network);
- const spot=Number(appState.usdSpot)||1;
-
+ const gross=Math.max(0,Number(document.getElementById('custom-withdrawal-input').value)||0);const doc=pdfReady();if(!doc)return;const fee=gross*.2,network=15,net=Math.max(0,gross-fee-network),spot=Number(appState.usdSpot)||1;
  pdfHeader(doc,'Investor Withdrawal & Net Distribution Statement','AC-WD-'+Date.now().toString().slice(-8));
-
- doc.autoTable({
-  startY:58,
-  head:[['Particulars','Amount (USD)','Equivalent (INR)']],
-  body:[
-   ['Gross Withdrawal','$'+gross.toFixed(2),'INR '+(gross*spot).toFixed(2)],
-   ['Illustrative 20% Fee','- $'+fee.toFixed(2),'- INR '+(fee*spot).toFixed(2)],
-   ['Network Fee','- $'+network.toFixed(2),'- INR '+(network*spot).toFixed(2)],
-   ['Net Distribution','$'+net.toFixed(2),'INR '+(net*spot).toFixed(2)]
-  ],
-  theme:'grid',
-  headStyles:{fillColor:[11,27,61],textColor:255},
-  bodyStyles:{fontSize:9,textColor:[30,30,30]},
-  margin:{left:20,right:20}
- });
-
- doc.setFontSize(8);
- doc.setTextColor(100);
- doc.text('Fee assumptions are editable business assumptions and should be verified before use.',20,doc.lastAutoTable.finalY+12);
- doc.text('Exchange rate: 1 USD = INR '+spot.toFixed(2),20,doc.lastAutoTable.finalY+18);
-
- doc.save('Aureus_Withdrawal_Statement.pdf');
+ doc.autoTable({startY:58,head:[['Particulars','Amount (USD)','Equivalent (INR)']],body:[['Gross Withdrawal','$'+gross.toFixed(2),'INR '+(gross*spot).toFixed(2)],['Illustrative 20% Fee','- $'+fee.toFixed(2),'- INR '+(fee*spot).toFixed(2)],['Network Fee','- $'+network.toFixed(2),'- INR '+(network*spot).toFixed(2)],['Net Distribution','$'+net.toFixed(2),'INR '+(net*spot).toFixed(2)]],theme:'grid',headStyles:{fillColor:[11,27,61],textColor:255},bodyStyles:{fontSize:9,textColor:[30,30,30]},margin:{left:20,right:20}});
+ doc.setFontSize(8);doc.setTextColor(100);doc.text('Fee assumptions are editable business assumptions and should be verified before use.',20,doc.lastAutoTable.finalY+12);doc.text('Exchange rate: 1 USD = INR '+spot.toFixed(2),20,doc.lastAutoTable.finalY+18);doc.save('Aureus_Withdrawal_Statement.pdf');
 }
 
 document.querySelectorAll('input[name="returnBracket"]').forEach(x=>x.addEventListener('change',onBracketChange));
-
-window.addEventListener('DOMContentLoaded',()=>{
- loadState().catch(e=>{
-  console.error(e);
-  alert('Unable to load saved data. You can restore a JSON backup from Settings.');
- });
-});
-
-window.addEventListener('load',()=>{
- setTimeout(()=>document.getElementById('splash-screen')?.remove(),1000);
-});
-
-window.addEventListener('beforeunload',()=>{
- try{
-  localStorage.setItem(FALLBACK_KEY,JSON.stringify(appState.investors));
- }catch(e){}
-});
+window.addEventListener('DOMContentLoaded',()=>{loadState().then(()=>startGoldAutoRefresh()).catch(e=>{console.error(e);alert('Unable to load saved data. You can restore a JSON backup from Settings.')})});
+window.addEventListener('load',()=>setTimeout(()=>document.getElementById('splash-screen')?.remove(),1000));
+window.addEventListener('beforeunload',()=>{try{localStorage.setItem(FALLBACK_KEY,JSON.stringify(appState.investors))}catch(e){}});
 </script>
 </body>
 </html>

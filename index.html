@@ -354,7 +354,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_1](start_span)[span_1](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_0](start_span)[span_0](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -417,7 +417,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH STABLE STATE SYNCHRONIZATION -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH SECURE ISOLATED STATE -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
@@ -429,7 +429,7 @@
             returnRate: 6.50,
             mcxGoldContractPrice: 138358.40,
             mcxGoldChangePct: -0.32,
-            investors: []
+            investors: [] // 100% clean empty array by default
         };
 
         async function fetchRealTimeContractFeeds() {
@@ -592,7 +592,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v43_sync');
+            const saved = localStorage.getItem('aureus_capital_state_v44_secure_crm');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -610,7 +610,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v43_sync', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v44_secure_crm', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -625,7 +625,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_1](start_span)[span_1](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -653,7 +653,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -690,7 +690,6 @@
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            // Force re-render when switching tabs to ensure 100% sync
             if(tabId === 'investors') renderInvestors();
             if(tabId === 'settlement') renderSettlementInvestors();
         }
@@ -757,7 +756,7 @@
             if(retDispEl) retDispEl.innerText = progressiveReturnPct.toFixed(2) + '%';
         }
 
-        // Automatic Descending Sorting (Highest Capital First)[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+        // Automatic Descending Sorting (Highest Capital First)[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span)
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             const queryInput = document.getElementById('investor-search');

@@ -282,11 +282,11 @@
             </div>
         </section>
 
-        <!-- TAB 4: MORE / SETTINGS & STRICT BRACKET SELECTOR -->
+        <!-- TAB 4: MORE / SETTINGS & AUTO-BACKUP & SYNC -->
         <section id="tab-more" class="space-y-4 hidden animate-fade-in">
             <div class="px-1">
                 <p class="text-[9px] text-goldAccent uppercase tracking-widest font-extrabold">PREFERENCES</p>
-                <h2 class="text-base font-bold text-softWhite tracking-tight">Settings & Strategy Bracket Selector</h2>
+                <h2 class="text-base font-bold text-softWhite tracking-tight">Settings & Permanent Data Sync</h2>
             </div>
 
             <div class="card-box p-4 space-y-4 rounded-2xl">
@@ -354,18 +354,29 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_6](start_span)[span_6](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_0](start_span)[span_0](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
                 </div>
             </div>
 
-            <div class="card-box p-4 space-y-3 rounded-2xl">
-                <p class="text-[10px] text-goldAccent uppercase tracking-widest font-extrabold">Data Management</p>
+            <!-- Permanent Data Storage & Auto-Backup Box -->
+            <div class="card-box p-4 space-y-3 rounded-2xl border border-emeraldLive/40 bg-gradient-to-br from-emerald-950/20 to-midnight">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] text-emeraldLive uppercase tracking-widest font-extrabold">Permanent Internal Storage & Backup</p>
+                    <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-950 text-emeraldLive border border-emeraldLive/50">SECURE SYNC</span>
+                </div>
+                <p class="text-[11px] text-softGrey">To ensure your investor directory never resets even if browser cache clears, export a backup JSON file or restore instantly.</p>
                 <div class="grid grid-cols-2 gap-2 pt-1">
-                    <button type="button" onclick="exportJSONData()" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 hover:border-goldAccent text-xs font-bold rounded-xl transition active:scale-95 cursor-pointer relative z-20">Backup JSON</button>
-                    <button type="button" onclick="document.getElementById('import-file-input').click()" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 hover:border-goldAccent text-xs font-bold rounded-xl transition active:scale-95 cursor-pointer relative z-20">Restore JSON</button>
+                    <button type="button" onclick="exportJSONData()" class="py-2.5 bg-midnight text-goldAccent border border-goldAccent/40 hover:border-goldAccent text-xs font-bold rounded-xl transition active:scale-95 cursor-pointer relative z-20 flex items-center justify-center space-x-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        <span>Download Backup JSON</span>
+                    </button>
+                    <button type="button" onclick="document.getElementById('import-file-input').click()" class="py-2.5 bg-midnight text-emeraldLive border border-emeraldLive/40 hover:border-emeraldLive text-xs font-bold rounded-xl transition active:scale-95 cursor-pointer relative z-20 flex items-center justify-center space-x-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12"/></svg>
+                        <span>Restore from JSON</span>
+                    </button>
                     <input type="file" id="import-file-input" accept=".json" onchange="importJSONData(event)" class="hidden">
                 </div>
             </div>
@@ -417,7 +428,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH CA-APPROVED 9-POINT FEE BREAKDOWN -->
+    <!-- JAVASCRIPT APPLICATION CORE WITH CA-APPROVED 5-POINT BREAKDOWN -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
@@ -592,7 +603,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v46_ca_approved');
+            const saved = localStorage.getItem('aureus_capital_state_v47_permanent');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -610,7 +621,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v46_ca_approved', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v47_permanent', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -625,7 +636,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_7](start_span)[span_7](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_1](start_span)[span_1](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -653,7 +664,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_8](start_span)[span_8](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -827,7 +838,7 @@
                 card.addEventListener('touchend', () => {
                     let diff = currentX - startX;
                     if(Math.abs(diff) > card.offsetWidth * 0.5) {
-                        card.style.transform = `translateX(${diff > 0 ? '100%' : '-100%'})`;
+                        card.style.transform = `translateX(${diff > 0 ? '100%':' -100%'})`;
                         card.style.opacity = '0';
                         setTimeout(() => deleteInvestor(inv.id), 300);
                     } else {
@@ -967,7 +978,7 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
             const dlAnchor = document.createElement('a');
             dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `aureus_capital_backup_${Date.now()}.json`);
+            dlAnchor.setAttribute("download", `aureus_capital_permanent_backup_${Date.now()}.json`);
             document.body.appendChild(dlAnchor);
             dlAnchor.click();
             dlAnchor.remove();
@@ -982,9 +993,9 @@
                         appState = JSON.parse(e.target.result);
                         saveState();
                         syncSettingsToUI();
-                        alert("Data restored successfully!");
+                        alert("Data restored successfully from backup!");
                     } catch(err) {
-                        alert("Invalid JSON file.");
+                        alert("Invalid JSON backup file.");
                     }
                 };
             }
@@ -1122,12 +1133,11 @@
             let grossUSD = withdrawalUSD;
             let spot = appState.usdSpot;
 
-            // CA-Approved 5 Legal & Real Charges
-            let platformFeeUSD = grossUSD * 0.05; // 5% Platform Service Fee
-            let gstOnFeeUSD = platformFeeUSD * 0.18; // 18% GST on Service Fee
-            let tdsUSD = grossUSD * 0.01; // 1% Statutory TDS
-            let gatewayFeeUSD = 5.00; // Bank Wire / Gateway fee
-            let networkGasUSD = 3.00; // Blockchain / Routing cost
+            let platformFeeUSD = grossUSD * 0.05; 
+            let gstOnFeeUSD = platformFeeUSD * 0.18; 
+            let tdsUSD = grossUSD * 0.01; 
+            let gatewayFeeUSD = 5.00; 
+            let networkGasUSD = 3.00; 
             
             let totalDeductionsUSD = platformFeeUSD + gstOnFeeUSD + tdsUSD + gatewayFeeUSD + networkGasUSD;
             let netUSD = grossUSD - totalDeductionsUSD;

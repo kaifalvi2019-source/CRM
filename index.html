@@ -354,7 +354,7 @@
 
                     <div>
                         <label class="block text-[10px] text-goldAccent uppercase tracking-widest font-semibold pt-2">Smart API Key (Angel One / Live Feed)</label>
-                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_0](start_span)[span_0](end_span)
+                        <input type="text" id="settings-api-key" value="6xbPBcPcO" class="w-full bg-midnight border border-goldAccent/40 rounded-xl px-3 py-2 text-xs text-goldAccent font-mono tabular-nums focus:outline-none focus:border-goldAccent">[span_2](start_span)[span_2](end_span)
                     </div>
                     
                     <button type="button" onclick="saveAppSettings()" class="w-full py-2.5 bg-gradient-to-r from-goldAccent to-amber-600 hover:from-amber-500 hover:to-amber-700 text-midnight text-xs font-extrabold rounded-xl transition shadow-lg shadow-goldAccent/30 active:scale-95 cursor-pointer relative z-20">Save Settings & Sync Strategy</button>
@@ -417,7 +417,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE WITH SECURE ISOLATED STATE -->
+    <!-- JAVASCRIPT APPLICATION CORE -->
     <script>
         let appState = {
             managerName: "Kaif Alvi",
@@ -429,7 +429,7 @@
             returnRate: 6.50,
             mcxGoldContractPrice: 138358.40,
             mcxGoldChangePct: -0.32,
-            investors: [] // 100% clean empty array by default
+            investors: []
         };
 
         async function fetchRealTimeContractFeeds() {
@@ -592,7 +592,7 @@
         }
 
         function loadState() {
-            const saved = localStorage.getItem('aureus_capital_state_v44_secure_crm');
+            const saved = localStorage.getItem('aureus_capital_state_v45_detailed_fees');
             if (saved) {
                 try { 
                     const parsed = JSON.parse(saved);
@@ -610,7 +610,7 @@
         }
 
         function saveState() {
-            localStorage.setItem('aureus_capital_state_v44_secure_crm', JSON.stringify(appState));
+            localStorage.setItem('aureus_capital_state_v45_detailed_fees', JSON.stringify(appState));
             fetchRealTimeContractFeeds();
             updateDashboard();
             renderInvestors();
@@ -625,7 +625,7 @@
 
             if(mName) mName.value = appState.managerName;
             if(pHolding) pHolding.value = appState.promoterHolding;
-            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_1](start_span)[span_1](end_span)
+            if(apiKey) apiKey.value = appState.apiKey || "6xbPBcPcO";[span_3](start_span)[span_3](end_span)
             if(customRetInput) customRetInput.value = appState.customReturn || 10.50;
 
             const bAuto = document.getElementById('bracket-auto');
@@ -653,7 +653,7 @@
         function saveAppSettings() {
             appState.managerName = document.getElementById('settings-manager-name').value || "Kaif Alvi";
             appState.promoterHolding = parseFloat(document.getElementById('settings-promoter-holding').value) || 0;
-            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_2](start_span)[span_2](end_span)
+            appState.apiKey = document.getElementById('settings-api-key').value.trim() || "6xbPBcPcO";[span_4](start_span)[span_4](end_span)
             
             if(document.getElementById('bracket-auto').checked) appState.returnBracket = "auto";
             else if(document.getElementById('bracket-bad').checked) appState.returnBracket = "bad";
@@ -745,7 +745,7 @@
 
             let promoterProfitINR = appState.promoterHolding * currentCycleAccrualFactor;
             let promoterProfitUSD = promoterProfitINR / appState.usdSpot;
-            if(promoterProfitBadge) promoterProfitBadge.innerText = `+$${promoterProfitUSD.toFixed(2)}`;
+            if(promoterProfitbadge) promoterProfitbadge.innerText = `+$${promoterProfitUSD.toFixed(2)}`;
 
             let totalInvestorProfitINR = totalInvestorCapital * currentCycleAccrualFactor;
             let totalProfitINR = promoterProfitINR + totalInvestorProfitINR;
@@ -756,7 +756,6 @@
             if(retDispEl) retDispEl.innerText = progressiveReturnPct.toFixed(2) + '%';
         }
 
-        // Automatic Descending Sorting (Highest Capital First)[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span)
         function renderInvestors() {
             const container = document.getElementById('investors-list-container');
             const queryInput = document.getElementById('investor-search');
@@ -992,7 +991,7 @@
         }
 
         // ==========================================
-        // PROFESSIONAL LANDSCAPE EXECUTIVE PDF GENERATORS
+        // PROFESSIONAL LANDSCAPE EXECUTIVE PDF GENERATORS WITH 9 DETAILED CHARGES
         // ==========================================
 
         function downloadInvestorStatementPDF(id) {
@@ -1103,7 +1102,7 @@
 
             doc.setFontSize(10);
             doc.setTextColor(100, 100, 100);
-            doc.text("Institutional Private Pool Management", 20, 28);
+            doc.text("Institutional Private Pool Management & Trading Desk", 20, 28);
 
             doc.setFont("helvetica", "normal");
             doc.setFontSize(9);
@@ -1118,60 +1117,84 @@
             doc.setFont("helvetica", "bold");
             doc.setFontSize(14);
             doc.setTextColor(11, 27, 61);
-            doc.text("Investor Withdrawal & Net Distribution Statement", 20, 48);
+            doc.text("Comprehensive Withdrawal & Tax Fee Breakdown Statement", 20, 48);
 
             let grossUSD = withdrawalUSD;
-            let perfFeeUSD = grossUSD * 0.20; 
-            let networkFeeUSD = 15.00; 
-            let netUSD = grossUSD - perfFeeUSD - networkFeeUSD;
+            let spot = appState.usdSpot;
+
+            let tradingFeeUSD = grossUSD * 0.0020; 
+            let gstOnFeeUSD = tradingFeeUSD * 0.18; 
+            let tdsUSD = grossUSD * 0.01; 
+            let exWithdrawalUSD = 2.00; 
+            let gasFeeUSD = 5.00; 
+            let algoServerUSD = 15.00; 
+            let insuranceUSD = 15.00; 
+            let processingFeeUSD = grossUSD * 0.10; 
+            
+            let totalDeductionsUSD = tradingFeeUSD + gstOnFeeUSD + tdsUSD + exWithdrawalUSD + gasFeeUSD + algoServerUSD + insuranceUSD + processingFeeUSD;
+            let netUSD = grossUSD - totalDeductionsUSD;
             if(netUSD < 0) netUSD = 0;
-            let netINR = netUSD * appState.usdSpot;
+            let netINR = netUSD * spot;
 
             const tableBody = [
-                ["Gross Withdrawal Request", "$" + grossUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "INR " + (grossUSD * appState.usdSpot).toLocaleString('en-IN', {maximumFractionDigits: 2})],
-                ["Performance Fee (20% on Profit)", "- $" + perfFeeUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "- INR " + (perfFeeUSD * appState.usdSpot).toLocaleString('en-IN', {maximumFractionDigits: 2})],
-                ["Blockchain Network Fee", "- $" + networkFeeUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "- INR " + (networkFeeUSD * appState.usdSpot).toLocaleString('en-IN', {maximumFractionDigits: 2})],
-                ["Net Distribution Amount", "$" + netUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "INR " + netINR.toLocaleString('en-IN', {maximumFractionDigits: 2})]
+                ["1. Pre-Withdrawal Trading", "Maker/Taker Trading Fee (~0.20% exchange value)", "- $" + tradingFeeUSD.toFixed(2), "- INR " + (tradingFeeUSD * spot).toFixed(2)],
+                ["2. Tax on Trading Fee", "18% GST on Trading Fee", "- $" + gstOnFeeUSD.toFixed(2), "- INR " + (gstOnFeeUSD * spot).toFixed(2)],
+                ["3. Government Tax (India)", "1.00% Mandatory Indian TDS (ITR Claimable)", "- $" + tdsUSD.toFixed(2), "- INR " + (tdsUSD * spot).toFixed(2)],
+                ["4. Exchange Withdrawal", "CoinDCX to Trust Wallet Network Fee", "- $" + exWithdrawalUSD.toFixed(2), "- INR " + (exWithdrawalUSD * spot).toFixed(2)],
+                ["5. Blockchain Transfer", "Network / Gas Fee (Transfer to XM 360)", "- $" + gasFeeUSD.toFixed(2), "- INR " + (gasFeeUSD * spot).toFixed(2)],
+                ["6. Algo Infrastructure", "Algo Bijali & 24/7 Cloud Server Upkeep", "- $" + algoServerUSD.toFixed(2), "- INR " + (algoServerUSD * spot).toFixed(2)],
+                ["7. Risk Management", "Capital Protection Insurance (Drawdown Shield)", "- $" + insuranceUSD.toFixed(2), "- INR " + (insuranceUSD * spot).toFixed(2)],
+                ["8. Systemic Processing", "Operational Management Fee (10.00% Flat)", "- $" + processingFeeUSD.toFixed(2), "- INR " + (processingFeeUSD * spot).toFixed(2)],
+                ["9. Future Profit Tax", "30% VDA / Crypto Tax (Applicable on Net Gains)", "Informational", "Informational"],
+                ["GROSS WITHDRAWAL REQUEST", "Total Initial Withdrawal Amount Desired", "$" + grossUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "INR " + (grossUSD * spot).toLocaleString('en-IN', {maximumFractionDigits: 2})],
+                ["NET DISTRIBUTED AMOUNT", "Final Payout Credited After All Deductions", "$" + netUSD.toLocaleString('en-US', {minimumFractionDigits: 2}), "INR " + netINR.toLocaleString('en-IN', {maximumFractionDigits: 2})]
             ];
 
             doc.autoTable({
-                startY: 58,
-                head: [["Fee & Distribution Particulars", "Amount (USD)", "Amount Equivalent (INR)"]],
+                startY: 54,
+                head: [["Category / Stage", "Particulars / Charge Description", "Amount (USD)", "Amount Equivalent (INR)"]],
                 body: tableBody,
                 theme: 'grid',
-                headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 9 },
-                bodyStyles: { textColor: [30, 30, 30], fontSize: 9, cellPadding: 6 },
+                headStyles: { fillColor: [11, 27, 61], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 8.5 },
+                bodyStyles: { textColor: [30, 30, 30], fontSize: 8, cellPadding: 3.5 },
                 columnStyles: {
-                    0: { fontStyle: 'bold', cellWidth: 120 },
-                    1: { halign: 'right', cellWidth: 70 },
-                    2: { halign: 'right', cellWidth: 87 }
+                    0: { fontStyle: 'bold', cellWidth: 55 },
+                    1: { cellWidth: 102 },
+                    2: { halign: 'right', cellWidth: 50 },
+                    3: { halign: 'right', cellWidth: 50 }
                 },
                 didParseCell: function(data) {
-                    if(data.row.index === 3) {
+                    if(data.row.index === 10) {
+                        data.cell.styles.fillColor = [240, 253, 244];
                         data.cell.styles.textColor = [16, 185, 129];
+                        data.cell.styles.fontStyle = 'bold';
+                    }
+                    if(data.row.index === 9) {
+                        data.cell.styles.fillColor = [248, 250, 252];
                         data.cell.styles.fontStyle = 'bold';
                     }
                 },
                 margin: { left: 20, right: 20 }
             });
 
-            let finalY = doc.lastAutoTable.finalY + 15;
+            let finalY = doc.lastAutoTable.finalY + 8;
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(9);
+            doc.setFontSize(8.5);
             doc.setTextColor(11, 27, 61);
-            doc.text("Important Notes:", 20, finalY);
+            doc.text("Important Compliance Notes:", 20, finalY);
 
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(8);
+            doc.setFontSize(7.5);
             doc.setTextColor(100, 100, 100);
-            doc.text(`1. Exchange rate applied: 1 USD = INR ${appState.usdSpot.toFixed(2)}.`, 20, finalY + 6);
-            doc.text("2. Net distribution is credited directly to the registered banking or crypto institutional channel.", 20, finalY + 11);
+            doc.text(`1. Current Exchange Rate applied: 1 USD = INR ${spot.toFixed(2)}.`, 20, finalY + 4.5);
+            doc.text("2. TDS deducted is eligible for claim during annual Indian Income Tax Return (ITR) filing.", 20, finalY + 9);
+            doc.text("3. All infrastructural, gas, and 10% processing fees are automatically itemized for institutional accounting.", 20, finalY + 13.5);
 
             doc.setFontSize(8);
-            doc.text("AUREUS CAPITAL | Withdrawal Statement", 20, 195);
+            doc.text("AUREUS CAPITAL | Comprehensive Fee & Tax Breakdown Statement", 20, 195);
             doc.text("Page 1 of 1", 277, 195, { align: "right" });
 
-            doc.save(`Aureus_Capital_Withdrawal_${refId}.pdf`);
+            doc.save(`Aureus_Capital_Detailed_Fee_Statement_${refId}.pdf`);
         }
 
         function downloadMasterStatementPDF() {
